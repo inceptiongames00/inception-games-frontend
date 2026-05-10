@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Send, Loader2 } from "lucide-react";
+import Swal from "sweetalert2";
 
 export default function SendMessagesPage() {
   const [emails, setEmails] = useState("");
@@ -10,6 +11,8 @@ export default function SendMessagesPage() {
   const [loading, setLoading] = useState(false);
   const [responseData, setResponseData] = useState(null);
   const [error, setError] = useState("");
+  const [tournamentId, setTournamentId] = useState("");
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,23 +23,24 @@ export default function SendMessagesPage() {
 
     try {
       const payload = {
-        emails: emails
-          .split(",")
-          .map((email) => email.trim())
-          .filter((email) => email !== ""),
+        // emails: emails
+        //   .split(",")
+        //   .map((email) => email.trim())
+        //   .filter((email) => email !== ""),
+        tournament_id: tournamentId,
         game_name: gameName,
         message: message,
       };
 
       const response = await fetch(
-         `${process.env.NEXT_PUBLIC_API_BASE_URL}/message/send-message`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/message/send-message`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(payload),
-        }
+        },
       );
 
       const data = await response.json();
@@ -47,8 +51,17 @@ export default function SendMessagesPage() {
 
       setResponseData(data);
 
+      Swal.fire({
+        title: "Message Sent Successfully!",
+        // text: `Sent to ${data.summary.total_recipients} recipients`,
+        icon: "success",
+        draggable: true,
+        confirmButtonColor: "#000",
+      });
+
       // reset form after success
-      setEmails("");
+      // setEmails("");
+      setTournamentId("");
       setGameName("");
       setMessage("");
     } catch (err) {
@@ -62,7 +75,6 @@ export default function SendMessagesPage() {
   return (
     <div className="min-h-screen  p-6">
       <div className="max-w-4xl mx-auto space-y-6">
-        
         {/* Header */}
         <div className="bg-white border rounded-2xl shadow-sm p-6">
           <h1 className="text-2xl font-bold !text-black">Send Messages</h1>
@@ -74,17 +86,16 @@ export default function SendMessagesPage() {
         {/* Form */}
         <div className="bg-white border rounded-2xl shadow-sm p-6">
           <form onSubmit={handleSubmit} className="space-y-5">
-
             {/* Emails */}
             <div>
               <label className="block mb-2 font-medium !text-black">
-                Emails (comma separated)
+                Tournament ID
               </label>
               <input
                 type="text"
-                value={emails}
-                onChange={(e) => setEmails(e.target.value)}
-                placeholder="user1@gmail.com, user2@gmail.com"
+                value={tournamentId}
+                onChange={(e) => setTournamentId(e.target.value)}
+                placeholder="Enter tournament ID"
                 className="w-full !text-black border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-black"
                 required
               />
@@ -122,9 +133,7 @@ export default function SendMessagesPage() {
 
             {/* Error */}
             {error && (
-              <div className="text-red-500 font-medium text-sm">
-                {error}
-              </div>
+              <div className="text-red-500 font-medium text-sm">{error}</div>
             )}
 
             {/* Button */}
@@ -149,7 +158,7 @@ export default function SendMessagesPage() {
         </div>
 
         {/* Success Result */}
-        {responseData && (
+        {/* {responseData && (
           <div className="bg-white border rounded-2xl shadow-sm p-6">
             <h2 className="!text-green-600 font-bold text-xl mb-4">
               Message Sent Successfully ✅
@@ -196,7 +205,7 @@ export default function SendMessagesPage() {
               Sent at: {responseData.timestamp}
             </p>
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );

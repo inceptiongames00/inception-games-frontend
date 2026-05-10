@@ -14,7 +14,7 @@ export default function EsportsUsersTable() {
     const fetchProfiles = async () => {
       try {
         const res = await fetch(
-              `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/profiles`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/profiles`,
         );
         const data = await res.json();
 
@@ -29,9 +29,7 @@ export default function EsportsUsersTable() {
   }, []);
 
   const uniqueGames = [
-    ...new Set(
-      profiles.map((p) => p.primary_game).filter(Boolean)
-    ),
+    ...new Set(profiles.map((p) => p.primary_game).filter(Boolean)),
   ];
 
   const handleFilter = (game) => {
@@ -41,9 +39,7 @@ export default function EsportsUsersTable() {
     if (!game) {
       setFilteredProfiles(profiles);
     } else {
-      setFilteredProfiles(
-        profiles.filter((p) => p.primary_game === game)
-      );
+      setFilteredProfiles(profiles.filter((p) => p.primary_game === game));
     }
   };
 
@@ -57,7 +53,11 @@ export default function EsportsUsersTable() {
     <div className="!text-black max-w-6xl mx-auto p-4">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-3">
-        <h2 className="text-xl !text-black font-semibold">Total Players: ({profiles.length})</h2> 
+        <div>
+          <p className="text-xl font-bold text-black mt-1">
+            Total Registered Players: ({profiles.length})
+          </p>
+        </div>
         {/* Filter */}
         <select
           value={selectedGame}
@@ -74,13 +74,14 @@ export default function EsportsUsersTable() {
       </div>
 
       {/* Table Wrapper (Responsive) */}
-      <div className="w-full overflow-x-auto border border-gray-200 rounded-lg">
+      <div className="w-full overflow-x-auto border border-gray-200 rounded-xl bg-white shadow-md">
         <table className="min-w-full text-sm">
           <thead className="bg-gray-100 sticky top-0">
             <tr className="text-left">
               <th className="px-4 py-3 font-medium">SL No</th>
               <th className="px-4 py-3 font-medium">Full Name</th>
               <th className="px-4 py-3 font-medium">Email</th>
+              <th className="px-4 py-3 font-medium">Number</th>
               <th className="px-4 py-3 font-medium">Game</th>
             </tr>
           </thead>
@@ -91,16 +92,11 @@ export default function EsportsUsersTable() {
                 key={user.id}
                 className="border-t border-gray-200 hover:bg-gray-50 transition"
               >
-                <td className="px-4 py-3">
-                  {indexOfFirst + index + 1}
-                </td>
-                <td className="px-4 py-3">
-                  {user.full_name || "N/A"}
-                </td>
+                <td className="px-4 py-3">{indexOfFirst + index + 1}</td>
+                <td className="px-4 py-3">{user.full_name || "N/A"}</td>
                 <td className="px-4 py-3">{user.email}</td>
-                <td className="px-4 py-3">
-                  {user.primary_game || "N/A"}
-                </td>
+                <td className="px-4 py-3">{user.phone}</td>
+                <td className="px-4 py-3">{user.primary_game || "N/A"}</td>
               </tr>
             ))}
           </tbody>
