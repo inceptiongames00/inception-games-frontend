@@ -156,9 +156,10 @@ export default function Header() {
                 
               </div>
             )}
-              <Link href="#store" className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors">
+              {/* <Link href="#store" className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors">
               Store
-            </Link>
+            </Link> */}
+           
 
               <Link href="#ecosystem-games" className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors">
               Games
@@ -436,9 +437,9 @@ export default function Header() {
                 </>
               )}
 
-               <a href="#store" onClick={handleLinkClick} className="text-white text-base font-medium py-3 border-b border-purple-500/10 hover:text-purple-400 transition-colors">
+               {/* <a href="#store" onClick={handleLinkClick} className="text-white text-base font-medium py-3 border-b border-purple-500/10 hover:text-purple-400 transition-colors">
                 Store
-              </a>
+              </a> */}
 
                <a href="#ecosystem-games" onClick={handleLinkClick} className="text-white text-base font-medium py-3 border-b border-purple-500/10 hover:text-purple-400 transition-colors">
                 Games
