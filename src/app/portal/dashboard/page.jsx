@@ -1,15 +1,32 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import EsportsUsersTable from "./components/EsportsUsersTable";
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState(null);
+  const [profiles, setProfiles] = useState([]);
+
+  useEffect(() => {
+    const fetchProfiles = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/profiles`,
+        );
+        const data = await res.json();
+        setProfiles(data.profiles);
+      } catch (error) {
+        console.error("Error fetching profiles:", error);
+      }
+    };
+
+    fetchProfiles();
+  }, []);
 
   const stats = [
     {
       id: "esports-users",
       title: "Esports platform User",
-      value: "1500",
+      value: profiles.length.toString(),
       subtitle: "Active player",
     },
     {
@@ -82,7 +99,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Dynamic Content Area */}
-      {activeTab === "esports-users" && <EsportsUsersTable />}
+      {activeTab === "esports-users" && <EsportsUsersTable profiles={profiles} />}
       
       {activeTab && activeTab !== "esports-users" && (
         <div className="bg-white border border-black/10 rounded-2xl p-12 shadow-lg text-center mt-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
