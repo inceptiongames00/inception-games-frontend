@@ -17,7 +17,7 @@ export default function PortalPage() {
         <p className="text-gray-500">Access your account securely</p>
 
         <Link
-          href="/portal/login"
+          href="/kaziPortal/login"
           className="inline-block px-6 py-2 rounded-lg 
              bg-gradient-to-r from-purple-500 to-pink-500 
              text-white font-medium 

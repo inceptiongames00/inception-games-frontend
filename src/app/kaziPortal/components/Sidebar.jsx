@@ -6,10 +6,10 @@ import { usePathname } from "next/navigation";
 import { LayoutDashboard, Trophy, Crosshair, LogOut, Menu, X, MessageSquare  } from "lucide-react";
 
 const navItems = [
-  { name: "Dashboard", href: "/portal/dashboard", icon: LayoutDashboard },
-  { name: "Tournament", href: "/portal/dashboard/tournament", icon: Trophy },
-  { name: "Scrims", href: "/portal/dashboard/scrims", icon: Crosshair },
-  { name: "Send Message", href: "/portal/dashboard/SendMessages", icon: MessageSquare },
+  { name: "Dashboard", href: "/kaziPortal/dashboard", icon: LayoutDashboard },
+  { name: "Tournament", href: "/kaziPortal/dashboard/tournament", icon: Trophy },
+  { name: "Scrims", href: "/kaziPortal/dashboard/scrims", icon: Crosshair },
+  { name: "Send Message", href: "/kaziPortal/dashboard/SendMessages", icon: MessageSquare },
 ];
 
 export default function Sidebar() {
@@ -83,7 +83,7 @@ export default function Sidebar() {
 
         <div className="p-4 border-t border-black/5 mt-auto">
           <Link
-            href="/portal"
+            href="/kaziPortal"
             className="flex items-center gap-3 px-4 py-3 text-red-500/80 hover:text-red-600 hover:bg-red-50/80 rounded-xl transition-all duration-300 font-medium group"
           >
             <LogOut className="w-5 h-5 transition-transform duration-300 group-hover:-translate-x-1" />

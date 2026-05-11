@@ -22,7 +22,7 @@ export default function LoginPage() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("User Data:", form);
-    router.push("/portal/dashboard");
+    router.push("/kaziPortal/dashboard");
   };
 
   return (
