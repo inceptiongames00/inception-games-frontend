@@ -816,7 +816,7 @@ export default function UnifiedAuthModal({ isOpen, onClose, initialMode = 'login
 
           {/* Modal */}
           <motion.div
-            className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-xl mx-4 max-h-[90vh] overflow-y-auto"
+            className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-xl px-3 max-h-[90vh] overflow-y-auto"
             initial={{ scale: 0.92, opacity: 0, y: 30 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.92, opacity: 0, y: 30 }}
