@@ -13,7 +13,6 @@ export default function SendMessagesPage() {
   const [error, setError] = useState("");
   const [tournamentId, setTournamentId] = useState("");
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -23,10 +22,6 @@ export default function SendMessagesPage() {
 
     try {
       const payload = {
-        // emails: emails
-        //   .split(",")
-        //   .map((email) => email.trim())
-        //   .filter((email) => email !== ""),
         tournament_id: tournamentId,
         game_name: gameName,
         message: message,
@@ -156,56 +151,6 @@ export default function SendMessagesPage() {
             </button>
           </form>
         </div>
-
-        {/* Success Result */}
-        {/* {responseData && (
-          <div className="bg-white border rounded-2xl shadow-sm p-6">
-            <h2 className="!text-green-600 font-bold text-xl mb-4">
-              Message Sent Successfully ✅
-            </h2>
-
-            <p className="!text-black">
-              <strong className="!text-black">Total Recipients:</strong>{" "}
-              {responseData.summary.total_recipients}
-            </p>
-
-            <p className="!text-black">
-              <strong className="!text-black">Game Name:</strong>{" "}
-              {responseData.summary.game_name}
-            </p>
-
-            <p className="mb-4 !text-black">
-              <strong>Message Preview:</strong>{" "}
-              {responseData.summary.message_preview}
-            </p>
-
-            <div className="space-y-3 !text-black">
-              {responseData.sent_to.map((user) => (
-                <div
-                  key={user.message_id}
-                  className="border rounded-xl p-4"
-                >
-                  <p>
-                    <strong>Name:</strong>{" "}
-                    {user.name || "N/A"}
-                  </p>
-                  <p>
-                    <strong>Email:</strong>{" "}
-                    {user.email}
-                  </p>
-                  <p>
-                    <strong>User ID:</strong>{" "}
-                    {user.id}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            <p className="text-sm text-gray-500 mt-4">
-              Sent at: {responseData.timestamp}
-            </p>
-          </div>
-        )} */}
       </div>
     </div>
   );
