@@ -1081,23 +1081,23 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
                 <div className="absolute bottom-0 left-0 right-0 px-3 sm:px-4 py-2 sm:py-3 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-3 sm:gap-0">
                   {/* Bottom Left — Registration dates */}
                   <div className="flex flex-col gap-1 sm:gap-1.5 w-full sm:w-auto">
-                    <div className="flex items-baseline gap-1.5 sm:gap-2">
+                    {/* <div className="flex items-baseline gap-1.5 sm:gap-2">
                       <span className="text-gray-400 text-xs sm:text-sm font-medium">
                         Reg Starting:
                       </span>
                       <span className="text-white text-sm sm:text-base font-bold">
                         {formatDate(event.registrationStart)}
                       </span>
-                    </div>
+                    </div> */}
 
-                    <div className="flex items-baseline gap-1.5 sm:gap-2">
+                    {/* <div className="flex items-baseline gap-1.5 sm:gap-2">
                       <span className="text-gray-400 text-xs sm:text-sm font-medium">
                         Reg Ending:
                       </span>
                       <span className="text-white text-sm sm:text-base font-bold">
                         {formatDate(event.registrationEnd)}
                       </span>
-                    </div>
+                    </div> */}
                   </div>
 
                   {/* Bottom Right — Game name aligned with Reg Start, badges aligned with Reg End */}

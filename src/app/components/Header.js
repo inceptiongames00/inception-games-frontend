@@ -327,14 +327,14 @@ export default function Header() {
                 className="relative group px-6 py-2.5 rounded-full font-semibold text-white overflow-hidden"
               >
                 {/* Animated gradient background */}
-                <span className="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 bg-[length:200%_100%] animate-gradient-x" />
+                {/* <span className="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 bg-[length:200%_100%] animate-gradient-x" /> */}
                 {/* Glow effect */}
-                <span className="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 bg-[length:200%_100%] animate-gradient-x blur-lg opacity-50 group-hover:opacity-80 transition-opacity" />
+                {/* <span className="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 bg-[length:200%_100%] animate-gradient-x blur-lg opacity-50 group-hover:opacity-80 transition-opacity" /> */}
                 {/* Button content */}
-                <span className="relative flex items-center gap-2">
+                {/* <span className="relative flex items-center gap-2">
                   <User size={18} />
                   Login
-                </span>
+                </span> */}
               </button>
             )}
           </div>
@@ -362,8 +362,8 @@ export default function Header() {
                 onClick={handleLoginClick}
                 className="relative px-4 py-2 rounded-full font-medium text-white text-sm overflow-hidden"
               >
-                <span className="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 bg-[length:200%_100%] animate-gradient-x" />
-                <span className="relative">Login</span>
+                {/* <span className="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 bg-[length:200%_100%] animate-gradient-x" />
+                <span className="relative">Login</span> */}
               </button>
             )}
             
@@ -494,7 +494,7 @@ export default function Header() {
                       }}
                       className="block text-white/80 text-sm py-2 pl-4 hover:text-purple-400 transition-colors cursor-pointer"
                     >
-                      Games
+                      Games 
                     </a>
                     <a
                       href="#ecosystem-community"
@@ -504,7 +504,7 @@ export default function Header() {
                       }}
                       className="block text-white/80 text-sm py-2 pl-4 hover:text-purple-400 transition-colors cursor-pointer"
                     >
-                      Community
+                      Community 
                     </a>
                   </motion.div>
                 )}
