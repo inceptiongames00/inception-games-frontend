@@ -96,6 +96,42 @@ export default function Footer() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                   </svg>
                 </motion.a>
+
+                <motion.a
+  href="https://discord.gg/2UXQRQHf"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="flex items-center justify-center sm:justify-start space-x-3 text-white hover:text-gray-300 transition-colors group"
+  whileHover={{ x: 5 }}
+>
+  {/* Discord Icon */}
+  <svg
+    className="w-4 h-4 sm:w-5 sm:h-5 shrink-0"
+    fill="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path d="M20.317 4.369A19.791 19.791 0 0015.885 3c-.191.345-.404.8-.553 1.165a18.27 18.27 0 00-5.29 0A12.64 12.64 0 009.49 3a19.736 19.736 0 00-4.438 1.372C2.245 8.567 1.433 12.654 1.84 16.685a19.9 19.9 0 005.993 3.048c.48-.648.907-1.337 1.276-2.06a12.955 12.955 0 01-2.01-.963c.17-.124.337-.255.498-.39 3.877 1.823 8.09 1.823 11.92 0 .165.135.332.266.498.39a12.91 12.91 0 01-2.01.963c.37.723.797 1.412 1.276 2.06a19.86 19.86 0 005.993-3.048c.477-4.67-.814-8.72-3.957-12.316zM8.02 14.121c-1.183 0-2.157-1.085-2.157-2.418 0-1.333.955-2.418 2.157-2.418 1.211 0 2.176 1.094 2.157 2.418 0 1.333-.955 2.418-2.157 2.418zm7.974 0c-1.183 0-2.157-1.085-2.157-2.418 0-1.333.955-2.418 2.157-2.418 1.211 0 2.176 1.094 2.157 2.418 0 1.333-.946 2.418-2.157 2.418z" />
+  </svg>
+
+  <span className="text-sm sm:text-base">Discord</span>
+
+  {/* Arrow animation */}
+  <svg
+    className="w-3 h-3 sm:w-4 sm:h-4 opacity-0 group-hover:opacity-100 transition-opacity"
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M13 7l5 5m0 0l-5 5m5-5H6"
+    />
+  </svg>
+</motion.a>
+
+
               </div>
             </motion.div>
 
