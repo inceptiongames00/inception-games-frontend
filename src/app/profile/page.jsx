@@ -123,11 +123,6 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* Featured Carousel - Jobs, Career, Merch */}
-          {/* <div className="mb-8">
-            <FeaturedCarousel />
-          </div> */}
-
           {/* Events Section */}
           <div className="space-y-6">
             <EventsSection user={mergedUser} />

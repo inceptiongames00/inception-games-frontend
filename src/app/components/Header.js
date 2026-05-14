@@ -6,6 +6,8 @@ import Link from 'next/link'
 import UnifiedAuthModal from './AuthModals/UnifiedAuthModal'
 import LaunchCountdownModal from './LaunchCountdownModal'
 import { useAuth } from '../../hooks/useAuth'
+import { useHomeNavigation } from '../../hooks/useHomeNavigation'
+import { useProfileNavigation } from '../../hooks/useProfileNavigation'
 
 // Animated Gradient Profile Ring Component
 function AnimatedProfileRing({ children, size = 44 }) {
@@ -40,6 +42,8 @@ function AnimatedProfileRing({ children, size = 44 }) {
 
 export default function Header() {
   const { user, isAuthenticated, logout } = useAuth()
+  const { navigateToSection } = useHomeNavigation()
+  const { navigateToTab } = useProfileNavigation()
   const [isScrolled, setIsScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [loginModalOpen, setLoginModalOpen] = useState(false)
@@ -128,27 +132,33 @@ export default function Header() {
                       transition={{ duration: 0.15 }}
                       className="absolute left-0 top-full mt-2 w-56 bg-black/95 backdrop-blur-xl border border-white/10 rounded-xl overflow-hidden shadow-2xl"
                     >
-                      <Link
-                        href="/profile/events?category=tournament"
-                        onClick={() => setEsportsDropdownOpen(false)}
-                        className="flex items-center gap-3 px-4 py-3 text-white/80 hover:text-white hover:bg-white/5 transition-colors border-b border-white/10"
+                      <button
+                        onClick={() => {
+                          setEsportsDropdownOpen(false)
+                          navigateToTab('Tournament')
+                        }}
+                        className="w-full flex items-center gap-3 px-4 py-3 text-white/80 hover:text-white hover:bg-white/5 transition-colors border-b border-white/10 cursor-pointer"
                       >
                         <span>Tournaments</span>
-                      </Link>
-                      <Link
-                        href="/profile/events?category=scrims"
-                        onClick={() => setEsportsDropdownOpen(false)}
-                        className="flex items-center gap-3 px-4 py-3 text-white/80 hover:text-white hover:bg-white/5 transition-colors border-b border-white/10"
+                      </button>
+                      <button
+                        onClick={() => {
+                          setEsportsDropdownOpen(false)
+                          navigateToTab('Scrims')
+                        }}
+                        className="w-full flex items-center gap-3 px-4 py-3 text-white/80 hover:text-white hover:bg-white/5 transition-colors border-b border-white/10 cursor-pointer"
                       >
                         <span>Scrims</span>
-                      </Link>
-                      <Link
-                        href="/profile/events?category=brand-deal"
-                        onClick={() => setEsportsDropdownOpen(false)}
-                        className="flex items-center gap-3 px-4 py-3 text-white/80 hover:text-white hover:bg-white/5 transition-colors"
+                      </button>
+                      <button
+                        onClick={() => {
+                          setEsportsDropdownOpen(false)
+                          navigateToTab('Brand Deal')
+                        }}
+                        className="w-full flex items-center gap-3 px-4 py-3 text-white/80 hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
                       >
                         <span>Brand Deals</span>
-                      </Link>
+                      </button>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -161,17 +171,26 @@ export default function Header() {
             </Link> */}
            
 
-              <Link href="#ecosystem-games" className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors">
-              Games
-            </Link>
+              <button 
+                onClick={() => navigateToSection('ecosystem-games')}
+                className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors cursor-pointer"
+              >
+                Games
+              </button>
 
-             <Link href="#ecosystem-partners" className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors">
-              Partners
-            </Link>
+             <button 
+                onClick={() => navigateToSection('ecosystem-partners')}
+                className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors cursor-pointer"
+              >
+                Partners
+              </button>
 
-             <Link href="#ecosystem-community" className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors">
-              Community
-            </Link>
+             <button 
+                onClick={() => navigateToSection('ecosystem-community')}
+                className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors cursor-pointer"
+              >
+                Community
+              </button>
 
             {/* Ecosystem Dropdown */}
             {/* <div className="relative ecosystem-dropdown-container">
@@ -230,16 +249,22 @@ export default function Header() {
               </AnimatePresence>
             </div> */}
 
-            <Link href="#news" className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors">
+            <button 
+              onClick={() => navigateToSection('news')}
+              className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors cursor-pointer"
+            >
               News
-            </Link>
+            </button>
         
             {/* <Link href="#career" className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors">
               Career
             </Link> */}
-            <Link href="#contact" className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors">
+            <button 
+              onClick={() => navigateToSection('contact')}
+              className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors cursor-pointer"
+            >
               Contact Us
-            </Link>
+            </button>
           </nav>
 
           {/* Auth Section - Desktop */}
@@ -410,27 +435,33 @@ export default function Header() {
                         transition={{ duration: 0.2 }}
                         className="overflow-hidden"
                       >
-                        <Link
-                          href="/profile/events?category=tournament"
-                          onClick={handleLinkClick}
-                          className="block text-white/80 text-sm py-2 pl-4 hover:text-purple-400 transition-colors"
+                        <button
+                          onClick={() => {
+                            handleLinkClick()
+                            navigateToTab('Tournament')
+                          }}
+                          className="w-full block text-white/80 text-sm py-2 pl-4 hover:text-purple-400 transition-colors text-left cursor-pointer"
                         >
                           Tournaments
-                        </Link>
-                        <Link
-                          href="/profile/events?category=scrims"
-                          onClick={handleLinkClick}
-                          className="block text-white/80 text-sm py-2 pl-4 hover:text-purple-400 transition-colors"
+                        </button>
+                        <button
+                          onClick={() => {
+                            handleLinkClick()
+                            navigateToTab('Scrims')
+                          }}
+                          className="w-full block text-white/80 text-sm py-2 pl-4 hover:text-purple-400 transition-colors text-left cursor-pointer"
                         >
                           Scrims
-                        </Link>
-                        <Link
-                          href="/profile/events?category=brand-deal"
-                          onClick={handleLinkClick}
-                          className="block text-white/80 text-sm py-2 pl-4 hover:text-purple-400 transition-colors"
+                        </button>
+                        <button
+                          onClick={() => {
+                            handleLinkClick()
+                            navigateToTab('Brand Deal')
+                          }}
+                          className="w-full block text-white/80 text-sm py-2 pl-4 hover:text-purple-400 transition-colors text-left cursor-pointer"
                         >
                           Brand Deals
-                        </Link>
+                        </button>
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -441,17 +472,35 @@ export default function Header() {
                 Store
               </a> */}
 
-               <a href="#ecosystem-games" onClick={handleLinkClick} className="text-white text-base font-medium py-3 border-b border-purple-500/10 hover:text-purple-400 transition-colors">
+               <button 
+                onClick={() => {
+                  handleLinkClick()
+                  navigateToSection('ecosystem-games')
+                }} 
+                className="text-white text-base font-medium py-3 border-b border-purple-500/10 hover:text-purple-400 transition-colors w-full text-left cursor-pointer"
+              >
                 Games
-              </a>
+              </button>
 
-               <a href="#ecosystem-partners" onClick={handleLinkClick} className="text-white text-base font-medium py-3 border-b border-purple-500/10 hover:text-purple-400 transition-colors">
+               <button 
+                onClick={() => {
+                  handleLinkClick()
+                  navigateToSection('ecosystem-partners')
+                }} 
+                className="text-white text-base font-medium py-3 border-b border-purple-500/10 hover:text-purple-400 transition-colors w-full text-left cursor-pointer"
+              >
                 Partners
-              </a>
+              </button>
 
-               <a href="#ecosystem-community" onClick={handleLinkClick} className="text-white text-base font-medium py-3 border-b border-purple-500/10 hover:text-purple-400 transition-colors">
+               <button 
+                onClick={() => {
+                  handleLinkClick()
+                  navigateToSection('ecosystem-community')
+                }} 
+                className="text-white text-base font-medium py-3 border-b border-purple-500/10 hover:text-purple-400 transition-colors w-full text-left cursor-pointer"
+              >
                 Community
-              </a>
+              </button>
 
               
 
@@ -510,15 +559,33 @@ export default function Header() {
                 )}
               </AnimatePresence>
 
-              <a href="#news" onClick={handleLinkClick} className="text-white text-base font-medium py-3 border-b border-purple-500/10 hover:text-purple-400 transition-colors">
+              <button 
+                onClick={() => {
+                  handleLinkClick()
+                  navigateToSection('news')
+                }} 
+                className="text-white text-base font-medium py-3 border-b border-purple-500/10 hover:text-purple-400 transition-colors w-full text-left cursor-pointer"
+              >
                 News
-              </a>
-              <a href="#career" onClick={handleLinkClick} className="text-white text-base font-medium py-3 border-b border-purple-500/10 hover:text-purple-400 transition-colors">
+              </button>
+              <button 
+                onClick={() => {
+                  handleLinkClick()
+                  navigateToSection('career')
+                }} 
+                className="text-white text-base font-medium py-3 border-b border-purple-500/10 hover:text-purple-400 transition-colors w-full text-left cursor-pointer"
+              >
                 Career
-              </a>
-              <a href="#contact" onClick={handleLinkClick} className="text-white text-base font-medium py-3 hover:text-purple-400 transition-colors">
+              </button>
+              <button 
+                onClick={() => {
+                  handleLinkClick()
+                  navigateToSection('contact')
+                }} 
+                className="text-white text-base font-medium py-3 hover:text-purple-400 transition-colors w-full text-left cursor-pointer"
+              >
                 Contact Us
-              </a>
+              </button>
             </nav>
           </motion.div>
         )}

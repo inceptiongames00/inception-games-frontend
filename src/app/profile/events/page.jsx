@@ -142,7 +142,7 @@ function EventsPageContent() {
                   {initialFilter} Events
                 </h2>
                 <p className="text-gray-400">
-                  Browse {initialFilter.toLowerCase()} opportunities available for you
+                  Browse {initialFilter.toLowerCase()} opportunities available 
                 </p>
               </div>
             )}

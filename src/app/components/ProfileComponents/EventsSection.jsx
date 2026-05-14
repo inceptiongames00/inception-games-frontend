@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Trophy,
@@ -457,11 +457,51 @@ function EventCard({ event, onClick }) {
 // Main Events Section Component
 export default function EventsSection({ user, initialFilter = "all" }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const sectionRef = useRef(null);
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [activeFilter, setActiveFilter] = useState(initialFilter);
+  
+  // Initialize activeFilter from URL params, fallback to initialFilter
+  const [activeFilter, setActiveFilter] = useState(() => {
+    const tabParam = searchParams?.get('tab');
+    return tabParam || initialFilter;
+  });
+  
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Update activeFilter whenever URL searchParams change
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam) {
+      setActiveFilter(tabParam);
+      // Scroll to Events section after a small delay to allow state update
+      setTimeout(() => {
+        if (sectionRef.current) {
+          sectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    }
+  }, [searchParams]);
+
+  // Listen for custom event to switch tabs
+  useEffect(() => {
+    const handleTabSwitch = (event) => {
+      setActiveFilter(event.detail.tab);
+      // Scroll to Events section after a small delay
+      setTimeout(() => {
+        if (sectionRef.current) {
+          sectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    };
+
+    window.addEventListener('switchProfileTab', handleTabSwitch);
+    return () => {
+      window.removeEventListener('switchProfileTab', handleTabSwitch);
+    };
+  }, []);
 
   // Update active filter if initialFilter prop changes
   useEffect(() => {
@@ -594,6 +634,7 @@ export default function EventsSection({ user, initialFilter = "all" }) {
 
   return (
     <motion.div
+      ref={sectionRef}
       className="space-y-6"
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
