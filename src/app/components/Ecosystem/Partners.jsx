@@ -101,16 +101,16 @@ export function PartnerCard({ item, isFeatured = false }) {
       onClick={handleClick}
     >
       <a
-  href={item.link}
-  target="_blank"
-  rel="noopener noreferrer"
-  style={{
-    height: "80%",
-    position: "relative",
-    textDecoration: "none",
-    display: "block",
-  }}
->
+        href={item.link}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          height: isFeatured ? "65%" : "80%",
+          position: "relative",
+          textDecoration: "none",
+          display: "block",
+        }}
+      >
         <div
           style={{
             position: "relative",
@@ -155,21 +155,21 @@ export function PartnerCard({ item, isFeatured = false }) {
       </a>
 
       <div
-  style={{
-    height: "20%",
-    padding: "0.75rem",
-    textAlign: "center",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    background: "#111",
-  }}
->
+        style={{
+          // height: isFeatured ? "35%" : "20%",
+          padding: isFeatured ? "1rem" : "0.75rem",
+          textAlign: "center",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "#111",
+        }}
+      >
         <p
           style={{
             color: "#fff",
             margin: 0,
-            fontSize: "0.85rem",
+            fontSize: isFeatured ? "0.95rem" : "0.85rem",
             lineHeight: 1.4,
           }}
         >

@@ -109,63 +109,73 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8">
-            {/* E-Sports Dropdown - Only visible when authenticated */}
-            {isAuthenticated && (
-              <div className="relative esports-dropdown-container">
-                <button
-                  onClick={() => setEsportsDropdownOpen(!esportsDropdownOpen)}
-                  className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors flex items-center gap-1"
-                >
-                  E-Sports
-                  <ChevronDown 
-                    size={16} 
-                    className={`transition-transform duration-200 ${esportsDropdownOpen ? 'rotate-180' : ''}`} 
-                  />
-                </button>
+            {/* E-Sports Dropdown - Visible for all users */}
+            <div className="relative esports-dropdown-container">
+              <button
+                onClick={() => setEsportsDropdownOpen(!esportsDropdownOpen)}
+                className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors flex items-center gap-1"
+              >
+                E-Sports
+                <ChevronDown 
+                  size={16} 
+                  className={`transition-transform duration-200 ${esportsDropdownOpen ? 'rotate-180' : ''}`} 
+                />
+              </button>
 
-                <AnimatePresence>
-                  {esportsDropdownOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                      transition={{ duration: 0.15 }}
-                      className="absolute left-0 top-full mt-2 w-56 bg-black/95 backdrop-blur-xl border border-white/10 rounded-xl overflow-hidden shadow-2xl"
-                    >
-                      <button
-                        onClick={() => {
-                          setEsportsDropdownOpen(false)
+              <AnimatePresence>
+                {esportsDropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute left-0 top-full mt-2 w-56 bg-black/95 backdrop-blur-xl border border-white/10 rounded-xl overflow-hidden shadow-2xl"
+                  >
+                    <button
+                      onClick={() => {
+                        setEsportsDropdownOpen(false)
+                        if (isAuthenticated) {
                           navigateToTab('Tournament')
-                        }}
-                        className="w-full flex items-center gap-3 px-4 py-3 text-white/80 hover:text-white hover:bg-white/5 transition-colors border-b border-white/10 cursor-pointer"
-                      >
-                        <span>Tournaments</span>
-                      </button>
-                      <button
-                        onClick={() => {
-                          setEsportsDropdownOpen(false)
+                        } else {
+                          setLoginModalOpen(true)
+                        }
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-3 text-white/80 hover:text-white hover:bg-white/5 transition-colors border-b border-white/10 cursor-pointer"
+                    >
+                      <span>Tournaments</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        setEsportsDropdownOpen(false)
+                        if (isAuthenticated) {
                           navigateToTab('Scrims')
-                        }}
-                        className="w-full flex items-center gap-3 px-4 py-3 text-white/80 hover:text-white hover:bg-white/5 transition-colors border-b border-white/10 cursor-pointer"
-                      >
-                        <span>Scrims</span>
-                      </button>
-                      <button
-                        onClick={() => {
-                          setEsportsDropdownOpen(false)
+                        } else {
+                          setLoginModalOpen(true)
+                        }
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-3 text-white/80 hover:text-white hover:bg-white/5 transition-colors border-b border-white/10 cursor-pointer"
+                    >
+                      <span>Scrims</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        setEsportsDropdownOpen(false)
+                        if (isAuthenticated) {
                           navigateToTab('Brand Deal')
-                        }}
-                        className="w-full flex items-center gap-3 px-4 py-3 text-white/80 hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
-                      >
-                        <span>Brand Deals</span>
-                      </button>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                        } else {
+                          setLoginModalOpen(true)
+                        }
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-3 text-white/80 hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
+                    >
+                      <span>Brand Deals</span>
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
-                
-              </div>
-            )}
+              
+            </div>
               {/* <Link href="#store" className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors">
               Store
             </Link> */}
@@ -268,84 +278,84 @@ export default function Header() {
           </nav>
 
           {/* Auth Section - Desktop */}
-          <div className="hidden lg:flex items-center gap-3 flex-shrink-0">
+          <div className="hidden lg:flex items-center gap-4 flex-shrink-0">
             {isAuthenticated && user ? (
-              <div className="relative profile-dropdown-container">
-                <button
-                  onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-                  className="flex items-center gap-2 group"
+              <>
+                {/* My Profile Link - Outside dropdown */}
+                <Link 
+                  href="/profile" 
+                  className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors flex items-center gap-2"
                 >
-                  <AnimatedProfileRing size={44}>
-                    {user.avatar ? (
-                      <img 
-                        src={user.avatar} 
-                        alt={user.fullName || user.username || 'Profile'} 
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-purple-600 to-pink-500 flex items-center justify-center">
-                        <User size={20} className="text-white" />
-                      </div>
-                    )}
-                  </AnimatedProfileRing>
-                  <ChevronDown 
-                    size={16} 
-                    className={`text-white/70 transition-transform duration-200 ${profileDropdownOpen ? 'rotate-180' : ''}`} 
-                  />
-                </button>
+                  <User size={18} />
+                  <span>My Profile</span>
+                </Link>
 
-                {/* Dropdown Menu */}
-                <AnimatePresence>
-                  {profileDropdownOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                      transition={{ duration: 0.15 }}
-                      className="absolute right-0 top-full mt-2 w-64 bg-black/95 backdrop-blur-xl border border-white/10 rounded-xl overflow-hidden shadow-2xl"
-                    >
-                      {/* User Info */}
-                      <div className="p-4 border-b border-white/10">
-                        <p className="text-white font-semibold truncate">
-                          {user.fullName || user.username || 'Gamer'}
-                        </p>
-                        <p className="text-white/50 text-sm truncate">{user.email}</p>
-                      </div>
-                      
-                      {/* Menu Items */}
-                      <div className="py-2">
-                        <Link 
-                          href="/profile" 
-                          onClick={() => setProfileDropdownOpen(false)}
-                          className="flex items-center gap-3 px-4 py-3 text-white/80 hover:text-white hover:bg-white/5 transition-colors"
-                        >
-                          <User size={18} />
-                          <span>My Profile</span>
-                        </Link>
-                        <Link 
-                          href="/settings" 
-                          onClick={() => setProfileDropdownOpen(false)}
-                          className="flex items-center gap-3 px-4 py-3 text-white/80 hover:text-white hover:bg-white/5 transition-colors"
-                        >
-                          <Settings size={18} />
-                          <span>Settings</span>
-                        </Link>
-                      </div>
-                      
-                      {/* Logout */}
-                      <div className="border-t border-white/10 py-2">
-                        <button 
-                          onClick={handleLogout}
-                          className="flex items-center gap-3 px-4 py-3 w-full text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors"
-                        >
-                          <LogOut size={18} />
-                          <span>Logout</span>
-                        </button>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
+                {/* Profile Avatar Dropdown - Settings and logout */}
+                <div className="relative profile-dropdown-container">
+                  <button
+                    onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
+                    className="flex items-center gap-2 group"
+                  >
+                    <AnimatedProfileRing size={44}>
+                      {user.avatar ? (
+                        <img 
+                          src={user.avatar} 
+                          alt={user.fullName || user.username || 'Profile'} 
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-purple-600 to-pink-500 flex items-center justify-center">
+                          <User size={20} className="text-white" />
+                        </div>
+                      )}
+                    </AnimatedProfileRing>
+                  </button>
+
+                  {/* Dropdown Menu - User info, settings, and logout */}
+                  <AnimatePresence>
+                    {profileDropdownOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute right-0 top-full mt-2 w-64 bg-black/95 backdrop-blur-xl border border-white/10 rounded-xl overflow-hidden shadow-2xl"
+                      >
+                        {/* User Info */}
+                        <div className="p-4 border-b border-white/10">
+                          <p className="text-white font-semibold truncate">
+                            {user.fullName || user.username || 'Gamer'}
+                          </p>
+                          <p className="text-white/50 text-sm truncate">{user.email}</p>
+                        </div>
+                        
+                        {/* Settings */}
+                        <div className="py-2 border-b border-white/10">
+                          <Link 
+                            href="/settings" 
+                            onClick={() => setProfileDropdownOpen(false)}
+                            className="flex items-center gap-3 px-4 py-3 text-white/80 hover:text-white hover:bg-white/5 transition-colors"
+                          >
+                            <Settings size={18} />
+                            <span>Settings</span>
+                          </Link>
+                        </div>
+                        
+                        {/* Logout */}
+                        <div className="py-2">
+                          <button 
+                            onClick={handleLogout}
+                            className="flex items-center gap-3 px-4 py-3 w-full text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors"
+                          >
+                            <LogOut size={18} />
+                            <span>Logout</span>
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </>
             ) : (
               <button
                 onClick={handleLoginClick}
@@ -413,60 +423,68 @@ export default function Header() {
             transition={{ duration: 0.2 }}
           >
             <nav className="flex flex-col p-4 sm:p-6">
-              {/* E-Sports Mobile - Only visible when authenticated */}
-              {isAuthenticated && (
-                <>
-                  <button
-                    onClick={() => setEsportsDropdownOpen(!esportsDropdownOpen)}
-                    className="text-white text-base font-medium py-3 border-b border-purple-500/10 hover:text-purple-400 transition-colors flex items-center justify-between w-full"
+              {/* E-Sports Mobile - Visible for all users */}
+              <button
+                onClick={() => setEsportsDropdownOpen(!esportsDropdownOpen)}
+                className="text-white text-base font-medium py-3 border-b border-purple-500/10 hover:text-purple-400 transition-colors flex items-center justify-between w-full"
+              >
+                E-Sports
+                <ChevronDown 
+                  size={16} 
+                  className={`transition-transform duration-200 ${esportsDropdownOpen ? 'rotate-180' : ''}`} 
+                />
+              </button>
+              <AnimatePresence>
+                {esportsDropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="overflow-hidden"
                   >
-                    E-Sports
-                    <ChevronDown 
-                      size={16} 
-                      className={`transition-transform duration-200 ${esportsDropdownOpen ? 'rotate-180' : ''}`} 
-                    />
-                  </button>
-                  <AnimatePresence>
-                    {esportsDropdownOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="overflow-hidden"
-                      >
-                        <button
-                          onClick={() => {
-                            handleLinkClick()
-                            navigateToTab('Tournament')
-                          }}
-                          className="w-full block text-white/80 text-sm py-2 pl-4 hover:text-purple-400 transition-colors text-left cursor-pointer"
-                        >
-                          Tournaments
-                        </button>
-                        <button
-                          onClick={() => {
-                            handleLinkClick()
-                            navigateToTab('Scrims')
-                          }}
-                          className="w-full block text-white/80 text-sm py-2 pl-4 hover:text-purple-400 transition-colors text-left cursor-pointer"
-                        >
-                          Scrims
-                        </button>
-                        <button
-                          onClick={() => {
-                            handleLinkClick()
-                            navigateToTab('Brand Deal')
-                          }}
-                          className="w-full block text-white/80 text-sm py-2 pl-4 hover:text-purple-400 transition-colors text-left cursor-pointer"
-                        >
-                          Brand Deals
-                        </button>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </>
-              )}
+                    <button
+                      onClick={() => {
+                        handleLinkClick()
+                        if (isAuthenticated) {
+                          navigateToTab('Tournament')
+                        } else {
+                          setLoginModalOpen(true)
+                        }
+                      }}
+                      className="w-full block text-white/80 text-sm py-2 pl-4 hover:text-purple-400 transition-colors text-left cursor-pointer"
+                    >
+                      Tournaments
+                    </button>
+                    <button
+                      onClick={() => {
+                        handleLinkClick()
+                        if (isAuthenticated) {
+                          navigateToTab('Scrims')
+                        } else {
+                          setLoginModalOpen(true)
+                        }
+                      }}
+                      className="w-full block text-white/80 text-sm py-2 pl-4 hover:text-purple-400 transition-colors text-left cursor-pointer"
+                    >
+                      Scrims
+                    </button>
+                    <button
+                      onClick={() => {
+                        handleLinkClick()
+                        if (isAuthenticated) {
+                          navigateToTab('Brand Deal')
+                        } else {
+                          setLoginModalOpen(true)
+                        }
+                      }}
+                      className="w-full block text-white/80 text-sm py-2 pl-4 hover:text-purple-400 transition-colors text-left cursor-pointer"
+                    >
+                      Brand Deals
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
                {/* <a href="#store" onClick={handleLinkClick} className="text-white text-base font-medium py-3 border-b border-purple-500/10 hover:text-purple-400 transition-colors">
                 Store

@@ -159,9 +159,9 @@ function CarouselSection({ tabKey }) {
         </button>
 
         <div
-          className="relative w-full flex items-center justify-center overflow-hidden"
+          className="relative w-full flex items-start md:items-center justify-start md:justify-center overflow-hidden px-2"
           style={{ 
-            height: isMobile ? "340px" : "520px",
+            height: isMobile ? "520px" : "520px",
             maxWidth: "100vw"
           }}
           onMouseEnter={() => setIsHovered(true)}
@@ -210,7 +210,7 @@ function CarouselSection({ tabKey }) {
       </div>
 
       {/* Dots */}
-      <div className="flex justify-center gap-1 sm:gap-2 mt-4 sm:mt-6">
+      {/* <div className="flex justify-center gap-1 sm:gap-2 mt-4 sm:mt-6">
         {items.map((_, i) => (
           <button
             key={i}
@@ -222,7 +222,7 @@ function CarouselSection({ tabKey }) {
             }`}
           />
         ))}
-      </div>
+      </div> */}
     </div>
   );
 }

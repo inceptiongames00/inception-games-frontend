@@ -29,6 +29,48 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
     if (showShareMenu) document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
   }, [showShareMenu]);
+
+  // Inject Open Graph meta tags for social sharing
+  useEffect(() => {
+    if (!user) return;
+
+    const playerName = user?.fullName || user?.username || 'Player';
+    const playerTag = user?.username || 'player';
+    const primaryGame = user?.primaryGame || user?.game || 'Gaming';
+    const rank = user?.rank || 'Player';
+    const avatar = user?.avatar || '';
+
+    // Build OG image URL with player data
+    const ogImageParams = new URLSearchParams({
+      name: playerName,
+      tag: playerTag,
+      game: primaryGame,
+      rank: rank,
+      ...(avatar && { avatar }),
+    });
+    const ogImageUrl = `/api/og/profile?${ogImageParams.toString()}`;
+
+    // Update meta tags
+    const updateMetaTag = (name, content) => {
+      let tag = document.querySelector(`meta[property="${name}"]`) || document.querySelector(`meta[name="${name}"]`);
+      if (!tag) {
+        tag = document.createElement('meta');
+        tag.setAttribute(name.startsWith('og:') ? 'property' : 'name', name);
+        document.head.appendChild(tag);
+      }
+      tag.content = content;
+    };
+
+    updateMetaTag('og:title', `${playerName} - Inception Games Profile`);
+    updateMetaTag('og:description', `Check out ${playerName}'s esports profile on Inception Games. ${primaryGame} player with ${rank} rank.`);
+    updateMetaTag('og:image', ogImageUrl);
+    updateMetaTag('og:type', 'profile');
+    updateMetaTag('twitter:card', 'summary_large_image');
+    updateMetaTag('twitter:title', `${playerName} - Inception Games`);
+    updateMetaTag('twitter:description', `${playerName}'s esports profile on Inception Games`);
+    updateMetaTag('twitter:image', ogImageUrl);
+
+  }, [user]);
   const initials = (user?.fullName || user?.username || "P")
     .split(" ")
     .map((w) => w[0])
