@@ -41,7 +41,7 @@ import UpcomingEvents from "./components/UpcomingEvents";
 import LatestNews from "./components/LatestNews";
 import ContactSection from "./components/ContactSection";
 import Footer from "./components/Footer";
-import AllGamesLoop from "./components/AllGamesLoop";
+// import AllGamesLoop from "./components/AllGamesLoop";
 import Ecosystem from "../../src/app/components/Ecosystem/Ecosystem.jsx";
 import Image from "next/image";
 import UnifiedAuthModal from "./components/AuthModals/UnifiedAuthModal";
@@ -657,7 +657,7 @@ function HomeContent() {
       {/* <HeroSection /> */}
       {/* <ComingSoon/> */}
       {/* <TournamentCarousel /> */}
-      <AllGamesLoop />
+      {/* <AllGamesLoop /> */}
       <TrustedBrands />
       <Ecosystem />
       {/* <ShowcaseCarousel /> */}

@@ -455,7 +455,7 @@ function EventCard({ event, onClick }) {
 }
 
 // Main Events Section Component
-export default function EventsSection({ user, initialFilter = "all" }) {
+export default function EventsSection({ user, initialFilter = "all", routePrefix = "/profile" }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const sectionRef = useRef(null);
@@ -629,7 +629,7 @@ export default function EventsSection({ user, initialFilter = "all" }) {
 
   const handleEventClick = (event) => {
     // Navigate to event detail page with actual event ID
-    router.push(`/profile/events/${event.id}`);
+    router.push(`${routePrefix}/events/${event.id}`);
   };
 
   return (
