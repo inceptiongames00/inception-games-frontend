@@ -1,155 +1,186 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { motion } from "framer-motion";
-import { X, Loader2, Eye, EyeOff } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
-import { API, setTokens, setStoredUser, getTokens } from "@/lib/api";
+import { X, Loader2, ChevronRight } from "lucide-react";
+import { AuthContext } from "@/app/context/AuthContext";
+import { API, setTokens, setStoredUser } from "@/lib/api";
 
 export default function CombinedSignupJoinForm({ event, isOpen, onClose, isAuthenticated }) {
-  const { user } = useAuth();
-  const [step, setStep] = useState("form"); // 'form', 'loading', 'success'
+  const { user } = useContext(AuthContext);
+  const [step, setStep] = useState("email"); // 'email', 'otp', 'personalInfo', 'success'
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  
+  // Multi-step form data
+  const [email, setEmail] = useState(user?.email || "");
+  const [phone, setPhone] = useState(user?.phone || "");
+  const [otp, setOtp] = useState("");
+  const [fullName, setFullName] = useState(user?.fullName || "");
+  const [username, setUsername] = useState(user?.username || "");
 
-  // Form state for non-authenticated users
-  const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    phone: "",
-    password: "",
-    passwordConfirm: "",
-    gamingProfile: "",
-  });
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    setError("");
-  };
-
-  const validateForm = () => {
-    if (!formData.fullName.trim()) {
-      setError("Full name is required");
-      return false;
-    }
-    if (!formData.email.trim()) {
-      setError("Email is required");
-      return false;
-    }
-    if (!formData.email.includes("@")) {
-      setError("Please enter a valid email");
-      return false;
-    }
-    if (!formData.phone.trim()) {
-      setError("Phone number is required");
-      return false;
-    }
-    if (!formData.password) {
-      setError("Password is required");
-      return false;
-    }
-    if (formData.password.length < 6) {
-      setError("Password must be at least 6 characters");
-      return false;
-    }
-    if (formData.password !== formData.passwordConfirm) {
-      setError("Passwords do not match");
-      return false;
-    }
-    return true;
-  };
-
-  const handleSignupAndJoin = async (e) => {
+  // Step 1: Send OTP via email
+  const handleSendOTP = async (e) => {
     e.preventDefault();
-
-    if (!validateForm()) return;
-
+    if (!email.trim() || !email.includes("@")) {
+      setError("Please enter a valid email");
+      return;
+    }
+    
     setLoading(true);
-    setStep("loading");
     setError("");
-
     try {
-      // Step 1: Register user
-      const signupRes = await fetch(API.REGISTER_PERSONAL_INFO, {
+      const res = await fetch(API.REGISTER_SEND_OTP, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          fullName: formData.fullName,
-          email: formData.email,
-          phoneNumber: formData.phone,
-          password: formData.password,
-          // Optional fields
-          gamingProfile: formData.gamingProfile || formData.fullName,
+        body: JSON.stringify({ 
+          email: email.trim(),
+          ...(phone && { phone })
         }),
       });
-
-      if (!signupRes.ok) {
-        const errorData = await signupRes.json();
-        throw new Error(errorData.message || "Signup failed");
-      }
-
-      const signupData = await signupRes.json();
       
-      // Extract tokens from response (handle various API response formats)
-      const userData = signupData.data || signupData.user || {};
-      const accessToken = signupData.data?.accessToken || 
-                         signupData.accessToken || 
-                         signupData.token ||
-                         userData.accessToken ||
-                         "";
-      
-      const refreshToken = signupData.data?.refreshToken || 
-                          signupData.refreshToken || 
-                          userData.refreshToken ||
-                          "";
-
-      // Store tokens and user data
-      if (accessToken) {
-        setTokens({
-          accessToken,
-          refreshToken: refreshToken || "",
-        });
-        setStoredUser(userData);
-
-        // Step 2: Join event
-        const joinRes = await fetch(API.EVENT_SIGNUP, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-          body: JSON.stringify({
-            eventId: event.id,
-            userId: userData.id || userData.userId,
-          }),
-        });
-
-        if (!joinRes.ok) {
-          console.warn("Event join request returned non-ok status, but signup was successful");
-          // Don't throw error here - user is registered even if event join had issues
-        }
-
-        // Success!
-        setStep("success");
-        setTimeout(() => {
-          onClose?.();
-          // Optionally redirect to event or profile
-          window.location.href = "/profile";
-        }, 2000);
-      } else {
-        throw new Error("No access token received from signup");
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || data.message || "Failed to send OTP");
       }
+      setStep("otp");
     } catch (err) {
-      console.error("Signup/Join error:", err);
-      setError(err.message || "Failed to complete signup and event registration");
-      setStep("form");
+      console.error("Send OTP error:", err);
+      setError(err.message || "Failed to send OTP. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
+  // Step 2: Verify OTP
+  const handleVerifyOTP = async (e) => {
+    e.preventDefault();
+    if (!otp.trim()) {
+      setError("Please enter the OTP");
+      return;
+    }
+    
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch(API.REGISTER_VERIFY_OTP, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          email: email.trim(),
+          otp: otp.trim()
+        }),
+      });
+      
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || data.message || "Invalid OTP");
+      }
+      
+      // Store userId in sessionStorage for next step
+      if (data.userId) {
+        sessionStorage.setItem("temp_userId", data.userId);
+      }
+      
+      setStep("personalInfo");
+    } catch (err) {
+      console.error("Verify OTP error:", err);
+      setError(err.message || "Invalid OTP. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Step 3: Save personal info and join event
+  const handleSavePersonalInfo = async (e) => {
+    e.preventDefault();
+    
+    if (!fullName.trim()) {
+      setError("Full name is required");
+      return;
+    }
+    if (!username.trim()) {
+      setError("Username is required");
+      return;
+    }
+    
+    setLoading(true);
+    setError("");
+    
+    try {
+      // Save personal info
+      const personalRes = await fetch(API.REGISTER_PERSONAL_INFO, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: email.trim(),
+          full_name: fullName.trim(),
+          username: username.trim(),
+        }),
+      });
+      
+      if (!personalRes.ok) {
+        const errorData = await personalRes.json();
+        throw new Error(errorData.error || errorData.message || "Failed to save personal info");
+      }
+      
+      // Get userId from sessionStorage
+      const userId = sessionStorage.getItem("temp_userId");
+      
+      // Create session token since API uses email-based auth
+      const accessToken = `email-otp-auth:${email.trim()}`;
+      const tokens = {
+        accessToken,
+        refreshToken: "",
+        email: email.trim(),
+      };
+      
+      const userObj = {
+        id: userId || `user_${Date.now()}`,
+        email: email.trim(),
+        fullName: fullName.trim(),
+        username: username.trim(),
+        phone: phone || "",
+        authMethod: "email",
+      };
+      
+      setTokens(tokens);
+      setStoredUser(userObj);
+      
+      // Now join the event
+      const joinRes = await fetch(API.EVENT_SIGNUP, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          eventId: event?.id,
+          userId: userId || userObj.id,
+        }),
+      });
+      
+      if (!joinRes.ok) {
+        console.warn("Event join had issues but signup was successful");
+      }
+      
+      // Clean up
+      sessionStorage.removeItem("temp_userId");
+      setStep("success");
+      
+      setTimeout(() => {
+        onClose?.();
+        window.location.href = "/profile";
+      }, 2000);
+    } catch (err) {
+      console.error("Save personal info error:", err);
+      setError(err.message || "Failed to complete registration");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // For authenticated users: join event directly
   const handleJoinEvent = async (e) => {
     e.preventDefault();
     
@@ -159,19 +190,18 @@ export default function CombinedSignupJoinForm({ event, isOpen, onClose, isAuthe
     }
 
     setLoading(true);
-    setStep("loading");
     setError("");
 
     try {
-      const tokens = getTokens();
+      const accessToken = localStorage.getItem("accessToken");
       const res = await fetch(API.EVENT_SIGNUP, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${tokens?.accessToken}`,
+          Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify({
-          eventId: event.id,
+          eventId: event?.id,
           userId: user?.id || user?.userId,
         }),
       });
@@ -188,7 +218,6 @@ export default function CombinedSignupJoinForm({ event, isOpen, onClose, isAuthe
     } catch (err) {
       console.error("Join event error:", err);
       setError(err.message || "Failed to join event");
-      setStep("form");
     } finally {
       setLoading(false);
     }
@@ -222,6 +251,7 @@ export default function CombinedSignupJoinForm({ event, isOpen, onClose, isAuthe
 
         {/* Content */}
         <div className="p-6">
+          {/* Success State */}
           {step === "success" && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -241,7 +271,8 @@ export default function CombinedSignupJoinForm({ event, isOpen, onClose, isAuthe
             </motion.div>
           )}
 
-          {step === "loading" && (
+          {/* Loading State */}
+          {loading && step !== "success" && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -252,150 +283,216 @@ export default function CombinedSignupJoinForm({ event, isOpen, onClose, isAuthe
             </motion.div>
           )}
 
-          {step === "form" && (
-            <form onSubmit={isAuthenticated ? handleJoinEvent : handleSignupAndJoin}>
-              {/* Non-authenticated user form */}
-              {!isAuthenticated && (
-                <>
-                  {/* Full Name */}
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Full Name *
-                    </label>
-                    <input
-                      type="text"
-                      name="fullName"
-                      value={formData.fullName}
-                      onChange={handleInputChange}
-                      placeholder="Enter your full name"
-                      className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition-colors"
-                      disabled={loading}
-                    />
-                  </div>
+          {/* Authenticated User - Simple Join */}
+          {isAuthenticated && step !== "success" && !loading && (
+            <form onSubmit={handleJoinEvent}>
+              <p className="text-gray-300 mb-6">
+                Welcome back, {user?.fullName || "Player"}! Click below to join this event.
+              </p>
+              {error && (
+                <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-300 text-sm">
+                  {error}
+                </div>
+              )}
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full py-3 px-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-all hover:shadow-lg hover:shadow-purple-500/30"
+              >
+                Join Event
+              </button>
+            </form>
+          )}
 
-                  {/* Email */}
+          {/* Non-Authenticated User - Multi-Step Form */}
+          {!isAuthenticated && step !== "success" && !loading && (
+            <>
+              {/* Step 1: Email & Phone */}
+              {step === "email" && (
+                <form onSubmit={handleSendOTP}>
                   <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-300 mb-2">
                       Email Address *
                     </label>
                     <input
                       type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
+                      value={email}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                        setError("");
+                      }}
                       placeholder="Enter your email"
                       className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition-colors"
                       disabled={loading}
                     />
                   </div>
 
-                  {/* Phone */}
-                  <div className="mb-4">
+                  <div className="mb-6">
                     <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Phone Number *
+                      Phone Number (Optional)
                     </label>
                     <input
                       type="tel"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
                       placeholder="Enter your phone number"
                       className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition-colors"
                       disabled={loading}
                     />
                   </div>
 
-                  {/* Password */}
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Password *
-                    </label>
-                    <div className="relative">
-                      <input
-                        type={showPassword ? "text" : "password"}
-                        name="password"
-                        value={formData.password}
-                        onChange={handleInputChange}
-                        placeholder="Enter password (min 6 characters)"
-                        className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition-colors"
-                        disabled={loading}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300"
-                      >
-                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                      </button>
+                  {error && (
+                    <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-300 text-sm">
+                      {error}
                     </div>
-                  </div>
+                  )}
 
-                  {/* Confirm Password */}
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Confirm Password *
-                    </label>
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      name="passwordConfirm"
-                      value={formData.passwordConfirm}
-                      onChange={handleInputChange}
-                      placeholder="Confirm password"
-                      className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition-colors"
-                      disabled={loading}
-                    />
-                  </div>
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full py-3 px-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-all hover:shadow-lg hover:shadow-purple-500/30 flex items-center justify-center gap-2"
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 size={18} className="animate-spin" />
+                        Sending OTP...
+                      </>
+                    ) : (
+                      <>
+                        Send OTP
+                        <ChevronRight size={18} />
+                      </>
+                    )}
+                  </button>
+                </form>
+              )}
 
-                  {/* Gaming Profile (Optional) */}
+              {/* Step 2: OTP Verification */}
+              {step === "otp" && (
+                <form onSubmit={handleVerifyOTP}>
+                  <p className="text-gray-300 mb-4 text-sm">
+                    Enter the OTP sent to {email}
+                  </p>
+                  
                   <div className="mb-6">
                     <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Gaming Profile / IGN (Optional)
+                      OTP Code *
                     </label>
                     <input
                       type="text"
-                      name="gamingProfile"
-                      value={formData.gamingProfile}
-                      onChange={handleInputChange}
-                      placeholder="Your gaming username"
+                      value={otp}
+                      onChange={(e) => {
+                        setOtp(e.target.value);
+                        setError("");
+                      }}
+                      placeholder="Enter 6-digit OTP"
+                      className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition-colors text-center text-2xl tracking-widest"
+                      disabled={loading}
+                    />
+                  </div>
+
+                  {error && (
+                    <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-300 text-sm">
+                      {error}
+                    </div>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full py-3 px-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-all hover:shadow-lg hover:shadow-purple-500/30 flex items-center justify-center gap-2"
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 size={18} className="animate-spin" />
+                        Verifying...
+                      </>
+                    ) : (
+                      <>
+                        Verify OTP
+                        <ChevronRight size={18} />
+                      </>
+                    )}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setStep("email");
+                      setOtp("");
+                      setError("");
+                    }}
+                    className="w-full mt-3 py-2 px-4 text-purple-400 hover:text-purple-300 font-medium transition-colors"
+                  >
+                    Back to Email
+                  </button>
+                </form>
+              )}
+
+              {/* Step 3: Personal Information */}
+              {step === "personalInfo" && (
+                <form onSubmit={handleSavePersonalInfo}>
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Full Name *
+                    </label>
+                    <input
+                      type="text"
+                      value={fullName}
+                      onChange={(e) => {
+                        setFullName(e.target.value);
+                        setError("");
+                      }}
+                      placeholder="Enter your full name"
                       className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition-colors"
                       disabled={loading}
                     />
                   </div>
-                </>
-              )}
 
-              {/* Error Message */}
-              {error && (
-                <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-300 text-sm">
-                  {error}
-                </div>
-              )}
+                  <div className="mb-6">
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Username *
+                    </label>
+                    <input
+                      type="text"
+                      value={username}
+                      onChange={(e) => {
+                        setUsername(e.target.value);
+                        setError("");
+                      }}
+                      placeholder="Choose your username"
+                      className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition-colors"
+                      disabled={loading}
+                    />
+                  </div>
 
-              {/* Submit Button */}
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full py-3 px-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-all hover:shadow-lg hover:shadow-purple-500/30"
-              >
-                {loading ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <Loader2 size={18} className="animate-spin" />
-                    Processing...
-                  </span>
-                ) : isAuthenticated ? (
-                  "Join Event"
-                ) : (
-                  "Create Account & Join Event"
-                )}
-              </button>
+                  {error && (
+                    <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-300 text-sm">
+                      {error}
+                    </div>
+                  )}
 
-              {/* Terms */}
-              {!isAuthenticated && (
-                <p className="text-xs text-gray-500 text-center mt-4">
-                  By signing up, you agree to our Terms of Service and Privacy Policy
-                </p>
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full py-3 px-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-all hover:shadow-lg hover:shadow-purple-500/30"
+                  >
+                    {loading ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <Loader2 size={18} className="animate-spin" />
+                        Creating Account & Joining...
+                      </span>
+                    ) : (
+                      "Create Account & Join Event"
+                    )}
+                  </button>
+
+                  <p className="text-xs text-gray-500 text-center mt-4">
+                    By signing up, you agree to our Terms of Service and Privacy Policy
+                  </p>
+                </form>
               )}
-            </form>
+            </>
           )}
         </div>
       </motion.div>
