@@ -26,102 +26,128 @@ export default function SharePreview({ event }) {
   const getEventType = () => event?.eventType || 'Event';
 
   const handleDownloadImage = async () => {
+    if (!previewRef.current) return;
     setIsGenerating(true);
 
     try {
-      // Generate a clean SVG-based image that's more reliable than html2canvas
-      const width = 1200;
-      const height = 1000;
-      
-      const svg = `
-        <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1" />
-              <stop offset="50%" style="stop-color:#0c0c12;stop-opacity:1" />
-              <stop offset="100%" style="stop-color:#16213e;stop-opacity:1" />
-            </linearGradient>
-            <linearGradient id="btnGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style="stop-color:#d946ef;stop-opacity:1" />
-              <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
-            </linearGradient>
-          </defs>
-          
-          <!-- Background -->
-          <rect width="${width}" height="${height}" fill="url(#bgGrad)"/>
-          
-          <!-- Brand -->
-          <text x="60" y="80" font-size="24" font-weight="bold" fill="#9333ea" font-family="Arial">
-            INCEPTION GAMES
-          </text>
-          
-          <!-- Title -->
-          <text x="60" y="160" font-size="54" font-weight="900" fill="#ffffff" font-family="Arial" text-anchor="start">
-            <tspan x="60" dy="0">${getEventTitle()}</tspan>
-          </text>
-          
-          <!-- Game Badge -->
-          <rect x="${width - 200}" y="60" width="140" height="100" rx="12" fill="#d946ef" opacity="0.2" stroke="#d946ef" stroke-width="2"/>
-          <text x="${width - 130}" y="125" font-size="20" font-weight="bold" fill="#d946ef" font-family="Arial" text-anchor="middle">
-            ${getEventGame()}
-          </text>
-          
-          <!-- Event Details -->
-          <text x="60" y="280" font-size="18" fill="#a78bfa" font-family="Arial">
-            📅 ${eventDate} at ${eventTime}
-          </text>
-          <text x="60" y="330" font-size="18" fill="#a78bfa" font-family="Arial">
-            📍 ${getEventRegion()}
-          </text>
-          <text x="60" y="380" font-size="18" fill="#a78bfa" font-family="Arial">
-            🎮 ${getEventType()}
-          </text>
-          
-          <!-- Register Button Background -->
-          <rect x="60" y="450" width="${width - 120}" height="100" rx="12" fill="url(#btnGrad)"/>
-          <text x="${width / 2}" y="510" font-size="36" font-weight="bold" fill="#ffffff" font-family="Arial" text-anchor="middle">
-            Register Now
-          </text>
-          <text x="${width / 2}" y="545" font-size="16" fill="#ffffff" font-family="Arial" text-anchor="middle">
-            inception-games.com
-          </text>
-          
-          <!-- Footer -->
-          <text x="60" y="${height - 40}" font-size="14" fill="#6b7280" font-family="Arial">
-            Share this amazing esports event • Follow Inception Games
-          </text>
-        </svg>
-      `;
-
-      const blob = new Blob([svg], { type: 'image/svg+xml' });
-      const url = URL.createObjectURL(blob);
-      
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `${event?.title || 'event'}-share.svg`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-
-      Swal.fire({
-        icon: 'success',
-        title: 'Downloaded!',
-        text: 'Share image saved successfully as SVG',
-        background: '#0c0c12',
-        color: '#fff',
-        confirmButtonColor: '#d946ef',
+      // Capture the actual visual share card with all styling, images, and gradients
+      const canvas = await html2canvas(previewRef.current, {
+        backgroundColor: null, // Preserve transparency and background images
+        scale: 3, // Higher quality image (3x scale for sharp result)
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+        imageTimeout: 10000,
+        canvasWidth: 1200,
+        canvasHeight: 1000,
       });
+
+      // Convert canvas to PNG blob
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `${event?.title || 'event'}-share.png`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+
+          Swal.fire({
+            icon: 'success',
+            title: 'Downloaded!',
+            text: 'Beautiful share image saved as PNG',
+            background: '#0c0c12',
+            color: '#fff',
+            confirmButtonColor: '#d946ef',
+          });
+        }
+      }, 'image/png', 0.95);
     } catch (error) {
-      console.error('[v0] Failed to generate image:', error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Download Error',
-        text: 'Could not generate share image. Try copying the link instead.',
-        background: '#0c0c12',
-        color: '#fff',
-        confirmButtonColor: '#d946ef',
-      });
+      console.error('[v0] Canvas capture failed, trying fallback SVG:', error);
+      // Fallback to SVG if canvas fails
+      try {
+        const width = 1200;
+        const height = 1000;
+        
+        const svg = `
+          <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1" />
+                <stop offset="50%" style="stop-color:#0c0c12;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#16213e;stop-opacity:1" />
+              </linearGradient>
+              <linearGradient id="btnGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#d946ef;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+              </linearGradient>
+            </defs>
+            
+            <rect width="${width}" height="${height}" fill="url(#bgGrad)"/>
+            <text x="60" y="80" font-size="24" font-weight="bold" fill="#9333ea" font-family="Arial">
+              INCEPTION GAMES
+            </text>
+            <text x="60" y="160" font-size="54" font-weight="900" fill="#ffffff" font-family="Arial">
+              <tspan x="60" dy="0">${getEventTitle().substring(0, 40)}</tspan>
+            </text>
+            <rect x="${width - 200}" y="60" width="140" height="100" rx="12" fill="#d946ef" opacity="0.2" stroke="#d946ef" stroke-width="2"/>
+            <text x="${width - 130}" y="125" font-size="20" font-weight="bold" fill="#d946ef" font-family="Arial" text-anchor="middle">
+              ${getEventGame()}
+            </text>
+            <text x="60" y="280" font-size="18" fill="#a78bfa" font-family="Arial">
+              📅 ${eventDate}
+            </text>
+            <text x="60" y="330" font-size="18" fill="#a78bfa" font-family="Arial">
+              📍 ${getEventRegion()}
+            </text>
+            <text x="60" y="380" font-size="18" fill="#a78bfa" font-family="Arial">
+              🎮 ${getEventType()}
+            </text>
+            <rect x="60" y="450" width="${width - 120}" height="100" rx="12" fill="url(#btnGrad)"/>
+            <text x="${width / 2}" y="510" font-size="36" font-weight="bold" fill="#ffffff" font-family="Arial" text-anchor="middle">
+              Register Now
+            </text>
+            <text x="${width / 2}" y="545" font-size="16" fill="#ffffff" font-family="Arial" text-anchor="middle">
+              inception-games.com
+            </text>
+            <text x="60" y="${height - 40}" font-size="14" fill="#6b7280" font-family="Arial">
+              Share this amazing esports event • Follow Inception Games
+            </text>
+          </svg>
+        `;
+
+        const blob = new Blob([svg], { type: 'image/svg+xml' });
+        const url = URL.createObjectURL(blob);
+        
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${event?.title || 'event'}-share.svg`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Downloaded!',
+          text: 'Share card saved as SVG',
+          background: '#0c0c12',
+          color: '#fff',
+          confirmButtonColor: '#d946ef',
+        });
+      } catch (fallbackError) {
+        console.error('[v0] Fallback also failed:', fallbackError);
+        Swal.fire({
+          icon: 'error',
+          title: 'Download Error',
+          text: 'Could not generate share image. Try copying the link instead.',
+          background: '#0c0c12',
+          color: '#fff',
+          confirmButtonColor: '#d946ef',
+        });
+      }
     } finally {
       setIsGenerating(false);
     }
