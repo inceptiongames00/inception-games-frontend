@@ -508,12 +508,12 @@ export default function EventsSection({ user, initialFilter = "all", routePrefix
     setActiveFilter(initialFilter);
   }, [initialFilter]);
 
-  // Fetch events from API
+  // Fetch scrims from the updated /scrims API
   const fetchEvents = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(API.EVENTS_GET_ALL, {
+      const res = await fetch(API.SCRIMS_GET_ALL, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -522,44 +522,49 @@ export default function EventsSection({ user, initialFilter = "all", routePrefix
       const data = await res.json();
 
       if (res.ok) {
-        // Handle both API response formats
-        const eventsData = data.tournaments || data.data || [];
+        // New API shape: { total, scrims: [...] }
+        const scrimsData = data.scrims || data.data || [];
 
-        // Transform API events to our format
-        const transformedEvents = eventsData.map((event, index) => {
+        // Transform API scrims to our card format
+        const transformedEvents = scrimsData.map((scrim) => {
           return {
-            id: event.id,
-            title: event.title,
-            eventType: getEventType(event.title, event.hosted_by),
+            id: scrim.id,
+            title: scrim.title,
+            eventType: "Scrims",
             game: {
-              name: event.game || event.title?.split(" ")[0] || "Gaming",
-              image: getGameImage(event.title, event.game),
+              name: scrim.game || scrim.title?.split(" ")[0] || "Gaming",
+              image: getGameImage(scrim.title, scrim.game),
             },
-            game_name: event.game,
-            status: event.status,
-            start_date: event.event_date || event.tournament_start_at,
-            event_date: event.event_date || event.tournament_start_at,
-            end_date: event.tournament_end_at,
-            location: event.region,
-            venue: event.region,
-            platform: event.platform || "All Platforms",
-            teamType: event.game_mode || "Open",
-            prizePool: parseFloat(event.prize_pool) || 0,
-            prize_pool: parseFloat(event.prize_pool) || 0,
-            currency: event.currency || "BDT",
-            totalSlots: event.max_slots || 64,
-            total_slots: event.max_slots || 64,
-            filledSlots: event.filled_slots || 0,
-            filled_slots: event.filled_slots || 0,
-            registrationStart: event.reg_start_at,
-            registration_start: event.reg_start_at,
-            registrationEnd: event.reg_end_at,
-            registration_end: event.reg_end_at,
-            tournamentStart: event.tournament_start_at,
-            tournamentEnd: event.tournament_end_at,
-            host: event.hosted_by || "Inception Games",
-            organizer: event.hosted_by || "Inception Games",
-            banner_image: event.banner_image,
+            game_name: scrim.game,
+            status: scrim.status,
+            start_date: scrim.start_at,
+            event_date: scrim.start_at,
+            end_date: scrim.end_at,
+            location: scrim.region,
+            venue: scrim.region,
+            platform: scrim.platform || "All Platforms",
+            teamType: scrim.game_mode || "Open",
+            prizePool: parseFloat(scrim.prize_pool) || 0,
+            prize_pool: parseFloat(scrim.prize_pool) || 0,
+            currency: scrim.currency || "BDT",
+            entryType: scrim.entry_type,
+            entryFee: parseFloat(scrim.entry_fee) || 0,
+            teamSize: scrim.team_size,
+            totalSlots: scrim.max_teams || 0,
+            total_slots: scrim.max_teams || 0,
+            filledSlots: scrim.filled_teams || 0,
+            filled_slots: scrim.filled_teams || 0,
+            registrationStart: scrim.reg_start_at,
+            registration_start: scrim.reg_start_at,
+            registrationEnd: scrim.reg_end_at,
+            registration_end: scrim.reg_end_at,
+            tournamentStart: scrim.start_at,
+            tournamentEnd: scrim.end_at,
+            rules: scrim.rules,
+            slots: scrim.slots || [],
+            host: scrim.hosted_by || "Inception Games",
+            organizer: scrim.hosted_by || "Inception Games",
+            banner_image: scrim.banner_image,
           };
         });
         setEvents(transformedEvents);
@@ -567,8 +572,8 @@ export default function EventsSection({ user, initialFilter = "all", routePrefix
         setEvents([]);
       }
     } catch (err) {
-      console.error("[v0] Failed to fetch events:", err);
-      setError("Failed to load events. Please try again.");
+      console.error("[v0] Failed to fetch scrims:", err);
+      setError("Failed to load scrims. Please try again.");
       setEvents([]);
     } finally {
       setLoading(false);

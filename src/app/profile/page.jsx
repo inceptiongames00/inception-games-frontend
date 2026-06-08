@@ -10,6 +10,7 @@ import ProfileHeroBanner from "../components/ProfileComponents/ProfileHeroBanner
 import CareerStats from "../components/ProfileComponents/CareerStats";
 import QuickInfo from "../components/ProfileComponents/QuickInfo";
 import EventsSection from "../components/ProfileComponents/EventsSection";
+import MyScrims from "../components/ProfileComponents/MyScrims";
 import MatchHistory from "../components/ProfileComponents/MatchHistory";
 import Availability from "../components/ProfileComponents/Availability";
 import FeaturedCarousel from "../components/ProfileComponents/FeaturedCarousel";
@@ -123,10 +124,18 @@ export default function ProfilePage() {
             </div>
           </div>
 
+
+           {/* My Scrims */}
+          <div className="mt-8 mb-14">
+            <MyScrims email={mergedUser?.email} />
+          </div>
+
           {/* Events Section */}
           <div className="space-y-6">
             <EventsSection user={mergedUser} />
           </div>
+
+         
         </div>
       </main>
 

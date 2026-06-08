@@ -426,6 +426,8 @@ export default function EventDetailPage() {
     portfolio: "",
     teamMembers: "",
     brandDealType: "solo",
+    selectedSlotId: "",
+    players: [],
   });
 
 
@@ -635,6 +637,53 @@ export default function EventDetailPage() {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
+        // First, try the scrims API (team-based registration).
+        const scrimsRes = await fetch(
+          "https://inception-games.an.r.appspot.com/api/v1/scrims",
+        );
+        if (scrimsRes.ok) {
+          const scrimsJson = await scrimsRes.json();
+          const allScrims = scrimsJson.scrims || scrimsJson.data || [];
+          const matchedScrim = allScrims.find(
+            (s) => s.id === params.eventId || s.id === parseInt(params.eventId),
+          );
+          if (matchedScrim) {
+            const bannerImage = matchedScrim.banner_image;
+            const transformedScrim = {
+              ...matchedScrim,
+              eventType: "Scrims",
+              game: {
+                name: matchedScrim.game || "Gaming Event",
+                image: getGameImage(matchedScrim.title, matchedScrim.game),
+              },
+              gameName: matchedScrim.game || "Gaming Event",
+              gameImage: getGameImage(matchedScrim.title, matchedScrim.game),
+              date: matchedScrim.start_at,
+              endDate: matchedScrim.end_at,
+              location: matchedScrim.region,
+              platform: matchedScrim.platform || "All Platforms",
+              teamType: matchedScrim.game_mode || "Open",
+              team_size: matchedScrim.team_size || 1,
+              teamSize: matchedScrim.team_size || 1,
+              prizePool: parseFloat(matchedScrim.prize_pool) || 0,
+              currency: matchedScrim.currency || "BDT",
+              totalSlots: matchedScrim.max_teams || 0,
+              filledSlots: matchedScrim.filled_teams || 0,
+              registrationStart: matchedScrim.reg_start_at,
+              registrationEnd: matchedScrim.reg_end_at,
+              tournamentStart: matchedScrim.start_at,
+              tournamentEnd: matchedScrim.end_at,
+              host: matchedScrim.hosted_by || "Inception Games",
+              organizer: matchedScrim.hosted_by || "Inception Games",
+              slots: matchedScrim.slots || [],
+              banner_image: bannerImage,
+              absoluteBannerUrl: bannerImage,
+            };
+            setEvent(transformedScrim);
+            return;
+          }
+        }
+
         const url = API.EVENTS_GET_BY_ID.replace(":eventId", params.eventId);
         const response = await fetch(url);
         const data = await response.json();
@@ -733,6 +782,49 @@ export default function EventDetailPage() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Number of additional players (excluding the captain) required by the scrim
+  const additionalPlayersCount = Math.max(
+    0,
+    (event?.team_size || event?.teamSize || 1) - 1,
+  );
+
+  // Available slots from the scrim payload
+  const scrimSlots = event?.slots || [];
+
+  // Initialize the players array + default slot when opening a scrim registration form
+  const openScrimRegistration = () => {
+    const count = Math.max(
+      0,
+      (event?.team_size || event?.teamSize || 1) - 1,
+    );
+    const openSlot =
+      (event?.slots || []).find((s) => s.status === "Open") ||
+      (event?.slots || [])[0];
+    setFormData((prev) => ({
+      ...prev,
+      selectedSlotId: openSlot ? String(openSlot.id) : "",
+      players: Array.from({ length: count }, () => ({
+        uid: "",
+        full_name: "",
+        email: "",
+        phone: "",
+        in_game_name: "",
+        in_game_id: "",
+        discord_id: "",
+      })),
+    }));
+    setShowSignupForm(true);
+  };
+
+  // Update a single additional player's field
+  const handlePlayerChange = (index, field, value) => {
+    setFormData((prev) => {
+      const players = [...prev.players];
+      players[index] = { ...players[index], [field]: value };
+      return { ...prev, players };
+    });
+  };
+
   const getPrice = () => {
     if (!event) return 0;
     switch (event.eventType) {
@@ -767,6 +859,108 @@ export default function EventDetailPage() {
 
       if (!formData.phone || formData.phone.trim() === "") {
         showNotificationMessage("error", "Phone number is required");
+        setIsSubmitting(false);
+        return;
+      }
+
+      // ---- Scrims registration (team-based, new API) ----
+      if (event?.eventType === "Scrims") {
+        if (!formData.selectedSlotId) {
+          showNotificationMessage("error", "Please select a slot");
+          setIsSubmitting(false);
+          return;
+        }
+        if (!formData.teamName || formData.teamName.trim() === "") {
+          showNotificationMessage("error", "Team name is required");
+          setIsSubmitting(false);
+          return;
+        }
+        if (!formData.inGameName || !formData.inGameId) {
+          showNotificationMessage(
+            "error",
+            "Captain in-game name and ID are required",
+          );
+          setIsSubmitting(false);
+          return;
+        }
+
+        // Validate each additional player
+        for (let i = 0; i < formData.players.length; i++) {
+          const p = formData.players[i];
+          if (
+            !p.uid?.trim() ||
+            !p.full_name?.trim() ||
+            !p.email?.trim() ||
+            !p.in_game_name?.trim() ||
+            !p.in_game_id?.trim()
+          ) {
+            showNotificationMessage(
+              "error",
+              `Please complete details for Player ${i + 2}`,
+            );
+            setIsSubmitting(false);
+            return;
+          }
+        }
+
+        const scrimPayload = {
+          team_name: formData.teamName.trim(),
+          uid: user?.id || user?.uid || formData.captainUid?.trim() || null,
+          full_name: formData.fullName.trim(),
+          email: formData.email.trim(),
+          phone: formData.phone.trim(),
+          in_game_name: formData.inGameName.trim(),
+          in_game_id: formData.inGameId.trim(),
+          discord_id: formData.discordId.trim() || null,
+          players: formData.players.map((p) => ({
+            uid: p.uid.trim(),
+            full_name: p.full_name.trim(),
+            email: p.email.trim(),
+            phone: p.phone?.trim() || null,
+            in_game_name: p.in_game_name.trim(),
+            in_game_id: p.in_game_id.trim(),
+            discord_id: p.discord_id?.trim() || null,
+          })),
+        };
+
+        const scrimRes = await fetch(
+          API.SCRIMS_REGISTER.replace(":scrimId", params.eventId).replace(
+            ":slotId",
+            formData.selectedSlotId,
+          ),
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(scrimPayload),
+          },
+        );
+
+        const scrimData = await scrimRes.json();
+
+        if (!scrimRes.ok) {
+          showNotificationMessage(
+            "error",
+            scrimData.message ||
+              scrimData.error ||
+              "Registration failed. Please try again.",
+          );
+          setIsSubmitting(false);
+          return;
+        }
+
+        setFormData((prev) => ({
+          ...prev,
+          fullName: "",
+          email: "",
+          phone: "",
+          inGameName: "",
+          inGameId: "",
+          teamName: "",
+          discordId: "",
+          selectedSlotId: "",
+          players: [],
+        }));
+        setShowSuccessModal(true);
         setIsSubmitting(false);
         return;
       }
@@ -1259,7 +1453,11 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
                   {/* Sign Up Button — now sits under Share */}
                   {event.status !== "Completed" && !showSignupForm && (
                     <motion.button
-                      onClick={() => setShowSignupForm(true)}
+                      onClick={() =>
+                        event.eventType === "Scrims"
+                          ? openScrimRegistration()
+                          : setShowSignupForm(true)
+                      }
                       className="px-2 sm:px-4 py-2 sm:py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold rounded-lg transition-all duration-300 flex items-center gap-1 sm:gap-2 shadow-lg shadow-purple-500/20 text-xs sm:text-sm"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
@@ -1508,8 +1706,7 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
                               required
                             />
 
-                            {(event.eventType === "Tournament" ||
-                              event.eventType === "Scrims") && (
+                            {event.eventType === "Tournament" && (
                               <>
                                 <AnimatedInput
                                   label="In-Game Name"
@@ -1540,6 +1737,175 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
                                   value={formData.discordId}
                                   onChange={handleInputChange}
                                 />
+                              </>
+                            )}
+
+                            {event.eventType === "Scrims" && (
+                              <>
+                                {/* Slot selection */}
+                                {scrimSlots.length > 0 && (
+                                  <AnimatedInput
+                                    label="Select Slot"
+                                    type="select"
+                                    name="selectedSlotId"
+                                    value={formData.selectedSlotId}
+                                    onChange={handleInputChange}
+                                    placeholder="Choose a slot"
+                                    required
+                                    options={scrimSlots.map((s) => ({
+                                      value: String(s.id),
+                                      label: `${s.label || "Slot"} - ${new Date(
+                                        s.slot_date,
+                                      ).toLocaleDateString("en-GB", {
+                                        day: "2-digit",
+                                        month: "short",
+                                      })} ${(s.slot_time || "").slice(0, 5)} (${s.filled_teams}/${s.max_teams})`,
+                                    }))}
+                                  />
+                                )}
+
+                                {/* Team captain details */}
+                                <div className="pt-1">
+                                  <p className="text-xs font-semibold text-purple-400 uppercase tracking-wider mb-2">
+                                    Team Captain
+                                  </p>
+                                </div>
+                                <AnimatedInput
+                                  label="Team Name"
+                                  name="teamName"
+                                  value={formData.teamName}
+                                  onChange={handleInputChange}
+                                  required
+                                />
+                                <AnimatedInput
+                                  label="Captain In-Game Name"
+                                  name="inGameName"
+                                  value={formData.inGameName}
+                                  onChange={handleInputChange}
+                                  required
+                                />
+                                <AnimatedInput
+                                  label="Captain In-Game ID"
+                                  name="inGameId"
+                                  value={formData.inGameId}
+                                  onChange={handleInputChange}
+                                  required
+                                />
+                                <AnimatedInput
+                                  label="Captain Discord ID (optional)"
+                                  name="discordId"
+                                  value={formData.discordId}
+                                  onChange={handleInputChange}
+                                />
+
+                                {/* Additional team members */}
+                                {additionalPlayersCount > 0 && (
+                                  <div className="pt-1">
+                                    <p className="text-xs font-semibold text-purple-400 uppercase tracking-wider mb-2">
+                                      Team Members ({additionalPlayersCount})
+                                    </p>
+                                  </div>
+                                )}
+                                {formData.players.map((player, index) => (
+                                  <div
+                                    key={index}
+                                    className="space-y-3 p-3 rounded-xl border border-gray-700 bg-gray-800/40"
+                                  >
+                                    <p className="text-sm font-semibold text-white">
+                                      Player {index + 2}
+                                    </p>
+                                    <AnimatedInput
+                                      label="User ID (UID)"
+                                      name={`player-${index}-uid`}
+                                      value={player.uid}
+                                      onChange={(e) =>
+                                        handlePlayerChange(
+                                          index,
+                                          "uid",
+                                          e.target.value,
+                                        )
+                                      }
+                                      required
+                                    />
+                                    <AnimatedInput
+                                      label="Full Name"
+                                      name={`player-${index}-full_name`}
+                                      value={player.full_name}
+                                      onChange={(e) =>
+                                        handlePlayerChange(
+                                          index,
+                                          "full_name",
+                                          e.target.value,
+                                        )
+                                      }
+                                      required
+                                    />
+                                    <AnimatedInput
+                                      label="Email Address"
+                                      type="email"
+                                      name={`player-${index}-email`}
+                                      value={player.email}
+                                      onChange={(e) =>
+                                        handlePlayerChange(
+                                          index,
+                                          "email",
+                                          e.target.value,
+                                        )
+                                      }
+                                      required
+                                    />
+                                    <AnimatedInput
+                                      label="Phone Number (optional)"
+                                      name={`player-${index}-phone`}
+                                      value={player.phone}
+                                      onChange={(e) =>
+                                        handlePlayerChange(
+                                          index,
+                                          "phone",
+                                          e.target.value,
+                                        )
+                                      }
+                                    />
+                                    <AnimatedInput
+                                      label="In-Game Name"
+                                      name={`player-${index}-in_game_name`}
+                                      value={player.in_game_name}
+                                      onChange={(e) =>
+                                        handlePlayerChange(
+                                          index,
+                                          "in_game_name",
+                                          e.target.value,
+                                        )
+                                      }
+                                      required
+                                    />
+                                    <AnimatedInput
+                                      label="In-Game ID"
+                                      name={`player-${index}-in_game_id`}
+                                      value={player.in_game_id}
+                                      onChange={(e) =>
+                                        handlePlayerChange(
+                                          index,
+                                          "in_game_id",
+                                          e.target.value,
+                                        )
+                                      }
+                                      required
+                                    />
+                                    <AnimatedInput
+                                      label="Discord ID (optional)"
+                                      name={`player-${index}-discord_id`}
+                                      value={player.discord_id}
+                                      onChange={(e) =>
+                                        handlePlayerChange(
+                                          index,
+                                          "discord_id",
+                                          e.target.value,
+                                        )
+                                      }
+                                    />
+                                  </div>
+                                ))}
                               </>
                             )}
 

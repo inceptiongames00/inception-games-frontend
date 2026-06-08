@@ -20,6 +20,13 @@ export const API = {
   // Profile Update - PUT endpoint with FormData
   PROFILE_UPDATE:        `${BASE_URL}/auth/profile/:userId`,
 
+  // Scrims API (updated endpoint - returns { total, scrims: [...] })
+  SCRIMS_GET_ALL:        `${BASE_URL}/scrims`,
+  // Team-based scrims registration: /participants/:scrimId/slots/:slotId/register
+  SCRIMS_REGISTER:       `${BASE_URL}/participants/:scrimId/slots/:slotId/register`,
+  // Lookup a user's scrim registrations by email
+  PARTICIPANTS_BY_EMAIL: `${BASE_URL}/participants/user/:email`,
+
   // Events/Tournaments API
   EVENTS_GET_ALL:        `${BASE_URL}/tournaments`,
   EVENTS_GET_BY_ID:      `${BASE_URL}/tournaments/:eventId`,

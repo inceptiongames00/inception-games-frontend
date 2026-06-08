@@ -93,45 +93,28 @@ export default function EventDetailsPage() {
   const fetchEventDetails = async () => {
     try {
       setLoading(true);
-      
-      let eventData = null;
-      
+
+      // The updated scrims API returns { total, scrims: [...] }.
+      // There is no single-scrim endpoint, so fetch the list and match by id.
       try {
         const response = await fetch(
-          `https://inception-games.an.r.appspot.com/api/v1/tournaments/${eventId}`
+          "https://inception-games.an.r.appspot.com/api/v1/scrims"
         );
-        
+
         if (response.ok) {
           const data = await response.json();
-          eventData = data.tournament || data.data || data;
-          setEvent(eventData);
-          return;
+          const allScrims = data.scrims || data.data || [];
+
+          const matchedScrim = allScrims.find(
+            (s) => s.id === eventId || s.id === parseInt(eventId)
+          );
+
+          if (matchedScrim) {
+            setEvent(matchedScrim);
+          }
         }
       } catch (e) {
-        console.warn("Tournament endpoint failed, trying alternatives...");
-      }
-      
-      if (!eventData) {
-        try {
-          const response = await fetch(
-            "https://inception-games.an.r.appspot.com/api/v1/tournaments"
-          );
-          
-          if (response.ok) {
-            const data = await response.json();
-            const allEvents = data.tournaments || data.data || [];
-            
-            const matchedEvent = allEvents.find(
-              e => e.id === eventId || e.id === parseInt(eventId)
-            );
-            
-            if (matchedEvent) {
-              setEvent(matchedEvent);
-            }
-          }
-        } catch (e) {
-          console.error("Failed to fetch events list:", e);
-        }
+        console.error("[v0] Failed to fetch scrims list:", e);
       }
     } catch (error) {
       console.error("Error fetching event details:", error);
@@ -199,22 +182,22 @@ export default function EventDetailsPage() {
   const progressionSteps = [
     { 
       label: "Reg Starting", 
-      date: event.registration_start_date || event.registrationStart,
+      date: event.reg_start_at || event.registration_start_date || event.registrationStart,
       time: event.registration_start_time || "TBD"
     },
     { 
       label: "Reg Ending", 
-      date: event.registration_end_date || event.registrationEnd,
+      date: event.reg_end_at || event.registration_end_date || event.registrationEnd,
       time: event.registration_end_time || "TBD"
     },
     { 
       label: "Match Starts", 
-      date: event.tournament_start_date || event.tournamentStart,
+      date: event.start_at || event.tournament_start_date || event.tournamentStart,
       time: event.tournament_start_time || "TBD"
     },
     { 
       label: "Match Ends", 
-      date: event.tournament_end_date || event.tournamentEnd,
+      date: event.end_at || event.tournament_end_date || event.tournamentEnd,
       time: event.tournament_end_time || "TBD"
     },
   ];

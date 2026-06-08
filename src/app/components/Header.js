@@ -109,6 +109,13 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8">
+            <Link
+              href="/"
+              className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors"
+            >
+              Home
+            </Link>
+
             {/* E-Sports Dropdown - Visible for all users */}
             <div className="relative esports-dropdown-container">
               <button
@@ -423,6 +430,14 @@ export default function Header() {
             transition={{ duration: 0.2 }}
           >
             <nav className="flex flex-col p-4 sm:p-6">
+              <Link
+                href="/"
+                onClick={handleLinkClick}
+                className="text-white text-base font-medium py-3 border-b border-purple-500/10 hover:text-purple-400 transition-colors"
+              >
+                Home
+              </Link>
+
               {/* E-Sports Mobile - Visible for all users */}
               <button
                 onClick={() => setEsportsDropdownOpen(!esportsDropdownOpen)}
