@@ -23,6 +23,7 @@ import {
 import Image from "next/image";
 import { useRouter, useParams } from "next/navigation";
 import CombinedSignupJoinForm from "../../components/AuthModals/CombinedSignupJoinForm";
+import SharePreview from "../../components/SharePreview";
 import { useAuth } from "@/hooks/useAuth";
 
 // Games data
@@ -120,16 +121,6 @@ export default function EventDetailsPage() {
       console.error("Error fetching event details:", error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleShareEvent = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: event?.title,
-        text: `Check out ${event?.title} on Inception Games!`,
-        url: window.location.href,
-      });
     }
   };
 
@@ -324,13 +315,7 @@ export default function EventDetailsPage() {
                   </span>
                 </div>
 
-                <button
-                  onClick={handleShareEvent}
-                  className="px-4 py-2.5 text-sm text-gray-300 bg-gray-800 hover:bg-gray-700 rounded-lg flex items-center gap-2 transition-colors"
-                >
-                  <Share2 size={16} />
-                  <span>Share</span>
-                </button>
+                <SharePreview event={event} />
               </div>
 
               {/* Tournament Progression */}
@@ -502,13 +487,9 @@ export default function EventDetailsPage() {
                 </div>
 
                 {/* Share Card */}
-                <button
-                  onClick={handleShareEvent}
-                  className="w-full py-3 px-4 bg-gray-800/50 hover:bg-gray-700/50 border border-gray-700/50 rounded-lg text-white font-semibold flex items-center justify-center gap-2 transition-all"
-                >
-                  <Share2 size={18} />
-                  Share Event
-                </button>
+                <div className="w-full">
+                  <SharePreview event={event} />
+                </div>
 
                 {/* Back Button */}
                 <button
