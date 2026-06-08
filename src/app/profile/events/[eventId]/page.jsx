@@ -598,7 +598,11 @@ export default function EventDetailPage() {
       // Open Graph tags - CRITICAL for Facebook rich preview
       updateMetaTag("og:title", event.title || "Inception Games Tournament");
       updateMetaTag("og:description", description);
-      updateMetaTag("og:image", absoluteImageUrl);
+      // Use the OG image API endpoint as fallback, or the actual banner URL if available
+      const ogImageUrl = absoluteImageUrl.includes("/api/og-image/") 
+        ? absoluteImageUrl 
+        : absoluteImageUrl;
+      updateMetaTag("og:image", ogImageUrl);
       updateMetaTag("og:image:width", "1200");
       updateMetaTag("og:image:height", "630");
       updateMetaTag("og:image:type", imageType);

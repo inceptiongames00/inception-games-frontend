@@ -4,19 +4,29 @@ export async function generateMetadata({ params }) {
     const { eventId } = await params;
     const apiBase = "https://inception-games.an.r.appspot.com/api/v1";
     
-    const res = await fetch(`${apiBase}/tournaments/${eventId}`, {
+    // First try tournaments endpoint
+    let res = await fetch(`${apiBase}/tournaments/${eventId}`, {
       next: { revalidate: 3600 }
     });
     
-    if (!res.ok) {
-      return {
-        title: "Inception Games - Tournament",
-        description: "Join exciting gaming tournaments on Inception Games",
-      };
-    }
+    let data;
+    let event;
     
-    const data = await res.json();
-    const event = data.tournament || data.data || data;
+    // If tournaments endpoint fails, try scrims endpoint
+    if (!res.ok) {
+      res = await fetch(`${apiBase}/scrims`, {
+        next: { revalidate: 3600 }
+      });
+      
+      if (res.ok) {
+        data = await res.json();
+        const allScrims = data.scrims || data.data || [];
+        event = allScrims.find(s => s.id == eventId || s._id == eventId);
+      }
+    } else {
+      data = await res.json();
+      event = data.tournament || data.data || data;
+    }
     
     if (!event) {
       return {
@@ -25,7 +35,7 @@ export async function generateMetadata({ params }) {
       };
     }
     
-    const title = event.title || "Inception Games Tournament";
+    const title = event.title || event.event_name || "Inception Games Tournament";
     const eventDate = event.start_date || event.date
       ? new Date(event.start_date || event.date).toLocaleDateString("en-GB", {
           day: "2-digit",
@@ -37,19 +47,19 @@ export async function generateMetadata({ params }) {
     const description = `${title} - ${eventDate} in ${location}. Join the competition on Inception Games platform!`;
     
     // Get banner image URL - prioritize absolute URLs
-    let ogImageUrl = event.banner_image;
+    let ogImageUrl = event.banner_image || event.game_image || event.image;
     if (ogImageUrl) {
       // Convert relative paths to absolute
       if (!ogImageUrl.startsWith("http")) {
         ogImageUrl = ogImageUrl.startsWith("/")
-          ? `${apiBase}${ogImageUrl}`
-          : `${apiBase}/${ogImageUrl}`;
+          ? `https://inception-games.an.r.appspot.com${ogImageUrl}`
+          : `https://inception-games.an.r.appspot.com/${ogImageUrl}`;
       }
       // Ensure HTTPS for social media crawlers
       ogImageUrl = ogImageUrl.replace("http://", "https://");
     } else {
-      // Fallback to OG image API endpoint
-      ogImageUrl = `${apiBase.replace("/api/v1", "")}/api/og-image/${eventId}`;
+      // Fallback to OG image API endpoint - use absolute URL for social crawlers
+      ogImageUrl = `https://inception-games.an.r.appspot.com/api/og-image/${eventId}`;
     }
     
     return {
