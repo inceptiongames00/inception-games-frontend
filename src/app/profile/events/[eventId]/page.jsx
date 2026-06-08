@@ -1640,7 +1640,7 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
                             </div>
                           </div>
 
-                          {price > 0 && (
+                          {/* {price > 0 && (
                             <div className="mb-3 sm:mb-4 p-2 sm:p-3 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg border border-purple-500/30 text-center">
                               <p className="text-gray-400 text-xs sm:text-sm">
                                 Registration Fee
@@ -1649,7 +1649,7 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
                                 BDT {price}
                               </p>
                             </div>
-                          )}
+                          )} */}
 
                           {event.eventType === "Brand Deal" && (
                             <div className="mb-3 sm:mb-4 grid grid-cols-2 gap-2 sm:gap-3">
