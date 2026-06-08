@@ -1743,7 +1743,7 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
                             {event.eventType === "Scrims" && (
                               <>
                                 {/* Slot selection */}
-                                {scrimSlots.length > 0 && (
+                                {/* {scrimSlots.length > 0 && (
                                   <AnimatedInput
                                     label="Select Slot"
                                     type="select"
@@ -1762,7 +1762,7 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
                                       })} ${(s.slot_time || "").slice(0, 5)} (${s.filled_teams}/${s.max_teams})`,
                                     }))}
                                   />
-                                )}
+                                )} */}
 
                                 {/* Team captain details */}
                                 <div className="pt-1">
