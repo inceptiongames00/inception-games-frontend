@@ -289,9 +289,9 @@ function ComingSoonCard({ category, icon: IconComponent }) {
 
         {/* Coming Soon Date */}
         <div className="space-y-2 pt-2">
-          <p className="text-gray-300 text-sm font-medium">Opens May 1st, 2025</p>
+          <p className="text-gray-300 text-sm font-medium">Opens June 20th, 2026</p>
           <p className="text-gray-500 text-xs">
-            {daysUntil > 0 ? `In ${daysUntil} days` : "Available now!"}
+            {/* {daysUntil > 0 ? `In ${daysUntil} days` : "Available now!"} */}
           </p>
         </div>
 

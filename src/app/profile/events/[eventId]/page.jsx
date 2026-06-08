@@ -1202,10 +1202,10 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
   ];
 
   const progressionSteps = [
-    { label: "Reg Starting", date: new Date("2025-04-25 12:00:00"), time: "12:00" },
-    { label: "Reg Ending", date: new Date("2025-04-29"), time: "23:59" },
-    { label: "Match Starts", date: new Date("2025-05-02"), time: "12:00" },
-    { label: "Match Ends", date: new Date("2025-05-12"), time: "23:59" },
+    { label: "Reg Starting", date: new Date("2025-05-01 12:00:00"), time: "12:00" },
+    { label: "Reg Ending", date: new Date("2025-06-14"), time: "23:59" },
+    { label: "Match Starts", date: new Date("2025-06-15"), time: "12:00" },
+    { label: "Match Ends", date: new Date("2025-06-25"), time: "23:59" },
   ];
 
   const price = getPrice();
@@ -1767,7 +1767,7 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
                                 {/* Team captain details */}
                                 <div className="pt-1">
                                   <p className="text-xs font-semibold text-purple-400 uppercase tracking-wider mb-2">
-                                    Team Captain
+                                    Team Info
                                   </p>
                                 </div>
                                 <AnimatedInput
@@ -1778,21 +1778,21 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
                                   required
                                 />
                                 <AnimatedInput
-                                  label="Captain In-Game Name"
+                                  label="IGL Name"
                                   name="inGameName"
                                   value={formData.inGameName}
                                   onChange={handleInputChange}
                                   required
                                 />
                                 <AnimatedInput
-                                  label="Captain In-Game ID"
+                                  label="IGL UID"
                                   name="inGameId"
                                   value={formData.inGameId}
                                   onChange={handleInputChange}
                                   required
                                 />
                                 <AnimatedInput
-                                  label="Captain Discord ID (optional)"
+                                  label="IGL Discord ID (optional)"
                                   name="discordId"
                                   value={formData.discordId}
                                   onChange={handleInputChange}
@@ -1995,7 +1995,8 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
               <div className="flex flex-wrap items-center gap-6 text-sm text-gray-400 mb-8">
                 <div className="flex items-center gap-2">
                   <Flag size={16} />
-                  <span>{event.location}</span>
+                  {/* <span>{event.location}</span> */}
+                  <span>Global Online</span>
                 </div>
                 <PlatformDisplay platform={event.platform} />
                 <div className="flex items-center gap-2">
@@ -2004,31 +2005,12 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
                 </div>
               </div>
 
-              {/* Description */}
-              <div className="text-sm text-gray-400 mb-8 space-y-2 p-4 bg-white/[0.02] rounded-xl border border-white/[0.06]">
-                <p>
-                  Date:{" "}
-                  {new Date(event.date).toLocaleDateString("en-GB", {
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric",
-                  })}
-                </p>
-                <p>
-                  Game: {gameName} ({event.teamType})
-                </p>
-                <p>
-                  Location: {event.address}.
-                  <a href="#" className="text-blue-400 hover:underline ml-1">
-                    (Map Link)
-                  </a>
-                </p>
-              </div>
+             
 
               {/* Tournament Progression */}
               <div className="mb-6 sm:mb-8">
                 <h3 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6">
-                  Tournament Progression
+                  Scrims Progression
                 </h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
                   {progressionSteps.map((step, index) => {
