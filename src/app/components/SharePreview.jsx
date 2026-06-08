@@ -140,14 +140,36 @@ export default function SharePreview({ event }) {
 
   const handleFacebookShare = () => {
     if (typeof window !== 'undefined') {
-      const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`;
+      // Ensure OG tags are in place before opening Facebook
+      const title = event?.title || 'Check out this event!';
+      const description = `Join ${title} on Inception Games. Register now for this amazing esports event!`;
+      
+      // Update OG tags one more time to ensure they're fresh
+      const updateOGTag = (property, content) => {
+        let tag = document.querySelector(`meta[property="${property}"]`);
+        if (!tag) {
+          tag = document.createElement('meta');
+          tag.setAttribute('property', property);
+          document.head.appendChild(tag);
+        }
+        tag.content = content;
+      };
+      
+      updateOGTag('og:title', title);
+      updateOGTag('og:description', description);
+      updateOGTag('og:url', window.location.href);
+      
+      // Open Facebook share dialog
+      const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent(title)}`;
       window.open(url, '_blank', 'width=600,height=400');
     }
   };
 
   const handleTwitterShare = () => {
     if (typeof window !== 'undefined') {
-      const text = encodeURIComponent(event?.title || 'Check out this event!');
+      const title = event?.title || 'Check out this event!';
+      const hashtags = 'InceptionGames,Esports,Gaming';
+      const text = encodeURIComponent(`🎮 ${title}\n\nJoin us for an amazing esports experience!\n\n#${hashtags}`);
       const url = `https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${text}`;
       window.open(url, '_blank', 'width=600,height=400');
     }
@@ -365,14 +387,18 @@ export default function SharePreview({ event }) {
 
               {/* Social Share Options */}
               <div className="bg-gray-800/30 rounded-lg p-4 border border-gray-700/30 relative z-50 pointer-events-auto">
-                <p className="text-sm text-gray-400 mb-3 font-semibold uppercase tracking-wider">
+                <p className="text-sm text-gray-400 mb-2 font-semibold uppercase tracking-wider">
                   Or share to
                 </p>
-                <div className="grid grid-cols-2 gap-3">
+                <p className="text-xs text-gray-500 mb-4">
+                  Share this event with your friends. The beautiful event preview will appear on social platforms
+                </p>
+                <div className="grid grid-cols-2 gap-3 mb-4">
                   <button
                     onClick={handleFacebookShare}
                     type="button"
                     className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-3 rounded-lg transition-all flex items-center justify-center gap-2 text-sm cursor-pointer"
+                    title="Share on Facebook with event preview"
                   >
                     <span>f</span>
                     Facebook
@@ -382,6 +408,7 @@ export default function SharePreview({ event }) {
                     onClick={handleTwitterShare}
                     type="button"
                     className="bg-black hover:bg-gray-900 text-white font-semibold py-2 px-3 rounded-lg transition-all flex items-center justify-center gap-2 text-sm cursor-pointer"
+                    title="Share on Twitter/X with event details"
                   >
                     <span>𝗫</span>
                     Twitter
@@ -391,6 +418,7 @@ export default function SharePreview({ event }) {
                     onClick={handleWhatsAppShare}
                     type="button"
                     className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-3 rounded-lg transition-all flex items-center justify-center gap-2 text-sm cursor-pointer"
+                    title="Share on WhatsApp"
                   >
                     <span>💬</span>
                     WhatsApp
@@ -400,10 +428,15 @@ export default function SharePreview({ event }) {
                     onClick={handleDiscordShare}
                     type="button"
                     className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-3 rounded-lg transition-all flex items-center justify-center gap-2 text-sm cursor-pointer"
+                    title="Copy link for Discord"
                   >
                     <span>🎮</span>
                     Discord
                   </button>
+                </div>
+                <div className="bg-purple-500/10 border border-purple-500/20 rounded p-3 text-xs text-purple-300">
+                  <p className="font-semibold mb-1">💡 Pro Tip:</p>
+                  <p>When you share on Facebook or Twitter, the event will display with a beautiful preview showing the title, date, location, and game details!</p>
                 </div>
               </div>
             </motion.div>

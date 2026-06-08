@@ -91,6 +91,53 @@ export default function EventDetailsPage() {
     fetchEventDetails();
   }, [eventId]);
 
+  // Update Open Graph meta tags for social sharing
+  useEffect(() => {
+    if (!event) return;
+
+    const title = event?.title || 'Inception Games Event';
+    const description = `Join ${title} on Inception Games. Register now for this amazing esports event!`;
+    
+    // Use a fallback image if banner_image is not available
+    let imageUrl = event?.banner_image || '/og-default.png';
+    
+    // Ensure image URL is absolute for social media crawlers
+    if (imageUrl && !imageUrl.startsWith('http')) {
+      imageUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}${imageUrl}`;
+    }
+    
+    const pageUrl = typeof window !== 'undefined' ? window.location.href : '';
+
+    // Update existing meta tags or create new ones
+    const updateMetaTag = (name, content) => {
+      let tag = document.querySelector(`meta[property="${name}"]`) || 
+                document.querySelector(`meta[name="${name}"]`);
+      if (!tag) {
+        tag = document.createElement('meta');
+        const propName = name.startsWith('og:') ? 'property' : 'name';
+        tag.setAttribute(propName, name);
+        document.head.appendChild(tag);
+      }
+      tag.content = content;
+    };
+
+    updateMetaTag('og:title', title);
+    updateMetaTag('og:description', description);
+    updateMetaTag('og:image', imageUrl);
+    updateMetaTag('og:image:width', '1200');
+    updateMetaTag('og:image:height', '630');
+    updateMetaTag('og:url', pageUrl);
+    updateMetaTag('og:type', 'website');
+    updateMetaTag('og:site_name', 'Inception Games');
+    updateMetaTag('twitter:card', 'summary_large_image');
+    updateMetaTag('twitter:title', title);
+    updateMetaTag('twitter:description', description);
+    updateMetaTag('twitter:image', imageUrl);
+
+    // Update document title
+    document.title = title + ' - Inception Games';
+  }, [event]);
+
   const fetchEventDetails = async () => {
     try {
       setLoading(true);
