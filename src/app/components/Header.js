@@ -369,14 +369,14 @@ export default function Header() {
                 className="relative group px-6 py-2.5 rounded-full font-semibold text-white overflow-hidden"
               >
                 {/* Animated gradient background */}
-                {/* <span className="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 bg-[length:200%_100%] animate-gradient-x" /> */}
+                <span className="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 bg-[length:200%_100%] animate-gradient-x" />
                 {/* Glow effect */}
-                {/* <span className="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 bg-[length:200%_100%] animate-gradient-x blur-lg opacity-50 group-hover:opacity-80 transition-opacity" /> */}
+                <span className="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 bg-[length:200%_100%] animate-gradient-x blur-lg opacity-50 group-hover:opacity-80 transition-opacity" />
                 {/* Button content */}
-                {/* <span className="relative flex items-center gap-2">
+                <span className="relative flex items-center gap-2">
                   <User size={18} />
                   Login
-                </span> */}
+                </span>
               </button>
             )}
           </div>

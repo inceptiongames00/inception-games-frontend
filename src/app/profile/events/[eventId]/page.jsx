@@ -809,7 +809,6 @@ export default function EventDetailPage() {
       ...prev,
       selectedSlotId: openSlot ? String(openSlot.id) : "",
       players: Array.from({ length: count }, () => ({
-        uid: "",
         full_name: "",
         email: "",
         phone: "",
@@ -893,7 +892,6 @@ export default function EventDetailPage() {
         for (let i = 0; i < formData.players.length; i++) {
           const p = formData.players[i];
           if (
-            !p.uid?.trim() ||
             !p.full_name?.trim() ||
             !p.email?.trim() ||
             !p.in_game_name?.trim() ||
@@ -910,7 +908,6 @@ export default function EventDetailPage() {
 
         const scrimPayload = {
           team_name: formData.teamName.trim(),
-          uid: user?.id || user?.uid || formData.captainUid?.trim() || null,
           full_name: formData.fullName.trim(),
           email: formData.email.trim(),
           phone: formData.phone.trim(),
@@ -918,7 +915,6 @@ export default function EventDetailPage() {
           in_game_id: formData.inGameId.trim(),
           discord_id: formData.discordId.trim() || null,
           players: formData.players.map((p) => ({
-            uid: p.uid.trim(),
             full_name: p.full_name.trim(),
             email: p.email.trim(),
             phone: p.phone?.trim() || null,
@@ -1723,19 +1719,7 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
                                     <p className="text-sm font-semibold text-white">
                                       Player {index + 2}
                                     </p>
-                                    <AnimatedInput
-                                      label="User ID (UID)"
-                                      name={`player-${index}-uid`}
-                                      value={player.uid}
-                                      onChange={(e) =>
-                                        handlePlayerChange(
-                                          index,
-                                          "uid",
-                                          e.target.value,
-                                        )
-                                      }
-                                      required
-                                    />
+                                    
                                     <AnimatedInput
                                       label="Full Name"
                                       name={`player-${index}-full_name`}
@@ -1764,7 +1748,7 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
                                       required
                                     />
                                     <AnimatedInput
-                                      label="Phone Number (optional)"
+                                      label="Phone Number"
                                       name={`player-${index}-phone`}
                                       value={player.phone}
                                       onChange={(e) =>
