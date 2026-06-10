@@ -787,21 +787,26 @@ export default function EventDetailPage() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Number of additional players (excluding the captain) required by the scrim
-  const additionalPlayersCount = Math.max(
-    0,
-    (event?.team_size || event?.teamSize || 1) - 1,
-  );
+  // Whether this scrim/event is a solo (single-player) mode
+  const isSoloMode =
+    (event?.game_mode || event?.teamType || "").toLowerCase() === "solo";
+
+  // Number of additional players (excluding the captain) required by the scrim.
+  // Solo mode never requires additional team members.
+  const additionalPlayersCount = isSoloMode
+    ? 0
+    : Math.max(0, (event?.team_size || event?.teamSize || 1) - 1);
 
   // Available slots from the scrim payload
   const scrimSlots = event?.slots || [];
 
   // Initialize the players array + default slot when opening a scrim registration form
   const openScrimRegistration = () => {
-    const count = Math.max(
-      0,
-      (event?.team_size || event?.teamSize || 1) - 1,
-    );
+    const solo =
+      (event?.game_mode || event?.teamType || "").toLowerCase() === "solo";
+    const count = solo
+      ? 0
+      : Math.max(0, (event?.team_size || event?.teamSize || 1) - 1);
     const openSlot =
       (event?.slots || []).find((s) => s.status === "Open") ||
       (event?.slots || [])[0];
@@ -874,15 +879,19 @@ export default function EventDetailPage() {
           setIsSubmitting(false);
           return;
         }
-        if (!formData.teamName || formData.teamName.trim() === "") {
-          showNotificationMessage("error", "Team name is required");
-          setIsSubmitting(false);
-          return;
+        if (!isSoloMode) {
+          if (!formData.teamName || formData.teamName.trim() === "") {
+            showNotificationMessage("error", "Team name is required");
+            setIsSubmitting(false);
+            return;
+          }
         }
         if (!formData.inGameName || !formData.inGameId) {
           showNotificationMessage(
             "error",
-            "Captain in-game name and ID are required",
+            isSoloMode
+              ? "In-game name and ID are required"
+              : "Captain in-game name and ID are required",
           );
           setIsSubmitting(false);
           return;
@@ -907,14 +916,19 @@ export default function EventDetailPage() {
         }
 
         const scrimPayload = {
-          team_name: formData.teamName.trim(),
+          team_name: isSoloMode
+            ? formData.inGameName.trim() || formData.fullName.trim()
+            : formData.teamName.trim(),
+          game_mode: event?.game_mode || event?.teamType || null,
           full_name: formData.fullName.trim(),
           email: formData.email.trim(),
           phone: formData.phone.trim(),
           in_game_name: formData.inGameName.trim(),
           in_game_id: formData.inGameId.trim(),
           discord_id: formData.discordId.trim() || null,
-          players: formData.players.map((p) => ({
+          players: isSoloMode
+            ? []
+            : formData.players.map((p) => ({
             full_name: p.full_name.trim(),
             email: p.email.trim(),
             phone: p.phone?.trim() || null,
@@ -1647,155 +1661,139 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
 
                             {event.eventType === "Scrims" && (
                               <>
-                                {/* Slot selection */}
-                                {/* {scrimSlots.length > 0 && (
+                                {/* Team name - only for team-based modes (Duo/Squad), not Solo */}
+                                {!isSoloMode && (
                                   <AnimatedInput
-                                    label="Select Slot"
-                                    type="select"
-                                    name="selectedSlotId"
-                                    value={formData.selectedSlotId}
+                                    label="Team Name"
+                                    name="teamName"
+                                    value={formData.teamName}
                                     onChange={handleInputChange}
-                                    placeholder="Choose a slot"
                                     required
-                                    options={scrimSlots.map((s) => ({
-                                      value: String(s.id),
-                                      label: `${s.label || "Slot"} - ${new Date(
-                                        s.slot_date,
-                                      ).toLocaleDateString("en-GB", {
-                                        day: "2-digit",
-                                        month: "short",
-                                      })} ${(s.slot_time || "").slice(0, 5)} (${s.filled_teams}/${s.max_teams})`,
-                                    }))}
                                   />
-                                )} */}
+                                )}
 
-                                {/* Team captain details */}
-                                
-                                
-                                {/* <AnimatedInput
-                                  label="Team Name"
-                                  name="teamName"
-                                  value={formData.teamName}
-                                  onChange={handleInputChange}
-                                  required
-                                />
                                 <AnimatedInput
-                                  label="IGL Name"
+                                  label={isSoloMode ? "In-Game Name" : "IGL Name"}
                                   name="inGameName"
                                   value={formData.inGameName}
                                   onChange={handleInputChange}
                                   required
-                                /> */}
+                                />
                                 <AnimatedInput
-                                  label="IGL UID"
+                                  label={isSoloMode ? "In-Game UID" : "IGL UID"}
                                   name="inGameId"
                                   value={formData.inGameId}
                                   onChange={handleInputChange}
                                   required
                                 />
                                 <AnimatedInput
-                                  label="IGL Discord ID (optional)"
+                                  label={
+                                    isSoloMode
+                                      ? "Discord ID (optional)"
+                                      : "IGL Discord ID (optional)"
+                                  }
                                   name="discordId"
                                   value={formData.discordId}
                                   onChange={handleInputChange}
                                 />
 
-                                {/* Additional team members */}
-                                {/* {additionalPlayersCount > 0 && (
+                                {/* Additional team members - only for team modes */}
+                                {!isSoloMode && additionalPlayersCount > 0 && (
                                   <div className="pt-1">
                                     <p className="text-xs font-semibold text-purple-400 uppercase tracking-wider mb-2">
                                       Team Members ({additionalPlayersCount})
                                     </p>
                                   </div>
-                                )} */}
-                                {/* {formData.players.map((player, index) => (
-                                  <div
-                                    key={index}
-                                    className="space-y-3 p-3 rounded-xl border border-gray-700 bg-gray-800/40"
-                                  >
-                                    <p className="text-sm font-semibold text-white">
-                                      Player {index + 2}
-                                    </p>
-                                    
-                                    <AnimatedInput
-                                      label="Full Name"
-                                      name={`player-${index}-full_name`}
-                                      value={player.full_name}
-                                      onChange={(e) =>
-                                        handlePlayerChange(
-                                          index,
-                                          "full_name",
-                                          e.target.value,
-                                        )
-                                      }
-                                      required
-                                    />
-                                    <AnimatedInput
-                                      label="Email Address"
-                                      type="email"
-                                      name={`player-${index}-email`}
-                                      value={player.email}
-                                      onChange={(e) =>
-                                        handlePlayerChange(
-                                          index,
-                                          "email",
-                                          e.target.value,
-                                        )
-                                      }
-                                      required
-                                    />
-                                    <AnimatedInput
-                                      label="Phone Number"
-                                      name={`player-${index}-phone`}
-                                      value={player.phone}
-                                      onChange={(e) =>
-                                        handlePlayerChange(
-                                          index,
-                                          "phone",
-                                          e.target.value,
-                                        )
-                                      }
-                                    />
-                                    <AnimatedInput
-                                      label="In-Game Name"
-                                      name={`player-${index}-in_game_name`}
-                                      value={player.in_game_name}
-                                      onChange={(e) =>
-                                        handlePlayerChange(
-                                          index,
-                                          "in_game_name",
-                                          e.target.value,
-                                        )
-                                      }
-                                      required
-                                    />
-                                    <AnimatedInput
-                                      label="In-Game ID"
-                                      name={`player-${index}-in_game_id`}
-                                      value={player.in_game_id}
-                                      onChange={(e) =>
-                                        handlePlayerChange(
-                                          index,
-                                          "in_game_id",
-                                          e.target.value,
-                                        )
-                                      }
-                                      required
-                                    />
-                                    <AnimatedInput
-                                      label="Discord ID (optional)"
-                                      name={`player-${index}-discord_id`}
-                                      value={player.discord_id}
-                                      onChange={(e) =>
-                                        handlePlayerChange(
-                                          index,
-                                          "discord_id",
-                                          e.target.value,
-                                        )
-                                      }
-                                    />
-                                  </div>
-                                ))} */}
+                                )}
+                                {!isSoloMode &&
+                                  formData.players.map((player, index) => (
+                                    <div
+                                      key={index}
+                                      className="space-y-3 p-3 rounded-xl border border-gray-700 bg-gray-800/40"
+                                    >
+                                      <p className="text-sm font-semibold text-white">
+                                        Player {index + 2}
+                                      </p>
+
+                                      <AnimatedInput
+                                        label="Full Name"
+                                        name={`player-${index}-full_name`}
+                                        value={player.full_name}
+                                        onChange={(e) =>
+                                          handlePlayerChange(
+                                            index,
+                                            "full_name",
+                                            e.target.value,
+                                          )
+                                        }
+                                        required
+                                      />
+                                      <AnimatedInput
+                                        label="Email Address"
+                                        type="email"
+                                        name={`player-${index}-email`}
+                                        value={player.email}
+                                        onChange={(e) =>
+                                          handlePlayerChange(
+                                            index,
+                                            "email",
+                                            e.target.value,
+                                          )
+                                        }
+                                        required
+                                      />
+                                      <AnimatedInput
+                                        label="Phone Number"
+                                        name={`player-${index}-phone`}
+                                        value={player.phone}
+                                        onChange={(e) =>
+                                          handlePlayerChange(
+                                            index,
+                                            "phone",
+                                            e.target.value,
+                                          )
+                                        }
+                                      />
+                                      <AnimatedInput
+                                        label="In-Game Name"
+                                        name={`player-${index}-in_game_name`}
+                                        value={player.in_game_name}
+                                        onChange={(e) =>
+                                          handlePlayerChange(
+                                            index,
+                                            "in_game_name",
+                                            e.target.value,
+                                          )
+                                        }
+                                        required
+                                      />
+                                      <AnimatedInput
+                                        label="In-Game ID"
+                                        name={`player-${index}-in_game_id`}
+                                        value={player.in_game_id}
+                                        onChange={(e) =>
+                                          handlePlayerChange(
+                                            index,
+                                            "in_game_id",
+                                            e.target.value,
+                                          )
+                                        }
+                                        required
+                                      />
+                                      <AnimatedInput
+                                        label="Discord ID (optional)"
+                                        name={`player-${index}-discord_id`}
+                                        value={player.discord_id}
+                                        onChange={(e) =>
+                                          handlePlayerChange(
+                                            index,
+                                            "discord_id",
+                                            e.target.value,
+                                          )
+                                        }
+                                      />
+                                    </div>
+                                  ))}
                               </>
                             )}
 
