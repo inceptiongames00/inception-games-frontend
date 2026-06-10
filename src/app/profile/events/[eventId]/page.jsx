@@ -1670,12 +1670,9 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
                                 )} */}
 
                                 {/* Team captain details */}
-                                <div className="pt-1">
-                                  <p className="text-xs font-semibold text-purple-400 uppercase tracking-wider mb-2">
-                                    Team Info
-                                  </p>
-                                </div>
-                                <AnimatedInput
+                                
+                                
+                                {/* <AnimatedInput
                                   label="Team Name"
                                   name="teamName"
                                   value={formData.teamName}
@@ -1688,7 +1685,7 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
                                   value={formData.inGameName}
                                   onChange={handleInputChange}
                                   required
-                                />
+                                /> */}
                                 <AnimatedInput
                                   label="IGL UID"
                                   name="inGameId"
@@ -1704,14 +1701,14 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
                                 />
 
                                 {/* Additional team members */}
-                                {additionalPlayersCount > 0 && (
+                                {/* {additionalPlayersCount > 0 && (
                                   <div className="pt-1">
                                     <p className="text-xs font-semibold text-purple-400 uppercase tracking-wider mb-2">
                                       Team Members ({additionalPlayersCount})
                                     </p>
                                   </div>
-                                )}
-                                {formData.players.map((player, index) => (
+                                )} */}
+                                {/* {formData.players.map((player, index) => (
                                   <div
                                     key={index}
                                     className="space-y-3 p-3 rounded-xl border border-gray-700 bg-gray-800/40"
@@ -1798,7 +1795,7 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
                                       }
                                     />
                                   </div>
-                                ))}
+                                ))} */}
                               </>
                             )}
 
