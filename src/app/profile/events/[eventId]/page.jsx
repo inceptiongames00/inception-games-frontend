@@ -2187,7 +2187,7 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
           </div>
         </div>
       </main>
-
+//latest code
       <Footer />
     </div>
   );
