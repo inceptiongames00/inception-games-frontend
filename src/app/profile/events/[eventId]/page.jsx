@@ -1206,6 +1206,10 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
     event.gameImage ||
     "/images/default-game.jpg";
   const gameName = event.game?.name || event.gameName || "Unknown Game";
+  // console.log(gameName);
+  // EA FC 26
+  // Efootball Mobile
+  // Street Fighter 6
 
   const tabs = [
     { id: "rules", label: "Rules" },
@@ -1610,7 +1614,12 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
                               required
                             />
                             <AnimatedInput
-                              label="IGL Email Address"
+                              // label="IGL Email Address"
+                               label={
+    ["EA FC 26", "Efootball Mobile", "Street Fighter 6"].includes(gameName)
+      ? "Email Address"
+      : "IGL Email Address"
+  }
                               type="email"
                               name="email"
                               value={formData.email}
@@ -1680,7 +1689,18 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
                                   required
                                 />
                                 <AnimatedInput
-                                  label={isSoloMode ? "In-Game UID" : "IGL UID"}
+                                  // label={isSoloMode ? "In-Game UID" : "IGL UID"}
+                                   label={
+    gameName === "EA FC 26"
+      ? "Steam ID / PSN ID"
+      : gameName === "Efootball Mobile"
+      ? "Game ID"
+      : gameName === "Street Fighter 6"
+      ? "Capcom ID"
+      : isSoloMode
+      ? "In-Game UID"
+      : "IGL UID"
+  }
                                   name="inGameId"
                                   value={formData.inGameId}
                                   onChange={handleInputChange}
