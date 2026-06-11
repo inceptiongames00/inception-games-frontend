@@ -260,7 +260,18 @@ export default function UnifiedAuthModal({ isOpen, onClose, initialMode = 'login
     setLocalError('')
     setMessage('')
 
-    if (!formData.game || !formData.role || !formData.rank || !selectedContinent || !selectedCountry) {
+    // Role and rank are only required when the selected game actually defines them.
+    // Some games (e.g. EA Sports FC, Chess, Trackmania) have no roles/ranks.
+    const gameHasRoles = Boolean(ROLES[formData.game])
+    const gameHasRanks = Boolean(RANKS[formData.game])
+
+    if (
+      !formData.game ||
+      (gameHasRoles && !formData.role) ||
+      (gameHasRanks && !formData.rank) ||
+      !selectedContinent ||
+      !selectedCountry
+    ) {
       setLocalError('Please fill in all required fields')
       return
     }
@@ -270,8 +281,8 @@ export default function UnifiedAuthModal({ isOpen, onClose, initialMode = 'login
       const region = [selectedCity, selectedCountry, selectedContinent].filter(Boolean).join(', ')
       await registerGamingProfile(formData.email, {
         primary_game: formData.game,
-        game_role: formData.role,
-        rank: formData.rank,
+        game_role: formData.role || null,
+        rank: formData.rank || null,
         continent: selectedContinent,
         country: selectedCountry,
         region: region,
