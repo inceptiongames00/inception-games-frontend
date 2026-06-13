@@ -925,6 +925,7 @@ export default function EventDetailPage() {
           phone: formData.phone.trim(),
           in_game_name: formData.inGameName.trim(),
           in_game_id: formData.inGameId.trim(),
+          // uid: formData.inGameId.trim(),
           discord_id: formData.discordId.trim() || null,
           players: isSoloMode
             ? []
@@ -933,10 +934,12 @@ export default function EventDetailPage() {
             email: p.email.trim(),
             phone: p.phone?.trim() || null,
             in_game_name: p.in_game_name.trim(),
-            in_game_id: p.in_game_id.trim(),
+            // in_game_id: p.in_game_id.trim(),
+            uid: p.in_game_id.trim(),
             discord_id: p.discord_id?.trim() || null,
           })),
         };
+        // console.log("king shohan",scrimPayload)
 
         const scrimRes = await fetch(
           API.SCRIMS_REGISTER.replace(":scrimId", params.eventId).replace(
