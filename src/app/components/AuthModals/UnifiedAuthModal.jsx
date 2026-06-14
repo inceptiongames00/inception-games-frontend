@@ -863,6 +863,7 @@ export default function UnifiedAuthModal({ isOpen, onClose, initialMode = 'login
           </motion.div>
         </>
       )}
+      
     </AnimatePresence>
   )
 }
