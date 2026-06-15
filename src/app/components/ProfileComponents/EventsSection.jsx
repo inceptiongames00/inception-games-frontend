@@ -13,6 +13,7 @@ import {
   MapPin,
   Monitor,
   Users,
+  User,
   Calendar,
   DollarSign,
   Clock,
@@ -415,10 +416,21 @@ function EventCard({ event, onClick }) {
             <span>{event.venue || event.location || "Online"}</span>
           </div>
           <PlatformDisplay platform={event.platform} />
-          <div className="flex items-center gap-1">
+          {/* <div className="flex items-center gap-1">
             <Users size={12} />
             <span>{event.teamType || "Open"}</span>
-          </div>
+          </div> */}
+  <div className="flex items-center gap-1">
+  {(event.teamType || '').toLowerCase() === 'solo' ? (
+    <User size={12} />
+  ) : (
+    <Users size={12} />
+  )}
+  <span>{event.teamType}</span>
+</div>
+
+
+
         </div>
 
 {/* always-visible content  */}

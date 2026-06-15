@@ -9,6 +9,7 @@ import {
   MapPin,
   Monitor,
   Users,
+  User,
   DollarSign,
   Flag,
   Bell,
@@ -1330,6 +1331,7 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
                         </span>
                       </div>
                       <div className="flex flex-col items-center gap-0.5">
+
                         <div className="w-7 sm:w-8 h-7 sm:h-8 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center backdrop-blur-sm shadow-lg shadow-purple-500/30 flex-shrink-0">
                           <Monitor size={12} className="sm:w-3.5 sm:h-3.5 text-white" />
                         </div>
@@ -1338,9 +1340,19 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
                         </span>
                       </div>
                       <div className="flex flex-col items-center gap-0.5">
-                        <div className="w-7 sm:w-8 h-7 sm:h-8 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center backdrop-blur-sm shadow-lg shadow-purple-500/30 flex-shrink-0">
+
+
+                        {/* <div className="w-7 sm:w-8 h-7 sm:h-8 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center backdrop-blur-sm shadow-lg shadow-purple-500/30 flex-shrink-0">
                           <Users size={12} className="sm:w-3.5 sm:h-3.5 text-white" />
-                        </div>
+                        </div> */}
+
+  <div className="w-7 sm:w-8 h-7 sm:h-8 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center backdrop-blur-sm shadow-lg shadow-purple-500/30 flex-shrink-0">
+  {(event.teamType || '').toLowerCase() === 'solo' ? (
+    <User size={12} className="sm:w-3.5 sm:h-3.5 text-white" />
+  ) : (
+    <Users size={12} className="sm:w-3.5 sm:h-3.5 text-white" />
+  )}
+</div>
 
                         <span className="text-gray-400 text-[8px] sm:text-[9px] max-w-[32px] sm:max-w-[36px] text-center truncate leading-tight">
                           {event.teamType || "—"}
@@ -1910,10 +1922,20 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
                   {/* <span>{event.location}</span> */}
                 </div>
                 <PlatformDisplay platform={event.platform} />
-                <div className="flex items-center gap-2">
+                {/* <div className="flex items-center gap-2">
                   <Users size={16} />
                   <span>{event.teamType}</span>
+                </div> */}
+                    <div className="flex items-center gap-2">
+                  {event.teamType.toLowerCase() === "solo" ? (
+                    <User size={16} />
+                  ) : (
+                    <Users size={16} />
+                  )}
+                  <span>{event.teamType}</span>
                 </div>
+
+
               </div>
 
               {/* Description */}
