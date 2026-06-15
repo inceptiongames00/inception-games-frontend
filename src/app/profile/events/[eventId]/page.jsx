@@ -940,8 +940,7 @@ export default function EventDetailPage() {
             discord_id: p.discord_id?.trim() || null,
           })),
         };
-        // console.log("king shohan",scrimPayload)
-
+   
         const scrimRes = await fetch(
           API.SCRIMS_REGISTER.replace(":scrimId", params.eventId).replace(
             ":slotId",
@@ -981,6 +980,9 @@ export default function EventDetailPage() {
         }));
         setShowSuccessModal(true);
         setIsSubmitting(false);
+        setTimeout(() => {
+  router.push("/profile");
+}, 2000); 
         return;
       }
 
