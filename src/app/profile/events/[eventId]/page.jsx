@@ -2132,8 +2132,8 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
                         Registration Successful!
                       </h2>
                       <p className="text-gray-400 text-sm leading-relaxed mb-6">
-                        You&apos;re locked in for Phase 1. Check your email for
-                        the next steps to complete your payment.
+                        You&apos;re locked in for Phase 1. Check your email for the verification message confirming that you have been added.
+                        
                       </p>
 
                       <button
