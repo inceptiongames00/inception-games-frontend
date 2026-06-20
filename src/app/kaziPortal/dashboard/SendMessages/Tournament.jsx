@@ -4,12 +4,21 @@ import { useState } from "react";
 import { Send, Loader2 } from "lucide-react";
 import Swal from "sweetalert2";
 
-export default function AllPlayersAcrossAllTournament() {
+export default function Tournament() {
+  const [tournamentId, setTournamentId] = useState("");
   const [gameName, setGameName] = useState("");
   const [message, setMessage] = useState("");
+  const [roomId, setRoomId] = useState("");
+  const [roomPassword, setRoomPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [responseData, setResponseData] = useState(null);
   const [error, setError] = useState("");
+
+  const handleRoomDetailsChange = (id, password) => {
+    const generatedMessage = `Your Room ID is ${id} , Your Password is ${password}`;
+
+    setMessage(generatedMessage);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,7 +29,7 @@ export default function AllPlayersAcrossAllTournament() {
 
     try {
       const payload = {
-        game_name: gameName,
+        tournament_id: tournamentId,
         message: message,
       };
 
@@ -51,7 +60,10 @@ export default function AllPlayersAcrossAllTournament() {
       });
 
       // reset form after success
+      setTournamentId("");
       setGameName("");
+      setRoomId("");
+      setRoomPassword("");
       setMessage("");
     } catch (err) {
       console.error(err);
@@ -63,28 +75,62 @@ export default function AllPlayersAcrossAllTournament() {
 
   return (
     <div className="bg-white border rounded-2xl shadow-sm p-6">
-      <h2 className="text-xl font-bold !text-black mb-4">All Players Across All Tournaments</h2>
+      <h2 className="text-xl font-bold !text-black mb-4">
+        Game and Tournament
+      </h2>
       <form onSubmit={handleSubmit} className="space-y-5">
-        {/* Game Name */}
-        {/* <div>
-          <label className="block !text-black mb-2 font-medium">
-            Game Name
+        {/* Tournament ID */}
+        <div>
+          <label className="block mb-2 font-medium !text-black">
+            Tournament ID
           </label>
           <input
             type="text"
-            value={gameName}
-            onChange={(e) => setGameName(e.target.value)}
-            placeholder="eg. COD Mobile"
+            value={tournamentId}
+            onChange={(e) => setTournamentId(e.target.value)}
+            placeholder="Enter tournament ID"
             className="w-full !text-black border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-black"
             required
           />
-        </div> */}
+        </div>
+
+        {/* Room ID */}
+        <div>
+          <label className="block mb-2 font-medium !text-black">Room ID</label>
+          <input
+            type="text"
+            value={roomId}
+            onChange={(e) => {
+              const value = e.target.value;
+              setRoomId(value);
+              handleRoomDetailsChange(value, roomPassword);
+            }}
+            placeholder="Enter room ID"
+            className="w-full !text-black border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-black"
+          />
+        </div>
+
+        {/* Room Password */}
+        <div>
+          <label className="block mb-2 font-medium !text-black">
+            Room Password
+          </label>
+          <input
+            type="text"
+            value={roomPassword}
+            onChange={(e) => {
+              const value = e.target.value;
+              setRoomPassword(value);
+              handleRoomDetailsChange(roomId, value);
+            }}
+            placeholder="Enter room password"
+            className="w-full !text-black border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-black"
+          />
+        </div>
 
         {/* Message */}
         <div>
-          <label className="block !text-black mb-2 font-medium">
-            Message
-          </label>
+          <label className="block !text-black mb-2 font-medium">Message</label>
           <textarea
             rows="5"
             value={message}

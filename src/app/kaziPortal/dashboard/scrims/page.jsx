@@ -203,7 +203,8 @@ export default function ScrimsPage() {
       Swal.fire({
         icon: "error",
         title: "Something went wrong",
-        text: error.message || "Please try again later.",
+        // text: error.message || "Please try again later.",
+        text: "Something went wrong",
       });
     } finally {
       setCreating(false);
@@ -390,6 +391,9 @@ export default function ScrimsPage() {
                     >
                       <option value="">Select Status</option>
                       <option value="upcoming">Upcoming</option>
+                      <option value="active">Active</option>
+                      <option value="completed">Completed</option>
+                      <option value="cancelled">Cancelled</option>
                     </select>
                   </div>
 

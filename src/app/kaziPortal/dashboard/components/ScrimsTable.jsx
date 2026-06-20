@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import * as XLSX from "xlsx";
 
-export default function EsportsUsersTable() {
-  const [profiles, setProfiles] = useState([]);
-  const [filteredProfiles, setFilteredProfiles] = useState([]);
+export default function ScrimsTable() {
+  const [registrations, setRegistrations] = useState([]);
+  const [filteredRegistrations, setFilteredRegistrations] = useState([]);
   const [selectedGame, setSelectedGame] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
@@ -13,92 +13,108 @@ export default function EsportsUsersTable() {
   const usersPerPage = 10;
 
   useEffect(() => {
-    const fetchProfiles = async () => {
+    const fetchScrims = async () => {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/profiles`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/participants/scrims`,
         );
         const data = await res.json();
+        const mapped = (data.registrations || []).map((item) => ({
+          fullName: item.full_name,
+          email: item.email,
+          phone: item.phone,
+          game: item.scrim_game,
+        }));
 
-        setProfiles(data.profiles);
-        setFilteredProfiles(data.profiles);
+        setRegistrations(mapped);
+        setFilteredRegistrations(mapped);
       } catch (error) {
-        console.error("Error fetching profiles:", error);
+        console.error("Error fetching scrims registrations:", error);
       }
     };
 
-    fetchProfiles();
+    fetchScrims();
   }, []);
 
   const uniqueGames = [
-    ...new Set(profiles.map((p) => p.primary_game).filter(Boolean)),
+    ...new Set(registrations.map((p) => p.game).filter(Boolean)),
   ];
+
+  // const handleFilter = (game) => {
+  //   setSelectedGame(game);
+  //   setCurrentPage(1);
+
+  //   if (!game) {
+  //     setFilteredRegistrations(registrations);
+  //   } else {
+  //     setFilteredRegistrations(registrations.filter((p) => p.game === game));
+  //   }
+  // };
 
   const handleFilter = (game, search = searchTerm) => {
     setSelectedGame(game);
     setCurrentPage(1);
 
-    let filtered = profiles;
+    let filtered = registrations;
 
     if (game) {
-      filtered = filtered.filter((p) => p.primary_game === game);
+      filtered = filtered.filter((p) => p.game === game);
     }
 
     if (search) {
       filtered = filtered.filter(
         (p) =>
-          p.full_name?.toLowerCase().includes(search.toLowerCase()) ||
+          p.fullName?.toLowerCase().includes(search.toLowerCase()) ||
           p.email?.toLowerCase().includes(search.toLowerCase()),
       );
     }
 
-    setFilteredProfiles(filtered);
+    setFilteredRegistrations(filtered);
   };
 
   const handleSearch = (value) => {
     setSearchTerm(value);
     setCurrentPage(1);
 
-    let filtered = profiles;
+    let filtered = registrations;
 
     if (selectedGame) {
-      filtered = filtered.filter((p) => p.primary_game === selectedGame);
+      filtered = filtered.filter((p) => p.game === selectedGame);
     }
 
     if (value) {
       filtered = filtered.filter(
         (p) =>
-          p.full_name?.toLowerCase().includes(value.toLowerCase()) ||
+          p.fullName?.toLowerCase().includes(value.toLowerCase()) ||
           p.email?.toLowerCase().includes(value.toLowerCase()),
       );
     }
 
-    setFilteredProfiles(filtered);
+    setFilteredRegistrations(filtered);
   };
-
   const exportToExcel = () => {
-    const exportData = filteredProfiles.map((user, index) => ({
+    const exportData = filteredRegistrations.map((user, index) => ({
       "SL No": index + 1,
-      "Full Name": user.full_name || "N/A",
+      "Full Name": user.fullName || "N/A",
       Email: user.email,
       Number: user.phone,
-      Game: user.primary_game || "N/A",
+      Game: user.game || "N/A",
     }));
 
     const worksheet = XLSX.utils.json_to_sheet(exportData);
 
     const workbook = XLSX.utils.book_new();
 
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Players");
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Scrim Participants");
 
-    XLSX.writeFile(workbook, "esports_players.xlsx");
+    XLSX.writeFile(workbook, "scrim_participants.xlsx");
   };
 
   const indexOfLast = currentPage * usersPerPage;
   const indexOfFirst = indexOfLast - usersPerPage;
-  const currentUsers = filteredProfiles.slice(indexOfFirst, indexOfLast);
+  const currentUsers = filteredRegistrations.slice(indexOfFirst, indexOfLast);
 
-  const totalPages = Math.ceil(filteredProfiles.length / usersPerPage);
+  const totalPages = Math.ceil(filteredRegistrations.length / usersPerPage);
 
   return (
     <div className="!text-black max-w-6xl mx-auto p-4">
@@ -106,9 +122,10 @@ export default function EsportsUsersTable() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-3">
         <div>
           <p className="text-xl font-bold text-black mt-1">
-            Total Players: ({profiles.length})
+            Total Scrim Participants: ({registrations.length})
           </p>
         </div>
+
         {/* Filter & Export  & search*/}
         <div className="flex flex-wrap items-center gap-2">
           <input
@@ -116,13 +133,13 @@ export default function EsportsUsersTable() {
             placeholder="Search by name or email"
             value={searchTerm}
             onChange={(e) => handleSearch(e.target.value)}
-            className="border border-gray-300 rounded-md px-5 py-2 text-sm focus:outline-none focus:ring-[#DDB0FD] focus:border-blue-500 transition"
+            className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none"
           />
 
           <select
             value={selectedGame}
             onChange={(e) => handleFilter(e.target.value)}
-            className="border border-gray-300 rounded-md px-5 py-2 text-sm focus:outline-none focus:ring-[#DDB0FD] focus:border-[#DDB0FD] transition"
+            className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none"
           >
             <option value="">All Games</option>
 
@@ -154,18 +171,17 @@ export default function EsportsUsersTable() {
               <th className="px-4 py-3 font-medium">Game</th>
             </tr>
           </thead>
-
           <tbody>
             {currentUsers.map((user, index) => (
               <tr
-                key={user.id}
+                key={`${user.email}-${currentPage}-${index}`}
                 className="border-t border-gray-200 hover:bg-gray-50 transition"
               >
                 <td className="px-4 py-3">{indexOfFirst + index + 1}</td>
-                <td className="px-4 py-3">{user.full_name || "N/A"}</td>
+                <td className="px-4 py-3">{user.fullName || "N/A"}</td>
                 <td className="px-4 py-3">{user.email}</td>
                 <td className="px-4 py-3">{user.phone}</td>
-                <td className="px-4 py-3">{user.primary_game || "N/A"}</td>
+                <td className="px-4 py-3">{user.game || "N/A"}</td>
               </tr>
             ))}
           </tbody>

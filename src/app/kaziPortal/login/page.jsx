@@ -2,15 +2,16 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function LoginPage() {
   const router = useRouter();
-
   const [form, setForm] = useState({
-    name: "",
     email: "",
     password: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
     setForm({
@@ -19,10 +20,42 @@ export default function LoginPage() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("User Data:", form);
-    router.push("/kaziPortal/dashboard");
+    setIsLoading(true);
+
+    try {
+      const response = await fetch(
+        "https://inception-games.an.r.appspot.com/api/v1/cms/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: form.email,
+            password: form.password,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        toast.error("Wrong credentials. Please check your email and password.");
+        return;
+      }
+
+      const data = await response.json();
+
+      if (data && (data.token || response.ok)) {
+        router.push("/kaziPortal/dashboard");
+      } else {
+        toast.error("Wrong credentials. Please check your email and password.");
+      }
+    } catch (error) {
+      toast.error("Wrong credentials. Please check your email and password.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -44,20 +77,6 @@ export default function LoginPage() {
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Name */}
-          <div>
-            <label className="block text-sm text-gray-600 mb-1">Name</label>
-            <input
-              type="text"
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 rounded-lg bg-white/70 text-gray-900 border border-gray-300 focus:outline-none focus:border-purple-500"
-            />
-          </div>
-
-          {/* Email */}
           <div>
             <label className="block text-sm text-gray-600 mb-1">Email</label>
             <input
@@ -70,7 +89,6 @@ export default function LoginPage() {
             />
           </div>
 
-          {/* Password */}
           <div>
             <label className="block text-sm text-gray-600 mb-1">Password</label>
             <input
@@ -83,19 +101,21 @@ export default function LoginPage() {
             />
           </div>
 
-          {/* Button */}
           <button
             type="submit"
+            disabled={isLoading}
             className="w-full py-2 rounded-lg 
              bg-gradient-to-r from-purple-500 to-pink-500 
              hover:from-purple-600 hover:to-pink-600 
              transition-all duration-300 
-             text-white font-semibold"
+             text-white font-semibold disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            Login
+            {isLoading ? "Logging in..." : "Login"}
           </button>
         </form>
       </div>
+
+      <ToastContainer position="top-right" autoClose={4000} hideProgressBar closeOnClick pauseOnHover draggable pauseOnFocusLoss />
     </div>
   );
 }

@@ -1,10 +1,12 @@
 "use client";
 import { useState, useEffect } from "react";
 import EsportsUsersTable from "./components/EsportsUsersTable";
+import ScrimsTable from "./components/ScrimsTable";
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState(null);
   const [profiles, setProfiles] = useState([]);
+  const [scrimsTotal, setScrimsTotal] = useState(0);
 
   useEffect(() => {
     const fetchProfiles = async () => {
@@ -19,7 +21,20 @@ export default function DashboardPage() {
       }
     };
 
+    const fetchScrimsCount = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/participants/scrims`,
+        );
+        const data = await res.json();
+        setScrimsTotal(data.total || 0);
+      } catch (error) {
+        console.error("Error fetching scrims count:", error);
+      }
+    };
+
     fetchProfiles();
+    fetchScrimsCount();
   }, []);
 
   const stats = [
@@ -37,9 +52,9 @@ export default function DashboardPage() {
     },
     {
       id: "total-scrims",
-      title: "Total Scrims",
-      value: "8",
-      subtitle: "Active scrim matches",
+      title: "Total Scrims Participant",
+      value: scrimsTotal.toString(),
+      subtitle: "Active scrim participant",
     },
     {
       id: "total-brands",
@@ -100,8 +115,8 @@ export default function DashboardPage() {
 
       {/* Dynamic Content Area */}
       {activeTab === "esports-users" && <EsportsUsersTable profiles={profiles} />}
-      
-      {activeTab && activeTab !== "esports-users" && (
+      {activeTab === "total-scrims" && <ScrimsTable />}
+      {activeTab && activeTab !== "esports-users" && activeTab !== "total-scrims" && (
         <div className="bg-white border border-black/10 rounded-2xl p-12 shadow-lg text-center mt-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
           <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

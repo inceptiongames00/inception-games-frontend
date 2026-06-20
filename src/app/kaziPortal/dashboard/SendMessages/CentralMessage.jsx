@@ -4,10 +4,9 @@ import { useState } from "react";
 import { Send, Loader2 } from "lucide-react";
 import Swal from "sweetalert2";
 
-export default function GameAndTournament() {
-  const [tournamentId, setTournamentId] = useState("");
-  const [gameName, setGameName] = useState("");
+export default function AllPlayersAcrossAllTournament() {
   const [message, setMessage] = useState("");
+  const [subject, setSubject] = useState("");
   const [loading, setLoading] = useState(false);
   const [responseData, setResponseData] = useState(null);
   const [error, setError] = useState("");
@@ -21,8 +20,8 @@ export default function GameAndTournament() {
 
     try {
       const payload = {
-        tournament_id: tournamentId,
-        game_name: gameName,
+        send_to_all_users: true,
+        subject: subject,
         message: message,
       };
 
@@ -40,7 +39,7 @@ export default function GameAndTournament() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Failed to send message");
+        throw new Error("Failed to send message");
       }
 
       setResponseData(data);
@@ -53,11 +52,10 @@ export default function GameAndTournament() {
       });
 
       // reset form after success
-      setTournamentId("");
-      setGameName("");
+      setSubject("");
       setMessage("");
     } catch (err) {
-      console.error(err);
+      // console.error(err);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -66,43 +64,25 @@ export default function GameAndTournament() {
 
   return (
     <div className="bg-white border rounded-2xl shadow-sm p-6">
-      <h2 className="text-xl font-bold !text-black mb-4">Game and Tournament</h2>
+      <h2 className="text-2xl font-bold !text-black mb-4">
+      Central Message
+      </h2>
       <form onSubmit={handleSubmit} className="space-y-5">
-        {/* Tournament ID */}
+        {/* subject */}
         <div>
-          <label className="block mb-2 font-medium !text-black">
-            Tournament ID
-          </label>
+          <label className="block !text-black mb-2 font-medium">Subject</label>
           <input
-            type="text"
-            value={tournamentId}
-            onChange={(e) => setTournamentId(e.target.value)}
-            placeholder="Enter tournament ID"
-            className="w-full !text-black border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-black"
-            required
-          />
-        </div>
-
-        {/* Game Name */}
-        <div>
-          <label className="block !text-black mb-2 font-medium">
-            Game Name
-          </label>
-          <input
-            type="text"
-            value={gameName}
-            onChange={(e) => setGameName(e.target.value)}
-            placeholder="eg. Free Fire"
-            className="w-full !text-black border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-black"
+            value={subject}
+            onChange={(e) => setSubject(e.target.value)}
+            placeholder="Enter the subject"
+            className="w-full !text-black border rounded-xl px-2 py-2 outline-none focus:ring-2 focus:ring-black"
             required
           />
         </div>
 
         {/* Message */}
         <div>
-          <label className="block !text-black mb-2 font-medium">
-            Message
-          </label>
+          <label className="block !text-black mb-2 font-medium">Message</label>
           <textarea
             rows="5"
             value={message}

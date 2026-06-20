@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import AllPlayersAcrossAllTournament from "./AllPlayersAcrossAllTournament";
-import GameAndTournament from "./GameAndTournament";
-import TournamentOnly from "./TournamentOnly";
-import GameOnly from "./GameOnly";
+import AllPlayersAcrossAllTournament from "./CentralMessage";
+import GameAndTournament from "./Tournament";
+import TournamentOnly from "./Scrims";
+import GameOnly from "./BrandDeals";
 
 export default function SendMessagesPage() {
   const [selectedType, setSelectedType] = useState("allPlayers");
@@ -46,9 +46,9 @@ export default function SendMessagesPage() {
             className="w-full !text-black border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-black"
           >
             <option value="allPlayers">Central Notification</option>
-            <option value="gameAndTournament">Game and Tournament</option>
-            <option value="tournamentOnly">Tournament Only</option>
-            <option value="gameOnly">Game Only</option>
+            <option value="gameAndTournament">Tournament</option>
+            <option value="tournamentOnly">Scrims</option>
+            <option value="gameOnly">Brand Deals</option>
           </select>
         </div>
 
