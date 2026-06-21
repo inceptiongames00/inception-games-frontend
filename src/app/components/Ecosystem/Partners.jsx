@@ -33,9 +33,9 @@ export const partnersData = {
     {
       id: 3,
       name: "Moar",
-      photo: "/Ecosystem/Partners/moar2.png",
+      photo: "/Ecosystem/Partners/MOAR.png",
       video: "/Ecosystem/Partners/MOAR.mp4",
-      isVideo: true,
+      isVideo: false,
       link: "https://moarbd.com",
       imageStyle: {
         objectFit: "contain",

@@ -35,7 +35,7 @@ const showcaseData = {
       {
         id: 3,
         name: "Moar",
-        photo: "/Ecosystem/Partners/moar2.png",
+        photo: "/Ecosystem/Partners/MOAR.png",
         link: "#",
         caption: {
           normalText: "Moar fuels the competitive spirit — ",
