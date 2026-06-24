@@ -1,248 +1,133 @@
 "use client"
 
-import { FaFacebookF, FaTwitter, FaLinkedin, FaWhatsapp } from "react-icons/fa"
+import { motion } from "framer-motion"
+import { ArrowRight } from "lucide-react"
 
 export default function LatestNews() {
   const newsList = [
     {
-      title: "গেম খেলা হতে পারে কারো পেশা",
-      description:
-        "গেম তৈরি ও বাজারজাত করে দেশের অর্থনীতিতেও বড় অবদান রাখতে পারে গেম নির্মাতা প্রতিষ্ঠান। পেশাদার গেমারদের জন্য প্ল্যাটফর্ম তৈরি ও গেম তৈরির কাজ করছেন কাজী হাসিব ও তাঁর দল। তাঁদের দুই প্রতিষ্ঠানের সম্পর্কে লিখেছেন আশিক উল বারাত... ",
+      title: "Season 5: Neon Dawn Launch",
+      description: "The biggest update yet brings new maps, characters, and a complete overhaul of the ranking system.",
       image: "/News/bignews.jpg",
-      readMore: true,
-    },
-  ]
-
-  const smallNews = [
-
-    {
-      title: "Mousepad Giveaway tonight guys. Don't miss the chance. ",
-      image: "/News/mouse-pad.jpg",
-      category: "E-sports",
-      time: "March 25",
-      link: `https://www.facebook.com/share/p/${process.env.NEXT_PUBLIC_FACEBOOK_POST_1}`,
+      category: "UPDATES",
+      categoryColor: "bg-pink-500/20 text-pink-300 border border-pink-500/30",
+      readMoreLink: "#",
     },
     {
-      title: "5 Jerseys Giveaway is ON GKEC 🎉",
-      image: "/News/jersey.jpg",
-      category: "E-sports",
-      time: "March 30",
-      link: `https://www.facebook.com/share/p/${process.env.NEXT_PUBLIC_FACEBOOK_POST_2}`,
-    },
-    {
-      title: "GPU Winner - AL MOHAIMIN FARABI",
-      image: "/News/gpu-winner.jpg",
-      category: "E-sports",
-      time: "March 16",
-      link: `https://www.facebook.com/share/p/${process.env.NEXT_PUBLIC_FACEBOOK_POST_3}`,
-    },
-    {
-      title: "Gaming Mouse Winner - ANTOR HASAN",
-      image: "/News/mouse-winner.jpg",
-      category: "E-sports",
-      time: "March 16",
-      link: `https://www.facebook.com/share/p/${process.env.NEXT_PUBLIC_FACEBOOK_POST_4}`,
-    },
-    {
-      title: "Inception Games at Startup Showcase Event - Connecting with aspiring entrepreneurs and gamers",
-      image: "/News/showcase.jpg",
-      category: "E-sports",
-      time: "November 14",
-      link: `https://www.facebook.com/share/p/${process.env.NEXT_PUBLIC_FACEBOOK_POST_5}`,
-    },
-    {
-      title: "YUNet Bangladesh Gaming & Esports Summit 2025 - Sign Up going on. Follow YUNet Esport Arena",
-      image: "/News/summit.jpg",
-      category: "E-sports",
-      time: "December 7",
-      link: `https://www.facebook.com/share/p/${process.env.NEXT_PUBLIC_FACEBOOK_POST_6}`,
-    },
-    {
-      title: "Digital Entrepreneurship and Innovation Ecosystem Development (DEIED) Project Office has organized a Dialogue Session to introduce the Startup and Scaleup Program (Accelerating Bangladesh) and the University Innovation Hub Program to senior public-sector leadership. ",
+      title: "Global Finals 2024 Announced",
+      description: "The road to the championship begins in Tokyo. Check out the full schedule and ticket information.",
       image: "/News/news3.jpg",
-      category: "E-sports",
-      time: "December 10",
-      link: `https://www.facebook.com/share/p/${process.env.NEXT_PUBLIC_FACEBOOK_POST_7}`,
+      category: "ESPORTS",
+      categoryColor: "bg-cyan-500/20 text-cyan-300 border border-cyan-500/30",
+      readMoreLink: "#",
     },
     {
-      title: "Dedicating to my Core Teammates & gamers ❤️. Tournament sign up going on at our website. Don't forget to sign up. Slice N Share at Airtel Buzz Presents Bangladesh Gaming & Esports Summit 2025 ",
+      title: "Creator Spotlight: Zen_Gamer",
+      description: "Meet the visionary behind some of our community's most popular custom maps and game modes.",
       image: "/News/news4.jpg",
-      category: "E-sports",
-      time: "December 10",
-      link: `https://www.facebook.com/share/p/${process.env.NEXT_PUBLIC_FACEBOOK_POST_8}`,
+      category: "COMMUNITY",
+      categoryColor: "bg-purple-500/20 text-purple-300 border border-purple-500/30",
+      readMoreLink: "#",
     },
   ]
-
-  const shareUrl = `https://www.facebook.com/share/p/${process.env.NEXT_PUBLIC_FEATURED_FACEBOOK_POST}?mibextid=wwXIfr`
-  const shareTitle = "Inception Games Championship - 15 Lakh BDT Prize Pool!"
-
-  const handleShare = (platform) => {
-    const url = encodeURIComponent(shareUrl)
-    const text = encodeURIComponent(shareTitle)
-
-    const shareLinks = {
-      facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}`,
-      twitter: `https://twitter.com/intent/tweet?url=${url}&text=${text}`,
-      linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${url}`,
-      whatsapp: `https://wa.me/?text=${text}%20${url}`,
-    }
-
-    window.open(shareLinks[platform], "_blank", "width=600,height=400")
-  }
 
   return (
-    <section id="news" className="py-20 px-4" style={{ backgroundColor: "#0a0a14" }}>
+    <section id="news" className="py-20 px-4 sm:px-6" style={{ backgroundColor: "#0a0a14" }}>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex items-start md:items-center justify-between mb-12">
-          <h2
-            className="text-2xl md:text-6xl font-bold text-white mb-4 md:mb-0"
-            style={{ fontFamily: "Bebas Neue, sans-serif" }}
+        <div className="flex items-center justify-between mb-16">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="flex flex-col items-start"
           >
-            Latest News
-          </h2>
-          <a
-            href="#"
-            className="text-white hover:text-purple-400 transition flex items-center gap-2 text-sm md:text-lg"
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white">
+              LATEST{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
+                NEWS
+              </span>
+            </h2>
+            {/* Underline accent */}
+            <div className="flex gap-2 mt-4">
+              <div className="w-16 h-1 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full" />
+              <div className="w-8 h-1 bg-cyan-400 rounded-full" />
+            </div>
+          </motion.div>
+
+          {/* View All Button */}
+          <motion.button
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="px-6 py-2 sm:px-8 sm:py-3 bg-gradient-to-r from-purple-600 to-purple-500 rounded-full text-white font-semibold text-sm sm:text-base hover:shadow-lg hover:shadow-purple-500/50 transition-all duration-300"
           >
-            {/* Explore All <span>›</span> */}
-          </a>
+            View All
+          </motion.button>
         </div>
 
-        <div className="rounded-3xl p-[3px] bg-gradient-to-br from-[#A076CC] to-[#40057C] mb-12">
-          <div
-            className="relative rounded-3xl overflow-hidden min-h-[400px] md:min-h-[600px] flex items-end"
-            style={{
-              backgroundImage: `url('${newsList[0].image}')`,
-              backgroundSize: "cover",
-              backgroundPosition: "center top",
-              backgroundRepeat: "no-repeat",
-              backgroundColor: "#0a0a14",
-            }}
-          >
-            {/* 70% gradient overlay from bottom - dark to transparent */}
-            <div
-              className="absolute inset-0"
-              style={{
-                background: `linear-gradient(to top, 
-                  rgba(0, 0, 0, 0.95) 0%, 
-                  rgba(0, 0, 0, 0.85) 25%, 
-                  rgba(0, 0, 0, 0.6) 50%, 
-                  rgba(0, 0, 0, 0.2) 70%, 
-                  transparent 100%)`,
-              }}
-            />
-
-            {/* Text content on top of overlay */}
-            <div className="relative z-10 p-4 md:p-12 max-w-3xl">
-              <h3 className="text-lg md:text-4xl font-bold text-white mb-3 md:mb-4">{newsList[0].title}</h3>
-              <p className="text-gray-200 text-sm md:text-lg mb-2 md:mb-6 leading-relaxed line-clamp-3 md:line-clamp-none">
-                {newsList[0].description}
-              </p>
-
-              <div className="flex items-center gap-4 flex-wrap">
-                <a
-                  href="https://www.facebook.com/share/p/16yMhZvtR9/?mibextid=wwXIfr"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block px-3 md:px-8 py-1 md:py-3 rounded-full font-bold text-sm text-white transition hover:scale-105"
+        {/* News Grid - 3 columns */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+          {newsList.map((news, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ delay: idx * 0.15, duration: 0.6 }}
+              whileHover={{ y: -8 }}
+              className="group cursor-pointer"
+            >
+              {/* Card Container */}
+              <div className="rounded-2xl overflow-hidden bg-zinc-900/50 border border-zinc-800/50 hover:border-zinc-700/50 transition-all duration-300 h-full flex flex-col backdrop-blur-sm">
+                {/* Image Section */}
+                <div
+                  className="relative h-48 sm:h-56 md:h-64 overflow-hidden bg-gradient-to-br from-slate-700 to-slate-900"
                   style={{
-                    background: "linear-gradient(135deg, #8117EE 0%, #A076CC 100%)",
+                    backgroundImage: `url('${news.image}')`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
                   }}
                 >
-                  Read More
-                </a>
+                  {/* Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
 
-                {/* Social Share Icons */}
-                <div className="flex items-center gap-3">
-                  {/* <span className="text-gray-400 text-xs md:text-sm hidden md:block">Share:</span> */}
-                  <button
-                    onClick={() => handleShare("facebook")}
-                    className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 hover:bg-[#1877F2] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
-                    aria-label="Share on Facebook"
+                  {/* Category Badge */}
+                  <div
+                    className={`absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${news.categoryColor} backdrop-blur-sm`}
                   >
-                    <FaFacebookF className="text-white text-sm md:text-base" />
-                  </button>
-                  <button
-                    onClick={() => handleShare("twitter")}
-                    className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 hover:bg-[#1DA1F2] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
-                    aria-label="Share on Twitter"
-                  >
-                    <FaTwitter className="text-white text-sm md:text-base" />
-                  </button>
-                  <button
-                    onClick={() => handleShare("linkedin")}
-                    className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 hover:bg-[#0A66C2] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
-                    aria-label="Share on LinkedIn"
-                  >
-                    <FaLinkedin className="text-white text-sm md:text-base" />
-                  </button>
-                  <button
-                    onClick={() => handleShare("whatsapp")}
-                    className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 hover:bg-[#25D366] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
-                    aria-label="Share on WhatsApp"
-                  >
-                    <FaWhatsapp className="text-white text-sm md:text-base" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {smallNews.map((news, idx) => (
-            <a
-              key={idx}
-              href={news.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-2xl overflow-hidden group cursor-pointer transform transition duration-300 hover:scale-[1.02]"
-              style={{
-                border: "2px solid transparent",
-                backgroundImage: "linear-gradient(#0a0a14, #0a0a14), linear-gradient(135deg, #A076CC 0%, #40057C 100%)",
-                backgroundOrigin: "border-box",
-                backgroundClip: "padding-box, border-box",
-              }}
-            >
-              {/* Card Image with gradient overlay from bottom */}
-              <div
-                className="relative h-64 overflow-hidden"
-                style={{
-                  backgroundImage: `url('${news.image}')`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  backgroundRepeat: "no-repeat",
-                }}
-              >
-                {/* Gradient overlay from bottom */}
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    background: `linear-gradient(to top, 
-                      rgba(0, 0, 0, 0.9) 0%, 
-                      rgba(0, 0, 0, 0.7) 40%, 
-                      rgba(0, 0, 0, 0.3) 70%, 
-                      transparent 100%)`,
-                  }}
-                />
-
-                {/* Category badge */}
-                <div className="absolute top-3 left-3 flex items-center gap-2">
-                  <span className="text-xs font-semibold text-gray-300 bg-black/60 px-3 py-1 rounded-full backdrop-blur-sm">
                     {news.category}
-                  </span>
-                  <span className="text-xs text-gray-400">• {news.time}</span>
+                  </div>
                 </div>
 
-                {/* Title at bottom on top of gradient */}
-                <div className="absolute bottom-0 left-0 right-0 p-4 z-10">
-                  <h4 className="text-sm md:text-base font-bold text-white line-clamp-3 group-hover:text-purple-300 transition">
-                    {news.title}
-                  </h4>
+                {/* Content Section */}
+                <div className="p-5 sm:p-6 flex-grow flex flex-col justify-between">
+                  <div>
+                    <h3 className="text-lg sm:text-xl font-bold text-white mb-3 leading-tight group-hover:text-purple-300 transition-colors duration-300 line-clamp-2">
+                      {news.title}
+                    </h3>
+                    <p className="text-sm sm:text-base text-zinc-300 leading-relaxed line-clamp-3">
+                      {news.description}
+                    </p>
+                  </div>
+
+                  {/* Read More Link */}
+                  <div className="mt-4 pt-4 border-t border-zinc-700/50">
+                    <a
+                      href={news.readMoreLink}
+                      className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 font-semibold text-sm uppercase tracking-wider transition-colors duration-300 group/link"
+                    >
+                      Read More
+                      <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform duration-300" />
+                    </a>
+                  </div>
                 </div>
               </div>
-            </a>
+            </motion.div>
           ))}
         </div>
       </div>
