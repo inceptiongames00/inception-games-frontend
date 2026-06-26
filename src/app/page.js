@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import Header from "./components/Header";
 import TrustedBrands from "./components/TrustedBrands";
+import GiveawayWinner from "./components/GiveawayWinner";
 import Ecosystem from "../../src/app/components/Ecosystem/Ecosystem.jsx";
 import Image from "next/image";
 import UnifiedAuthModal from "./components/AuthModals/UnifiedAuthModal";
@@ -605,6 +606,8 @@ function HomeContent() {
       </section>
 
       <TrustedBrands />
+      {/* ── GIVEAWAY WINNER SECTION  ── */}
+      <GiveawayWinner />
       <Ecosystem />
       <LatestNews />
       <div id="career">{/* Career section can be added here if needed */}</div>
