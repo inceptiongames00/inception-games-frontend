@@ -14,6 +14,7 @@ import {
 import Header from "./components/Header";
 import TrustedBrands from "./components/TrustedBrands";
 import GiveawayWinner from "./components/GiveawayWinner";
+import OurPartners from "./components/OurPartners";
 import Ecosystem from "../../src/app/components/Ecosystem/Ecosystem.jsx";
 import Image from "next/image";
 import UnifiedAuthModal from "./components/AuthModals/UnifiedAuthModal";
@@ -608,7 +609,9 @@ function HomeContent() {
       <TrustedBrands />
       {/* ── GIVEAWAY WINNER SECTION  ── */}
       <GiveawayWinner />
-      <Ecosystem />
+      {/* ── PARTNER & UPDATES SECTION  ── */}
+      <OurPartners />
+      {/* <Ecosystem /> */}
       <LatestNews />
       <div id="career">{/* Career section can be added here if needed */}</div>
       <ContactSection />
