@@ -256,7 +256,7 @@ export default function CommunityActivies() {
                   <div className="rounded-xl sm:rounded-2xl overflow-hidden bg-zinc-900/50 border border-zinc-800/50 hover:border-zinc-700/50 transition-all duration-300 h-full flex flex-col backdrop-blur-sm hover:shadow-2xl hover:shadow-purple-500/10">
                     {/* Image Section */}
                     <div
-                      className="relative h-40 sm:h-48 overflow-hidden bg-gradient-to-br from-slate-700 to-slate-900 group-hover:scale-110 transition-transform duration-500"
+                      className="relative h-40 sm:h-48 overflow-hidden bg-gradient-to-br from-slate-700 to-slate-900 bg-cover bg-center group-hover:scale-110 transition-transform duration-500"
                       style={{
                         backgroundImage: `url('${update.image}')`,
                         backgroundSize: "cover",
@@ -297,7 +297,7 @@ export default function CommunityActivies() {
                   <div className="rounded-xl sm:rounded-2xl overflow-hidden bg-zinc-900/50 border border-zinc-800/50 hover:border-zinc-700/50 transition-all duration-300 h-full flex flex-col backdrop-blur-sm hover:shadow-2xl hover:shadow-purple-500/10">
                     {/* Image Section */}
                     <div
-                      className="relative h-40 sm:h-48 overflow-hidden bg-gradient-to-br from-slate-700 to-slate-900 group-hover:scale-110 transition-transform duration-500"
+                      className="relative h-40 sm:h-48 overflow-hidden bg-gradient-to-br from-slate-700 to-slate-900 bg-cover bg-center group-hover:scale-110 transition-transform duration-500"
                       style={{
                         backgroundImage: `url('${update.image}')`,
                         backgroundSize: "cover",

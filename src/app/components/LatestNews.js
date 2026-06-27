@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion"
 import { ArrowRight } from "lucide-react"
+import { FaFacebookF, FaTwitter, FaLinkedin, FaWhatsapp } from "react-icons/fa"
 
 export default function LatestNews() {
   const newsList = [
@@ -30,6 +31,34 @@ export default function LatestNews() {
       readMoreLink: "#",
     },
   ]
+
+  const handleShare = (platform, news) => {
+    const shareUrl = typeof window !== 'undefined' ? window.location.href : ''
+    const title = news.title
+    const description = news.description
+    let shareLink = ''
+
+    switch (platform) {
+      case 'facebook':
+        shareLink = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(title + ' - ' + description)}`
+        break
+      case 'twitter':
+        shareLink = `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(title + ' - ' + description)}`
+        break
+      case 'linkedin':
+        shareLink = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`
+        break
+      case 'whatsapp':
+        shareLink = `https://wa.me/?text=${encodeURIComponent(title + ' - ' + description + ' ' + shareUrl)}`
+        break
+      default:
+        return
+    }
+
+    if (typeof window !== 'undefined') {
+      window.open(shareLink, 'share-dialog', 'width=800,height=600')
+    }
+  }
 
   return (
     <section id="news" className="py-20 px-4 sm:px-6" style={{ backgroundColor: "#0a0a14" }}>
@@ -71,11 +100,11 @@ export default function LatestNews() {
               <div className="rounded-2xl overflow-hidden bg-zinc-900/50 border border-zinc-800/50 hover:border-zinc-700/50 transition-all duration-300 h-full flex flex-col backdrop-blur-sm">
                 {/* Image Section */}
                 <div
-                  className="relative h-48 sm:h-56 md:h-64 overflow-hidden bg-gradient-to-br from-slate-700 to-slate-900"
+                  className="relative h-48 sm:h-56 md:h-64 overflow-hidden bg-gradient-to-br from-slate-700 to-slate-900 bg-cover bg-top"
                   style={{
                     backgroundImage: `url('${news.image}')`,
                     backgroundSize: "cover",
-                    backgroundPosition: "center",
+                    backgroundPosition: "top",
                   }}
                 >
                   {/* Overlay */}
@@ -102,13 +131,43 @@ export default function LatestNews() {
 
                   {/* Read More Link */}
                   <div className="mt-4 pt-4 border-t border-zinc-700/50">
-                    <a
-                      href={news.readMoreLink}
-                      className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 font-semibold text-sm uppercase tracking-wider transition-colors duration-300 group/link"
-                    >
-                      Read More
-                      <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform duration-300" />
-                    </a>
+                    <div className="flex items-center gap-3">
+                      <a
+                        href={news.readMoreLink}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-500 rounded-full text-white font-semibold text-xs uppercase tracking-wider transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/50 group/link"
+                      >
+                        Read More
+                        <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform duration-300" />
+                      </a>
+                      <button
+                        onClick={() => handleShare("facebook", news)}
+                        className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 hover:bg-[#1877F2] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
+                        aria-label="Share on Facebook"
+                      >
+                        <FaFacebookF className="text-white text-sm md:text-base" />
+                      </button>
+                      <button
+                        onClick={() => handleShare("twitter", news)}
+                        className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 hover:bg-[#1DA1F2] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
+                        aria-label="Share on Twitter"
+                      >
+                        <FaTwitter className="text-white text-sm md:text-base" />
+                      </button>
+                      <button
+                        onClick={() => handleShare("linkedin", news)}
+                        className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 hover:bg-[#0A66C2] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
+                        aria-label="Share on LinkedIn"
+                      >
+                        <FaLinkedin className="text-white text-sm md:text-base" />
+                      </button>
+                      <button
+                        onClick={() => handleShare("whatsapp", news)}
+                        className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 hover:bg-[#25D366] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
+                        aria-label="Share on WhatsApp"
+                      >
+                        <FaWhatsapp className="text-white text-sm md:text-base" />
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -117,21 +176,22 @@ export default function LatestNews() {
         </div>
 
         {/* View All Button */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="flex justify-center mt-12"
-        >
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="px-8 py-3 bg-gradient-to-r from-purple-600 to-purple-500 rounded-full text-white font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition-all duration-300"
-          >
-            View All
-          </motion.button>
-        </motion.div>
+     <motion.div
+         initial={{ opacity: 0, y: 20 }}
+         whileInView={{ opacity: 1, y: 0 }}
+         viewport={{ once: true }}
+         transition={{ duration: 0.6 }}
+         className="flex justify-center mt-12"
+       >
+         <motion.button
+           whileHover={{ scale: 1.05 }}
+           whileTap={{ scale: 0.95 }}
+           className="px-8 py-3 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 rounded-full text-white font-semibold hover:shadow-lg hover:shadow-pink-500/50 transition-all duration-300"
+         >
+           View All
+         </motion.button>
+       </motion.div>
+
       </div>
     </section>
   )

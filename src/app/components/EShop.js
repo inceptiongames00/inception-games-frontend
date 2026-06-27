@@ -70,7 +70,7 @@ export default function EShop() {
                 <div className="rounded-3xl overflow-hidden bg-zinc-900/50 backdrop-blur-sm border border-zinc-800/50 shadow-2xl h-full flex flex-col transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/20 hover:scale-105 hover:border-zinc-700/50">
                   {/* Image Section */}
                   <div
-                    className="relative h-56 sm:h-64 md:h-72 overflow-hidden bg-gradient-to-br from-slate-700 to-slate-900 group-hover:scale-110 transition-transform duration-500"
+                    className="relative h-56 sm:h-64 md:h-72 overflow-hidden bg-gradient-to-br from-slate-700 to-slate-900 bg-cover bg-center group-hover:scale-110 transition-transform duration-500"
                     style={{
                       backgroundImage: `url('${product.image}')`,
                       backgroundSize: "cover",
@@ -113,7 +113,7 @@ export default function EShop() {
                 <div className="rounded-3xl overflow-hidden bg-zinc-900/50 backdrop-blur-sm border border-zinc-800/50 shadow-2xl h-full flex flex-col transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/20 hover:scale-105 hover:border-zinc-700/50">
                   {/* Image Section */}
                   <div
-                    className="relative h-56 sm:h-64 md:h-72 overflow-hidden bg-gradient-to-br from-slate-700 to-slate-900 group-hover:scale-110 transition-transform duration-500"
+                    className="relative h-56 sm:h-64 md:h-72 overflow-hidden bg-gradient-to-br from-slate-700 to-slate-900 bg-cover bg-center group-hover:scale-110 transition-transform duration-500"
                     style={{
                       backgroundImage: `url('${product.image}')`,
                       backgroundSize: "cover",

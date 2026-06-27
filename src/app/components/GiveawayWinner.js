@@ -123,7 +123,7 @@ export default function GiveawayWinner() {
                   <div className="rounded-2xl overflow-hidden bg-zinc-900/40 border border-zinc-800/50 hover:border-zinc-700/50 transition-all duration-300 flex flex-col backdrop-blur-sm hover:shadow-2xl hover:shadow-purple-500/10 h-full">
                     {/* Image Section */}
                     <div
-                      className="relative h-64 sm:h-72 md:h-80 overflow-hidden bg-gradient-to-br from-slate-700 to-slate-900 group-hover:scale-105 transition-transform duration-500"
+                      className="relative h-64 sm:h-72 md:h-80 overflow-hidden bg-gradient-to-br from-slate-700 to-slate-900 bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
                       style={{
                         backgroundImage: `url('${winner.image}')`,
                         backgroundSize: "cover",
@@ -207,7 +207,7 @@ export default function GiveawayWinner() {
                   <div className="rounded-2xl overflow-hidden bg-zinc-900/40 border border-zinc-800/50 hover:border-zinc-700/50 transition-all duration-300 flex flex-col backdrop-blur-sm hover:shadow-2xl hover:shadow-purple-500/10 h-full">
                     {/* Image Section */}
                     <div
-                      className="relative h-64 sm:h-72 md:h-80 overflow-hidden bg-gradient-to-br from-slate-700 to-slate-900 group-hover:scale-105 transition-transform duration-500"
+                      className="relative h-64 sm:h-72 md:h-80 overflow-hidden bg-gradient-to-br from-slate-700 to-slate-900 bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
                       style={{
                         backgroundImage: `url('${winner.image}')`,
                         backgroundSize: "cover",
