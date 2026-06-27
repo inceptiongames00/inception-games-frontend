@@ -758,10 +758,16 @@ function HomeContent() {
       {/* ── PARTNER & UPDATES SECTION  ── */}
       <OurPartners />
       {/* ── COMMUNITY & ACTIVIES SECTION  ── */}
-      <CommunityActivies/>
+      <div id="community">
+        <CommunityActivies/>
+      </div>
       {/* ── ECOMMERCE SECTION  ── */}
-      <EShop />
-      <LatestNews />
+      <div id="eshop">
+        <EShop />
+      </div>
+      <div id="news">
+        <LatestNews />
+      </div>
       <Ecosystem />
       {/* <GamesCarousel/> */}
       <div id="career">{/* Career section can be added here if needed */}</div>

@@ -206,7 +206,7 @@ export default function Header() {
             </Link> */}
 
               <button
-              onClick={() => navigateToSection("ecosystem-games")}
+              onClick={() => navigateToSection("eshop")}
               className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors cursor-pointer"
             >
               Eshop
@@ -227,7 +227,7 @@ export default function Header() {
             </button> */}
 
             <button
-              onClick={() => navigateToSection("ecosystem-community")}
+              onClick={() => navigateToSection("community")}
               className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors cursor-pointer"
             >
               Community
@@ -574,7 +574,7 @@ export default function Header() {
               <button
                 onClick={() => {
                   handleLinkClick();
-                  navigateToSection("ecosystem-community");
+                  navigateToSection("community");
                 }}
                 className="text-white text-base font-medium py-3 border-b border-purple-500/10 hover:text-purple-400 transition-colors w-full text-left cursor-pointer"
               >

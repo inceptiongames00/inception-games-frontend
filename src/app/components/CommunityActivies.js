@@ -105,9 +105,9 @@ export default function CommunityActivies() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4">
-            OUR{" "}
+            COMMUNITY{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
-              PARTNERS
+              ACTIVITIES
             </span>
           </h2>
           {/* Underline accent */}
