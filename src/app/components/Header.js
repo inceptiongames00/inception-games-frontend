@@ -209,7 +209,7 @@ export default function Header() {
               onClick={() => navigateToSection("ecosystem-partners")}
               className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors cursor-pointer"
             >
-              Partnerss
+              Partners
             </button>
 
             <button
