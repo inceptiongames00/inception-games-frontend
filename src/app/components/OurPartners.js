@@ -13,7 +13,6 @@ export default function OurPartners() {
       title: "MIME GO: The Future of Entertainment",
       description: "Experience the next generation of streaming, calling, and savings. Everything you need for your digital lifestyle in one powerful app. Join the MIME community and revolutionize your internet experience.",
       badge: "EXCLUSIVE LAUNCH",
-      buttons: ["CORPORATE PARTNERSHIP", "ESPORTS COMMUNITY PARTNERSHIP"],
       image: "/Ecosystem/Partners/mime2.jpeg",
       bgGradient: "from-blue-600/20 via-purple-600/20 to-cyan-600/20",
     },
@@ -21,7 +20,6 @@ export default function OurPartners() {
       title: "MOAR: Next Level Gaming",
       description: "Join a revolutionary platform designed for gamers and esports enthusiasts. Compete, earn rewards, and connect with the global gaming community. Discover exclusive partnerships and opportunities.",
       badge: "FEATURED PARTNER",
-    buttons: ["CORPORATE PARTNERSHIP", "ESPORTS COMMUNITY PARTNERSHIP"],
       image: "/Ecosystem/Partners/MOAR.png",
       bgGradient: "from-pink-600/20 via-purple-600/20 to-blue-600/20",
     },
@@ -29,7 +27,6 @@ export default function OurPartners() {
       title: "iFarmer: Connecting Communities",
       description: "Building bridges between technology and agriculture. Experience innovative solutions that empower businesses and communities. Join us in creating sustainable growth through digital transformation.",
       badge: "INNOVATION PARTNER",
-        buttons: ["CORPORATE PARTNERSHIP", "ESPORTS COMMUNITY PARTNERSHIP"],
       image: "/Ecosystem/Partners/ifarmer2.jpeg",
       bgGradient: "from-green-600/20 via-emerald-600/20 to-cyan-600/20",
     },
@@ -94,7 +91,7 @@ export default function OurPartners() {
   }
 
   return (
-    <section className="py-20 px-4 sm:px-6" style={{ backgroundColor: "#0a0a14" }}>
+ <section className="py-20 px-4 sm:px-6" style={{ backgroundColor: "#0a0a14" }}>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
@@ -149,8 +146,8 @@ export default function OurPartners() {
                   {/* Dark Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-r from-black/95 via-black/80 to-black/30" />
 
-                  {/* Content */}
-                  <div className="relative px-6 sm:px-12 py-12 sm:py-16 md:py-20 max-w-2xl">
+                  {/* Content - INCREASED HEIGHT HERE */}
+                  <div className="relative px-6 sm:px-12 py-16 sm:py-20 md:py-28 max-w-2xl">
                     {/* Badge */}
                     <motion.div
                       initial={{ opacity: 0, y: -10 }}
@@ -182,23 +179,6 @@ export default function OurPartners() {
                     >
                       {partner.description}
                     </motion.p>
-
-                    {/* Buttons */}
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.5 }}
-                      className="flex flex-wrap gap-3 sm:gap-4"
-                    >
-                      {partner.buttons.map((button, btnIdx) => (
-                        <button
-                          key={btnIdx}
-                          className="px-6 sm:px-8 py-2.5 sm:py-3 bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-700 hover:to-purple-600 text-white font-bold text-xs sm:text-sm uppercase tracking-wider rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/50"
-                        >
-                          {button}
-                        </button>
-                      ))}
-                    </motion.div>
                   </div>
                 </div>
               </motion.div>
