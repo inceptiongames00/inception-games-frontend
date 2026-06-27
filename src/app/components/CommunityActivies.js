@@ -94,7 +94,7 @@ export default function CommunityActivies() {
   }
 
   return (
-    <section className="py-20 px-4 sm:px-6" style={{ backgroundColor: "#0a0a14" }}>
+   <section className="py-20 px-4 sm:px-6" style={{ backgroundColor: "#0a0a14" }}>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
@@ -105,14 +105,14 @@ export default function CommunityActivies() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4">
-        COMMUNITY
+            OUR{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
-         {" "}ACTIVIES
+              PARTNERS
             </span>
           </h2>
           {/* Underline accent */}
           <div className="flex justify-center gap-2 mt-4">
-            <div className="w-60 h-1.5 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 rounded-full" />
+            <div className="w-50 h-1.5 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 rounded-full" />
           </div>
         </motion.div>
 
@@ -124,6 +124,16 @@ export default function CommunityActivies() {
           transition={{ duration: 0.6 }}
           className="relative mb-15"
         >
+          {/* Left Side Button */}
+          <motion.button
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+            className="absolute left-0 -bottom-5 z-20 px-6 py-2.5 sm:px-8 sm:py-3 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold uppercase text-xs sm:text-sm tracking-widest rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-pink-500/50"
+          >
+            APPLY FOR PARTNERSHIP
+          </motion.button>
           {/* Slides */}
           <div className="relative overflow-hidden">
             {partners.map((partner, idx) => (
@@ -149,8 +159,8 @@ export default function CommunityActivies() {
                   {/* Dark Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-r from-black/95 via-black/80 to-black/30" />
 
-                  {/* Content */}
-                  <div className="relative px-6 sm:px-12 py-12 sm:py-16 md:py-20 max-w-2xl">
+                  {/* Content - INCREASED HEIGHT HERE */}
+                  <div className="relative px-6 sm:px-12 py-16 sm:py-20 md:py-28 max-w-2xl">
                     {/* Badge */}
                     <motion.div
                       initial={{ opacity: 0, y: -10 }}
@@ -182,23 +192,6 @@ export default function CommunityActivies() {
                     >
                       {partner.description}
                     </motion.p>
-
-                    {/* Buttons */}
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.5 }}
-                      className="flex flex-wrap gap-3 sm:gap-4"
-                    >
-                      {partner.buttons.map((button, btnIdx) => (
-                        <button
-                          key={btnIdx}
-                          className="px-6 sm:px-8 py-2.5 sm:py-3 bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-700 hover:to-purple-600 text-white font-bold text-xs sm:text-sm uppercase tracking-wider rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/50"
-                        >
-                          {button}
-                        </button>
-                      ))}
-                    </motion.div>
                   </div>
                 </div>
               </motion.div>
@@ -242,6 +235,101 @@ export default function CommunityActivies() {
             ))}
           </div>
         </motion.div>
+
+        {/* Updates Carousel Section */}
+        <div>  
+          {/* Carousel Container */}
+          <div className="relative overflow-hidden">
+            {/* Gradient overlays for smooth fade effect */}
+            <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-r from-[#0a0a14] to-transparent z-10"></div>
+            <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-l from-[#0a0a14] to-transparent z-10"></div>
+
+            {/* Auto-scrolling container */}
+            <div className="flex animate-carousel-scroll gap-4 sm:gap-6">
+              {/* First set of cards */}
+              {updates.map((update, index) => (
+                <div
+                  key={`update-1-${index}`}
+                  className="flex-shrink-0 w-56 sm:w-64 md:w-72 group cursor-pointer"
+                >
+                  {/* Card */}
+                  <div className="rounded-xl sm:rounded-2xl overflow-hidden bg-zinc-900/50 border border-zinc-800/50 hover:border-zinc-700/50 transition-all duration-300 h-full flex flex-col backdrop-blur-sm hover:shadow-2xl hover:shadow-purple-500/10">
+                    {/* Image Section */}
+                    <div
+                      className="relative h-40 sm:h-48 overflow-hidden bg-gradient-to-br from-slate-700 to-slate-900 group-hover:scale-110 transition-transform duration-500"
+                      style={{
+                        backgroundImage: `url('${update.image}')`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                      }}
+                    >
+                      {/* Overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
+
+                      {/* Category Badge */}
+                      <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-pink-500/30 text-pink-300 border border-pink-500/50 backdrop-blur-sm">
+                        {update.category}
+                      </div>
+                    </div>
+
+                    {/* Content Section */}
+                    <div className="p-4 sm:p-5 flex-grow flex flex-col justify-between">
+                      <div>
+                        <h3 className="text-base sm:text-lg font-bold text-white mb-2 leading-tight group-hover:text-purple-300 transition-colors duration-300 line-clamp-2">
+                          {update.title}
+                        </h3>
+                        <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed line-clamp-2">
+                          {update.description}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              {/* Duplicate set for seamless loop */}
+              {updates.map((update, index) => (
+                <div
+                  key={`update-2-${index}`}
+                  className="flex-shrink-0 w-56 sm:w-64 md:w-72 group cursor-pointer"
+                >
+                  {/* Card */}
+                  <div className="rounded-xl sm:rounded-2xl overflow-hidden bg-zinc-900/50 border border-zinc-800/50 hover:border-zinc-700/50 transition-all duration-300 h-full flex flex-col backdrop-blur-sm hover:shadow-2xl hover:shadow-purple-500/10">
+                    {/* Image Section */}
+                    <div
+                      className="relative h-40 sm:h-48 overflow-hidden bg-gradient-to-br from-slate-700 to-slate-900 group-hover:scale-110 transition-transform duration-500"
+                      style={{
+                        backgroundImage: `url('${update.image}')`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                      }}
+                    >
+                      {/* Overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
+
+                      {/* Category Badge */}
+                      <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-pink-500/30 text-pink-300 border border-pink-500/50 backdrop-blur-sm">
+                        {update.category}
+                      </div>
+                    </div>
+
+                    {/* Content Section */}
+                    <div className="p-4 sm:p-5 flex-grow flex flex-col justify-between">
+                      <div>
+                        <h3 className="text-base sm:text-lg font-bold text-white mb-2 leading-tight group-hover:text-purple-300 transition-colors duration-300 line-clamp-2">
+                          {update.title}
+                        </h3>
+                        <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed line-clamp-2">
+                          {update.description}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
 
         <style jsx>{`
           @keyframes carousel-scroll {

@@ -67,10 +67,10 @@ export default function EShop() {
                 className="flex-shrink-0 w-64 sm:w-72 md:w-80 group cursor-pointer"
               >
                 {/* Card */}
-                <div className="rounded-3xl overflow-hidden bg-white shadow-2xl h-full flex flex-col transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/20 hover:scale-105">
+                <div className="rounded-3xl overflow-hidden bg-zinc-900/50 backdrop-blur-sm border border-zinc-800/50 shadow-2xl h-full flex flex-col transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/20 hover:scale-105 hover:border-zinc-700/50">
                   {/* Image Section */}
                   <div
-                    className="relative h-56 sm:h-64 md:h-72 overflow-hidden bg-gradient-to-br from-gray-300 to-gray-400 group-hover:scale-110 transition-transform duration-500"
+                    className="relative h-56 sm:h-64 md:h-72 overflow-hidden bg-gradient-to-br from-slate-700 to-slate-900 group-hover:scale-110 transition-transform duration-500"
                     style={{
                       backgroundImage: `url('${product.image}')`,
                       backgroundSize: "cover",
@@ -78,7 +78,7 @@ export default function EShop() {
                     }}
                   >
                     {/* Category Badge */}
-                    <div className="absolute top-4 left-4 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-pink-500 text-white">
+                    <div className="absolute top-4 left-4 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-pink-500/30 text-pink-300 border border-pink-500/50 backdrop-blur-sm">
                       {product.category}
                     </div>
                   </div>
@@ -86,16 +86,16 @@ export default function EShop() {
                   {/* Content Section */}
                   <div className="p-6 sm:p-7 flex-grow flex flex-col justify-between">
                     <div>
-                      <h3 className="text-lg sm:text-xl font-bold text-black mb-2 leading-tight">
+                      <h3 className="text-lg sm:text-xl font-bold text-white mb-2 leading-tight">
                         {product.title}
                       </h3>
-                      <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
+                      <p className="text-sm sm:text-base text-zinc-400 leading-relaxed">
                         {product.description}
                       </p>
                     </div>
 
                     {/* Buy Button */}
-                    <button className="mt-6 px-6 py-2.5 bg-gradient-to-r from-purple-600 to-purple-500 rounded-full text-white font-bold text-sm uppercase tracking-wider hover:shadow-lg hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105">
+                    <button className="mt-6 px-6 py-2.5 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 rounded-full text-white font-bold text-sm uppercase tracking-wider hover:shadow-lg hover:shadow-pink-500/50 transition-all duration-300 hover:scale-105">
                       {product.buttonText}
                     </button>
                   </div>
@@ -110,10 +110,10 @@ export default function EShop() {
                 className="flex-shrink-0 w-64 sm:w-72 md:w-80 group cursor-pointer"
               >
                 {/* Card */}
-                <div className="rounded-3xl overflow-hidden bg-white shadow-2xl h-full flex flex-col transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/20 hover:scale-105">
+                <div className="rounded-3xl overflow-hidden bg-zinc-900/50 backdrop-blur-sm border border-zinc-800/50 shadow-2xl h-full flex flex-col transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/20 hover:scale-105 hover:border-zinc-700/50">
                   {/* Image Section */}
                   <div
-                    className="relative h-56 sm:h-64 md:h-72 overflow-hidden bg-gradient-to-br from-gray-300 to-gray-400 group-hover:scale-110 transition-transform duration-500"
+                    className="relative h-56 sm:h-64 md:h-72 overflow-hidden bg-gradient-to-br from-slate-700 to-slate-900 group-hover:scale-110 transition-transform duration-500"
                     style={{
                       backgroundImage: `url('${product.image}')`,
                       backgroundSize: "cover",
@@ -121,7 +121,7 @@ export default function EShop() {
                     }}
                   >
                     {/* Category Badge */}
-                    <div className="absolute top-4 left-4 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-pink-500 text-white">
+                    <div className="absolute top-4 left-4 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-pink-500/30 text-pink-300 border border-pink-500/50 backdrop-blur-sm">
                       {product.category}
                     </div>
                   </div>
@@ -129,16 +129,16 @@ export default function EShop() {
                   {/* Content Section */}
                   <div className="p-6 sm:p-7 flex-grow flex flex-col justify-between">
                     <div>
-                      <h3 className="text-lg sm:text-xl font-bold text-black mb-2 leading-tight">
+                      <h3 className="text-lg sm:text-xl font-bold text-white mb-2 leading-tight">
                         {product.title}
                       </h3>
-                      <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
+                      <p className="text-sm sm:text-base text-zinc-400 leading-relaxed">
                         {product.description}
                       </p>
                     </div>
 
                     {/* Buy Button */}
-                    <button className="mt-6 px-6 py-2.5 bg-gradient-to-r from-purple-600 to-purple-500 rounded-full text-white font-bold text-sm uppercase tracking-wider hover:shadow-lg hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105">
+                    <button className="mt-6 px-6 py-2.5 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 rounded-full text-white font-bold text-sm uppercase tracking-wider hover:shadow-lg hover:shadow-pink-500/50 transition-all duration-300 hover:scale-105">
                       {product.buttonText}
                     </button>
                   </div>
