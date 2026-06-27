@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Share2, Linkedin } from "lucide-react"
+import { FaFacebookF, FaTwitter, FaLinkedin, FaWhatsapp } from "react-icons/fa"
 
 export default function GiveawayWinner() {
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -43,24 +43,40 @@ export default function GiveawayWinner() {
     const interval = setInterval(() => {
       setCurrentIndex((prev) => {
         const nextIndex = prev + 1
-        // Reset to 0 when reaching the end to loop seamlessly
-        return nextIndex >= winners.length ? 0 : nextIndex
+        // When reaching the end of the duplicated set, jump back to the beginning
+        return nextIndex >= winners.length * 2 ? 0 : nextIndex
       })
     }, 5000) // Change slide every 5 seconds
 
     return () => clearInterval(interval)
   }, [winners.length])
 
-  const handleShareToFacebook = (winner) => {
+  const handleShare = (platform, winner) => {
     const shareUrl = typeof window !== 'undefined' ? window.location.href : ''
-    const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(winner.title + ' - ' + winner.description)}`
-    window.open(facebookShareUrl, 'facebook-share-dialog', 'width=800,height=600')
-  }
+    const title = winner.title
+    const description = winner.description
+    let shareLink = ''
 
-  const handleShareToLinkedIn = (winner) => {
-    const shareUrl = typeof window !== 'undefined' ? window.location.href : ''
-    const linkedInShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`
-    window.open(linkedInShareUrl, 'linkedin-share-dialog', 'width=800,height=600')
+    switch (platform) {
+      case 'facebook':
+        shareLink = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(title + ' - ' + description)}`
+        break
+      case 'twitter':
+        shareLink = `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(title + ' - ' + description)}`
+        break
+      case 'linkedin':
+        shareLink = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`
+        break
+      case 'whatsapp':
+        shareLink = `https://wa.me/?text=${encodeURIComponent(title + ' - ' + description + ' ' + shareUrl)}`
+        break
+      default:
+        return
+    }
+
+    if (typeof window !== 'undefined') {
+      window.open(shareLink, 'share-dialog', 'width=800,height=600')
+    }
   }
 
   return (
@@ -141,22 +157,35 @@ export default function GiveawayWinner() {
                       </div>
 
                       {/* Bottom section with accent line and share buttons */}
-                      <div className="mt-6 pt-4 border-t border-zinc-700/50 flex items-center justify-between gap-2">
-                        <div />
-                        <div className="flex gap-2">
+                      <div className="mt-6 pt-4 border-t border-zinc-700/50">
+                        <div className="flex items-center gap-3">
                           <button
-                            onClick={() => handleShareToLinkedIn(winner)}
-                            className="p-2 rounded-lg bg-blue-950/30 hover:bg-blue-600/40 text-blue-400 hover:text-blue-300 transition-all duration-300 hover:scale-110"
-                            aria-label="Share to LinkedIn"
+                            onClick={() => handleShare("facebook", winner)}
+                            className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 hover:bg-[#1877F2] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
+                            aria-label="Share on Facebook"
                           >
-                            <Linkedin size={18} />
+                            <FaFacebookF className="text-white text-sm md:text-base" />
                           </button>
                           <button
-                            onClick={() => handleShareToFacebook(winner)}
-                            className="p-2 rounded-lg bg-blue-900/30 hover:bg-blue-500/40 text-blue-500 hover:text-blue-400 transition-all duration-300 hover:scale-110"
-                            aria-label="Share to Facebook"
+                            onClick={() => handleShare("twitter", winner)}
+                            className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 hover:bg-[#1DA1F2] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
+                            aria-label="Share on Twitter"
                           >
-                            <Share2 size={18} />
+                            <FaTwitter className="text-white text-sm md:text-base" />
+                          </button>
+                          <button
+                            onClick={() => handleShare("linkedin", winner)}
+                            className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 hover:bg-[#0A66C2] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
+                            aria-label="Share on LinkedIn"
+                          >
+                            <FaLinkedin className="text-white text-sm md:text-base" />
+                          </button>
+                          <button
+                            onClick={() => handleShare("whatsapp", winner)}
+                            className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 hover:bg-[#25D366] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
+                            aria-label="Share on WhatsApp"
+                          >
+                            <FaWhatsapp className="text-white text-sm md:text-base" />
                           </button>
                         </div>
                       </div>
@@ -212,22 +241,35 @@ export default function GiveawayWinner() {
                       </div>
 
                       {/* Bottom section with accent line and share buttons */}
-                      <div className="mt-6 pt-4 border-t border-zinc-700/50 flex items-center justify-between gap-2">
-                        <div />
-                        <div className="flex gap-2">
+                      <div className="mt-6 pt-4 border-t border-zinc-700/50">
+                        <div className="flex items-center gap-3">
                           <button
-                            onClick={() => handleShareToLinkedIn(winner)}
-                            className="p-2 rounded-lg bg-blue-950/30 hover:bg-blue-600/40 text-blue-400 hover:text-blue-300 transition-all duration-300 hover:scale-110"
-                            aria-label="Share to LinkedIn"
+                            onClick={() => handleShare("facebook", winner)}
+                            className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 hover:bg-[#1877F2] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
+                            aria-label="Share on Facebook"
                           >
-                            <Linkedin size={18} />
+                            <FaFacebookF className="text-white text-sm md:text-base" />
                           </button>
                           <button
-                            onClick={() => handleShareToFacebook(winner)}
-                            className="p-2 rounded-lg bg-blue-900/30 hover:bg-blue-500/40 text-blue-500 hover:text-blue-400 transition-all duration-300 hover:scale-110"
-                            aria-label="Share to Facebook"
+                            onClick={() => handleShare("twitter", winner)}
+                            className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 hover:bg-[#1DA1F2] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
+                            aria-label="Share on Twitter"
                           >
-                            <Share2 size={18} />
+                            <FaTwitter className="text-white text-sm md:text-base" />
+                          </button>
+                          <button
+                            onClick={() => handleShare("linkedin", winner)}
+                            className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 hover:bg-[#0A66C2] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
+                            aria-label="Share on LinkedIn"
+                          >
+                            <FaLinkedin className="text-white text-sm md:text-base" />
+                          </button>
+                          <button
+                            onClick={() => handleShare("whatsapp", winner)}
+                            className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 hover:bg-[#25D366] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
+                            aria-label="Share on WhatsApp"
+                          >
+                            <FaWhatsapp className="text-white text-sm md:text-base" />
                           </button>
                         </div>
                       </div>
