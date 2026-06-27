@@ -15,6 +15,8 @@ import Header from "./components/Header";
 import TrustedBrands from "./components/TrustedBrands";
 import GiveawayWinner from "./components/GiveawayWinner";
 import OurPartners from "./components/OurPartners";
+import CommunityActivies from "./components/CommunityActivies";
+import EShop from "./components/EShop";
 import Ecosystem from "../../src/app/components/Ecosystem/Ecosystem.jsx";
 import Image from "next/image";
 import UnifiedAuthModal from "./components/AuthModals/UnifiedAuthModal";
@@ -22,6 +24,7 @@ import LaunchCountdownModal from "./components/LaunchCountdownModal";
 import LatestNews from "./components/LatestNews";
 import ContactSection from "./components/ContactSection";
 import Footer from "./components/Footer";
+
 
 function AnimatedCounter({ target, suffix = "", prefix = "" }) {
   const [count, setCount] = useState(0);
@@ -296,116 +299,212 @@ function HomeContent() {
         </motion.div>
 
 
-        {/* Scrim Section */}
+        {/* Scrim Section - Auto Slider */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7 }}
-          className="max-w-7xl mx-auto w-full mt-4"
+          className="max-w-full w-full mt-8"
         >
-          <div className="text-center mb-8 sm:mb-12">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold italic text-white">
-              SCRIMS WEEK
-            </h2>
-            <p className="text-sm sm:text-base text-zinc-400 tracking-widest">
-              REGISTRATION GOING ON
-            </p>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6">
+            <div className="text-center mb-8 sm:mb-12">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold italic text-white">
+                SCRIMS WEEK
+              </h2>
+              <p className="text-sm sm:text-base text-zinc-400 tracking-widest">
+                REGISTRATION GOING ON
+              </p>
+            </div>
           </div>
 
-          {/* Cards Grid - Responsive 5 columns */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-5 px-4 sm:px-0">
-            {[
-              {
-                title: "Free Fire",
-                label: "FREE ENTRY",
-                date: "STARTING 19TH",
-                image: "https://images.pexels.com/photos/13930769/pexels-photo-13930769.jpeg?auto=compress&cs=tinysrgb&w=600",
-                borderColor: "from-pink-500 to-blue-500",
-                bgGradient: "from-pink-600 to-pink-500",
-              },
-              {
-                title: "PUBG Mobile",
-                label: "FREE ENTRY",
-                date: "STARTING 19TH",
-                image: "https://images.pexels.com/photos/13930769/pexels-photo-13930769.jpeg?auto=compress&cs=tinysrgb&w=600",
-                borderColor: "from-purple-500 to-cyan-500",
-                bgGradient: "from-purple-600 to-purple-500",
-              },
-              {
-                title: "eFootball 2025",
-                label: "FREE ENTRY",
-                date: "STARTING 19TH",
-                image: "https://images.pexels.com/photos/13930769/pexels-photo-13930769.jpeg?auto=compress&cs=tinysrgb&w=600",
-                borderColor: "from-yellow-500 to-pink-500",
-                bgGradient: "from-yellow-600 to-yellow-500",
-              },
-              {
-                title: "FC 25",
-                label: "FREE ENTRY",
-                date: "STARTING 19TH",
-                image: "https://images.pexels.com/photos/13930769/pexels-photo-13930769.jpeg?auto=compress&cs=tinysrgb&w=600",
-                borderColor: "from-blue-500 to-purple-500",
-                bgGradient: "from-blue-600 to-blue-500",
-              },
-              {
-                title: "Valorant",
-                label: "FREE ENTRY",
-                date: "STARTING 19TH",
-                image: "https://images.pexels.com/photos/13930769/pexels-photo-13930769.jpeg?auto=compress&cs=tinysrgb&w=600",
-                borderColor: "from-red-500 to-orange-500",
-                bgGradient: "from-red-600 to-red-500",
-              },
-            ].map((game, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.8 + i * 0.08, duration: 0.5 }}
-                className="group cursor-pointer h-full"
-              >
-                {/* Neon Border Container */}
+          {/* Auto Slider Container */}
+          <div className="relative overflow-hidden">
+            {/* Gradient overlays for smooth fade effect */}
+            <div className="absolute left-0 top-0 bottom-0 w-20 sm:w-32 bg-gradient-to-r from-zinc-950 to-transparent z-10"></div>
+            <div className="absolute right-0 top-0 bottom-0 w-20 sm:w-32 bg-gradient-to-l from-zinc-950 to-transparent z-10"></div>
+
+            {/* Infinite scrolling container */}
+            <div className="flex animate-scrims-scroll">
+              {/* First set of cards */}
+              {[
+                {
+                  title: "Free Fire",
+                  label: "FREE ENTRY",
+                  date: "19TH JUNE",
+                  image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=500&h=600&fit=crop",
+                  bgGradient: "from-pink-600 to-pink-500",
+                },
+                {
+                  title: "PUBG Mobile",
+                  label: "FREE ENTRY",
+                  date: "19TH JUNE",
+                  image: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=500&h=600&fit=crop",
+                  bgGradient: "from-purple-600 to-purple-500",
+                },
+                {
+                  title: "eFootball 2025",
+                  label: "FREE ENTRY",
+                  date: "19TH JUNE",
+                  image: "https://images.unsplash.com/photo-1511882150382-421056c89033?w=500&h=600&fit=crop",
+                  bgGradient: "from-yellow-600 to-yellow-500",
+                },
+                {
+                  title: "FC 25",
+                  label: "FREE ENTRY",
+                  date: "19TH JUNE",
+                  image: "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=500&h=600&fit=crop",
+                  bgGradient: "from-blue-600 to-blue-500",
+                },
+                  {
+      title: "Valorant",
+      label: "FREE ENTRY",
+      date: "19TH JUNE",
+      image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=500&h=600&fit=crop",
+      bgGradient: "from-red-600 to-red-500",
+    },
+              ].map((game, index) => (
                 <div
-                  className={`relative bg-gradient-to-br ${game.borderColor} p-[1.5px] rounded-lg sm:rounded-xl overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl h-full`}
-                  style={{
-                    boxShadow: "0 0 20px rgba(0,0,0,0.5)",
-                  }}
+                  key={`game-1-${index}`}
+                  className="px-2 sm:px-3 md:px-4"
+                  style={{ width: "270px", height: "320px", flexShrink: 0 }}
                 >
-                  {/* Inner container */}
-                  <div className="relative bg-zinc-950 rounded-lg sm:rounded-xl overflow-hidden flex flex-col h-full">
-                    {/* Image Section */}
-                    <div className="relative flex-1 overflow-hidden min-h-24 sm:min-h-28 md:min-h-36">
-                      <img
-                        src={game.image}
-                        alt={game.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/80" />
-                      
-                      {/* Top accent glow */}
-                      <div className="absolute top-0 left-1/4 w-1/2 h-0.5 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    </div>
+                  <div className="group cursor-pointer h-full">
+                    {/* Frame Border Container with frame.png */}
+                    <div
+                      className="relative transition-all duration-300 hover:scale-105 h-full"
+                      style={{
+                        backgroundImage: 'url(/assets/frame.png)',
+                        backgroundSize: '100% 100%',
+                        backgroundPosition: 'center',
+                        backgroundRepeat: 'no-repeat',
+                        padding: '12px',
+                        boxShadow: "0 0 30px rgba(255, 0, 255, 0.2)",
+                      }}
+                    >
+                      {/* Inner content container */}
+                      <div className="relative w-full h-full flex flex-col overflow-hidden rounded-lg">
+                        {/* Image Section */}
+                        <div className="relative flex-1 overflow-hidden">
+                          <img
+                            src={game.image}
+                            alt={game.title}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/80" />
+                          <div className="absolute top-0 left-1/4 w-1/2 h-0.5 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                        </div>
 
-                    {/* Bottom Info Section */}
-                    <div className={`relative bg-gradient-to-r ${game.bgGradient} px-2.5 sm:px-3.5 py-2 sm:py-3`}>
-                      <h3 className="text-xs sm:text-sm md:text-base font-bold text-yellow-300 mb-0.5 uppercase tracking-wider line-clamp-2 group-hover:text-white transition-colors duration-300">
-                        {game.title}
-                      </h3>
-                      <p className="text-[10px] sm:text-xs font-bold text-yellow-300 mb-0.5 uppercase group-hover:text-yellow-100 transition-colors duration-300">
-                        {game.label}
-                      </p>
-                      <p className="text-[8px] sm:text-[10px] text-white/90 uppercase tracking-wider">
-                        {game.date}
-                      </p>
+                        {/* Bottom Info Section */}
+<div className={`relative bg-gradient-to-r px-3 py-3.5 text-center flex flex-col items-center`}>
+  <h3 className="text-xs font-bold mb-1 uppercase tracking-wider line-clamp-1 group-hover:text-white transition-colors duration-300" style={{ color: '#FFFA5B' }}>
+    {game.label}
+  </h3>
+  <p className="text-[9px] font-bold text-yellow-300 mb-1 uppercase group-hover:text-yellow-100 transition-colors duration-300">
+    <span style={{ color: '#FFFFFF' }}>STARTING</span> {game.date}
+  </p>
+</div>
+                      </div>
                     </div>
-
-                    {/* Corner accents */}
-                    <div className="absolute top-1 right-1 w-1.5 h-1.5 border-r-[1.5px] border-t-[1.5px] border-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    <div className="absolute bottom-1 left-1 w-1.5 h-1.5 border-l-[1.5px] border-b-[1.5px] border-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
                 </div>
-              </motion.div>
-            ))}
+              ))}
+              {/* Duplicate set for seamless loop */}
+              {[
+                {
+                  title: "Free Fire",
+                  label: "FREE ENTRY",
+                  date: "STARTING 19TH JUNE",
+                  image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=500&h=600&fit=crop",
+                  bgGradient: "from-pink-600 to-pink-500",
+                },
+                {
+                  title: "PUBG Mobile",
+                  label: "FREE ENTRY",
+                  date: "STARTING 19TH JUNE",
+                  image: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=500&h=600&fit=crop",
+                  bgGradient: "from-purple-600 to-purple-500",
+                },
+                {
+                  title: "eFootball 2025",
+                  label: "FREE ENTRY",
+                  date: "STARTING 19TH JUNE",
+                  image: "https://images.unsplash.com/photo-1511882150382-421056c89033?w=500&h=600&fit=crop",
+                  bgGradient: "from-yellow-600 to-yellow-500",
+                },
+                {
+                  title: "FC 25",
+                  label: "FREE ENTRY",
+                  date: "STARTING 19TH JUNE",
+                  image: "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=500&h=600&fit=crop",
+                  bgGradient: "from-blue-600 to-blue-500",
+                },
+              ].map((game, index) => (
+                <div
+                  key={`game-2-${index}`}
+                  className="px-2 sm:px-3 md:px-4"
+                  style={{ width: "270px", height: "320px", flexShrink: 0 }}
+                >
+                  <div className="group cursor-pointer h-full">
+                    {/* Frame Border Container with frame.png */}
+                    <div
+                      className="relative transition-all duration-300 hover:scale-105 h-full"
+                      style={{
+                        backgroundImage: 'url(/assets/frame.png)',
+                        backgroundSize: '100% 100%',
+                        backgroundPosition: 'center',
+                        backgroundRepeat: 'no-repeat',
+                        padding: '12px',
+                        boxShadow: "0 0 30px rgba(255, 0, 255, 0.2)",
+                      }}
+                    >
+                      {/* Inner content container */}
+                      <div className="relative w-full h-full flex flex-col overflow-hidden rounded-lg">
+                        {/* Image Section */}
+                        <div className="relative flex-1 overflow-hidden">
+                          <img
+                            src={game.image}
+                            alt={game.title}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/80" />
+                          <div className="absolute top-0 left-1/4 w-1/2 h-0.5 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                        </div>
+
+                        {/* Bottom Info Section */}
+<div className={`relative bg-gradient-to-r px-3 py-3.5 text-center flex flex-col items-center`}>
+  <h3 className="text-xs font-bold mb-1 uppercase tracking-wider line-clamp-1 group-hover:text-white transition-colors duration-300" style={{ color: '#FFFA5B' }}>
+    {game.label}
+  </h3>
+  <p className="text-[9px] font-bold text-yellow-300 mb-1 uppercase group-hover:text-yellow-100 transition-colors duration-300">
+    <span style={{ color: '#FFFFFF' }}>STARTING</span> {game.date}
+  </p>
+</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
+
+          <style jsx>{`
+            @keyframes scrims-scroll {
+              0% {
+                transform: translateX(0);
+              }
+              100% {
+                transform: translateX(-50%);
+              }
+            }
+
+            .animate-scrims-scroll {
+              animation: scrims-scroll 40s linear infinite;
+            }
+
+            .animate-scrims-scroll:hover {
+              animation-play-state: paused;
+            }
+          `}</style>
         </motion.div>
       </motion.div>
     </div>
@@ -413,10 +512,10 @@ function HomeContent() {
 
 
   {/* Scroll indicator */}
-  <motion.div
+  {/* <motion.div
     animate={{ y: [0, 8, 0] }}
     transition={{ duration: 2, repeat: Infinity }}
-    className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-zinc-600 z-20"
+    className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-zinc-600 z-20 top-5"
   >
     <span className="text-xs">Scroll to explore</span>
     <div className="w-5 h-8 border-2 border-zinc-700 rounded-full flex items-start justify-center pt-1">
@@ -426,7 +525,7 @@ function HomeContent() {
         className="w-1 h-2 bg-purple-500 rounded-full"
       />
     </div>
-  </motion.div>
+  </motion.div> */}
 </section>
 
       {/* ── HOW TO EARN ── */}
@@ -447,10 +546,10 @@ function HomeContent() {
               <Flame className="w-4 h-4 text-orange-400" />
               <span className="text-sm text-purple-300">Your Earning Path</span>
             </div>
-            <h2 className="text-5xl mb-4">
-              How You{" "}
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4">
+              HOW YOU{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
-                Earn Money
+               EARN MONEY
               </span>
             </h2>
             <p className="text-zinc-400 text-lg max-w-2xl mx-auto">
@@ -611,8 +710,13 @@ function HomeContent() {
       <GiveawayWinner />
       {/* ── PARTNER & UPDATES SECTION  ── */}
       <OurPartners />
-      {/* <Ecosystem /> */}
+      {/* ── COMMUNITY & ACTIVIES SECTION  ── */}
+      <CommunityActivies/>
+      {/* ── ECOMMERCE SECTION  ── */}
+      <EShop />
       <LatestNews />
+      <Ecosystem />
+      {/* <GamesCarousel/> */}
       <div id="career">{/* Career section can be added here if needed */}</div>
       <ContactSection />
       <Footer />

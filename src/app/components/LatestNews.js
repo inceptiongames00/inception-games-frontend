@@ -35,40 +35,25 @@ export default function LatestNews() {
     <section id="news" className="py-20 px-4 sm:px-6" style={{ backgroundColor: "#0a0a14" }}>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="flex flex-col items-start"
-          >
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white">
-              LATEST{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
-                NEWS
-              </span>
-            </h2>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="flex flex-col items-center mb-16"
+        >
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white">
+            LATEST{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
+              NEWS
+            </span>
+          </h2>
+    
             {/* Underline accent */}
-            <div className="flex gap-2 mt-4">
-              <div className="w-16 h-1 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full" />
-              <div className="w-8 h-1 bg-cyan-400 rounded-full" />
-            </div>
-          </motion.div>
-
-          {/* View All Button */}
-          <motion.button
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="px-6 py-2 sm:px-8 sm:py-3 bg-gradient-to-r from-purple-600 to-purple-500 rounded-full text-white font-semibold text-sm sm:text-base hover:shadow-lg hover:shadow-purple-500/50 transition-all duration-300"
-          >
-            View All
-          </motion.button>
-        </div>
+          <div className="flex justify-center gap-2 mt-4">
+            <div className="w-50 h-1.5 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 rounded-full" />
+          </div>
+        </motion.div>
 
         {/* News Grid - 3 columns */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
@@ -130,6 +115,23 @@ export default function LatestNews() {
             </motion.div>
           ))}
         </div>
+
+        {/* View All Button */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="flex justify-center mt-12"
+        >
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="px-8 py-3 bg-gradient-to-r from-purple-600 to-purple-500 rounded-full text-white font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition-all duration-300"
+          >
+            View All
+          </motion.button>
+        </motion.div>
       </div>
     </section>
   )

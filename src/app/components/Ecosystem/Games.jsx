@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export const gamesData = {
-  title: "Our Games",
+  title: "OUR GAMES",
   subtitle: "Compete in your favorite titles",
   items: [
     {

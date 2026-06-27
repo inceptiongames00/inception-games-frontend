@@ -19,7 +19,10 @@ export default function TrustedBrands() {
               BY
             </span>
           </h2>
-        <div className="h-1 w-32 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto rounded-full"></div>
+          {/* Underline accent */}
+          <div className="flex justify-center gap-2 mt-4">
+            <div className="w-50 h-1.5 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 rounded-full" />
+          </div>
       </div>
 
       <div className="relative">

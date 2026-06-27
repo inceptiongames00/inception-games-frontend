@@ -198,6 +198,13 @@ export default function Header() {
               Store
             </Link> */}
 
+              <button
+              onClick={() => navigateToSection("ecosystem-games")}
+              className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors cursor-pointer"
+            >
+              Eshop
+            </button>
+
             <button
               onClick={() => navigateToSection("ecosystem-games")}
               className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors cursor-pointer"
@@ -205,12 +212,12 @@ export default function Header() {
               Games
             </button>
 
-            <button
+            {/* <button
               onClick={() => navigateToSection("ecosystem-partners")}
               className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors cursor-pointer"
             >
               Partners
-            </button>
+            </button> */}
 
             <button
               onClick={() => navigateToSection("ecosystem-community")}
@@ -290,7 +297,7 @@ export default function Header() {
               onClick={() => navigateToSection("contact")}
               className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors cursor-pointer"
             >
-              Contact Us
+             Pricing
             </button>
           </nav>
 

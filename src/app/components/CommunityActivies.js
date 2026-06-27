@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
-export default function OurPartners() {
+export default function CommunityActivies() {
   const [activeSlide, setActiveSlide] = useState(0)
   const [autoPlay, setAutoPlay] = useState(true)
 
@@ -21,7 +21,7 @@ export default function OurPartners() {
       title: "MOAR: Next Level Gaming",
       description: "Join a revolutionary platform designed for gamers and esports enthusiasts. Compete, earn rewards, and connect with the global gaming community. Discover exclusive partnerships and opportunities.",
       badge: "FEATURED PARTNER",
-    buttons: ["CORPORATE PARTNERSHIP", "ESPORTS COMMUNITY PARTNERSHIP"],
+      buttons: ["GAMING PARTNERSHIP", "TOURNAMENT OPPORTUNITIES"],
       image: "/Ecosystem/Partners/MOAR.png",
       bgGradient: "from-pink-600/20 via-purple-600/20 to-blue-600/20",
     },
@@ -29,7 +29,7 @@ export default function OurPartners() {
       title: "iFarmer: Connecting Communities",
       description: "Building bridges between technology and agriculture. Experience innovative solutions that empower businesses and communities. Join us in creating sustainable growth through digital transformation.",
       badge: "INNOVATION PARTNER",
-        buttons: ["CORPORATE PARTNERSHIP", "ESPORTS COMMUNITY PARTNERSHIP"],
+      buttons: ["COMMUNITY PARTNERSHIP", "DIGITAL SOLUTIONS"],
       image: "/Ecosystem/Partners/ifarmer2.jpeg",
       bgGradient: "from-green-600/20 via-emerald-600/20 to-cyan-600/20",
     },
@@ -105,14 +105,14 @@ export default function OurPartners() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4">
-            OUR{" "}
+        COMMUNITY
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
-              PARTNERS
+         {" "}ACTIVIES
             </span>
           </h2>
           {/* Underline accent */}
           <div className="flex justify-center gap-2 mt-4">
-            <div className="w-50 h-1.5 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 rounded-full" />
+            <div className="w-60 h-1.5 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 rounded-full" />
           </div>
         </motion.div>
 
@@ -242,101 +242,6 @@ export default function OurPartners() {
             ))}
           </div>
         </motion.div>
-
-        {/* Updates Carousel Section */}
-        <div>  
-          {/* Carousel Container */}
-          <div className="relative overflow-hidden">
-            {/* Gradient overlays for smooth fade effect */}
-            <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-r from-[#0a0a14] to-transparent z-10"></div>
-            <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-l from-[#0a0a14] to-transparent z-10"></div>
-
-            {/* Auto-scrolling container */}
-            <div className="flex animate-carousel-scroll gap-4 sm:gap-6">
-              {/* First set of cards */}
-              {updates.map((update, index) => (
-                <div
-                  key={`update-1-${index}`}
-                  className="flex-shrink-0 w-56 sm:w-64 md:w-72 group cursor-pointer"
-                >
-                  {/* Card */}
-                  <div className="rounded-xl sm:rounded-2xl overflow-hidden bg-zinc-900/50 border border-zinc-800/50 hover:border-zinc-700/50 transition-all duration-300 h-full flex flex-col backdrop-blur-sm hover:shadow-2xl hover:shadow-purple-500/10">
-                    {/* Image Section */}
-                    <div
-                      className="relative h-40 sm:h-48 overflow-hidden bg-gradient-to-br from-slate-700 to-slate-900 group-hover:scale-110 transition-transform duration-500"
-                      style={{
-                        backgroundImage: `url('${update.image}')`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                      }}
-                    >
-                      {/* Overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
-
-                      {/* Category Badge */}
-                      <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-pink-500/30 text-pink-300 border border-pink-500/50 backdrop-blur-sm">
-                        {update.category}
-                      </div>
-                    </div>
-
-                    {/* Content Section */}
-                    <div className="p-4 sm:p-5 flex-grow flex flex-col justify-between">
-                      <div>
-                        <h3 className="text-base sm:text-lg font-bold text-white mb-2 leading-tight group-hover:text-purple-300 transition-colors duration-300 line-clamp-2">
-                          {update.title}
-                        </h3>
-                        <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed line-clamp-2">
-                          {update.description}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-
-              {/* Duplicate set for seamless loop */}
-              {updates.map((update, index) => (
-                <div
-                  key={`update-2-${index}`}
-                  className="flex-shrink-0 w-56 sm:w-64 md:w-72 group cursor-pointer"
-                >
-                  {/* Card */}
-                  <div className="rounded-xl sm:rounded-2xl overflow-hidden bg-zinc-900/50 border border-zinc-800/50 hover:border-zinc-700/50 transition-all duration-300 h-full flex flex-col backdrop-blur-sm hover:shadow-2xl hover:shadow-purple-500/10">
-                    {/* Image Section */}
-                    <div
-                      className="relative h-40 sm:h-48 overflow-hidden bg-gradient-to-br from-slate-700 to-slate-900 group-hover:scale-110 transition-transform duration-500"
-                      style={{
-                        backgroundImage: `url('${update.image}')`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                      }}
-                    >
-                      {/* Overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
-
-                      {/* Category Badge */}
-                      <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-pink-500/30 text-pink-300 border border-pink-500/50 backdrop-blur-sm">
-                        {update.category}
-                      </div>
-                    </div>
-
-                    {/* Content Section */}
-                    <div className="p-4 sm:p-5 flex-grow flex flex-col justify-between">
-                      <div>
-                        <h3 className="text-base sm:text-lg font-bold text-white mb-2 leading-tight group-hover:text-purple-300 transition-colors duration-300 line-clamp-2">
-                          {update.title}
-                        </h3>
-                        <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed line-clamp-2">
-                          {update.description}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
 
         <style jsx>{`
           @keyframes carousel-scroll {
