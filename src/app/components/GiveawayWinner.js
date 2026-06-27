@@ -90,7 +90,7 @@ export default function GiveawayWinner() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4">
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 text-white">
             GIVEAWAY{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
               WINNER

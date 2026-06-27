@@ -117,7 +117,14 @@ export default function Header() {
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2 flex-shrink-0">
-            {/* <img src="/Logo/Logo.png" alt="Inceptions Logo" className="h-7 sm:h-8 md:h-14" /> */}
+            <img 
+              src="/assets/updated_logo.png" 
+              alt="Inceptions Logo" 
+              className="h-7 sm:h-8 md:h-14" 
+              style={{
+                filter: "drop-shadow(0 0 20px #ff0040) drop-shadow(0 0 40px #8116f1)",
+              }}
+            />
           </Link>
 
           {/* Desktop Navigation */}

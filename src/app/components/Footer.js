@@ -3,38 +3,73 @@ import { motion, AnimatePresence } from "framer-motion"
 import { useState } from "react"
 import { ChevronDown } from "lucide-react"
 import Link from "next/link"
+import { FaFacebookF, FaLinkedin } from "react-icons/fa"
 
 export default function Footer() {
   const [ecosystemDropdownOpen, setEcosystemDropdownOpen] = useState(false)
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  })
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
+  const [success, setSuccess] = useState(false)
+
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    })
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setLoading(true)
+    setError("")
+
+    try {
+      setSuccess(true)
+      setTimeout(() => {
+        setFormData({
+          name: "",
+          email: "",
+          message: "",
+        })
+        setSuccess(false)
+      }, 3000)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <>
-      <footer className="py-8 md:py-12 bg-[#0D0D0D]">
+      <footer className="py-16 md:py-20 bg-[#0a0a14] relative overflow-hidden border-t border-zinc-800/50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Main Footer Content */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 sm:gap-10 max-w-6xl mx-auto">
-
+          {/* Footer Links Section - 4 Columns */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-6 max-w-7xl mx-auto">
             {/* Logo + Description Section */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="flex flex-col items-center sm:items-start gap-4 sm:col-span-2 md:col-span-1"
+              className="flex flex-col items-center md:items-start gap-4"
             >
-              {/* Logo — links to homepage */}
               <Link href="/" aria-label="Inceptions Home" className="inline-flex">
                 <img src="/Logo/Logo.png" alt="Inceptions Logo" className="w-20 h-auto" />
               </Link>
 
-              {/* Short Description */}
-              <p className="text-gray-400 text-sm leading-relaxed text-center sm:text-left max-w-xs">
+              <p className="text-gray-400 text-sm leading-relaxed text-center md:text-left max-w-xs">
                 Compete. Connect. Conquer. — Your home for premier esports tournaments and gaming excellence.
               </p>
 
-              {/* Decorative accent line */}
               <div
                 className="h-[2px] w-12 rounded-full"
                 style={{
-                  background: "linear-gradient(90deg, rgb(255, 0, 64), rgb(129, 23, 241))",
+                  background: "linear-gradient(90deg, #ec4899, #8116f1)",
                 }}
               />
             </motion.div>
@@ -44,29 +79,27 @@ export default function Footer() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="flex flex-col items-center sm:items-start"
+              className="flex flex-col items-center md:items-start"
             >
               <h3
-                className="font-bold text-base sm:text-lg mb-3 sm:mb-4 tracking-wider"
+                className="font-bold text-base sm:text-lg mb-4 tracking-wider uppercase"
                 style={{
                   backgroundImage:
-                    "linear-gradient(300deg, rgb(255, 0, 64) 0%, rgb(255, 145, 173) 19.91%, rgb(182, 214, 241) 36.19%, rgb(254, 221, 194) 52.44%, rgb(255, 195, 161) 65.36%, rgb(252, 161, 43) 82.61%, rgb(129, 23, 241) 100%)",
+                    "linear-gradient(90deg, #ec4899, #8116f1)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
                 }}
               >
-                SOCIAL LINKS
+                Follow Us
               </h3>
-              <div className="space-y-2 sm:space-y-3 w-full">
+              <div className="space-y-3 w-full">
                 <motion.a
                   href={process.env.NEXT_PUBLIC_LINKEDIN_URL}
-                  className="flex items-center justify-center sm:justify-start space-x-3 text-white hover:text-gray-300 transition-colors group"
+                  className="flex items-center justify-center md:justify-start space-x-3 text-white hover:text-pink-300 transition-colors group"
                   whileHover={{ x: 5 }}
                 >
-                  <svg className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                  </svg>
+                  <FaLinkedin className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
                   <span className="text-sm sm:text-base">LinkedIn</span>
                   <svg
                     className="w-3 h-3 sm:w-4 sm:h-4 opacity-0 group-hover:opacity-100 transition-opacity"
@@ -80,12 +113,10 @@ export default function Footer() {
 
                 <motion.a
                   href={process.env.NEXT_PUBLIC_FACEBOOK_URL}
-                  className="flex items-center justify-center sm:justify-start space-x-3 text-white hover:text-gray-300 transition-colors group"
+                  className="flex items-center justify-center md:justify-start space-x-3 text-white hover:text-pink-300 transition-colors group"
                   whileHover={{ x: 5 }}
                 >
-                  <svg className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                  </svg>
+                  <FaFacebookF className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
                   <span className="text-sm sm:text-base">Facebook</span>
                   <svg
                     className="w-3 h-3 sm:w-4 sm:h-4 opacity-0 group-hover:opacity-100 transition-opacity"
@@ -98,40 +129,34 @@ export default function Footer() {
                 </motion.a>
 
                 <motion.a
-  href="https://discord.gg/2UXQRQHf"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="flex items-center justify-center sm:justify-start space-x-3 text-white hover:text-gray-300 transition-colors group"
-  whileHover={{ x: 5 }}
->
-  {/* Discord Icon */}
-  <svg
-    className="w-4 h-4 sm:w-5 sm:h-5 shrink-0"
-    fill="currentColor"
-    viewBox="0 0 24 24"
-  >
-    <path d="M20.317 4.369A19.791 19.791 0 0015.885 3c-.191.345-.404.8-.553 1.165a18.27 18.27 0 00-5.29 0A12.64 12.64 0 009.49 3a19.736 19.736 0 00-4.438 1.372C2.245 8.567 1.433 12.654 1.84 16.685a19.9 19.9 0 005.993 3.048c.48-.648.907-1.337 1.276-2.06a12.955 12.955 0 01-2.01-.963c.17-.124.337-.255.498-.39 3.877 1.823 8.09 1.823 11.92 0 .165.135.332.266.498.39a12.91 12.91 0 01-2.01.963c.37.723.797 1.412 1.276 2.06a19.86 19.86 0 005.993-3.048c.477-4.67-.814-8.72-3.957-12.316zM8.02 14.121c-1.183 0-2.157-1.085-2.157-2.418 0-1.333.955-2.418 2.157-2.418 1.211 0 2.176 1.094 2.157 2.418 0 1.333-.955 2.418-2.157 2.418zm7.974 0c-1.183 0-2.157-1.085-2.157-2.418 0-1.333.955-2.418 2.157-2.418 1.211 0 2.176 1.094 2.157 2.418 0 1.333-.946 2.418-2.157 2.418z" />
-  </svg>
-
-  <span className="text-sm sm:text-base">Discord</span>
-
-  {/* Arrow animation */}
-  <svg
-    className="w-3 h-3 sm:w-4 sm:h-4 opacity-0 group-hover:opacity-100 transition-opacity"
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-      d="M13 7l5 5m0 0l-5 5m5-5H6"
-    />
-  </svg>
-</motion.a>
-
-
+                  href="https://discord.gg/2UXQRQHf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center md:justify-start space-x-3 text-white hover:text-pink-300 transition-colors group"
+                  whileHover={{ x: 5 }}
+                >
+                  <svg
+                    className="w-4 h-4 sm:w-5 sm:h-5 shrink-0"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M20.317 4.369A19.791 19.791 0 0015.885 3c-.191.345-.404.8-.553 1.165a18.27 18.27 0 00-5.29 0A12.64 12.64 0 009.49 3a19.736 19.736 0 00-4.438 1.372C2.245 8.567 1.433 12.654 1.84 16.685a19.9 19.9 0 005.993 3.048c.48-.648.907-1.337 1.276-2.06a12.955 12.955 0 01-2.01-.963c.17-.124.337-.255.498-.39 3.877 1.823 8.09 1.823 11.92 0 .165.135.332.266.498.39a12.91 12.91 0 01-2.01.963c.37.723.797 1.412 1.276 2.06a19.86 19.86 0 005.993-3.048c.477-4.67-.814-8.72-3.957-12.316zM8.02 14.121c-1.183 0-2.157-1.085-2.157-2.418 0-1.333.955-2.418 2.157-2.418 1.211 0 2.176 1.094 2.157 2.418 0 1.333-.955 2.418-2.157 2.418zm7.974 0c-1.183 0-2.157-1.085-2.157-2.418 0-1.333.955-2.418 2.157-2.418 1.211 0 2.176 1.094 2.157 2.418 0 1.333-.946 2.418-2.157 2.418z" />
+                  </svg>
+                  <span className="text-sm sm:text-base">Discord</span>
+                  <svg
+                    className="w-3 h-3 sm:w-4 sm:h-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 7l5 5m0 0l-5 5m5-5H6"
+                    />
+                  </svg>
+                </motion.a>
               </div>
             </motion.div>
 
@@ -140,26 +165,25 @@ export default function Footer() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="flex flex-col items-center sm:items-start"
+              className="flex flex-col items-center md:items-start"
             >
               <h3
-                className="font-bold text-base sm:text-lg mb-3 sm:mb-4 tracking-wider"
+                className="font-bold text-base sm:text-lg mb-4 tracking-wider uppercase"
                 style={{
                   backgroundImage:
-                    "linear-gradient(300deg, rgb(255, 0, 64) 0%, rgb(255, 145, 173) 19.91%, rgb(182, 214, 241) 36.19%, rgb(254, 221, 194) 52.44%, rgb(255, 195, 161) 65.36%, rgb(252, 161, 43) 82.61%, rgb(129, 23, 241) 100%)",
+                    "linear-gradient(90deg, #ec4899, #8116f1)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
                 }}
               >
-                WEBSITE
+                Quick Links
               </h3>
               <div className="space-y-3 w-full">
-                {/* Ecosystem Dropdown */}
                 <div className="relative">
                   <button
                     onClick={() => setEcosystemDropdownOpen(!ecosystemDropdownOpen)}
-                    className="flex items-center justify-center sm:justify-start gap-2 text-white hover:text-gray-300 transition-colors group w-full sm:w-auto"
+                    className="flex items-center justify-center md:justify-start gap-2 text-white hover:text-pink-300 transition-colors group w-full md:w-auto text-sm md:text-base"
                   >
                     <span>Ecosystem</span>
                     <ChevronDown
@@ -175,7 +199,7 @@ export default function Footer() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.15 }}
-                        className="mt-2 space-y-2 text-center sm:text-left"
+                        className="mt-2 space-y-2 text-center md:text-left"
                       >
                         <Link
                           href="#ecosystem-partners"
@@ -183,7 +207,7 @@ export default function Footer() {
                             setEcosystemDropdownOpen(false)
                             document.getElementById("ecosystem-partners")?.scrollIntoView({ behavior: "smooth" })
                           }}
-                          className="block text-white/80 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-0 sm:pl-4"
+                          className="block text-white/80 text-sm hover:text-pink-300 transition-colors cursor-pointer pl-0 md:pl-4"
                         >
                           Partners
                         </Link>
@@ -193,7 +217,7 @@ export default function Footer() {
                             setEcosystemDropdownOpen(false)
                             document.getElementById("ecosystem-games")?.scrollIntoView({ behavior: "smooth" })
                           }}
-                          className="block text-white/80 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-0 sm:pl-4"
+                          className="block text-white/80 text-sm hover:text-pink-300 transition-colors cursor-pointer pl-0 md:pl-4"
                         >
                           Games
                         </Link>
@@ -203,7 +227,7 @@ export default function Footer() {
                             setEcosystemDropdownOpen(false)
                             document.getElementById("ecosystem-community")?.scrollIntoView({ behavior: "smooth" })
                           }}
-                          className="block text-white/80 text-sm hover:text-gray-300 transition-colors cursor-pointer pl-0 sm:pl-4"
+                          className="block text-white/80 text-sm hover:text-pink-300 transition-colors cursor-pointer pl-0 md:pl-4"
                         >
                           Community
                         </Link>
@@ -214,33 +238,126 @@ export default function Footer() {
 
                 <motion.a
                   href="#news"
-                  className="block text-white hover:text-gray-300 transition-colors text-center sm:text-left"
+                  className="block text-white hover:text-pink-300 transition-colors text-center md:text-left text-sm"
                   whileHover={{ x: 5 }}
                 >
                   News
                 </motion.a>
-                {/* <motion.a
-                  href="#career"
-                  className="block text-white hover:text-gray-300 transition-colors text-center sm:text-left"
-                  whileHover={{ x: 5 }}
-                >
-                  Career
-                </motion.a> */}
+
                 <motion.a
                   href="#contact"
-                  className="block text-white hover:text-gray-300 transition-colors text-center sm:text-left"
+                  className="block text-white hover:text-pink-300 transition-colors text-center md:text-left text-sm"
                   whileHover={{ x: 5 }}
                 >
                   Contact
                 </motion.a>
               </div>
             </motion.div>
+
+            {/* Contact Form Section - 4th Column (Right) */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              className="flex flex-col items-center md:items-start"
+            >
+              <h3
+                className="font-bold text-base sm:text-lg mb-4 tracking-wider uppercase"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(90deg, #ec4899, #8116f1)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}
+              >
+                Stay in Touch
+              </h3>
+
+              {/* Contact Form */}
+              <form onSubmit={handleSubmit} className="w-full space-y-3">
+                {error && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-red-500/10 border border-red-500/50 rounded-lg p-2 mb-3"
+                  >
+                    <p className="text-red-400 text-xs">{error}</p>
+                  </motion.div>
+                )}
+
+                <div>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    placeholder="Name"
+                    className="w-full px-3 py-2 bg-zinc-800/50 border border-zinc-700/50 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500/50 focus:ring-1 focus:ring-pink-500/50 transition-all backdrop-blur-sm text-xs"
+                    required
+                    disabled={loading || success}
+                  />
+                </div>
+
+                <div>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    placeholder="Email"
+                    className="w-full px-3 py-2 bg-zinc-800/50 border border-zinc-700/50 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500/50 focus:ring-1 focus:ring-pink-500/50 transition-all backdrop-blur-sm text-xs"
+                    required
+                    disabled={loading || success}
+                  />
+                </div>
+
+                <div>
+                  <textarea
+                    name="message"
+                    value={formData.message}
+                    onChange={handleInputChange}
+                    rows={2}
+                    placeholder="Message"
+                    className="w-full px-3 py-2 bg-zinc-800/50 border border-zinc-700/50 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500/50 focus:ring-1 focus:ring-pink-500/50 transition-all resize-none backdrop-blur-sm text-xs"
+                    required
+                    disabled={loading || success}
+                  />
+                </div>
+
+                <motion.button
+                  type="submit"
+                  disabled={loading || success}
+                  className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold py-2 px-4 rounded-lg transition-all shadow-lg hover:shadow-pink-500/50 disabled:opacity-50 disabled:cursor-not-allowed text-xs uppercase tracking-wider"
+                  whileHover={{
+                    scale: loading || success ? 1 : 1.02,
+                  }}
+                  whileTap={{ scale: loading || success ? 1 : 0.98 }}
+                >
+                  {loading ? (
+                    <div className="flex items-center justify-center space-x-1">
+                      <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                      <span>Sending</span>
+                    </div>
+                  ) : success ? (
+                    <div className="flex items-center justify-center space-x-1">
+                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span>Sent!</span>
+                    </div>
+                  ) : (
+                    "Submit"
+                  )}
+                </motion.button>
+              </form>
+            </motion.div>
           </div>
         </div>
       </footer>
 
       {/* Bottom Bar */}
-      <div className="bg-[#0D0D0D] pb-4 px-4">
+      <div className="bg-[#0a0a14] border-t border-zinc-800/50 py-6 px-4">
         <p className="text-gray-500 text-sm text-center">
           Copyright © 2026. All Rights Reserved by Inception Games.
         </p>

@@ -1,7 +1,9 @@
 "use client";
+
 import { useState, useEffect, useRef, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
+import { useProfileNavigation } from "@/hooks/useProfileNavigation";
 import { motion } from "framer-motion";
 import {
   Trophy,
@@ -22,8 +24,9 @@ import Image from "next/image";
 import UnifiedAuthModal from "./components/AuthModals/UnifiedAuthModal";
 import LaunchCountdownModal from "./components/LaunchCountdownModal";
 import LatestNews from "./components/LatestNews";
-import ContactSection from "./components/ContactSection";
+// import ContactSection from "./components/ContactSection";
 import Footer from "./components/Footer";
+import dynamic from "next/dynamic";
 
 
 function AnimatedCounter({ target, suffix = "", prefix = "" }) {
@@ -73,11 +76,17 @@ function HomeContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { user } = useAuth();
+  const { navigateToTab } = useProfileNavigation();
   const scrollTimeoutRef = useRef(null);
   const observerRef = useRef(null);
   const pollIntervalRef = useRef(null);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [countdownModalOpen, setCountdownModalOpen] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
   const howToEarn = [
     {
@@ -392,6 +401,25 @@ function HomeContent() {
                           />
                           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/80" />
                           <div className="absolute top-0 left-1/4 w-1/2 h-0.5 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                          
+                          {/* Dark Hover Overlay */}
+                          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center rounded-lg" />
+                          
+                          {/* Button */}
+                          <button
+                            onClick={() => {
+                              if (isHydrated && user) {
+                                navigateToTab("Scrims");
+                              } else {
+                                setLoginModalOpen(true);
+                              }
+                            }}
+                            className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                          >
+                            <span className="px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 rounded-full text-white font-semibold text-sm transition-all duration-300">
+                              {isHydrated && user ? "Go To Scrim" : "Sign In"}
+                            </span>
+                          </button>
                         </div>
 
                         {/* Bottom Info Section */}
@@ -468,6 +496,25 @@ function HomeContent() {
                           />
                           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/80" />
                           <div className="absolute top-0 left-1/4 w-1/2 h-0.5 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                          
+                          {/* Dark Hover Overlay */}
+                          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center rounded-lg" />
+                          
+                          {/* Button */}
+                          <button
+                            onClick={() => {
+                              if (isHydrated && user) {
+                                navigateToTab("Scrims");
+                              } else {
+                                setLoginModalOpen(true);
+                              }
+                            }}
+                            className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                          >
+                            <span className="px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 rounded-full text-white font-semibold text-sm transition-all duration-300">
+                              {isHydrated && user ? "Go To Scrim" : "Sign In"}
+                            </span>
+                          </button>
                         </div>
 
                         {/* Bottom Info Section */}
@@ -718,7 +765,7 @@ function HomeContent() {
       <Ecosystem />
       {/* <GamesCarousel/> */}
       <div id="career">{/* Career section can be added here if needed */}</div>
-      <ContactSection />
+      {/* <ContactSection /> */}
       <Footer />
 
       {/* Countdown Modal */}
