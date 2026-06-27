@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
+import { Share2, Linkedin } from "lucide-react"
 
 export default function GiveawayWinner() {
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -28,16 +29,39 @@ export default function GiveawayWinner() {
       categoryColor: "bg-blue-500/20 text-blue-300 border border-blue-500/30",
       image: "https://images.unsplash.com/photo-1557821552-17105176677c?w=600&h=700&fit=crop",
     },
+     {
+      title: "Team Alliances",
+      description: "Recruit new talent for your organization or find the perfect roster to showcase your skills. Elite scouting starts here.",
+      category: "ACTIVE RECRUITMENT",
+      categoryColor: "bg-yellow-500/20 text-yellow-300 border border-yellow-500/30",
+      image: "https://images.unsplash.com/photo-1557821552-17105176677c?w=600&h=700&fit=crop",
+    },
   ]
 
   // Auto-rotate carousel
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % winners.length)
+      setCurrentIndex((prev) => {
+        const nextIndex = prev + 1
+        // Reset to 0 when reaching the end to loop seamlessly
+        return nextIndex >= winners.length ? 0 : nextIndex
+      })
     }, 5000) // Change slide every 5 seconds
 
     return () => clearInterval(interval)
   }, [winners.length])
+
+  const handleShareToFacebook = (winner) => {
+    const shareUrl = typeof window !== 'undefined' ? window.location.href : ''
+    const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(winner.title + ' - ' + winner.description)}`
+    window.open(facebookShareUrl, 'facebook-share-dialog', 'width=800,height=600')
+  }
+
+  const handleShareToLinkedIn = (winner) => {
+    const shareUrl = typeof window !== 'undefined' ? window.location.href : ''
+    const linkedInShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`
+    window.open(linkedInShareUrl, 'linkedin-share-dialog', 'width=800,height=600')
+  }
 
   return (
     <section className="py-20 px-4 sm:px-6" style={{ backgroundColor: "#0a0a14" }}>
@@ -116,8 +140,26 @@ export default function GiveawayWinner() {
                         </p>
                       </div>
 
-                      {/* Bottom accent line */}
-                      <div className="mt-6 pt-4 border-t border-zinc-700/50" />
+                      {/* Bottom section with accent line and share buttons */}
+                      <div className="mt-6 pt-4 border-t border-zinc-700/50 flex items-center justify-between gap-2">
+                        <div />
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleShareToLinkedIn(winner)}
+                            className="p-2 rounded-lg bg-blue-950/30 hover:bg-blue-600/40 text-blue-400 hover:text-blue-300 transition-all duration-300 hover:scale-110"
+                            aria-label="Share to LinkedIn"
+                          >
+                            <Linkedin size={18} />
+                          </button>
+                          <button
+                            onClick={() => handleShareToFacebook(winner)}
+                            className="p-2 rounded-lg bg-blue-900/30 hover:bg-blue-500/40 text-blue-500 hover:text-blue-400 transition-all duration-300 hover:scale-110"
+                            aria-label="Share to Facebook"
+                          >
+                            <Share2 size={18} />
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </motion.div>
@@ -169,8 +211,26 @@ export default function GiveawayWinner() {
                         </p>
                       </div>
 
-                      {/* Bottom accent line */}
-                      <div className="mt-6 pt-4 border-t border-zinc-700/50" />
+                      {/* Bottom section with accent line and share buttons */}
+                      <div className="mt-6 pt-4 border-t border-zinc-700/50 flex items-center justify-between gap-2">
+                        <div />
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleShareToLinkedIn(winner)}
+                            className="p-2 rounded-lg bg-blue-950/30 hover:bg-blue-600/40 text-blue-400 hover:text-blue-300 transition-all duration-300 hover:scale-110"
+                            aria-label="Share to LinkedIn"
+                          >
+                            <Linkedin size={18} />
+                          </button>
+                          <button
+                            onClick={() => handleShareToFacebook(winner)}
+                            className="p-2 rounded-lg bg-blue-900/30 hover:bg-blue-500/40 text-blue-500 hover:text-blue-400 transition-all duration-300 hover:scale-110"
+                            aria-label="Share to Facebook"
+                          >
+                            <Share2 size={18} />
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </motion.div>
