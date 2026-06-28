@@ -95,7 +95,7 @@ export default function EShop() {
                     </div>
 
                     {/* Buy Button */}
-                    <button className="mt-6 px-6 py-2.5 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 rounded-full text-white font-bold text-sm uppercase tracking-wider hover:shadow-lg hover:shadow-pink-500/50 transition-all duration-300 hover:scale-105">
+                    <button className="mt-6 px-6 py-2.5 bg-gradient-to-r from-purple-600 to-purple-500 rounded-full text-white font-bold text-sm uppercase tracking-wider hover:shadow-lg hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105">
                       {product.buttonText}
                     </button>
                   </div>
@@ -138,7 +138,7 @@ export default function EShop() {
                     </div>
 
                     {/* Buy Button */}
-                    <button className="mt-6 px-6 py-2.5 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 rounded-full text-white font-bold text-sm uppercase tracking-wider hover:shadow-lg hover:shadow-pink-500/50 transition-all duration-300 hover:scale-105">
+                    <button className="mt-6 px-6 py-2.5 bg-gradient-to-r from-purple-600 to-purple-500 rounded-full text-white font-bold text-sm uppercase tracking-wider hover:shadow-lg hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105">
                       {product.buttonText}
                     </button>
                   </div>
