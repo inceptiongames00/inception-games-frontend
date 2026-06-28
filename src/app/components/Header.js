@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { Menu, X, User, ChevronDown, LogOut, Settings } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import UnifiedAuthModal from "./AuthModals/UnifiedAuthModal";
 import LaunchCountdownModal from "./LaunchCountdownModal";
 import { useAuth } from "../../hooks/useAuth";
@@ -117,10 +118,12 @@ export default function Header() {
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2 flex-shrink-0">
-            <img 
+            <Image 
               src="/assets/updated_logo.png" 
               alt="Inceptions Logo" 
-              className="h-7 sm:h-8 md:h-14" 
+              width={56}
+              height={56}
+              className="h-7 sm:h-8 md:h-14 w-auto" 
               style={{
                 filter: "drop-shadow(0 0 20px #ff0040) drop-shadow(0 0 40px #8116f1)",
               }}
@@ -329,6 +332,7 @@ export default function Header() {
                   >
                     <AnimatedProfileRing size={44}>
                       {user.avatar ? (
+                        // eslint-disable-next-line @next/next/no-img-element
                         <img
                           src={user.avatar}
                           alt={user.fullName || user.username || "Profile"}
@@ -416,6 +420,7 @@ export default function Header() {
                 <Link href="/profile" className="flex-shrink-0">
                   <AnimatedProfileRing size={38}>
                     {user.avatar ? (
+                      // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={user.avatar}
                         alt={user.fullName || user.username || "Profile"}
