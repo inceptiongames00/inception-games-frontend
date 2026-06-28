@@ -17,6 +17,8 @@ import FeaturedCarousel from "../components/ProfileComponents/FeaturedCarousel";
 import EditProfileModal from "../components/ProfileComponents/EditProfileModal";
 import { useAuth } from "../context/AuthContext";
 import NotificationsPanel from "../components/ProfileComponents/NotificationsPanel";
+import Subscription from "../components/ProfileComponents/Subscription";
+import ProGearShop from "../components/ProfileComponents/ProGearShop";
 
 export default function ProfilePage() {
   const { user, isAuthenticated, loading } = useAuth();
@@ -123,6 +125,23 @@ export default function ProfilePage() {
               <NotificationsPanel />
             </div>
           </div>
+
+
+
+{/* Shop + Subscription */}
+          <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="col-span-2">
+              <ProGearShop />
+            </div>
+            <div className="col-span-1">
+              <Subscription />
+            </div>
+          </div>
+
+
+
+
+
 
 
            {/* My Scrims */}
