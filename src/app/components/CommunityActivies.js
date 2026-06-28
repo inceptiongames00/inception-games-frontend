@@ -1,12 +1,20 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { motion } from "framer-motion"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { motion, AnimatePresence } from "framer-motion"
+import { ChevronLeft, ChevronRight, X } from "lucide-react"
 
 export default function CommunityActivies() {
   const [activeSlide, setActiveSlide] = useState(0)
   const [autoPlay, setAutoPlay] = useState(true)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [formData, setFormData] = useState({
+    name: "",
+    companyName: "",
+    phone: "",
+    email: "",
+    website: "",
+  })
 
   const partners = [
     {
@@ -93,6 +101,21 @@ export default function CommunityActivies() {
     setAutoPlay(false)
   }
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }))
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    console.log("Partnership Form Data:", formData)
+    setFormData({ name: "", companyName: "", phone: "", email: "", website: "" })
+    setIsModalOpen(false)
+  }
+
   return (
    <section className="py-20 px-4 sm:px-6" style={{ backgroundColor: "#0a0a14" }}>
       <div className="max-w-7xl mx-auto">
@@ -130,9 +153,10 @@ export default function CommunityActivies() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.3, duration: 0.6 }}
+            onClick={() => setIsModalOpen(true)}
             className="absolute left-0 -bottom-5 z-20 px-6 py-2.5 sm:px-8 sm:py-3 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold uppercase text-xs sm:text-sm tracking-widest rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-pink-500/50"
           >
-            APPLY FOR PARTNERSHIP
+            APPLY FOR COMMUNITY
           </motion.button>
           {/* Slides */}
           <div className="relative overflow-hidden">
@@ -148,7 +172,7 @@ export default function CommunityActivies() {
               >
                 {/* Background */}
                 <div
-                  className={`bg-gradient-to-r ${partner.bgGradient} backdrop-blur-xl`}
+                  className={`relative bg-gradient-to-r ${partner.bgGradient} backdrop-blur-xl h-[500px] sm:h-[600px]`}
                   style={{
                     backgroundImage: `url('${partner.image}')`,
                     backgroundSize: "cover",
@@ -157,10 +181,10 @@ export default function CommunityActivies() {
                   }}
                 >
                   {/* Dark Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-black/95 via-black/80 to-black/30" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent" />
 
-                  {/* Content - INCREASED HEIGHT HERE */}
-                  <div className="relative px-6 sm:px-12 py-16 sm:py-20 md:py-28 max-w-2xl">
+                  {/* Content - positioned at bottom left */}
+                  <div className="absolute bottom-0 left-0 px-6 sm:px-12 py-16 sm:py-20 md:py-28 max-w-2xl">
                     {/* Badge */}
                     <motion.div
                       initial={{ opacity: 0, y: -10 }}
@@ -349,6 +373,143 @@ export default function CommunityActivies() {
             animation-play-state: paused;
           }
         `}</style>
+
+        {/* Partnership Modal */}
+        <AnimatePresence>
+          {isModalOpen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsModalOpen(false)}
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            >
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                onClick={(e) => e.stopPropagation()}
+                className="bg-gradient-to-br from-zinc-900 via-zinc-900 to-black border border-purple-500/30 rounded-3xl shadow-2xl shadow-purple-500/20 max-w-md w-full overflow-hidden"
+              >
+                {/* Header */}
+                <div className="relative bg-gradient-to-r from-purple-600/20 to-pink-600/20 px-6 sm:px-8 py-6 border-b border-purple-500/20">
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-2xl sm:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
+                      Community Application
+                    </h2>
+                    <button
+                      onClick={() => setIsModalOpen(false)}
+                      className="p-1 hover:bg-white/10 rounded-lg transition-colors"
+                    >
+                      <X className="w-6 h-6 text-white" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Form */}
+                <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-4">
+                  {/* Name */}
+                  <div>
+                    <label className="block text-sm font-semibold text-zinc-300 mb-2">
+                      Full Name
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      placeholder="Enter your full name"
+                      required
+                      className="w-full px-4 py-2.5 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                    />
+                  </div>
+
+                  {/* Company Name */}
+                  <div>
+                    <label className="block text-sm font-semibold text-zinc-300 mb-2">
+                      Company Name
+                    </label>
+                    <input
+                      type="text"
+                      name="companyName"
+                      value={formData.companyName}
+                      onChange={handleInputChange}
+                      placeholder="Enter company name"
+                      required
+                      className="w-full px-4 py-2.5 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                    />
+                  </div>
+
+                  {/* Phone */}
+                  <div>
+                    <label className="block text-sm font-semibold text-zinc-300 mb-2">
+                      Phone Number
+                    </label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      placeholder="Enter phone number"
+                      required
+                      className="w-full px-4 py-2.5 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                    />
+                  </div>
+
+                  {/* Email */}
+                  <div>
+                    <label className="block text-sm font-semibold text-zinc-300 mb-2">
+                      Email Address
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      placeholder="Enter email address"
+                      required
+                      className="w-full px-4 py-2.5 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                    />
+                  </div>
+
+                  {/* Website */}
+                  <div>
+                    <label className="block text-sm font-semibold text-zinc-300 mb-2">
+                      Website URL
+                    </label>
+                    <input
+                      type="url"
+                      name="website"
+                      value={formData.website}
+                      onChange={handleInputChange}
+                      placeholder="https://example.com"
+                      className="w-full px-4 py-2.5 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                    />
+                  </div>
+
+                  {/* Submit Button */}
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    type="submit"
+                    className="w-full mt-6 px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold uppercase tracking-wider rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-pink-500/50"
+                  >
+                    Submit Application
+                  </motion.button>
+
+                  {/* Cancel Button */}
+                  <button
+                    type="button"
+                    onClick={() => setIsModalOpen(false)}
+                    className="w-full px-6 py-2.5 bg-zinc-800/50 border border-zinc-700 text-zinc-300 font-semibold rounded-lg hover:bg-zinc-800 transition-all"
+                  >
+                    Cancel
+                  </button>
+                </form>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </section>
   )
