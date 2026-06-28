@@ -56,13 +56,13 @@ export default function Footer() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="flex flex-col items-center md:items-start gap-4"
+              className="flex flex-col items-start gap-4"
             >
               <Link href="/" aria-label="Inceptions Home" className="inline-flex">
                 <img src="/Logo/Logo.png" alt="Inceptions Logo" className="w-20 h-auto" />
               </Link>
 
-              <p className="text-gray-400 text-sm leading-relaxed text-center md:text-left max-w-xs">
+              <p className="text-gray-400 text-sm leading-relaxed text-left max-w-xs">
                 Compete. Connect. Conquer. — Your home for premier esports tournaments and gaming excellence.
               </p>
 
@@ -79,7 +79,7 @@ export default function Footer() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="flex flex-col items-center md:items-start"
+              className="flex flex-col items-start"
             >
               <h3
                 className="font-bold text-base sm:text-lg mb-4 tracking-wider uppercase"
@@ -96,7 +96,7 @@ export default function Footer() {
               <div className="space-y-3 w-full">
                 <motion.a
                   href={process.env.NEXT_PUBLIC_LINKEDIN_URL}
-                  className="flex items-center justify-center md:justify-start space-x-3 text-white hover:text-pink-300 transition-colors group"
+                  className="flex items-center justify-start space-x-3 text-white hover:text-pink-300 transition-colors group"
                   whileHover={{ x: 5 }}
                 >
                   <FaLinkedin className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
@@ -113,7 +113,7 @@ export default function Footer() {
 
                 <motion.a
                   href={process.env.NEXT_PUBLIC_FACEBOOK_URL}
-                  className="flex items-center justify-center md:justify-start space-x-3 text-white hover:text-pink-300 transition-colors group"
+                  className="flex items-center justify-start space-x-3 text-white hover:text-pink-300 transition-colors group"
                   whileHover={{ x: 5 }}
                 >
                   <FaFacebookF className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
@@ -132,7 +132,7 @@ export default function Footer() {
                   href="https://discord.gg/2UXQRQHf"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center md:justify-start space-x-3 text-white hover:text-pink-300 transition-colors group"
+                  className="flex items-center justify-start space-x-3 text-white hover:text-pink-300 transition-colors group"
                   whileHover={{ x: 5 }}
                 >
                   <svg
@@ -165,7 +165,7 @@ export default function Footer() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="flex flex-col items-center md:items-start"
+              className="flex flex-col items-start"
             >
               <h3
                 className="font-bold text-base sm:text-lg mb-4 tracking-wider uppercase"
@@ -183,7 +183,7 @@ export default function Footer() {
                 <div className="relative">
                   <button
                     onClick={() => setEcosystemDropdownOpen(!ecosystemDropdownOpen)}
-                    className="flex items-center justify-center md:justify-start gap-2 text-white hover:text-pink-300 transition-colors group w-full md:w-auto text-sm md:text-base"
+                    className="flex items-center justify-start gap-2 text-white hover:text-pink-300 transition-colors group w-full text-sm md:text-base"
                   >
                     <span>Ecosystem</span>
                     <ChevronDown
@@ -207,7 +207,7 @@ export default function Footer() {
                             setEcosystemDropdownOpen(false)
                             document.getElementById("ecosystem-partners")?.scrollIntoView({ behavior: "smooth" })
                           }}
-                          className="block text-white/80 text-sm hover:text-pink-300 transition-colors cursor-pointer pl-0 md:pl-4"
+                          className="block text-white/80 text-sm hover:text-pink-300 transition-colors cursor-pointer pl-0"
                         >
                           Partners
                         </Link>
@@ -217,7 +217,7 @@ export default function Footer() {
                             setEcosystemDropdownOpen(false)
                             document.getElementById("ecosystem-games")?.scrollIntoView({ behavior: "smooth" })
                           }}
-                          className="block text-white/80 text-sm hover:text-pink-300 transition-colors cursor-pointer pl-0 md:pl-4"
+                          className="block text-white/80 text-sm hover:text-pink-300 transition-colors cursor-pointer pl-0"
                         >
                           Games
                         </Link>
@@ -227,7 +227,7 @@ export default function Footer() {
                             setEcosystemDropdownOpen(false)
                             document.getElementById("ecosystem-community")?.scrollIntoView({ behavior: "smooth" })
                           }}
-                          className="block text-white/80 text-sm hover:text-pink-300 transition-colors cursor-pointer pl-0 md:pl-4"
+                          className="block text-white/80 text-sm hover:text-pink-300 transition-colors cursor-pointer pl-0"
                         >
                           Community
                         </Link>
@@ -238,7 +238,7 @@ export default function Footer() {
 
                 <motion.a
                   href="#news"
-                  className="block text-white hover:text-pink-300 transition-colors text-center md:text-left text-sm"
+                  className="block text-white hover:text-pink-300 transition-colors text-left text-sm"
                   whileHover={{ x: 5 }}
                 >
                   News
@@ -246,7 +246,7 @@ export default function Footer() {
 
                 <motion.a
                   href="#contact"
-                  className="block text-white hover:text-pink-300 transition-colors text-center md:text-left text-sm"
+                  className="block text-white hover:text-pink-300 transition-colors text-left text-sm"
                   whileHover={{ x: 5 }}
                 >
                   Contact
@@ -259,7 +259,7 @@ export default function Footer() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.6 }}
-              className="flex flex-col items-center md:items-start"
+              className="flex flex-col items-start"
             >
               <h3
                 className="font-bold text-base sm:text-lg mb-4 tracking-wider uppercase"

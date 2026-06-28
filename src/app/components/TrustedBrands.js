@@ -13,7 +13,7 @@ export default function TrustedBrands() {
     <section className="py-16 overflow-hidden bg-gradient-to-b from-[#0a0a14] to-[#1a0a2e]">
       <div className="container mx-auto px-4 mb-8 text-center" >
         {/* <h2 className="text-4xl md:text-5xl font-bold text-center text-white mb-2">SUPPORTED BY </h2> */}
-         <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4">
+         <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4">
             SUPPORTED{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
               BY
@@ -27,8 +27,8 @@ export default function TrustedBrands() {
 
       <div className="relative">
         {/* Gradient overlays for smooth fade effect */}
-        <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-[#1a0a2e] to-transparent z-10"></div>
-        <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-[#1a0a2e] to-transparent z-10"></div>
+        <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-24 md:w-32 lg:w-40 bg-gradient-to-r from-[#1a0a2e] to-transparent z-10"></div>
+        <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 md:w-32 lg:w-40 bg-gradient-to-l from-[#1a0a2e] to-transparent z-10"></div>
 
         {/* Infinite scrolling container */}
         <div className="flex animate-infinite-scroll">

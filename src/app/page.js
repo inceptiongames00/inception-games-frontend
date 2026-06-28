@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, Suspense } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfileNavigation } from "@/hooks/useProfileNavigation";
@@ -20,57 +20,20 @@ import OurPartners from "./components/OurPartners";
 import CommunityActivies from "./components/CommunityActivies";
 import EShop from "./components/EShop";
 import Ecosystem from "../../src/app/components/Ecosystem/Ecosystem.jsx";
-import Image from "next/image";
 import UnifiedAuthModal from "./components/AuthModals/UnifiedAuthModal";
 import LaunchCountdownModal from "./components/LaunchCountdownModal";
 import LatestNews from "./components/LatestNews";
-// import ContactSection from "./components/ContactSection";
 import Footer from "./components/Footer";
-import dynamic from "next/dynamic";
+import ScrimsCarousel from "./components/ScrimsCarousel";
+import Image from "next/image";
 
-
-function AnimatedCounter({ target, suffix = "", prefix = "" }) {
-  const [count, setCount] = useState(0);
-  const ref = useRef(null);
-  const started = useRef(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !started.current) {
-          started.current = true;
-          let start = 0;
-          const step = target / 60;
-
-          const id = setInterval(() => {
-            start += step;
-            if (start >= target) {
-              setCount(target);
-              clearInterval(id);
-            } else {
-              setCount(Math.floor(start));
-            }
-          }, 16);
-        }
-      },
-      { threshold: 0.3 },
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [target]);
-
-  return (
-    <span ref={ref}>
-      {prefix}
-      {count.toLocaleString()}
-      {suffix}
-    </span>
-  );
-}
+// Constants for scroll management
+const HEADER_OFFSET = 120;
+const SCROLL_THRESHOLD = 0.3;
+const ANIMATION_INTERVAL = 16;
+const MAX_SCROLL_ATTEMPTS = 50;
+const SCROLL_INITIAL_DELAY = 800;
+const POLL_INTERVAL = 300;
 
 function HomeContent() {
   const searchParams = useSearchParams();
@@ -82,11 +45,6 @@ function HomeContent() {
   const pollIntervalRef = useRef(null);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [countdownModalOpen, setCountdownModalOpen] = useState(false);
-  const [isHydrated, setIsHydrated] = useState(false);
-
-  useEffect(() => {
-    setIsHydrated(true);
-  }, []);
 
   const howToEarn = [
     {
@@ -127,12 +85,6 @@ function HomeContent() {
     const section =
       searchParams.get("section") ||
       new URLSearchParams(window.location.search).get("section");
-    console.log(
-      "[v0] Section param detected:",
-      section,
-      "URL:",
-      window.location.href,
-    );
 
     if (!section) return;
 
@@ -144,35 +96,23 @@ function HomeContent() {
       const element = document.getElementById(section);
 
       if (!element) {
-        const allIds = Array.from(document.querySelectorAll("[id]")).map(
-          (el) => el.id,
-        );
-        console.log(
-          "[v0] Element not found:",
-          section,
-          "Available IDs:",
-          allIds,
-        );
-      } else {
-        console.log("[v0] Element found! Scrolling to:", section);
-        const headerOffset = 120;
-        const elementPosition =
-          element.getBoundingClientRect().top + window.pageYOffset;
-        window.scrollTo({
-          top: elementPosition - headerOffset,
-          behavior: "smooth",
-        });
-
-        if (observerRef.current) observerRef.current.disconnect();
-        if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+        return false;
       }
 
-      return !!element;
+      const elementPosition =
+        element.getBoundingClientRect().top + window.pageYOffset;
+      window.scrollTo({
+        top: elementPosition - HEADER_OFFSET,
+        behavior: "smooth",
+      });
+
+      if (observerRef.current) observerRef.current.disconnect();
+      if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+
+      return true;
     };
 
     scrollTimeoutRef.current = setTimeout(() => {
-      console.log("[v0] Starting scroll attempt for section:", section);
-
       if (doScroll()) return;
 
       observerRef.current = new MutationObserver(() => {
@@ -187,20 +127,18 @@ function HomeContent() {
       });
 
       let scrollAttempts = 0;
-      const maxAttempts = 50;
 
       pollIntervalRef.current = setInterval(() => {
         scrollAttempts++;
         if (doScroll()) {
           clearInterval(pollIntervalRef.current);
           if (observerRef.current) observerRef.current.disconnect();
-        } else if (scrollAttempts >= maxAttempts) {
-          console.log("[v0] Max scroll attempts reached for section:", section);
+        } else if (scrollAttempts >= MAX_SCROLL_ATTEMPTS) {
           clearInterval(pollIntervalRef.current);
           if (observerRef.current) observerRef.current.disconnect();
         }
-      }, 300);
-    }, 800);
+      }, POLL_INTERVAL);
+    }, SCROLL_INITIAL_DELAY);
 
     return () => {
       if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
@@ -210,7 +148,7 @@ function HomeContent() {
   }, [searchParams]);
 
   return (
-    <main className="min-h-screen" style={{ backgroundColor: "#0a0a14" }}>
+    <main className="min-h-screen bg-zinc-950">
       <Header />
 
       {/* ── HERO + SCRIMS WEEK ── */}
@@ -255,7 +193,7 @@ function HomeContent() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.8 }}
-          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-tight text-center"
+          className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight leading-tight text-center"
         >
           PLAY GAMES.{" "}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
@@ -280,7 +218,7 @@ function HomeContent() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="flex flex-wrap justify-center gap-2 sm:gap-3 pt-2 sm:pt-4 px-2"
+          className="flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4 pt-3 sm:pt-4 md:pt-6 px-2"
         >
           {[
             { icon: "🏆", text: "Play Scrims" },
@@ -308,7 +246,7 @@ function HomeContent() {
         </motion.div>
 
 
-        {/* Scrim Section - Auto Slider */}
+        {/* Scrims Section */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
@@ -326,254 +264,12 @@ function HomeContent() {
             </div>
           </div>
 
-          {/* Auto Slider Container */}
-          <div className="relative overflow-hidden">
-            {/* Gradient overlays for smooth fade effect */}
-            <div className="absolute left-0 top-0 bottom-0 w-20 sm:w-32 bg-gradient-to-r from-zinc-950 to-transparent z-10"></div>
-            <div className="absolute right-0 top-0 bottom-0 w-20 sm:w-32 bg-gradient-to-l from-zinc-950 to-transparent z-10"></div>
-
-            {/* Infinite scrolling container */}
-            <div className="flex animate-scrims-scroll">
-              {/* First set of cards */}
-              {[
-                {
-                  title: "Free Fire",
-                  label: "FREE ENTRY",
-                  date: "19TH JUNE",
-                  image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=500&h=600&fit=crop",
-                  bgGradient: "from-pink-600 to-pink-500",
-                },
-                {
-                  title: "PUBG Mobile",
-                  label: "FREE ENTRY",
-                  date: "19TH JUNE",
-                  image: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=500&h=600&fit=crop",
-                  bgGradient: "from-purple-600 to-purple-500",
-                },
-                {
-                  title: "eFootball 2025",
-                  label: "FREE ENTRY",
-                  date: "19TH JUNE",
-                  image: "https://images.unsplash.com/photo-1511882150382-421056c89033?w=500&h=600&fit=crop",
-                  bgGradient: "from-yellow-600 to-yellow-500",
-                },
-                {
-                  title: "FC 25",
-                  label: "FREE ENTRY",
-                  date: "19TH JUNE",
-                  image: "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=500&h=600&fit=crop",
-                  bgGradient: "from-blue-600 to-blue-500",
-                },
-                  {
-      title: "Valorant",
-      label: "FREE ENTRY",
-      date: "19TH JUNE",
-      image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=500&h=600&fit=crop",
-      bgGradient: "from-red-600 to-red-500",
-    },
-              ].map((game, index) => (
-                <div
-                  key={`game-1-${index}`}
-                  className="px-2 sm:px-3 md:px-4"
-                  style={{ width: "270px", height: "320px", flexShrink: 0 }}
-                >
-                  <div className="group cursor-pointer h-full">
-                    {/* Frame Border Container with frame.png */}
-                    <div
-                      className="relative transition-all duration-300 hover:scale-105 h-full"
-                      style={{
-                        backgroundImage: 'url(/assets/frame.png)',
-                        backgroundSize: '100% 100%',
-                        backgroundPosition: 'center',
-                        backgroundRepeat: 'no-repeat',
-                        padding: '12px',
-                        boxShadow: "0 0 30px rgba(255, 0, 255, 0.2)",
-                      }}
-                    >
-                      {/* Inner content container */}
-                      <div className="relative w-full h-full flex flex-col overflow-hidden rounded-lg">
-                        {/* Image Section */}
-                        <div className="relative flex-1 overflow-hidden">
-                          <img
-                            src={game.image}
-                            alt={game.title}
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/80" />
-                          <div className="absolute top-0 left-1/4 w-1/2 h-0.5 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                          
-                          {/* Dark Hover Overlay */}
-                          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center rounded-lg" />
-                          
-                          {/* Button */}
-                          <button
-                            onClick={() => {
-                              if (isHydrated && user) {
-                                navigateToTab("Scrims");
-                              } else {
-                                setLoginModalOpen(true);
-                              }
-                            }}
-                            className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                          >
-                            <span className="px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 rounded-full text-white font-semibold text-sm transition-all duration-300">
-                              {isHydrated && user ? "Go To Scrim" : "Sign In"}
-                            </span>
-                          </button>
-                        </div>
-
-                        {/* Bottom Info Section */}
-<div className={`relative bg-gradient-to-r px-3 py-3.5 text-center flex flex-col items-center`}>
-  <h3 className="text-xs font-bold mb-1 uppercase tracking-wider line-clamp-1 group-hover:text-white transition-colors duration-300" style={{ color: '#FFFA5B' }}>
-    {game.label}
-  </h3>
-  <p className="text-[9px] font-bold text-yellow-300 mb-1 uppercase group-hover:text-yellow-100 transition-colors duration-300">
-    <span style={{ color: '#FFFFFF' }}>STARTING</span> {game.date}
-  </p>
-</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-              {/* Duplicate set for seamless loop */}
-              {[
-                {
-                  title: "Free Fire",
-                  label: "FREE ENTRY",
-                  date: "STARTING 19TH JUNE",
-                  image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=500&h=600&fit=crop",
-                  bgGradient: "from-pink-600 to-pink-500",
-                },
-                {
-                  title: "PUBG Mobile",
-                  label: "FREE ENTRY",
-                  date: "STARTING 19TH JUNE",
-                  image: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=500&h=600&fit=crop",
-                  bgGradient: "from-purple-600 to-purple-500",
-                },
-                {
-                  title: "eFootball 2025",
-                  label: "FREE ENTRY",
-                  date: "STARTING 19TH JUNE",
-                  image: "https://images.unsplash.com/photo-1511882150382-421056c89033?w=500&h=600&fit=crop",
-                  bgGradient: "from-yellow-600 to-yellow-500",
-                },
-                {
-                  title: "FC 25",
-                  label: "FREE ENTRY",
-                  date: "STARTING 19TH JUNE",
-                  image: "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=500&h=600&fit=crop",
-                  bgGradient: "from-blue-600 to-blue-500",
-                },
-              ].map((game, index) => (
-                <div
-                  key={`game-2-${index}`}
-                  className="px-2 sm:px-3 md:px-4"
-                  style={{ width: "270px", height: "320px", flexShrink: 0 }}
-                >
-                  <div className="group cursor-pointer h-full">
-                    {/* Frame Border Container with frame.png */}
-                    <div
-                      className="relative transition-all duration-300 hover:scale-105 h-full"
-                      style={{
-                        backgroundImage: 'url(/assets/frame.png)',
-                        backgroundSize: '100% 100%',
-                        backgroundPosition: 'center',
-                        backgroundRepeat: 'no-repeat',
-                        padding: '12px',
-                        boxShadow: "0 0 30px rgba(255, 0, 255, 0.2)",
-                      }}
-                    >
-                      {/* Inner content container */}
-                      <div className="relative w-full h-full flex flex-col overflow-hidden rounded-lg">
-                        {/* Image Section */}
-                        <div className="relative flex-1 overflow-hidden">
-                          <img
-                            src={game.image}
-                            alt={game.title}
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/80" />
-                          <div className="absolute top-0 left-1/4 w-1/2 h-0.5 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                          
-                          {/* Dark Hover Overlay */}
-                          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center rounded-lg" />
-                          
-                          {/* Button */}
-                          <button
-                            onClick={() => {
-                              if (isHydrated && user) {
-                                navigateToTab("Scrims");
-                              } else {
-                                setLoginModalOpen(true);
-                              }
-                            }}
-                            className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                          >
-                            <span className="px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 rounded-full text-white font-semibold text-sm transition-all duration-300">
-                              {isHydrated && user ? "Go To Scrim" : "Sign In"}
-                            </span>
-                          </button>
-                        </div>
-
-                        {/* Bottom Info Section */}
-<div className={`relative bg-gradient-to-r px-3 py-3.5 text-center flex flex-col items-center`}>
-  <h3 className="text-xs font-bold mb-1 uppercase tracking-wider line-clamp-1 group-hover:text-white transition-colors duration-300" style={{ color: '#FFFA5B' }}>
-    {game.label}
-  </h3>
-  <p className="text-[9px] font-bold text-yellow-300 mb-1 uppercase group-hover:text-yellow-100 transition-colors duration-300">
-    <span style={{ color: '#FFFFFF' }}>STARTING</span> {game.date}
-  </p>
-</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <style jsx>{`
-            @keyframes scrims-scroll {
-              0% {
-                transform: translateX(0);
-              }
-              100% {
-                transform: translateX(-50%);
-              }
-            }
-
-            .animate-scrims-scroll {
-              animation: scrims-scroll 40s linear infinite;
-            }
-
-            .animate-scrims-scroll:hover {
-              animation-play-state: paused;
-            }
-          `}</style>
+          <ScrimsCarousel onLoginClick={() => setLoginModalOpen(true)} />
         </motion.div>
       </motion.div>
     </div>
   </div>
-
-
-  {/* Scroll indicator */}
-  {/* <motion.div
-    animate={{ y: [0, 8, 0] }}
-    transition={{ duration: 2, repeat: Infinity }}
-    className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-zinc-600 z-20 top-5"
-  >
-    <span className="text-xs">Scroll to explore</span>
-    <div className="w-5 h-8 border-2 border-zinc-700 rounded-full flex items-start justify-center pt-1">
-      <motion.div
-        animate={{ y: [0, 10, 0] }}
-        transition={{ duration: 1.5, repeat: Infinity }}
-        className="w-1 h-2 bg-purple-500 rounded-full"
-      />
-    </div>
-  </motion.div> */}
-</section>
+  </section>
 
       {/* ── HOW TO EARN ── */}
       <section
@@ -753,15 +449,11 @@ function HomeContent() {
       </section>
 
       <TrustedBrands />
-      {/* ── GIVEAWAY WINNER SECTION  ── */}
       <GiveawayWinner />
-      {/* ── PARTNER & UPDATES SECTION  ── */}
       <OurPartners />
-      {/* ── COMMUNITY & ACTIVIES SECTION  ── */}
       <div id="community">
-        <CommunityActivies/>
+        <CommunityActivies />
       </div>
-      {/* ── ECOMMERCE SECTION  ── */}
       <div id="eshop">
         <EShop />
       </div>
@@ -769,9 +461,6 @@ function HomeContent() {
         <LatestNews />
       </div>
       <Ecosystem />
-      {/* <GamesCarousel/> */}
-      <div id="career">{/* Career section can be added here if needed */}</div>
-      {/* <ContactSection /> */}
       <Footer />
 
       {/* Countdown Modal */}
@@ -794,9 +483,5 @@ function HomeContent() {
 }
 
 export default function Home() {
-  return (
-    <Suspense fallback={<div />}>
-      <HomeContent />
-    </Suspense>
-  );
+  return <HomeContent />;
 }
