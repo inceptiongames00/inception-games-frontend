@@ -126,6 +126,7 @@ function GameCard({ game, onClick, isHydrated, user }) {
           <div className="relative w-full h-full flex flex-col overflow-hidden rounded-lg">
             {/* Image Section */}
             <div className="relative flex-1 overflow-hidden">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={game.image}
                 alt={game.title}
