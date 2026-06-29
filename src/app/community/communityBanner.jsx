@@ -11,7 +11,7 @@ export default function CommunityBanner() {
 
       <div className="relative mx-auto flex min-h-screen max-w-7xl flex-col justify-center px-4 py-10 md:px-0">
         <p className="mb-6 text-center text-[11px] uppercase tracking-[0.55em] text-gray-400">
-          ESTABLISHED 2025
+          ESTABLISHED 2026
         </p>
 
         <h1 className="text-center text-5xl font-bold leading-tight md:text-7xl">
