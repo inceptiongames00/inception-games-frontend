@@ -1,6 +1,7 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Menu, X, User, ChevronDown, LogOut, Settings } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -44,6 +45,7 @@ function AnimatedProfileRing({ children, size = 44 }) {
 }
 
 export default function Header() {
+  const router = useRouter();
   const { user, isAuthenticated, logout } = useAuth();
   const { navigateToSection } = useHomeNavigation();
   const { navigateToTab } = useProfileNavigation();
@@ -229,12 +231,12 @@ export default function Header() {
               Partners
             </button> */}
 
-            <button
-              onClick={() => navigateToSection("community")}
-              className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors cursor-pointer"
+            <Link
+              href="/community"
+              className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors"
             >
               Community
-            </button>
+            </Link>
 
             {/* Ecosystem Dropdown */}
             {/* <div className="relative ecosystem-dropdown-container">
@@ -576,15 +578,13 @@ export default function Header() {
                 Partners
               </button>
 
-              <button
-                onClick={() => {
-                  handleLinkClick();
-                  navigateToSection("community");
-                }}
-                className="text-white text-base font-medium py-3 border-b border-purple-500/10 hover:text-purple-400 transition-colors w-full text-left cursor-pointer"
+              <Link
+                href="/community"
+                onClick={handleLinkClick}
+                className="text-white text-base font-medium py-3 border-b border-purple-500/10 hover:text-purple-400 transition-colors w-full text-left block"
               >
                 Community
-              </button>
+              </Link>
 
               {/* Ecosystem Mobile */}
               {/* <button

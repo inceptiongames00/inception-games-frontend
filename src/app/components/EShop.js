@@ -33,7 +33,7 @@ export default function EShop() {
   ]
 
   return (
-    <section className="py-20 px-4 sm:px-6" style={{ backgroundColor: "#0a0a14" }}>
+    <section className="py-20 px-4 sm:px-6 bg-zinc-950">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12 sm:mb-16">
@@ -55,8 +55,8 @@ export default function EShop() {
         {/* Carousel Container */}
         <div className="relative overflow-hidden">
           {/* Gradient overlays for smooth fade effect */}
-          <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-r from-[#0a0a14] to-transparent z-10"></div>
-          <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-l from-[#0a0a14] to-transparent z-10"></div>
+          <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-r from-zinc-950 to-transparent z-10"></div>
+          <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-l from-zinc-950 to-transparent z-10"></div>
 
           {/* Auto-scrolling container */}
           <div className="flex animate-eshop-scroll gap-4 sm:gap-6">
