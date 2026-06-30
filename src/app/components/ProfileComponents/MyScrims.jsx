@@ -80,8 +80,8 @@ function StatusBadge({ status }) {
     <span
       className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${style.text} ${style.bg} ${style.border}`}
     >
-      <Icon className="w-3.5 h-3.5" />
-      {status || "Pending"}
+      {/* <Icon className="w-3.5 h-3.5" /> */}
+      {/* {status || "Pending"} */}
     </span>
   );
 }
@@ -140,12 +140,21 @@ function ScrimCard({ registration, index }) {
         <div className="flex flex-wrap gap-2 mb-4">
           <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.05] text-xs text-gray-300">
             <Calendar className="w-3.5 h-3.5 text-purple-400" />
-            {formatDate(registration.slot_date)}
+            {/* {formatDate(registration.slot_date)} */}
+            Visit
+            <a
+              href="https://discord.gg/2UXQRQHf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-purple-400 hover:text-purple-300 underline underline-offset-2 font-medium"
+            >
+              Discord
+            </a>{" "} for date & time
           </div>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.05] text-xs text-gray-300">
+          {/* <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.05] text-xs text-gray-300">
             <Clock className="w-3.5 h-3.5 text-pink-400" />
             {formatTime(registration.slot_time)}
-          </div>
+          </div> */}
           {registration.scrim_region && (
             <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.05] text-xs text-gray-300">
               <MapPin className="w-3.5 h-3.5 text-purple-400" />

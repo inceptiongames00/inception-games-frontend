@@ -1226,12 +1226,21 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
     { id: "support", label: "Contact Support" },
   ];
 
+  // const progressionSteps = [
+  //   { label: "Reg Starting", date: new Date("2025-05-01 12:00:00"), time: "12:00" },
+  //   { label: "Reg Ending", date: new Date("2025-06-14"), time: "23:59" },
+  //   { label: "Match Starts", date: new Date("2025-06-15"), time: "12:00" },
+  //   { label: "Match Ends", date: new Date("2025-06-25"), time: "23:59" },
+  // ];
+
+
   const progressionSteps = [
-    { label: "Reg Starting", date: new Date("2025-05-01 12:00:00"), time: "12:00" },
-    { label: "Reg Ending", date: new Date("2025-06-14"), time: "23:59" },
-    { label: "Match Starts", date: new Date("2025-06-15"), time: "12:00" },
-    { label: "Match Ends", date: new Date("2025-06-25"), time: "23:59" },
-  ];
+  { label: "Reg Starting" },
+  { label: "Reg Ending" },
+  { label: "Match Starts" },
+  { label: "Match Ends" },
+];
+
 
   const price = getPrice();
 
@@ -1910,7 +1919,7 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
               <div className="flex items-center gap-2 text-red-400 mb-4">
                 <Calendar size={16} />
                 <span className="font-semibold">
-                  {formatDate(event.date)} 6:00 PM
+                  {formatDate(event.date)}
                 </span>
                 <span>·</span>
                 <span>{getStatusText(event.status)}</span>
@@ -1962,7 +1971,7 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
               </div> */}
 
               {/* Tournament Progression */}
-              <div className="mb-6 sm:mb-8">
+              {/* <div className="mb-6 sm:mb-8">
                 <h3 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6">
                   Tournament Progression
                 </h3>
@@ -2006,7 +2015,37 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
                     );
                   })}
                 </div>
-              </div>
+              </div> */}
+
+              <div className="mb-6 sm:mb-8">
+  <h3 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6">
+    Tournament Progression
+  </h3>
+  <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
+    {progressionSteps.map((step, index) => {
+      return (
+        <div
+          key={index}
+          className="p-2 sm:p-4 rounded-lg sm:rounded-xl border bg-gray-800/30 border-gray-700/30"
+        >
+          <div className="flex justify-center mb-2 sm:mb-3">
+            <CheckCircle2
+              size={20}
+              className="sm:w-6 sm:h-6 text-gray-600"
+            />
+          </div>
+          <p className="text-xs sm:text-sm font-semibold text-white text-center mb-1 sm:mb-2 leading-tight">
+            {step.label}
+          </p>
+          <div className="flex items-center justify-center gap-1 text-xs text-gray-300 font-medium">
+            <Calendar size={10} className="sm:w-3 sm:h-3" />
+            <span className="text-xs">TBA</span>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+</div>
 
               {/* Tabs */}
               <div className="border-b border-gray-800 mb-4 sm:mb-6">
@@ -2214,7 +2253,6 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
           </div>
         </div>
       </main>
-//latest code
       <Footer />
     </div>
   );
