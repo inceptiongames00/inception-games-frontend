@@ -106,12 +106,17 @@ export default function ProfilePage() {
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Hero Banner */}
+            {/* Hero Banner */}
           <div className="mb-8">
             <ProfileHeroBanner
               user={mergedUser}
               onEditProfile={() => setEditProfileOpen(true)}
             />
+          </div>
+    
+ {/* Events Section */}
+          <div className="space-y-6">
+            <EventsSection user={mergedUser} />
           </div>
 
           {/* Player Info + Notifications */}
@@ -130,11 +135,7 @@ export default function ProfilePage() {
             <MyScrims email={mergedUser?.email} />
           </div>
 
-          {/* Events Section */}
-          <div className="space-y-6">
-            <EventsSection user={mergedUser} />
-          </div>
-
+         
          
         </div>
       </main>

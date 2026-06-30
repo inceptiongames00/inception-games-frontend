@@ -331,136 +331,143 @@ function EventCard({ event, onClick }) {
 
   return (
     <motion.div
-      className="bg-[#111115] border border-white/[0.06] rounded-2xl overflow-hidden hover:border-white/[0.12] transition-all duration-300"
-      whileHover={{ y: -4 }}
+      className="bg-gradient-to-b from-gray-900/40 via-[#111115] to-black/60 border border-white/[0.08] rounded-2xl overflow-hidden hover:border-white/[0.15] transition-all duration-300 group"
+      whileHover={{ y: -6 }}
       layout
     >
-      {/* Banner - Game Image */}
+      {/* Banner - Game Image with decorative elements */}
       <div
-        className="relative h-48 cursor-pointer overflow-hidden"
+        className="relative h-56 cursor-pointer overflow-hidden bg-gradient-to-br from-purple-900/20 to-black"
         onClick={() => onClick(event)}
       >
-        <Image src={gameImage} alt={gameName} fill className="object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+        <Image src={gameImage} alt={gameName} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#111115] via-black/40 to-transparent" />
 
-        {/* Game Logo Overlay */}
-        <div className="absolute bottom-4 left-4 right-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-black/60 backdrop-blur-sm rounded-lg">
-              <Calendar size={14} className="text-amber-400" />
-              <span className="text-white text-sm font-medium">
-                {event.start_date
-                  ? new Date(event.start_date)
-                      .toLocaleDateString("en-GB", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric",
-                      })
-                      .toUpperCase()
-                  : "TBD"}
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className="p-4">
-        {/* Game + Status */}
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg overflow-hidden bg-gray-800 flex-shrink-0">
-              <Image
-                src={gameImage}
-                alt={gameName}
-                width={32}
-                height={32}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <span className="text-white text-sm font-medium truncate max-w-[120px]">
-              {gameName.length > 15
-                ? gameName.split(":")[0].split(" ").slice(0, 2).join(" ")
-                : gameName}
+        {/* Date Badge - Top Left */}
+        <div className="absolute top-4 left-4">
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-black/50 backdrop-blur-sm rounded-full border border-yellow-400/30">
+            <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse" />
+            <span className="text-white text-xs font-bold uppercase">
+              {event.start_date
+                ? new Date(event.start_date)
+                    .toLocaleDateString("en-US", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })
+                    .toUpperCase()
+                : "TBD"}
             </span>
           </div>
+        </div>
+
+        {/* Status Badge - Top Right */}
+        <div className="absolute top-4 right-4">
           <span
-            className={`px-2 py-0.5 text-xs font-semibold rounded border capitalize ${getStatusColor(event.status)}`}
+            className={`px-4 py-1.5 text-xs font-bold rounded-full border capitalize inline-block ${getStatusColor(event.status)}`}
           >
             {event.status || "Upcoming"}
           </span>
         </div>
 
-        {/* Title */}
-        <h3
-          className="text-white font-bold text-lg mb-2 cursor-pointer hover:text-purple-400 transition-colors line-clamp-2"
-          onClick={() => onClick(event)}
-        >
-          {event.title}
-        </h3>
-
-        {/* Date & Status */}
-        <div className="flex items-center gap-2 text-sm mb-3">
-          <Calendar size={14} className="text-red-400" />
-          <span className="text-red-400 font-medium">
-            {formatDate(event.start_date)}
+        {/* Event Type Label - Bottom Left */}
+        <div className="absolute bottom-4 left-4">
+          <span className="text-gray-400 text-xs font-bold uppercase tracking-wider">
+            {eventType}
           </span>
-          <span className="text-gray-500">·</span>
-          <span className="text-red-400">{getStatusText(event.status)}</span>
+        </div>
+      </div>
+
+      {/* Content Section */}
+      <div className="p-6 space-y-4">
+        {/* Game Icon + Organizer */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-800 flex-shrink-0 border border-white/[0.1]">
+              <Image
+                src={gameImage}
+                alt={gameName}
+                width={40}
+                height={40}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <span className="text-white text-sm font-semibold max-w-[120px] truncate">
+              {gameName.length > 15
+                ? gameName.split(":")[0].split(" ").slice(0, 2).join(" ")
+                : gameName}
+            </span>
+          </div>
+          {event.organizer && (
+            <span className="px-3 py-1 text-xs font-bold text-purple-300 bg-purple-500/20 rounded-full border border-purple-500/30 uppercase">
+              {event.organizer}
+            </span>
+          )}
         </div>
 
-        {/* Meta Info */}
-        <div className="flex items-center gap-4 text-sm text-gray-400 mb-3">
-          <div className="flex items-center gap-1">
-            <Flag size={12} />
+        {/* Title */}
+        <div>
+          <h3
+            className="text-white font-bold text-xl cursor-pointer hover:text-purple-400 transition-colors line-clamp-2 leading-tight"
+            onClick={() => onClick(event)}
+          >
+            {event.title}
+          </h3>
+        </div>
+
+        {/* Date & Status Text */}
+        <div className="flex items-center gap-3 text-sm">
+          <span className="text-red-400 font-semibold">
+            {formatDate(event.start_date)}
+          </span>
+          <span className="text-green-400 font-semibold">
+            {getStatusText(event.status)}
+          </span>
+        </div>
+
+        {/* Meta Info - Location, Platform, Team Type */}
+        <div className="flex flex-wrap items-center gap-3 text-xs text-gray-300">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/[0.03] border border-white/[0.06]">
+            <Flag size={13} className="text-gray-500" />
             <span>{event.venue || event.location || "Online"}</span>
           </div>
           <PlatformDisplay platform={event.platform} />
-          {/* <div className="flex items-center gap-1">
-            <Users size={12} />
-            <span>{event.teamType || "Open"}</span>
-          </div> */}
-  <div className="flex items-center gap-1">
-  {(event.teamType || '').toLowerCase() === 'solo' ? (
-    <User size={12} />
-  ) : (
-    <Users size={12} />
-  )}
-  <span>{event.teamType}</span>
-</div>
-
-
-
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/[0.03] border border-white/[0.06]">
+            {(event.teamType || '').toLowerCase() === 'solo' ? (
+              <User size={13} className="text-gray-500" />
+            ) : (
+              <Users size={13} className="text-gray-500" />
+            )}
+            <span>{event.teamType || "Team"}</span>
+          </div>
         </div>
 
-{/* always-visible content  */}
+        {/* Prize Pool - if exists */}
         {event.prizePool > 0 && (
-  <div className="flex items-center gap-2 text-sm mb-3">
-    <DollarSign size={14} className="text-amber-400" />
-    <span className="text-white font-semibold">
-      {event.currency || "BDT"} {event.prizePool.toLocaleString()} PrizePool
-    </span>
-  </div>
-)}
+          <div className="flex items-center gap-2 text-sm py-2 px-3 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+            <DollarSign size={16} className="text-amber-400" />
+            <span className="text-white font-semibold">
+              {event.currency || "BDT"} {event.prizePool.toLocaleString()} Prize Pool
+            </span>
+          </div>
+        )}
 
-{event.description && (
-  <p className="text-gray-400 text-sm mb-3 line-clamp-3">
-    {event.description}
-  </p>
-)}
+        {/* Description - if exists */}
+        {event.description && (
+          <p className="text-gray-400 text-sm line-clamp-2 leading-relaxed">
+            {event.description}
+          </p>
+        )}
 
-<div className="flex items-center gap-2">
-  <span className="px-3 py-1 text-xs font-medium text-gray-300 bg-gray-800 rounded-full border border-gray-700">
-    {eventType}
-  </span>
-  {event.organizer && (
-    <span className="px-3 py-1 text-xs font-medium text-purple-300 bg-purple-800/30 rounded-full border border-purple-700/30">
-      {event.organizer}
-    </span>
-  )}
-</div>
-
-        
+        {/* Join Event Button */}
+        <motion.button
+          onClick={() => onClick(event)}
+          className="w-full mt-2 py-3 bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white font-bold text-sm rounded-xl transition-all duration-200 uppercase tracking-wider"
+          whileHover={{ scale: 1.01 }}
+          whileTap={{ scale: 0.98 }}
+        >
+          Join Event
+        </motion.button>
       </div>
     </motion.div>
   );
