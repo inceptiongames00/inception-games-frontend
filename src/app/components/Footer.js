@@ -98,7 +98,7 @@ export default function Footer() {
                 </motion.a>
 
                 <motion.a
-  href="https://discord.gg/2UXQRQHf"
+  href="https://discord.gg/StTgqPMERz"
   target="_blank"
   rel="noopener noreferrer"
   className="flex items-center justify-center sm:justify-start space-x-3 text-white hover:text-gray-300 transition-colors group"

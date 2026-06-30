@@ -143,7 +143,7 @@ function ScrimCard({ registration, index }) {
             {/* {formatDate(registration.slot_date)} */}
             Visit
             <a
-              href="https://discord.gg/2UXQRQHf"
+              href="https://discord.gg/StTgqPMERz"
               target="_blank"
               rel="noopener noreferrer"
               className="text-purple-400 hover:text-purple-300 underline underline-offset-2 font-medium"
