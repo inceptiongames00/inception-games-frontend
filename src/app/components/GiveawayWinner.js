@@ -1,86 +1,106 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { motion } from "framer-motion"
-import { FaFacebookF, FaTwitter, FaLinkedin, FaWhatsapp } from "react-icons/fa"
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { FaFacebookF, FaTwitter, FaLinkedin, FaWhatsapp } from "react-icons/fa";
+// import barcaJersey from '/public/giveAway/barca-jersey.JPG'
 
 export default function GiveawayWinner() {
-  const [currentIndex, setCurrentIndex] = useState(0)
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const winners = [
     {
-      title: "Team Alliances",
-      description: "Recruit new talent for your organization or find the perfect roster to showcase your skills. Elite scouting starts here.",
-      category: "ACTIVE RECRUITMENT",
-      categoryColor: "bg-yellow-500/20 text-yellow-300 border border-yellow-500/30",
-      image: "https://images.unsplash.com/photo-1557821552-17105176677c?w=600&h=700&fit=crop",
+      title: "FC Barcelona Jersey",
+      description:
+        "One lucky winner walked away with an official FC Barcelona jersey, signed and ready to represent on and off the pitch.",
+      category: "JERSEY GIVEAWAY",
+      categoryColor:
+        "bg-yellow-500/20 text-yellow-300 border border-yellow-500/30",
+      image: "/giveAway/barca-jersey.JPG",
     },
     {
-      title: "Team Alliances",
-      description: "Recruit new talent for your organization or find the perfect roster to showcase your skills. Elite scouting starts here.",
-      category: "REGIONAL - LIVE NOW",
-      categoryColor: "bg-green-500/20 text-green-300 border border-green-500/30",
-      image: "https://images.unsplash.com/photo-1557821552-17105176677c?w=600&h=700&fit=crop",
+      title: "GPU Giveaway",
+      description:
+        "Our biggest hardware giveaway yet — a top-tier graphics card handed over to power the next level of competitive gaming.",
+      category: "HARDWARE - LIVE NOW",
+      categoryColor:
+        "bg-green-500/20 text-green-300 border border-green-500/30",
+      image: "/giveAway/gpu-winner.jpg",
     },
     {
-      title: "Team Alliances",
-      description: "Recruit new talent for your organization or find the perfect roster to showcase your skills. Elite scouting starts here.",
-      category: "INVITATIONAL",
+      title: "Pro Gaming Mouse Pad",
+      description:
+        "A premium esports-grade mouse pad, built for precision and speed, now in the hands of one of our community champions.",
+      category: "ACCESSORY GIVEAWAY",
       categoryColor: "bg-blue-500/20 text-blue-300 border border-blue-500/30",
-      image: "https://images.unsplash.com/photo-1557821552-17105176677c?w=600&h=700&fit=crop",
+      image: "/giveAway/mouse-pad.jpg",
     },
-     {
-      title: "Team Alliances",
-      description: "Recruit new talent for your organization or find the perfect roster to showcase your skills. Elite scouting starts here.",
-      category: "ACTIVE RECRUITMENT",
-      categoryColor: "bg-yellow-500/20 text-yellow-300 border border-yellow-500/30",
-      image: "https://images.unsplash.com/photo-1557821552-17105176677c?w=600&h=700&fit=crop",
+    {
+      title: "Real Madrid Jersey",
+      description:
+        "A genuine Real Madrid jersey landed with one of our top community members in this season's club giveaway.",
+      category: "JERSEY GIVEAWAY",
+      categoryColor:
+        "bg-yellow-500/20 text-yellow-300 border border-yellow-500/30",
+      image: "/giveAway/real-jersey.JPG",
     },
-  ]
+    {
+      title: "Pro Gaming Mouse",
+      description:
+        "A high-precision gaming mouse, built for fast flicks and clutch plays, now equipped by our newest giveaway winner.",
+      category: "HARDWARE GIVEAWAY",
+      categoryColor:
+        "bg-yellow-500/20 text-yellow-300 border border-yellow-500/30",
+      image: "/giveAway/mouse-winner.jpg",
+    },
+  ];
 
   // Auto-rotate carousel
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prev) => {
-        const nextIndex = prev + 1
+        const nextIndex = prev + 1;
         // When reaching the end of the duplicated set, jump back to the beginning
-        return nextIndex >= winners.length * 2 ? 0 : nextIndex
-      })
-    }, 5000) // Change slide every 5 seconds
+        return nextIndex >= winners.length * 2 ? 0 : nextIndex;
+      });
+    }, 5000); // Change slide every 5 seconds
 
-    return () => clearInterval(interval)
-  }, [winners.length])
+    return () => clearInterval(interval);
+  }, [winners.length]);
 
   const handleShare = (platform, winner) => {
-    const shareUrl = typeof window !== 'undefined' ? window.location.href : ''
-    const title = winner.title
-    const description = winner.description
-    let shareLink = ''
+    const shareUrl = typeof window !== "undefined" ? window.location.href : "";
+    const title = winner.title;
+    const description = winner.description;
+    let shareLink = "";
 
     switch (platform) {
-      case 'facebook':
-        shareLink = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(title + ' - ' + description)}`
-        break
-      case 'twitter':
-        shareLink = `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(title + ' - ' + description)}`
-        break
-      case 'linkedin':
-        shareLink = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`
-        break
-      case 'whatsapp':
-        shareLink = `https://wa.me/?text=${encodeURIComponent(title + ' - ' + description + ' ' + shareUrl)}`
-        break
+      case "facebook":
+        shareLink = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(title + " - " + description)}`;
+        break;
+      case "twitter":
+        shareLink = `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(title + " - " + description)}`;
+        break;
+      case "linkedin":
+        shareLink = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
+        break;
+      case "whatsapp":
+        shareLink = `https://wa.me/?text=${encodeURIComponent(title + " - " + description + " " + shareUrl)}`;
+        break;
       default:
-        return
+        return;
     }
 
-    if (typeof window !== 'undefined') {
-      window.open(shareLink, 'share-dialog', 'width=800,height=600')
+    if (typeof window !== "undefined") {
+      window.open(shareLink, "share-dialog", "width=800,height=600");
     }
-  }
+  };
 
   return (
-    <section className="py-20 px-4 sm:px-6" style={{ backgroundColor: "#0a0a14" }}>
+    <section
+      className="py-20 px-4 sm:px-6"
+      style={{ backgroundColor: "#0a0a14" }}
+    >
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
@@ -109,10 +129,16 @@ export default function GiveawayWinner() {
           <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 md:w-32 lg:w-40 bg-gradient-to-l from-[#0a0a14] to-transparent z-10"></div>
 
           {/* Carousel Container - Show 3 cards */}
-          <div className="flex gap-3 sm:gap-4 lg:gap-5 transition-transform duration-500 ease-out px-4 sm:px-6" style={{ transform: `translateX(-${currentIndex * (100 / 3)}%)` }}>
+          <div
+            className="flex gap-3 sm:gap-4 lg:gap-5 transition-transform duration-500 ease-out px-4 sm:px-6"
+            style={{ transform: `translateX(-${currentIndex * (100 / 3)}%)` }}
+          >
             {/* First set */}
             {winners.map((winner, idx) => (
-              <div key={`set1-${idx}`} className="w-full lg:w-1/3 flex-shrink-0 px-2 sm:px-3">
+              <div
+                key={`set1-${idx}`}
+                className="w-full lg:w-1/3 flex-shrink-0 px-2 sm:px-3"
+              >
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -196,7 +222,10 @@ export default function GiveawayWinner() {
             ))}
             {/* Duplicate set for seamless loop */}
             {winners.map((winner, idx) => (
-              <div key={`set2-${idx}`} className="w-full lg:w-1/3 flex-shrink-0 px-2 sm:px-3">
+              <div
+                key={`set2-${idx}`}
+                className="w-full lg:w-1/3 flex-shrink-0 px-2 sm:px-3"
+              >
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -298,5 +327,5 @@ export default function GiveawayWinner() {
         </div>
       </div>
     </section>
-  )
+  );
 }
