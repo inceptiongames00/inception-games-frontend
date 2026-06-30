@@ -1,120 +1,142 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { ChevronLeft, ChevronRight, X } from "lucide-react"
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 
 export default function OurPartners() {
-  const [activeSlide, setActiveSlide] = useState(0)
-  const [autoPlay, setAutoPlay] = useState(true)
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [autoPlay, setAutoPlay] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     companyName: "",
     phone: "",
     email: "",
     website: "",
-  })
+  });
 
   const partners = [
     {
       title: "MIME GO: The Future of Entertainment",
-      description: "Experience the next generation of streaming, calling, and savings. Everything you need for your digital lifestyle in one powerful app. Join the MIME community and revolutionize your internet experience.",
+      description:
+        "Experience the next generation of streaming, calling, and savings. Everything you need for your digital lifestyle in one powerful app. Join the MIME community and revolutionize your internet experience.",
       badge: "EXCLUSIVE LAUNCH",
       image: "/Ecosystem/Partners/mime2.jpeg",
       bgGradient: "from-blue-600/20 via-purple-600/20 to-cyan-600/20",
     },
     {
       title: "MOAR: Next Level Gaming",
-      description: "Join a revolutionary platform designed for gamers and esports enthusiasts. Compete, earn rewards, and connect with the global gaming community. Discover exclusive partnerships and opportunities.",
+      description:
+        "Join a revolutionary platform designed for gamers and esports enthusiasts. Compete, earn rewards, and connect with the global gaming community. Discover exclusive partnerships and opportunities.",
       badge: "FEATURED PARTNER",
       image: "/Ecosystem/Partners/MOAR.png",
       bgGradient: "from-pink-600/20 via-purple-600/20 to-blue-600/20",
     },
     {
       title: "iFarmer: Connecting Communities",
-      description: "Building bridges between technology and agriculture. Experience innovative solutions that empower businesses and communities. Join us in creating sustainable growth through digital transformation.",
+      description:
+        "Building bridges between technology and agriculture. Experience innovative solutions that empower businesses and communities. Join us in creating sustainable growth through digital transformation.",
       badge: "INNOVATION PARTNER",
       image: "/Ecosystem/Partners/ifarmer2.jpeg",
       bgGradient: "from-green-600/20 via-emerald-600/20 to-cyan-600/20",
     },
-  ]
+  ];
 
-  const updates = [
-    {
-      title: "Neon Dawn Launch",
-      description: "The biggest update yet brings new maps, characters, and a complete overhaul of the ranking system.",
-      category: "UPDATES",
-      image: "/News/bignews.jpg",
-    },
-    {
-      title: "Neon Dawn Launch",
-      description: "The biggest update yet brings new maps, characters, and a complete overhaul of the ranking system.",
-      category: "UPDATES",
-      image: "/News/news3.jpg",
-    },
-    {
-      title: "Neon Dawn Launch",
-      description: "The biggest update yet brings new maps, characters, and a complete overhaul of the ranking system.",
-      category: "UPDATES",
-      image: "/News/news4.jpg",
-    },
-    {
-      title: "Neon Dawn Launch",
-      description: "The biggest update yet brings new maps, characters, and a complete overhaul of the ranking system.",
-      category: "UPDATES",
-      image: "/News/showcase.jpg",
-    },
-    {
-      title: "Neon Dawn Launch",
-      description: "The biggest update yet brings new maps, characters, and a complete overhaul of the ranking system.",
-      category: "UPDATES",
-      image: "/News/summit.jpg",
-    },
-  ]
+const updates = [
+  {
+    title: "Powering Bangladesh's Gaming Future",
+    description:
+      "Co-founded by Kazi Hasib and Ramisa Rifa, Slice N Share and Inception Studio are transforming Bangladesh's gaming industry through esports tournaments, professional gamer opportunities, and locally inspired game development, including the FPS zombie game Z Inception.",
+    category: "Gaming & Esports",
+    image: "/News/bignews.jpg",
+    link: "https://www.facebook.com/share/p/1F1DL81iNz/",
+  },
+  {
+    title: "DEIED Hosts Startup & Innovation Dialogue",
+    description:
+      "DEIED organized a dialogue to introduce the Startup & Scaleup (Accelerating Bangladesh) and University Innovation Hub programs to senior public-sector leaders.",
+    category: "Event",
+    image: "/News/news3.jpg",
+    link: "https://www.facebook.com/share/p/1BYansTynE/",
+  },
+  {
+    title: "Bangladesh Gaming Summit 2025",
+    description:
+      "Slice N Share at Airtel Buzz Presents Bangladesh Gaming & Esports Summit 2025",
+    category: "UPDATES",
+    image: "/News/news4.jpg",
+    link: "https://www.facebook.com/share/p/1Jdons4S5D/",
+  },
+  {
+    title: "Slice N Share Starts Free Gaming Newsletter",
+    description:
+      "Slice N Share has begun work on a free digital and offline gaming newsletter featuring players, organizations, rising teams, global esports updates, and industry opportunities.",
+    category: "UPDATES",
+    image: "/News/showcase.jpg",
+    link: "https://www.facebook.com/share/p/1FxQpGf52T/",
+  },
+  {
+    title: "YUNet Bangladesh Gaming & Esports Summit 2025",
+    description:
+      "YUNet Bangladesh Gaming & Esports Summit 2025 will bring together gamers, esports organizations, industry leaders, and enthusiasts to celebrate and explore the future of gaming and esports in Bangladesh.",
+    category: "UPDATES",
+    image: "/News/summit.jpg",
+    link: "https://www.facebook.com/share/p/192UKXHXPZ/",
+  },
+];
 
   useEffect(() => {
-    if (!autoPlay) return
+    if (!autoPlay) return;
 
     const timer = setInterval(() => {
-      setActiveSlide((prev) => (prev + 1) % partners.length)
-    }, 5000)
+      setActiveSlide((prev) => (prev + 1) % partners.length);
+    }, 5000);
 
-    return () => clearInterval(timer)
-  }, [autoPlay, partners.length])
+    return () => clearInterval(timer);
+  }, [autoPlay, partners.length]);
 
   const goToSlide = (index) => {
-    setActiveSlide(index)
-    setAutoPlay(false)
-  }
+    setActiveSlide(index);
+    setAutoPlay(false);
+  };
 
   const nextSlide = () => {
-    setActiveSlide((prev) => (prev + 1) % partners.length)
-    setAutoPlay(false)
-  }
+    setActiveSlide((prev) => (prev + 1) % partners.length);
+    setAutoPlay(false);
+  };
 
   const prevSlide = () => {
-    setActiveSlide((prev) => (prev - 1 + partners.length) % partners.length)
-    setAutoPlay(false)
-  }
+    setActiveSlide((prev) => (prev - 1 + partners.length) % partners.length);
+    setAutoPlay(false);
+  };
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setFormData(prev => ({
+    const { name, value } = e.target;
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
-    }))
-  }
+      [name]: value,
+    }));
+  };
 
   const handleSubmit = (e) => {
-    e.preventDefault()
-    console.log("Partnership Form Data:", formData)
-    setFormData({ name: "", companyName: "", phone: "", email: "", website: "" })
-    setIsModalOpen(false)
-  }
+    e.preventDefault();
+    console.log("Partnership Form Data:", formData);
+    setFormData({
+      name: "",
+      companyName: "",
+      phone: "",
+      email: "",
+      website: "",
+    });
+    setIsModalOpen(false);
+  };
 
   return (
- <section className="py-20 px-4 sm:px-6" style={{ backgroundColor: "#0a0a14" }}>
+    <section
+      className="py-20 px-4 sm:px-6"
+      style={{ backgroundColor: "#0a0a14" }}
+    >
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
@@ -241,7 +263,7 @@ export default function OurPartners() {
         </motion.div>
 
         {/* Updates Carousel Section */}
-        <div>  
+        <div>
           {/* Carousel Container */}
           <div className="relative overflow-hidden">
             {/* Gradient overlays for smooth fade effect */}
@@ -254,6 +276,7 @@ export default function OurPartners() {
               {updates.map((update, index) => (
                 <div
                   key={`update-1-${index}`}
+                   onClick={() => window.open(update.link, "_blank")}
                   className="flex-shrink-0 w-56 sm:w-64 md:w-72 group cursor-pointer"
                 >
                   {/* Card */}
@@ -295,6 +318,7 @@ export default function OurPartners() {
               {updates.map((update, index) => (
                 <div
                   key={`update-2-${index}`}
+                  onClick={() => window.open(update.link, "_blank")}
                   className="flex-shrink-0 w-56 sm:w-64 md:w-72 group cursor-pointer"
                 >
                   {/* Card */}
@@ -492,5 +516,5 @@ export default function OurPartners() {
         </AnimatePresence>
       </div>
     </section>
-  )
+  );
 }

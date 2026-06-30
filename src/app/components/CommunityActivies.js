@@ -43,38 +43,81 @@ export default function CommunityActivies() {
     },
   ]
 
+  // const updates = [
+  //   {
+  //     title: "Neon Dawn Launch",
+  //     description: "The biggest update yet brings new maps, characters, and a complete overhaul of the ranking system.",
+  //     category: "UPDATES",
+  //     image: "/News/bignews.jpg",
+  //   },
+  //   {
+  //     title: "Neon Dawn Launch",
+  //     description: "The biggest update yet brings new maps, characters, and a complete overhaul of the ranking system.",
+  //     category: "UPDATES",
+  //     image: "/News/news3.jpg",
+  //   },
+  //   {
+  //     title: "Neon Dawn Launch",
+  //     description: "The biggest update yet brings new maps, characters, and a complete overhaul of the ranking system.",
+  //     category: "UPDATES",
+  //     image: "/News/news4.jpg",
+  //   },
+  //   {
+  //     title: "Neon Dawn Launch",
+  //     description: "The biggest update yet brings new maps, characters, and a complete overhaul of the ranking system.",
+  //     category: "UPDATES",
+  //     image: "/News/showcase.jpg",
+  //   },
+  //   {
+  //     title: "Neon Dawn Launch",
+  //     description: "The biggest update yet brings new maps, characters, and a complete overhaul of the ranking system.",
+  //     category: "UPDATES",
+  //     image: "/News/summit.jpg",
+  //   },
+  // ]
   const updates = [
-    {
-      title: "Neon Dawn Launch",
-      description: "The biggest update yet brings new maps, characters, and a complete overhaul of the ranking system.",
-      category: "UPDATES",
-      image: "/News/bignews.jpg",
-    },
-    {
-      title: "Neon Dawn Launch",
-      description: "The biggest update yet brings new maps, characters, and a complete overhaul of the ranking system.",
-      category: "UPDATES",
-      image: "/News/news3.jpg",
-    },
-    {
-      title: "Neon Dawn Launch",
-      description: "The biggest update yet brings new maps, characters, and a complete overhaul of the ranking system.",
-      category: "UPDATES",
-      image: "/News/news4.jpg",
-    },
-    {
-      title: "Neon Dawn Launch",
-      description: "The biggest update yet brings new maps, characters, and a complete overhaul of the ranking system.",
-      category: "UPDATES",
-      image: "/News/showcase.jpg",
-    },
-    {
-      title: "Neon Dawn Launch",
-      description: "The biggest update yet brings new maps, characters, and a complete overhaul of the ranking system.",
-      category: "UPDATES",
-      image: "/News/summit.jpg",
-    },
-  ]
+  {
+    title: "Powering Bangladesh's Gaming Future",
+    description:
+      "Co-founded by Kazi Hasib and Ramisa Rifa, Slice N Share and Inception Studio are transforming Bangladesh's gaming industry through esports tournaments, professional gamer opportunities, and locally inspired game development, including the FPS zombie game Z Inception.",
+    category: "Gaming & Esports",
+    image: "/News/bignews.jpg",
+    link: "https://www.facebook.com/share/p/1F1DL81iNz/",
+  },
+  {
+    title: "DEIED Hosts Startup & Innovation Dialogue",
+    description:
+      "DEIED organized a dialogue to introduce the Startup & Scaleup (Accelerating Bangladesh) and University Innovation Hub programs to senior public-sector leaders.",
+    category: "Event",
+    image: "/News/news3.jpg",
+    link: "https://www.facebook.com/share/p/1BYansTynE/",
+  },
+  {
+    title: "Bangladesh Gaming Summit 2025",
+    description:
+      "Slice N Share at Airtel Buzz Presents Bangladesh Gaming & Esports Summit 2025",
+    category: "UPDATES",
+    image: "/News/news4.jpg",
+    link: "https://www.facebook.com/share/p/1Jdons4S5D/",
+  },
+  {
+    title: "Slice N Share Starts Free Gaming Newsletter",
+    description:
+      "Slice N Share has begun work on a free digital and offline gaming newsletter featuring players, organizations, rising teams, global esports updates, and industry opportunities.",
+    category: "UPDATES",
+    image: "/News/showcase.jpg",
+    link: "https://www.facebook.com/share/p/1FxQpGf52T/",
+  },
+  {
+    title: "YUNet Bangladesh Gaming & Esports Summit 2025",
+    description:
+      "YUNet Bangladesh Gaming & Esports Summit 2025 will bring together gamers, esports organizations, industry leaders, and enthusiasts to celebrate and explore the future of gaming and esports in Bangladesh.",
+    category: "UPDATES",
+    image: "/News/summit.jpg",
+    link: "https://www.facebook.com/share/p/192UKXHXPZ/",
+  },
+];
+
 
   useEffect(() => {
     if (!autoPlay) return
@@ -257,6 +300,7 @@ export default function CommunityActivies() {
               {updates.map((update, index) => (
                 <div
                   key={`update-1-${index}`}
+                   onClick={() => window.open(update.link, "_blank")}
                   className="flex-shrink-0 w-56 sm:w-64 md:w-72 group cursor-pointer"
                 >
                   {/* Card */}
@@ -298,6 +342,7 @@ export default function CommunityActivies() {
               {updates.map((update, index) => (
                 <div
                   key={`update-2-${index}`}
+                   onClick={() => window.open(update.link, "_blank")}
                   className="flex-shrink-0 w-56 sm:w-64 md:w-72 group cursor-pointer"
                 >
                   {/* Card */}
