@@ -103,7 +103,7 @@ function ScrimCard({ registration, index }) {
       className="rounded-2xl border border-white/[0.06] bg-[#0c0c12] overflow-hidden group"
     >
       {/* Banner */}
-      <div className="relative h-36 sm:h-40 overflow-hidden">
+      <div className="relative h-28 sm:h-32 overflow-hidden">
         {registration.scrim_banner_image ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -135,9 +135,9 @@ function ScrimCard({ registration, index }) {
       </div>
 
       {/* Body */}
-      <div className="p-4 sm:p-5">
+      <div className="p-3 sm:p-4">
         {/* Meta chips */}
-        <div className="flex flex-wrap gap-2 mb-4">
+        <div className="flex flex-wrap gap-2 mb-3">
           <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.05] text-xs text-gray-300">
             <Calendar className="w-3.5 h-3.5 text-purple-400" />
             {formatDate(registration.slot_date)}
@@ -161,9 +161,9 @@ function ScrimCard({ registration, index }) {
         </div>
 
         {/* Team + reference */}
-        <div className="grid grid-cols-2 gap-3 mb-4">
-          <div className="px-3 py-3 rounded-xl bg-gradient-to-br from-purple-500/[0.08] to-transparent border border-purple-500/10">
-            <p className="text-[11px] uppercase tracking-wider text-gray-500 mb-1">
+        <div className="grid grid-cols-2 gap-3 mb-3">
+          <div className="px-3 py-2.5 rounded-xl bg-gradient-to-br from-purple-500/[0.08] to-transparent border border-purple-500/10">
+            <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-0.5">
               Team
             </p>
             <p className="text-sm font-semibold text-white truncate flex items-center gap-1.5">
@@ -171,8 +171,8 @@ function ScrimCard({ registration, index }) {
               {registration.team_name || "—"}
             </p>
           </div>
-          <div className="px-3 py-3 rounded-xl bg-gradient-to-br from-pink-500/[0.08] to-transparent border border-pink-500/10">
-            <p className="text-[11px] uppercase tracking-wider text-gray-500 mb-1">
+          <div className="px-3 py-2.5 rounded-xl bg-gradient-to-br from-pink-500/[0.08] to-transparent border border-pink-500/10">
+            <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-0.5">
               Reference
             </p>
             <p className="text-sm font-semibold text-white truncate flex items-center gap-1.5">
@@ -183,7 +183,7 @@ function ScrimCard({ registration, index }) {
         </div>
 
         {/* Payment row */}
-        <div className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-white/[0.02] border border-white/[0.04] mb-4">
+        <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-white/[0.02] border border-white/[0.04] mb-3">
           <span className="inline-flex items-center gap-2 text-xs text-gray-400">
             <CreditCard className="w-4 h-4" />
             Entry Fee
@@ -324,9 +324,9 @@ export default function MyScrims({ email }) {
     >
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-purple-500/30 via-transparent to-transparent" />
 
-      <div className="p-6">
+      <div className="p-4 sm:p-5">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center">
               <Trophy className="w-5 h-5 text-purple-400" />
@@ -354,7 +354,7 @@ export default function MyScrims({ email }) {
 
         {/* Loading */}
         {loading && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
             {[0, 1].map((i) => (
               <div
                 key={i}
@@ -407,7 +407,7 @@ export default function MyScrims({ email }) {
 
         {/* Cards */}
         {!loading && !error && registrations.length > 0 && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
             {registrations.map((reg, i) => (
               <ScrimCard key={reg.id} registration={reg} index={i} />
             ))}

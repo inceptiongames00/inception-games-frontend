@@ -110,15 +110,15 @@ export default function ProfilePage() {
           </div>
 
           {/* My Scrims + Live Events Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-            <div className="lg:col-span-2">
-              <MyScrims email={mergedUser?.email} />
-            </div>
-            <div className="lg:col-span-1">
-              <NotificationsPanel />
-                   <SubscriptionSection />
-            </div>
-          </div>
+         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+  <div className="lg:col-span-3">
+    <MyScrims email={mergedUser?.email} />
+  </div>
+  <div className="lg:col-span-1">
+    <NotificationsPanel />
+    <SubscriptionSection />
+  </div>
+</div>
 
           {/* Events Section */}
           <div className="space-y-6">

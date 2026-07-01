@@ -6,10 +6,10 @@ import {
   Share2,
   Edit3,
 } from "lucide-react";
+import MinimalNotification from "./MinimalNotification";
 
 export default function ProfileHeroBanner({ user, onEditProfile }) {
   const [showShareMenu, setShowShareMenu] = useState(false);
-  const [copied, setCopied] = useState(false);
   const shareRef = useRef(null);
 
   // Close share menu on outside click
@@ -85,12 +85,12 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
       <div className="absolute -top-40 -left-40 w-96 h-96 bg-purple-600/15 rounded-full blur-3xl opacity-40" />
 
       {/* Content */}
-      <div className="relative z-10 px-6 sm:px-8 py-10 sm:py-16">
+      <div className="relative z-10 px-6 sm:px-8 py-14 sm:py-24">
         
-        {/* Main content row - avatar, info, and buttons all on same line */}
+        {/* Main content row - avatar, info, and buttons */}
         <div className="flex items-center justify-between gap-6 w-full">
           
-         {/* Left: Avatar + Info */}
+          {/* Left: Avatar + Info */}
           <div className="flex items-center gap-5 flex-1 min-w-0">
             
             {/* Avatar */}
@@ -100,11 +100,11 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.2, type: "spring", stiffness: 180 }}
             >
-              {/* Glow circle - gradient ring */}
-              <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-[#a855f7] via-[#ec4899] to-[#f43f5e] opacity-70 blur-md" />
+              {/* Glow circle */}
+              <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 opacity-70 blur-md" />
               
               {/* Avatar circle */}
-              <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full p-[2px] bg-gradient-to-br from-[#a855f7] via-[#ec4899] to-[#f43f5e]">
+              <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full p-[2px] bg-gradient-to-br from-purple-500 to-purple-600">
                 <div className="w-full h-full rounded-full bg-[#0a0a0f] overflow-hidden flex items-center justify-center">
                   {user?.avatar || user?.avatar_url ? (
                     <img
@@ -121,8 +121,8 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
               </div>
 
               {/* Online indicator */}
-              <span className="absolute bottom-3 right-1 w-4 h-4 bg-emerald-400 rounded-full border-2 border-[#0c0c14] animate-ping" />
-              <span className="absolute bottom-3 right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-[#0c0c14]" />
+              <span className="absolute bottom-3 right-3 w-4 h-4 bg-emerald-400 rounded-full border-2 border-[#0c0c14] animate-ping" />
+              <span className="absolute bottom-3 right-3 w-4 h-4 bg-emerald-500 rounded-full border-2 border-[#0c0c14]" />
             </motion.div>
 
             {/* Player Info */}
@@ -195,25 +195,70 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
                     initial={{ opacity: 0, scale: 0.9, y: 5 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.9, y: 5 }}
-                    className="absolute right-0 bottom-12 z-50 w-48 rounded-xl bg-[#1a1a24] border border-white/[0.08] shadow-2xl shadow-black/40 overflow-hidden"
+                    className="absolute right-12 bottom-1 z-50 w-48 rounded-xl bg-[#1a1a24] border border-white/[0.08] shadow-2xl shadow-black/40 overflow-hidden"
                   >
                     {/* Share menu items */}
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(typeof window !== 'undefined' ? window.location.href : '');
+                        setShowShareMenu(false);
+                      }}
+                      className="w-full px-4 py-3 text-left flex items-center gap-3 text-gray-300 hover:bg-white/[0.05] transition border-b border-white/[0.05]"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.658 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                      </svg>
+                      <span className="font-medium">Copy Link</span>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        const url = typeof window !== 'undefined' ? window.location.href : '';
+                        const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+                        window.open(facebookUrl, 'facebook-share', 'width=600,height=400');
+                        setShowShareMenu(false);
+                      }}
+                      className="w-full px-4 py-3 text-left flex items-center gap-3 text-gray-300 hover:bg-white/[0.05] transition border-b border-white/[0.05]"
+                    >
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                      </svg>
+                      <span className="font-medium">Facebook</span>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        const url = typeof window !== 'undefined' ? window.location.href : '';
+                        const text = `Check out my profile on Inception Games!`;
+                        const twitterUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
+                        window.open(twitterUrl, 'twitter-share', 'width=600,height=400');
+                        setShowShareMenu(false);
+                      }}
+                      className="w-full px-4 py-3 text-left flex items-center gap-3 text-gray-300 hover:bg-white/[0.05] transition"
+                    >
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2s9 5 20 5a9.5 9.5 0 00-9-5.5c4.75 2.25 7-7 7-7"/>
+                      </svg>
+                      <span className="font-medium">Twitter / X</span>
+                    </button>
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
 
+            {/* Minimal Notification */}
+            <MinimalNotification />
+
             {/* Edit Profile button */}
             {onEditProfile && (
-               <motion.button
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 hover:bg-purple-500/15 hover:border-purple-500/30 text-sm font-medium transition"
-                whileHover={{ scale: 1.02 }}
+              <motion.button
+                className="p-2.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-gray-400 hover:text-white hover:bg-white/[0.08] transition"
+                whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={onEditProfile}
                 aria-label="Edit Profile"
               >
-                <Edit3 size={15} />
-                <span className="hidden sm:inline">Edit Profile</span>
+                <Edit3 size={16} />
               </motion.button>
             )}
           </motion.div>
