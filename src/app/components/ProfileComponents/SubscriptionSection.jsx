@@ -1,10 +1,12 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Check, Crown } from 'lucide-react';
+import UpgradePlanModal from './UpgradePlanModal';
 
 export default function SubscriptionSection() {
+  const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
   const subscriptionTiers = [
     {
       name: 'Free Gamer Plan',
@@ -37,7 +39,7 @@ export default function SubscriptionSection() {
       {/* Bottom accent */}
       <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-500/20 to-transparent" />
 
-      <div className="relative z-10 p-6 sm:p-8">
+      <div className="relative z-10 p-4 sm:p-5">
         {/* Header with icon */}
         <motion.div
           className="flex items-center gap-3 mb-6"
@@ -99,6 +101,7 @@ export default function SubscriptionSection() {
 
               {/* Upgrade Button */}
               <motion.button
+                onClick={() => setIsUpgradeModalOpen(true)}
                 className={`w-full py-3 rounded-xl font-bold text-white text-sm sm:text-sm transition duration-300 shadow-lg shadow-purple-500/20 ${tier.buttonStyle}`}
                 whileHover={{ scale: 1.02, y: -1 }}
                 whileTap={{ scale: 0.98 }}
@@ -109,6 +112,9 @@ export default function SubscriptionSection() {
           ))}
         
       </div>
+
+      {/* Upgrade Plan Modal */}
+      <UpgradePlanModal isOpen={isUpgradeModalOpen} onClose={() => setIsUpgradeModalOpen(false)} />
     </motion.div>
   );
 }
