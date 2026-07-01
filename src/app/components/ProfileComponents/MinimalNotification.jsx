@@ -50,13 +50,13 @@ export default function MinimalNotification() {
     return () => clearInterval(interval);
   }, []);
 
-  const latestNotif = notifications[0];
+  const [showList, setShowList] = useState(false);
 
   return (
     <>
       {/* Minimal Bell Icon with Badge */}
       <motion.button
-        onClick={() => setSelectedNotif(latestNotif)}
+        onClick={() => setShowList(true)}
         className="relative p-2 rounded-lg bg-white/[0.05] border border-white/[0.1] text-gray-400 hover:text-white hover:bg-white/[0.08] transition"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
@@ -74,6 +74,100 @@ export default function MinimalNotification() {
           </motion.div>
         )}
       </motion.button>
+
+      {/* Notifications List Modal */}
+      <AnimatePresence>
+        {showList && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowList(false)}
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[200] p-4"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ type: 'spring', duration: 0.3 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-gradient-to-br from-black via-[#0a0a0f] to-black border border-white/[0.08] rounded-2xl max-w-2xl w-full shadow-2xl shadow-black/50 overflow-hidden max-h-150 flex flex-col"
+            >
+              {/* Header */}
+              <div className="px-6 py-4 border-b border-white/[0.08] bg-white/[0.02] flex items-center justify-between">
+                <h3 className="text-lg font-bold text-white">
+                  Notifications {notifications.length > 0 && `(${notifications.length})`}
+                </h3>
+                <button
+                  onClick={() => setShowList(false)}
+                  className="p-2 rounded-lg bg-white/[0.05] border border-white/[0.1] text-gray-400 hover:text-white transition"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              {/* Scrollable List */}
+              <div className="flex-1 overflow-y-auto">
+                {loading && (
+                  <div className="flex items-center justify-center py-12">
+                    <div className="w-5 h-5 rounded-full border-2 border-purple-500/20 border-t-purple-500 animate-spin" />
+                  </div>
+                )}
+
+                {!loading && notifications.length === 0 && (
+                  <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
+                    <p className="text-sm text-gray-500">No notifications</p>
+                  </div>
+                )}
+
+                {!loading && notifications.length > 0 && (
+                  <div className="divide-y divide-white/[0.05]">
+                    {notifications.map((notif, idx) => (
+                      <motion.button
+                        key={notif.id}
+                        onClick={() => {
+                          setSelectedNotif(notif);
+                          setShowList(false);
+                        }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: idx * 0.05 }}
+                        className="w-full px-6 py-4 text-left hover:bg-white/[0.04] transition flex items-start gap-4 group"
+                      >
+                        {/* Game icon */}
+                        <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-emerald-400 mt-2" />
+                        
+                        {/* Content */}
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">
+                            {notif.game_name || 'General'}
+                          </p>
+                          <p className="text-sm text-white group-hover:text-gray-100 transition">
+                            {notif.message}
+                          </p>
+                          <p className="text-xs text-gray-600 mt-2">
+                            {new Date(notif.created_at).toLocaleDateString('en-US', {
+                              month: 'short',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </p>
+                        </div>
+
+                        {/* Unread indicator */}
+                        {!notif.is_read && (
+                          <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-pink-500 mt-2" />
+                        )}
+                      </motion.button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Notification Details Modal */}
       <AnimatePresence>

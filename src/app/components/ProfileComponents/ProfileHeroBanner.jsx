@@ -162,7 +162,7 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
                   </div>
                 )}
                 {user?.email && (
-                  <div className="px-3 py-1 rounded-full bg-white/[0.05] border border-white/[0.1] text-gray-400 text-[11px] sm:text-xs font-medium">
+                  <div className="px-3 py-1 rounded-full bg-white/[0.05] border border-white/[0.1] text-gray-300 font-medium">
                     {user.email}
                   </div>
                 )}

@@ -115,7 +115,7 @@ export default function ProfilePage() {
     <MyScrims email={mergedUser?.email} />
   </div>
   <div className="lg:col-span-1">
-    <NotificationsPanel />
+    {/* <NotificationsPanel /> */}
     <SubscriptionSection />
   </div>
 </div>
