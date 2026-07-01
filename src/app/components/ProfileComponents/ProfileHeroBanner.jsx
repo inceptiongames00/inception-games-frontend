@@ -5,14 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Share2,
   Edit3,
-  Gamepad2,
-  Award,
-  Check,
-  Link2,
-  Facebook,
-  Twitter,
-  Mail,
-  AtSign,
 } from "lucide-react";
 
 export default function ProfileHeroBanner({ user, onEditProfile }) {
@@ -80,163 +72,156 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
     .slice(0, 2);
 
   return (
-  <motion.div
-  className="relative w-full rounded-2xl overflow-hidden border border-white/[0.06] bg-gradient-to-r from-purple-900/30 via-[#0a0a0f] to-pink-900/20 min-h-[280px] sm:min-h-[320px]"
-  initial={{ opacity: 0, y: 30 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.7 }}
->
-  {/* Background gradient */}
-  <div className="absolute inset-0 bg-gradient-to-br from-purple-900/40 via-[#0a0a0f] to-pink-900/30" />
-  
-  {/* Animated glow elements */}
-  <div className="absolute -top-20 -left-20 w-64 h-64 bg-purple-600/20 rounded-full blur-3xl" />
-  <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-pink-600/20 rounded-full blur-3xl" />
-
-  {/* Content - positioned at bottom */}
-  <div className="relative z-10 h-full px-6 sm:px-8 lg:px-10 py-6 sm:py-8 flex flex-col justify-end">
-    
-    {/* Main content row - avatar, info, and buttons all on same line */}
-    <div className="flex items-center justify-between gap-6 w-full">
+    <motion.div
+      className="relative w-full rounded-2xl overflow-hidden border border-purple-500/20 bg-gradient-to-r from-purple-950/40 via-[#0a0a0f] to-[#0a0a0f]"
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.7 }}
+    >
+      {/* Background gradient - darker */}
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-[#0a0a0f] to-[#0a0a0f]" />
       
-      {/* Left: Avatar + Info */}
-      <div className="flex items-center gap-5 flex-1 min-w-0">
+      {/* Left side glow - purple */}
+      <div className="absolute -top-40 -left-40 w-96 h-96 bg-purple-600/15 rounded-full blur-3xl opacity-40" />
+
+      {/* Content */}
+      <div className="relative z-10 px-6 sm:px-8 py-10 sm:py-16">
         
-        {/* Avatar */}
-        <motion.div
-          className="relative flex-shrink-0"
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.2, type: "spring", stiffness: 180 }}
-        >
-          {/* Glow circle */}
-          <div className="absolute -inset-2 rounded-full bg-gradient-to-br from-purple-500 via-purple-600 to-pink-600 opacity-60 blur-lg animate-pulse" />
+        {/* Main content row - avatar, info, and buttons all on same line */}
+        <div className="flex items-center justify-between gap-6 w-full">
           
-          {/* Avatar circle */}
-          <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full p-[3px] bg-gradient-to-br from-purple-500 via-purple-600 to-pink-600">
-            <div className="w-full h-full rounded-full bg-[#0a0a0f] overflow-hidden flex items-center justify-center">
-              {user?.avatar || user?.avatar_url ? (
-                <img
-                  src={user.avatar || user.avatar_url}
-                  alt="Profile"
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <span className="text-2xl sm:text-3xl font-bold bg-gradient-to-br from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                  {initials}
-                </span>
-              )}
+         {/* Left: Avatar + Info */}
+          <div className="flex items-center gap-5 flex-1 min-w-0">
+            
+            {/* Avatar */}
+            <motion.div
+              className="relative flex-shrink-0"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.2, type: "spring", stiffness: 180 }}
+            >
+              {/* Glow circle - gradient ring */}
+              <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-[#a855f7] via-[#ec4899] to-[#f43f5e] opacity-70 blur-md" />
+              
+              {/* Avatar circle */}
+              <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full p-[2px] bg-gradient-to-br from-[#a855f7] via-[#ec4899] to-[#f43f5e]">
+                <div className="w-full h-full rounded-full bg-[#0a0a0f] overflow-hidden flex items-center justify-center">
+                  {user?.avatar || user?.avatar_url ? (
+                    <img
+                      src={user.avatar || user.avatar_url}
+                      alt="Profile"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-2xl sm:text-3xl font-bold text-white">
+                      {initials}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Online indicator */}
+              <span className="absolute bottom-3 right-1 w-4 h-4 bg-emerald-400 rounded-full border-2 border-[#0c0c14] animate-ping" />
+              <span className="absolute bottom-3 right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-[#0c0c14]" />
+            </motion.div>
+
+            {/* Player Info */}
+            <motion.div
+              className="flex-1 min-w-0"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              {/* Name and tag on same line */}
+              <div className="flex items-center gap-2">
+                <h1 className="text-2xl sm:text-3xl font-bold text-white leading-tight">
+                  {user?.fullName || user?.full_name || user?.username || "Player"}
+                </h1>
+                {user?.username && (
+                  <span className="text-gray-500 text-sm sm:text-base">
+                    @{user.username}
+                  </span>
+                )}
+              </div>
+
+              {/* Info tags - horizontal row below name */}
+              <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm mt-3">
+                {(user?.primaryGame || user?.primary_game || user?.game) && (
+                  <div className="px-3 py-1 rounded-full bg-white/[0.05] border border-white/[0.1] text-gray-300 font-medium">
+                    {user?.primaryGame || user?.primary_game || user?.game}
+                  </div>
+                )}
+                {(user?.gameRole || user?.game_role || user?.role) && (
+                  <div className="px-3 py-1 rounded-full bg-white/[0.05] border border-white/[0.1] text-gray-300 font-medium">
+                    {user?.gameRole || user?.game_role || user?.role}
+                  </div>
+                )}
+                {user?.rank && (
+                  <div className="px-3 py-1 rounded-full bg-white/[0.05] border border-white/[0.1] text-gray-300 font-medium">
+                    {user.rank}
+                  </div>
+                )}
+                {user?.email && (
+                  <div className="px-3 py-1 rounded-full bg-white/[0.05] border border-white/[0.1] text-gray-400 text-[11px] sm:text-xs font-medium">
+                    {user.email}
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Right: Action Buttons */}
+          <motion.div
+            className="flex items-center gap-3 flex-shrink-0"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            {/* Share button */}
+            <div className="relative" ref={shareRef}>
+              <motion.button
+                className="p-2.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-gray-400 hover:text-white hover:bg-white/[0.08] transition"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setShowShareMenu(!showShareMenu)}
+                aria-label="Share profile"
+              >
+                <Share2 size={16} />
+              </motion.button>
+
+              <AnimatePresence>
+                {showShareMenu && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9, y: 5 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.9, y: 5 }}
+                    className="absolute right-0 bottom-12 z-50 w-48 rounded-xl bg-[#1a1a24] border border-white/[0.08] shadow-2xl shadow-black/40 overflow-hidden"
+                  >
+                    {/* Share menu items */}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
-          </div>
 
-          {/* Online indicator */}
-          <div className="absolute bottom-1 right-1 w-3 h-3 sm:w-3.5 sm:h-3.5 bg-emerald-400 rounded-full border-2 border-[#0a0a0f] animate-pulse" />
-        </motion.div>
-
-        {/* Player Info - compact */}
-        <motion.div
-          className="flex-1 min-w-0"
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.3 }}
-        >
-          {/* Name and tag */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <h1 className="text-xl sm:text-2xl font-bold text-white leading-tight">
-              {user?.fullName || user?.full_name || user?.username || "Player"}
-            </h1>
-            {user?.username && (
-              <span className="text-gray-400 text-xs sm:text-sm">
-                @{user.username}
-              </span>
+            {/* Edit Profile button */}
+            {onEditProfile && (
+               <motion.button
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 hover:bg-purple-500/15 hover:border-purple-500/30 text-sm font-medium transition"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={onEditProfile}
+                aria-label="Edit Profile"
+              >
+                <Edit3 size={15} />
+                <span className="hidden sm:inline">Edit Profile</span>
+              </motion.button>
             )}
-          </div>
-
-          {/* Info tags - compact inline */}
-          <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs sm:text-sm mt-1.5">
-            {(user?.primaryGame || user?.primary_game || user?.game) && (
-              <div className="flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-white/[0.03] border border-white/[0.06]">
-                <Gamepad2 size={13} className="text-purple-400" />
-                <span className="text-gray-300">{user?.primaryGame || user?.primary_game || user?.game}</span>
-              </div>
-            )}
-            {user?.rank && (
-              <div className="flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-white/[0.03] border border-white/[0.06]">
-                <Award size={13} className="text-pink-400" />
-                <span className="text-gray-300">{user.rank}</span>
-              </div>
-            )}
-            {(user?.gameRole || user?.game_role || user?.role) && (
-              <div className="px-2.5 py-0.5 rounded-lg bg-white/[0.03] border border-white/[0.06] text-gray-300">
-                {user?.gameRole || user?.game_role || user?.role}
-              </div>
-            )}
-            {user?.email && (
-              <div className="flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-white/[0.03] border border-white/[0.06]">
-                <Mail size={13} className="text-gray-500" />
-                <span className="text-gray-300 text-[10px] sm:text-xs">{user.email}</span>
-              </div>
-            )}
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
       </div>
 
-      {/* Right: Action Buttons */}
-      <motion.div
-        className="flex items-center gap-2 sm:gap-3 flex-shrink-0"
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.4 }}
-      >
-        {/* Share button */}
-        <div className="relative" ref={shareRef}>
-          <motion.button
-            className="p-2 sm:p-2.5 rounded-xl bg-white/[0.04] border border-white/[0.08] text-gray-400 hover:text-white hover:bg-white/[0.08] transition"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setShowShareMenu(!showShareMenu)}
-            aria-label="Share profile"
-          >
-            {copied ? (
-              <Check size={15} className="text-emerald-400" />
-            ) : (
-              <Share2 size={15} />
-            )}
-          </motion.button>
-
-          <AnimatePresence>
-            {showShareMenu && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9, y: 5 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9, y: 5 }}
-                className="absolute right-0 bottom-12 z-50 w-48 rounded-xl bg-[#1a1a24] border border-white/[0.08] shadow-2xl shadow-black/40 overflow-hidden"
-              >
-                {/* ... share menu items ... */}
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-
-        {/* Edit Profile button */}
-        {onEditProfile && (
-          <motion.button
-            className="flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs sm:text-sm font-semibold transition border border-purple-500/30"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={onEditProfile}
-            aria-label="Edit Profile"
-          >
-            <Edit3 size={14} />
-            <span>EDIT PROFILE</span>
-          </motion.button>
-        )}
-      </motion.div>
-    </div>
-  </div>
-
-  {/* Top accent line */}
-  <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-500/40 to-pink-500/40" />
-</motion.div>
+      {/* Top accent line */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-500/30 to-transparent" />
+    </motion.div>
   );
 }

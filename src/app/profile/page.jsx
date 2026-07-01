@@ -7,23 +7,18 @@ import { useRouter } from "next/navigation";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import ProfileHeroBanner from "../components/ProfileComponents/ProfileHeroBanner";
-import CareerStats from "../components/ProfileComponents/CareerStats";
-import QuickInfo from "../components/ProfileComponents/QuickInfo";
 import EventsSection from "../components/ProfileComponents/EventsSection";
 import MyScrims from "../components/ProfileComponents/MyScrims";
-import MatchHistory from "../components/ProfileComponents/MatchHistory";
-import Availability from "../components/ProfileComponents/Availability";
-import FeaturedCarousel from "../components/ProfileComponents/FeaturedCarousel";
 import EditProfileModal from "../components/ProfileComponents/EditProfileModal";
 import { useAuth } from "../context/AuthContext";
 import NotificationsPanel from "../components/ProfileComponents/NotificationsPanel";
+import SubscriptionSection from "../components/ProfileComponents/SubscriptionSection";
 
 export default function ProfilePage() {
   const { user, isAuthenticated, loading } = useAuth();
   const router = useRouter();
   const [gamingProfile, setGamingProfile] = useState(null);
   const [editProfileOpen, setEditProfileOpen] = useState(false);
-  const [profileLoading, setProfileLoading] = useState(false);
 
 
 
@@ -53,7 +48,7 @@ export default function ProfilePage() {
     }
   }, [isAuthenticated, loading, router]);
 
-  if (!user || profileLoading) {
+  if (!user) {
     return (
       <div className="min-h-screen bg-[#060608] flex items-center justify-center">
         <motion.div
@@ -113,28 +108,29 @@ export default function ProfilePage() {
               onEditProfile={() => setEditProfileOpen(true)}
             />
           </div>
-    
- {/* Events Section */}
+
+          {/* My Scrims + Live Events Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <div className="lg:col-span-2">
+              <MyScrims email={mergedUser?.email} />
+            </div>
+            <div className="lg:col-span-1">
+              <NotificationsPanel />
+                   <SubscriptionSection />
+            </div>
+          </div>
+
+          {/* Events Section */}
           <div className="space-y-6">
             <EventsSection user={mergedUser} />
           </div>
 
-          {/* Player Info + Notifications */}
-          <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="col-span-2">
-              <QuickInfo user={mergedUser} />
-            </div>
-            <div className="col-span-1">
-              <NotificationsPanel />
-            </div>
+          {/* Subscription Section */}
+          <div className="mt-8">
+       
           </div>
 
-
-           {/* My Scrims */}
-          <div className="mt-8 mb-14">
-            <MyScrims email={mergedUser?.email} />
-          </div>
-
+        
          
          
         </div>
