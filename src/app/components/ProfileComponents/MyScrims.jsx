@@ -101,7 +101,7 @@ function ScrimCard({ registration, index, onViewDetails }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.06 }}
-      className="rounded-2xl border border-white/[0.06] bg-[#0c0c12] overflow-hidden group cursor-pointer hover:border-white/[0.12] transition"
+      className="rounded-2xl border border-white/[0.06] bg-[#0c0c12] overflow-hidden group cursor-pointer hover:border-white/[0.12] transition h-full flex flex-col"
       onClick={() => onViewDetails(registration)}
     >
       {/* Banner */}
@@ -327,7 +327,7 @@ export default function MyScrims({ email }) {
 
         {/* Cards */}
         {!loading && !error && registrations.length > 0 && (
-          <div className="overflow-x-auto pb-2 -mx-3 xs:-mx-4 sm:-mx-5 md:-mx-6 px-3 xs:px-4 sm:px-5 md:px-6 scrims-scroll" style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(147, 51, 234, 0.3) transparent' }}>
+          <>
             <style jsx>{`
               .scrims-scroll {
                 scroll-behavior: smooth;
@@ -346,14 +346,24 @@ export default function MyScrims({ email }) {
                 background: rgba(147, 51, 234, 0.5);
               }
             `}</style>
-            <div className="flex gap-3 xs:gap-4 flex-nowrap">
+            {/* Mobile: Horizontal scroll */}
+            <div className="md:hidden overflow-x-auto pb-2 -mx-3 xs:-mx-4 sm:-mx-5 px-3 xs:px-4 sm:px-5 scrims-scroll" style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(147, 51, 234, 0.3) transparent' }}>
+              <div className="flex gap-3 xs:gap-4 flex-nowrap">
+                {registrations.map((reg, i) => (
+                  <div key={reg.id} className="flex-shrink-0 w-full sm:w-[calc(50%-0.5rem)] h-auto">
+                    <ScrimCard registration={reg} index={i} onViewDetails={setSelectedScrim} />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Desktop: Grid layout */}
+            <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-3 xs:gap-4">
               {registrations.map((reg, i) => (
-                <div key={reg.id} className="flex-shrink-0 w-full sm:w-1/2 md:w-1/3 lg:w-1/4">
-                  <ScrimCard registration={reg} index={i} onViewDetails={setSelectedScrim} />
-                </div>
+                <ScrimCard key={reg.id} registration={reg} index={i} onViewDetails={setSelectedScrim} />
               ))}
             </div>
-          </div>
+          </>
         )}
       </div>
 

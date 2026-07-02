@@ -29,9 +29,9 @@ export default function ProGearShop() {
     >
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-purple-500/30 via-transparent to-transparent" />
 
-      <div className="p-3 sm:p-3">
+      <div className="px-6 sm:px-6 py-3 sm:py-3">
         {/* Header */}
-        <div className="flex items-center justify-between mb-5">
+        <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center">
               <ShoppingBag className="w-5 h-5 text-purple-400" />
