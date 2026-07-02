@@ -29,7 +29,7 @@ export default function ProGearShop() {
     >
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-purple-500/30 via-transparent to-transparent" />
 
-      <div className="p-4 sm:p-4">
+      <div className="p-3 sm:p-3">
         {/* Header */}
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-3">

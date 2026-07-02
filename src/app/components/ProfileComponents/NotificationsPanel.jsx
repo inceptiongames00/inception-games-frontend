@@ -8,10 +8,16 @@ import { Bell, X } from 'lucide-react';
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://inception-games.an.r.appspot.com/api/v1';
 const NOTIFICATIONS_ENDPOINT = `${API_BASE_URL}/message/SNS-7422`;
 
-// Format date to short format like "MAY 23"
-const formatDate = (dateString) => {
+// Format relative time
+const getRelativeTime = (dateString) => {
   const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }).toUpperCase();
+  const now = new Date();
+  const seconds = Math.floor((now - date) / 1000);
+
+  if (seconds < 60) return 'Just now';
+  if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 };
 
 export default function NotificationsPanel() {
@@ -114,14 +120,11 @@ const getRelativeTime = (dateString) => {
   return (
     <>
       <motion.div
-        className="rounded-2xl overflow-hidden flex flex-col border border-purple-500/30 bg-gradient-to-br from-white/[0.02] to-white/[0.01] relative mb-5"
+        className="rounded-2xl overflow-hidden flex flex-col border-l border-b border-white/[0.06] bg-gradient-to-br from-white/[0.02] to-white/[0.01] relative mb-5"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
       >
-        {/* Top accent */}
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-purple-500/30 via-transparent to-transparent" />
-
         {/* Header */}
         <div className="px-6 py-4 border-b border-white/[0.06] flex-shrink-0">
           <div className="flex items-center justify-between">
@@ -133,7 +136,7 @@ const getRelativeTime = (dateString) => {
             {/* Bell Button */}
             <motion.button
               onClick={() => setShowList(true)}
-              className="relative p-2 rounded-lg bg-white/[0.05] border border-white/[0.1] text-gray-400 hover:text-white hover:bg-white/[0.08] transition"
+              className="relative p-2 rounded-lg bg-white/[0.05] border border-white/[0.1] text-gray-400 hover:text-white hover:bg-white/[0.08] transition cursor-pointer"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -154,7 +157,7 @@ const getRelativeTime = (dateString) => {
         </div>
 
         {/* Content */}
-        <div className="flex-1 px-3 py-3">
+        <div className="flex-1 px-2 py-2">
           {loading && (
             <div className="flex flex-col items-center justify-center gap-3 py-12">
               <div className="relative w-10 h-10">
@@ -192,11 +195,13 @@ const getRelativeTime = (dateString) => {
 
                   {/* Content layout */}
                   <div className="flex items-start gap-3">
-                    {/* Event icon/image */}
-                    <div className="flex-shrink-0 w-10 h-10 rounded-full overflow-hidden border border-white/[0.1] bg-gradient-to-br from-purple-600/20 to-pink-600/20 flex items-center justify-center">
-                      <div className="w-full h-full bg-gradient-to-br from-purple-700 to-pink-700 flex items-center justify-center text-white text-xl font-bold">
-                        {event.game_name?.[0] || 'E'}
-                      </div>
+                    {/* Event icon/image - Avatar styling from old component */}
+                    <div className={`flex-shrink-0 w-10 h-10 rounded-full overflow-hidden border border-white/[0.1] flex items-center justify-center text-lg transition-all duration-300 ${
+                      !event.is_read
+                        ? 'bg-gradient-to-br from-purple-600 to-pink-600 shadow-lg shadow-purple-600/60'
+                        : 'bg-gradient-to-br from-purple-700/50 to-pink-700/50'
+                    }`}>
+                      🎯
                     </div>
 
                     {/* Event info */}
@@ -206,7 +211,7 @@ const getRelativeTime = (dateString) => {
                         <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
                           {event.game_name || 'General'}
                         </span>
-                        <span className="w-2 h-2 bg-emerald-400 rounded-full" />
+                        {!event.is_read && <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />}
                       </div>
 
                       {/* Event title */}
@@ -283,66 +288,78 @@ const getRelativeTime = (dateString) => {
 
                 {!loading && notifications.length > 0 && (
                   <div className="divide-y divide-white/[0.05]">
-                    {notifications.map((notif, idx) => (
-                      <motion.button
-                        key={notif.id}
-                        onClick={() => {
-                          const isUnread = !notif.is_read;
+                    {notifications.map((notif, idx) => {
+                      const isUnread = !notif.is_read;
+                      
+                      return (
+                        <motion.button
+                          key={notif.id}
+                          onClick={() => {
+                            // Mark as read locally immediately for instant feedback
+                            if (isUnread) {
+                              setLocalReadStates((prev) => ({
+                                ...prev,
+                                [notif.id]: true,
+                              }));
+
+                              // Update local state immediately
+                              setNotifications((prev) =>
+                                prev.map((n) =>
+                                  n.id === notif.id ? { ...n, is_read: 1 } : n
+                                )
+                              );
+                              setUnreadCount((prev) => Math.max(0, prev - 1));
+
+                              // Try to persist to backend
+                              markNotificationAsRead(notif.id);
+                            }
+
+                            setSelectedNotif(notif);
+                            setShowList(false);
+                          }}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: idx * 0.05 }}
+                          className={`w-full px-6 py-4 text-left hover:bg-white/[0.04] transition flex items-start gap-4 group border-l-4 ${
+                            isUnread
+                              ? 'border-l-purple-500/70'
+                              : 'border-l-purple-500/20'
+                          }`}
+                        >
+                          {/* Game icon with avatar styling from old component */}
+                          <div className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center text-lg transition-all duration-300 ${
+                            isUnread
+                              ? 'bg-gradient-to-br from-purple-600 to-pink-600 shadow-lg shadow-purple-600/60'
+                              : 'bg-gradient-to-br from-purple-700/50 to-pink-700/50'
+                          }`}>
+                            🎯
+                          </div>
                           
-                          // Mark as read locally immediately for instant feedback
-                          if (isUnread) {
-                            setLocalReadStates((prev) => ({
-                              ...prev,
-                              [notif.id]: true,
-                            }));
+                          {/* Content */}
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">
+                              {notif.game_name || 'General'}
+                            </p>
+                            <p className="text-sm text-white group-hover:text-gray-100 transition">
+                              {notif.message}
+                            </p>
+                            <p className="text-xs text-gray-600 mt-2">
+                              {new Date(notif.created_at).toLocaleDateString('en-US', {
+                                month: 'short',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                              })}
+                            </p>
+                          </div>
 
-                            // Update local state immediately
-                            setNotifications((prev) =>
-                              prev.map((n) =>
-                                n.id === notif.id ? { ...n, is_read: 1 } : n
-                              )
-                            );
-                            setUnreadCount((prev) => Math.max(0, prev - 1));
-
-                            // Try to persist to backend
-                            markNotificationAsRead(notif.id);
-                          }
-
-                          setSelectedNotif(notif);
-                          setShowList(false);
-                        }}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: idx * 0.05 }}
-                        className="w-full px-6 py-4 text-left hover:bg-white/[0.04] transition flex items-start gap-4 group"
-                      >
-                        {/* Game icon */}
-                        <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-emerald-400 mt-2" />
-                        
-                        {/* Content */}
-                        <div className="flex-1 min-w-0">
-                          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">
-                            {notif.game_name || 'General'}
-                          </p>
-                          <p className="text-sm text-white group-hover:text-gray-100 transition">
-                            {notif.message}
-                          </p>
-                          <p className="text-xs text-gray-600 mt-2">
-                            {new Date(notif.created_at).toLocaleDateString('en-US', {
-                              month: 'short',
-                              day: 'numeric',
-                              hour: '2-digit',
-                              minute: '2-digit',
-                            })}
-                          </p>
-                        </div>
-
-                        {/* Unread indicator */}
-                        {!notif.is_read && (
-                          <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-pink-500 mt-2" />
-                        )}
-                      </motion.button>
-                    ))}
+                          {/* Unread indicator - dot instead of side indicator */}
+                          {isUnread && (
+                            <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-emerald-400 mt-2 animate-pulse" />
+                          )}
+                        </motion.button>
+                      );
+                    })}
                   </div>
                 )}
               </div>
