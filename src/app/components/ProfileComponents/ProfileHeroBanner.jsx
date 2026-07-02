@@ -247,7 +247,7 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
             </div>
 
             {/* Minimal Notification */}
-            <MinimalNotification />
+            {/* <MinimalNotification /> */}
 
             {/* Edit Profile button */}
             {onEditProfile && (
