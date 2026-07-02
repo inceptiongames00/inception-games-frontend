@@ -234,8 +234,8 @@ function PlatformDisplay({ platform }) {
   );
 }
 
-// Coming Soon Card Component
-function ComingSoonCard({ category, icon: IconComponent }) {
+// Coming Soon Card Component - Memoized
+const ComingSoonCard = React.memo(function ComingSoonCard({ category, icon: IconComponent }) {
   const isComingSoonDate = new Date("2025-05-01");
   const daysUntil = Math.ceil((isComingSoonDate - new Date()) / (1000 * 60 * 60 * 24));
   
@@ -311,10 +311,11 @@ function ComingSoonCard({ category, icon: IconComponent }) {
       </div>
     </motion.div>
   );
-}
+});
+ComingSoonCard.displayName = 'ComingSoonCard';
 
-// Event Card Component
-function EventCard({ event, onClick }) {
+// Event Card Component - Memoized
+const EventCard = React.memo(function EventCard({ event, onClick }) {
   const [expanded, setExpanded] = useState(false);
   const eventType =
     event.eventType || getEventType(event.title, event.organizer);
@@ -471,7 +472,8 @@ function EventCard({ event, onClick }) {
       </div>
     </motion.div>
   );
-}
+});
+EventCard.displayName = 'EventCard';
 
 // Main Events Section Component
 export default function EventsSection({ user, initialFilter = "all", routePrefix = "/profile" }) {
@@ -587,6 +589,10 @@ export default function EventsSection({ user, initialFilter = "all", routePrefix
           };
         });
         setEvents(transformedEvents);
+        
+        // Cache the scrims list for detail page to use
+        sessionStorage.setItem("scrims_cache", JSON.stringify(scrimsData));
+        sessionStorage.setItem("scrims_cache_timestamp", Date.now().toString());
       } else {
         setEvents([]);
       }
@@ -604,16 +610,20 @@ export default function EventsSection({ user, initialFilter = "all", routePrefix
   }, [fetchEvents]);
 
   // Calculate filter counts - Tournaments and Brand Deals show as "coming soon" so count is not displayed from API
-  const scrimmageEvents = events.filter((e) => e.eventType === "Scrims");
+  const scrimmageEvents = React.useMemo(() => {
+    return events.filter((e) => e.eventType === "Scrims");
+  }, [events]);
   
-  const filterCounts = {
-    all: events.length + 2, // Add 2 for the coming soon categories
-    Tournament: 0, // Coming soon category
-    Scrims: scrimmageEvents.length,
-    "Brand Deal": 0, // Coming soon category
-  };
+  const filterCounts = React.useMemo(() => {
+    return {
+      all: events.length + 2, // Add 2 for the coming soon categories
+      Tournament: 0, // Coming soon category
+      Scrims: scrimmageEvents.length,
+      "Brand Deal": 0, // Coming soon category
+    };
+  }, [events.length, scrimmageEvents.length]);
 
-  const FILTER_TABS = [
+  const FILTER_TABS = React.useMemo(() => [
     { id: "all", label: "All", count: filterCounts.all },
     {
       id: "Tournament",
@@ -628,30 +638,37 @@ export default function EventsSection({ user, initialFilter = "all", routePrefix
       count: filterCounts["Brand Deal"],
       icon: Briefcase,
     },
-  ];
+  ], [filterCounts]);
 
-  const filteredEvents = events.filter((event) => {
-    // Only show Scrims from API
-    const matchesFilter =
-      activeFilter === "all" 
-        ? event.eventType === "Scrims"
-        : (event.eventType === activeFilter && event.eventType === "Scrims");
-    const matchesSearch =
-      (event.title || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (event.game?.name || "")
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
-      (event.organizer || "").toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesFilter && matchesSearch;
-  });
+  // Memoize filtered events to prevent unnecessary recalculations
+  const filteredEvents = React.useMemo(() => {
+    return events.filter((event) => {
+      // Only show Scrims from API
+      const matchesFilter =
+        activeFilter === "all" 
+          ? event.eventType === "Scrims"
+          : (event.eventType === activeFilter && event.eventType === "Scrims");
+      const matchesSearch =
+        (event.title || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (event.game?.name || "")
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase()) ||
+        (event.organizer || "").toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesFilter && matchesSearch;
+    });
+  }, [events, activeFilter, searchQuery]);
 
-  // Determine which coming soon cards to show
-  const showComingSoonCards = {
+  // Memoize which coming soon cards to show
+  const showComingSoonCards = React.useMemo(() => ({
     Tournament: activeFilter === "all" || activeFilter === "Tournament",
     "Brand Deal": activeFilter === "all" || activeFilter === "Brand Deal",
-  };
+  }), [activeFilter]);
 
   const handleEventClick = (event) => {
+    // Cache the event data for instant load on detail page
+    const eventCacheKey = `event_${event.id}`;
+    sessionStorage.setItem(eventCacheKey, JSON.stringify(event));
+    
     // Navigate to event detail page with actual event ID
     router.push(`${routePrefix}/events/${event.id}`);
   };
@@ -774,17 +791,17 @@ export default function EventsSection({ user, initialFilter = "all", routePrefix
       {!loading && !error && (
         <motion.div
           className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
-          layout
+          layout={false}
         >
-          <AnimatePresence mode="popLayout">
+          <AnimatePresence mode="wait">
             {/* Coming Soon Cards - Tournaments */}
             {showComingSoonCards.Tournament && (
               <motion.div
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
+                key="tournament-card"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.2 }}
               >
                 <ComingSoonCard category="Tournament" icon={Trophy} />
               </motion.div>
@@ -794,15 +811,27 @@ export default function EventsSection({ user, initialFilter = "all", routePrefix
             {filteredEvents.map((event) => (
               <motion.div
                 key={event.id}
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.2 }}
               >
                 <EventCard event={event} onClick={handleEventClick} />
               </motion.div>
             ))}
+
+            {/* Coming Soon Cards - Brand Deals */}
+            {showComingSoonCards["Brand Deal"] && (
+              <motion.div
+                key="brand-deal-card"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.2 }}
+              >
+                <ComingSoonCard category="Brand Deal" icon={Briefcase} />
+              </motion.div>
+            )}
           </AnimatePresence>
 
           {/* Empty State for Scrims with no data */}
@@ -819,8 +848,6 @@ export default function EventsSection({ user, initialFilter = "all", routePrefix
               <p className="text-gray-400">Check back soon for new scrim opportunities</p>
             </motion.div>
           )}
-
-
         </motion.div>
       )}
     </motion.div>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, { useState, useEffect, useRef, useContext, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -133,7 +133,7 @@ function getEventType(title, organizer) {
   return "Tournament";
 }
 
-// Generate sample events (same logic as EventsSection)
+// Generate sample events ONLY as fallback (lazy - only when needed)
 const generateSampleEvents = () => {
   const eventTypes = ["Tournament", "Scrims", "Brand Deal"];
   const statuses = ["Upcoming", "Ongoing", "Completed"];
@@ -141,68 +141,66 @@ const generateSampleEvents = () => {
   const teamTypes = ["Solo", "Duo", "Squad"];
   const locations = ["Bangladesh", "India", "Southeast Asia", "Global"];
 
-  const events = []; // need to be fix
+  const events = [];
   let eventId = 0;
 
   games.forEach((game, gameIdx) => {
     eventTypes.forEach((eventType, typeIdx) => {
       const idx = eventId;
-      const status = statuses[idx % 3];
-      const platform = platforms[gameIdx % 3];
-      const teamType = teamTypes[gameIdx % 3];
+        const status = statuses[idx % 3];
+        const platform = platforms[gameIdx % 3];
+        const teamType = teamTypes[gameIdx % 3];
 
-      const baseDate = new Date();
-      baseDate.setDate(baseDate.getDate() + idx * 2 - 30);
+        const baseDate = new Date();
+        baseDate.setDate(baseDate.getDate() + idx * 2 - 30);
 
-      events.push({
-        id: `event-${eventId}`,
-        title: `SNS ${game.name} ${eventType} ${eventType === "Brand Deal" ? "Opportunity" : "Championship"}`,
-        game: game,
-        gameImage: game.image,
-        banner_image: game.image,
-        absoluteBannerUrl: game.image,
-        eventType: eventType,
-        status: status,
-        date: baseDate.toISOString(),
-        endDate: new Date(
-          baseDate.getTime() + 7 * 24 * 60 * 60 * 1000,
-        ).toISOString(),
-        location: locations[gameIdx % 4],
-        platform: platform,
-        teamType: teamType,
-        prizePool: eventType === "Brand Deal" ? 0 : (gameIdx + 1) * 5000,
-        currency: "BDT",
-        totalSlots: 64,
-        filledSlots: Math.floor(Math.random() * 64),
-        registrationStart: new Date(
-          baseDate.getTime() - 14 * 24 * 60 * 60 * 1000,
-        ).toISOString(),
-        registrationEnd: new Date(
-          baseDate.getTime() - 2 * 24 * 60 * 60 * 1000,
-        ).toISOString(),
-        tournamentStart: baseDate.toISOString(),
-        tournamentEnd: new Date(
-          baseDate.getTime() + 7 * 24 * 60 * 60 * 1000,
-        ).toISOString(),
-        host: "Inception Games",
-        description: `Join the ${game.name} ${eventType.toLowerCase()} and compete against the best players in ${locations[gameIdx % 4]}!`,
-        rules: [
-          "All participants must be registered before the deadline",
-          "Fair play policy strictly enforced",
-          "All matches will be streamed on official channels",
-          "Prizes will be distributed within 7 days of event completion",
-        ],
-        address:
-          eventType !== "Brand Deal" ? "Online Event" : "Contact for Details",
+        events.push({
+          id: `event-${eventId}`,
+          title: `SNS ${game.name} ${eventType} ${eventType === "Brand Deal" ? "Opportunity" : "Championship"}`,
+          game: game,
+          gameImage: game.image,
+          banner_image: game.image,
+          absoluteBannerUrl: game.image,
+          eventType: eventType,
+          status: status,
+          date: baseDate.toISOString(),
+          endDate: new Date(
+            baseDate.getTime() + 7 * 24 * 60 * 60 * 1000,
+          ).toISOString(),
+          location: locations[gameIdx % 4],
+          platform: platform,
+          teamType: teamType,
+          prizePool: eventType === "Brand Deal" ? 0 : (gameIdx + 1) * 5000,
+          currency: "BDT",
+          totalSlots: 64,
+          filledSlots: Math.floor(Math.random() * 64),
+          registrationStart: new Date(
+            baseDate.getTime() - 14 * 24 * 60 * 60 * 1000,
+          ).toISOString(),
+          registrationEnd: new Date(
+            baseDate.getTime() - 2 * 24 * 60 * 60 * 1000,
+          ).toISOString(),
+          tournamentStart: baseDate.toISOString(),
+          tournamentEnd: new Date(
+            baseDate.getTime() + 7 * 24 * 60 * 60 * 1000,
+          ).toISOString(),
+          host: "Inception Games",
+          description: `Join the ${game.name} ${eventType.toLowerCase()} and compete against the best players in ${locations[gameIdx % 4]}!`,
+          rules: [
+            "All participants must be registered before the deadline",
+            "Fair play policy strictly enforced",
+            "All matches will be streamed on official channels",
+            "Prizes will be distributed within 7 days of event completion",
+          ],
+          address:
+            eventType !== "Brand Deal" ? "Online Event" : "Contact for Details",
+        });
+        eventId++;
       });
-      eventId++;
     });
-  });
 
-  return events;
+    return events;
 };
-
-const SAMPLE_EVENTS = generateSampleEvents();
 
 
 
@@ -640,77 +638,116 @@ export default function EventDetailPage() {
     }
   }, [event, params]);
 
+  // Helper to transform a scrim object into event format
+  const transformScrim = (matchedScrim) => {
+    const bannerImage = matchedScrim.banner_image;
+    return {
+      ...matchedScrim,
+      eventType: "Scrims",
+      game: {
+        name: matchedScrim.game || "Gaming Event",
+        image: getGameImage(matchedScrim.title, matchedScrim.game),
+      },
+      gameName: matchedScrim.game || "Gaming Event",
+      gameImage: getGameImage(matchedScrim.title, matchedScrim.game),
+      date: matchedScrim.start_at,
+      endDate: matchedScrim.end_at,
+      location: matchedScrim.region,
+      platform: matchedScrim.platform || "All Platforms",
+      teamType: matchedScrim.game_mode || "Open",
+      team_size: matchedScrim.team_size || 1,
+      teamSize: matchedScrim.team_size || 1,
+      prizePool: parseFloat(matchedScrim.prize_pool) || 0,
+      currency: matchedScrim.currency || "BDT",
+      totalSlots: matchedScrim.max_teams || 0,
+      filledSlots: matchedScrim.filled_teams || 0,
+      registrationStart: matchedScrim.reg_start_at,
+      registrationEnd: matchedScrim.reg_end_at,
+      tournamentStart: matchedScrim.start_at,
+      tournamentEnd: matchedScrim.end_at,
+      host: matchedScrim.hosted_by || "Inception Games",
+      organizer: matchedScrim.hosted_by || "Inception Games",
+      slots: matchedScrim.slots || [],
+      banner_image: bannerImage,
+      absoluteBannerUrl: bannerImage,
+    };
+  };
+
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        // First, try the scrims API (team-based registration).
-        const scrimsRes = await fetch(
-          "https://inception-games.an.r.appspot.com/api/v1/scrims",
-        );
-        if (scrimsRes.ok) {
-          const scrimsJson = await scrimsRes.json();
-          const allScrims = scrimsJson.scrims || scrimsJson.data || [];
+        const cacheKey = "scrims_cache";
+        const cacheTimestampKey = "scrims_cache_timestamp";
+        const eventCacheKey = `event_${params.eventId}`;
+        const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+        
+        // First, check if we have this specific event cached (from navigation)
+        const cachedEvent = sessionStorage.getItem(eventCacheKey);
+        if (cachedEvent) {
+          try {
+            setEvent(JSON.parse(cachedEvent));
+            return;
+          } catch (e) {
+            // Invalid cache, continue to fetch
+          }
+        }
+
+        let allScrims = null;
+        const cachedData = sessionStorage.getItem(cacheKey);
+        const cacheTimestamp = sessionStorage.getItem(cacheTimestampKey);
+        const now = Date.now();
+
+        // Use cache if it exists and is still fresh
+        if (
+          cachedData &&
+          cacheTimestamp &&
+          now - parseInt(cacheTimestamp) < CACHE_DURATION
+        ) {
+          allScrims = JSON.parse(cachedData);
+        } else {
+          // Fetch fresh data from API
+          const scrimsRes = await fetch(
+            "https://inception-games.an.r.appspot.com/api/v1/scrims",
+          );
+          if (scrimsRes.ok) {
+            const scrimsJson = await scrimsRes.json();
+            allScrims = scrimsJson.scrims || scrimsJson.data || [];
+            // Cache the scrims data
+            sessionStorage.setItem(cacheKey, JSON.stringify(allScrims));
+            sessionStorage.setItem(cacheTimestampKey, now.toString());
+          }
+        }
+
+        // Search for matching scrim in cached/fetched data
+        if (allScrims && allScrims.length > 0) {
           const matchedScrim = allScrims.find(
             (s) => s.id === params.eventId || s.id === parseInt(params.eventId),
           );
           if (matchedScrim) {
-            const bannerImage = matchedScrim.banner_image;
-            const transformedScrim = {
-              ...matchedScrim,
-              eventType: "Scrims",
-              game: {
-                name: matchedScrim.game || "Gaming Event",
-                image: getGameImage(matchedScrim.title, matchedScrim.game),
-              },
-              gameName: matchedScrim.game || "Gaming Event",
-              gameImage: getGameImage(matchedScrim.title, matchedScrim.game),
-              date: matchedScrim.start_at,
-              endDate: matchedScrim.end_at,
-              location: matchedScrim.region,
-              platform: matchedScrim.platform || "All Platforms",
-              teamType: matchedScrim.game_mode || "Open",
-              team_size: matchedScrim.team_size || 1,
-              teamSize: matchedScrim.team_size || 1,
-              prizePool: parseFloat(matchedScrim.prize_pool) || 0,
-              currency: matchedScrim.currency || "BDT",
-              totalSlots: matchedScrim.max_teams || 0,
-              filledSlots: matchedScrim.filled_teams || 0,
-              registrationStart: matchedScrim.reg_start_at,
-              registrationEnd: matchedScrim.reg_end_at,
-              tournamentStart: matchedScrim.start_at,
-              tournamentEnd: matchedScrim.end_at,
-              host: matchedScrim.hosted_by || "Inception Games",
-              organizer: matchedScrim.hosted_by || "Inception Games",
-              slots: matchedScrim.slots || [],
-              banner_image: bannerImage,
-              absoluteBannerUrl: bannerImage,
-            };
-            setEvent(transformedScrim);
+            const transformedEvent = transformScrim(matchedScrim);
+            setEvent(transformedEvent);
+            // Cache this specific event for instant load on back-navigation
+            sessionStorage.setItem(eventCacheKey, JSON.stringify(transformedEvent));
             return;
           }
         }
 
+        // Try alternative API endpoint for tournaments/brand deals
         const url = API.EVENTS_GET_BY_ID.replace(":eventId", params.eventId);
         const response = await fetch(url);
         const data = await response.json();
 
         if (response.ok && data) {
-          // Handle nested API response format - unwrap tournament object
           let eventData =
             data.tournament || (data.success && data.data ? data.data : data);
 
-          // Transform API data to component format
-          // Ensure banner_image is always an absolute URL for social media sharing
           let bannerImage = eventData.banner_image;
           let absoluteBannerUrl = bannerImage;
 
           if (bannerImage) {
-            // If it's already an absolute URL, keep it
             if (bannerImage.startsWith("http")) {
               absoluteBannerUrl = bannerImage;
-            }
-            // If it's a relative path, make it absolute using the API base URL
-            else {
+            } else {
               const apiBase = "https://inception-games.an.r.appspot.com/api/v1";
               absoluteBannerUrl = bannerImage.startsWith("/")
                 ? `${apiBase}${bannerImage}`
@@ -751,7 +788,7 @@ export default function EventDetailPage() {
 
           setEvent(transformedEvent);
         } else {
-          // Fallback to sample events if API fails
+          // Last resort: fallback to sample events only if API fails
           const foundEvent = SAMPLE_EVENTS.find(
             (e) => e.id === `event-${params.eventId}`,
           );
@@ -760,7 +797,7 @@ export default function EventDetailPage() {
           }
         }
       } catch (error) {
-        // Fallback to sample events if API fails
+        // Last resort: fallback to sample events only if API fails
         const foundEvent = SAMPLE_EVENTS.find(
           (e) => e.id === `event-${params.eventId}`,
         );
