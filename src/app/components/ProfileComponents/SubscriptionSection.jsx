@@ -17,6 +17,7 @@ export default function SubscriptionSection() {
       features: [
         'Priority Access',
         'Exclusive Tournaments',
+        'Exclusive Tournaments',
       ],
       buttonText: 'UPGRADE PLAN',
       buttonStyle: 'bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400',

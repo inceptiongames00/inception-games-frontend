@@ -138,7 +138,7 @@ function ScrimCard({ registration, index, onViewDetails }) {
             <Calendar className="w-3.5 h-3.5 text-purple-400" />
             {formatDate(registration.slot_date)}
           </div>
-           <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.05] text-xs text-gray-300">
+           <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.05] text-xs text-gray-300 mb-2">
             <Clock className="w-3.5 h-3.5 text-pink-400" />
             {formatTime(registration.slot_time)}
           </div>

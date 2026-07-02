@@ -54,7 +54,7 @@ export default function ProGearShop() {
               className="rounded-xl border border-white/[0.08] bg-white/[0.02] overflow-hidden hover:border-white/[0.12] transition"
             >
               {/* Placeholder Image */}
-              <div className="h-24 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center relative overflow-hidden">
+              <div className="h-28 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center relative overflow-hidden">
                 {item.image ? (
                   <Image
                     src={item.image}
