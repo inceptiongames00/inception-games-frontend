@@ -327,8 +327,11 @@ export default function MyScrims({ email }) {
 
         {/* Cards */}
         {!loading && !error && registrations.length > 0 && (
-          <div className={`${registrations.length > 3 ? 'overflow-x-auto pb-2' : ''}`} style={registrations.length > 3 ? { scrollbarWidth: 'thin', scrollbarColor: 'rgba(147, 51, 234, 0.3) transparent' } : {}}>
+          <div className="overflow-x-auto pb-2 -mx-3 xs:-mx-4 sm:-mx-5 md:-mx-6 px-3 xs:px-4 sm:px-5 md:px-6 scrims-scroll" style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(147, 51, 234, 0.3) transparent' }}>
             <style jsx>{`
+              .scrims-scroll {
+                scroll-behavior: smooth;
+              }
               .scrims-scroll::-webkit-scrollbar {
                 height: 6px;
               }
@@ -343,9 +346,9 @@ export default function MyScrims({ email }) {
                 background: rgba(147, 51, 234, 0.5);
               }
             `}</style>
-            <div className={`flex gap-3 ${registrations.length <= 3 ? 'flex-wrap' : 'flex-nowrap'} scrims-scroll`}>
+            <div className="flex gap-3 xs:gap-4 flex-nowrap">
               {registrations.map((reg, i) => (
-                <div key={reg.id} className={registrations.length > 3 ? 'flex-shrink-0 w-full lg:w-1/3' : 'flex-1 min-w-0'}>
+                <div key={reg.id} className="flex-shrink-0 w-full sm:w-1/2 md:w-1/3 lg:w-1/4">
                   <ScrimCard registration={reg} index={i} onViewDetails={setSelectedScrim} />
                 </div>
               ))}

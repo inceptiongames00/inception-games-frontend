@@ -1,10 +1,68 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Check } from 'lucide-react';
+import { getTokens } from '@/lib/api';
 
 export default function UpgradePlanModal({ isOpen, onClose }) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
+
+  const planNameMap = {
+    'free': 'Free Gamer',
+    'pro': 'Pro Gamer',
+    'elite': 'Elite Gamer',
+    'legendary': 'Legendary Gamer',
+  };
+
+  const handleSubscribe = async (planId) => {
+    if (planId === 'free') return; // Skip for free plan
+
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const tokens = getTokens();
+      if (!tokens?.accessToken) {
+        setError('Not authenticated');
+        return;
+      }
+
+      const response = await fetch(
+        'https://inception-games.an.r.appspot.com/api/v1/subscription/subscribe',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${tokens.accessToken}`,
+          },
+          body: JSON.stringify({
+            user_id: tokens.userId || 'SNS-1524',
+            plan: planNameMap[planId],
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Subscription failed');
+      }
+
+      setSuccess(`Successfully upgraded to ${planNameMap[planId]}`);
+      setTimeout(() => {
+        onClose();
+      }, 2000);
+    } catch (err) {
+      console.error('Subscription error:', err);
+      setError(err.message || 'Failed to complete subscription');
+    } finally {
+      setLoading(false);
+    }
+  };
   const plans = [
     {
       id: 'free',
@@ -129,6 +187,27 @@ export default function UpgradePlanModal({ isOpen, onClose }) {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2, staggerChildren: 0.1 }}
               >
+                {/* Error Message */}
+                {error && (
+                  <motion.div
+                    className="col-span-full p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                  >
+                    {error}
+                  </motion.div>
+                )}
+
+                {/* Success Message */}
+                {success && (
+                  <motion.div
+                    className="col-span-full p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                  >
+                    ✓ {success}
+                  </motion.div>
+                )}
                 {plans.map((plan, index) => (
                   <motion.div
                     key={plan.id}
@@ -189,12 +268,13 @@ export default function UpgradePlanModal({ isOpen, onClose }) {
 
                       {/* Button */}
                       <motion.button
-                        className={`w-full py-3 rounded-lg font-bold text-sm uppercase tracking-wider transition-all duration-300 ${plan.buttonStyle}`}
-                        whileHover={{ scale: plan.isCurrentPlan ? 1 : 1.02 }}
-                        whileTap={{ scale: plan.isCurrentPlan ? 1 : 0.98 }}
-                        disabled={plan.isCurrentPlan}
+                        onClick={() => handleSubscribe(plan.id)}
+                        disabled={plan.isCurrentPlan || loading}
+                        className={`w-full py-3 rounded-lg font-bold text-sm uppercase tracking-wider transition-all duration-300 ${plan.buttonStyle} ${loading && !plan.isCurrentPlan ? 'opacity-50' : ''}`}
+                        whileHover={{ scale: plan.isCurrentPlan || loading ? 1 : 1.02 }}
+                        whileTap={{ scale: plan.isCurrentPlan || loading ? 1 : 0.98 }}
                       >
-                        {plan.buttonText}
+                        {loading && !plan.isCurrentPlan ? 'Processing...' : plan.buttonText}
                       </motion.button>
                     </div>
                   </motion.div>
