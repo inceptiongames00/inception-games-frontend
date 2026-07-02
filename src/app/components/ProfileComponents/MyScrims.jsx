@@ -18,6 +18,7 @@ import {
   Ticket,
   RefreshCw,
   Mail,
+  X,
 } from "lucide-react";
 import { API } from "@/lib/api";
 
@@ -86,7 +87,7 @@ function StatusBadge({ status }) {
   );
 }
 
-function ScrimCard({ registration, index }) {
+function ScrimCard({ registration, index, onViewDetails }) {
   const [expanded, setExpanded] = useState(false);
 
   const players = registration.players || [];
@@ -100,10 +101,11 @@ function ScrimCard({ registration, index }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.06 }}
-      className="rounded-2xl border border-white/[0.06] bg-[#0c0c12] overflow-hidden group"
+      className="rounded-2xl border border-white/[0.06] bg-[#0c0c12] overflow-hidden group cursor-pointer hover:border-white/[0.12] transition"
+      onClick={() => onViewDetails(registration)}
     >
       {/* Banner */}
-      <div className="relative h-28 sm:h-32 overflow-hidden">
+      <div className="relative h-36 sm:h-46 overflow-hidden">
         {registration.scrim_banner_image ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -131,114 +133,31 @@ function ScrimCard({ registration, index }) {
           <h3 className="text-base sm:text-lg font-semibold text-white text-balance leading-snug line-clamp-2">
             {registration.scrim_title || "Scrim Registration"}
           </h3>
-        </div>
-      </div>
 
-      {/* Body */}
-      <div className="p-3 sm:p-4">
-        {/* Meta chips */}
-        <div className="flex flex-wrap gap-2 mb-3">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.05] text-xs text-gray-300">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.05] text-xs text-gray-300">
             <Calendar className="w-3.5 h-3.5 text-purple-400" />
             {formatDate(registration.slot_date)}
           </div>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.05] text-xs text-gray-300">
+           <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.05] text-xs text-gray-300">
             <Clock className="w-3.5 h-3.5 text-pink-400" />
             {formatTime(registration.slot_time)}
           </div>
-          {registration.scrim_region && (
+             {registration.scrim_region && (
             <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.05] text-xs text-gray-300">
               <MapPin className="w-3.5 h-3.5 text-purple-400" />
               {registration.scrim_region}
             </div>
           )}
-          {registration.scrim_platform && (
+            {registration.scrim_platform && (
             <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.05] text-xs text-gray-300">
               <Gamepad2 className="w-3.5 h-3.5 text-pink-400" />
               {registration.scrim_platform}
             </div>
           )}
         </div>
-
-        {/* Team + reference */}
-        <div className="grid grid-cols-2 gap-3 mb-3">
-          <div className="px-3 py-2.5 rounded-xl bg-gradient-to-br from-purple-500/[0.08] to-transparent border border-purple-500/10">
-            <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-0.5">
-              Team
-            </p>
-            <p className="text-sm font-semibold text-white truncate flex items-center gap-1.5">
-              <Users className="w-4 h-4 text-purple-400 flex-shrink-0" />
-              {registration.team_name || "—"}
-            </p>
-          </div>
-          <div className="px-3 py-2.5 rounded-xl bg-gradient-to-br from-pink-500/[0.08] to-transparent border border-pink-500/10">
-            <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-0.5">
-              Reference
-            </p>
-            <p className="text-sm font-semibold text-white truncate flex items-center gap-1.5">
-              <Ticket className="w-4 h-4 text-pink-400 flex-shrink-0" />
-              {registration.payment_reference || "—"}
-            </p>
-          </div>
-        </div>
-
-        {/* Payment row */}
-        <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-white/[0.02] border border-white/[0.04] mb-3">
-          <span className="inline-flex items-center gap-2 text-xs text-gray-400">
-            <CreditCard className="w-4 h-4" />
-            Entry Fee
-          </span>
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold text-white">
-              {Number(registration.entry_fee) > 0
-                ? `BDT ${registration.entry_fee}`
-                : "Free"}
-            </span>
-            <span
-              className={`px-2 py-0.5 rounded-md text-[11px] font-semibold ${payStyle.text} ${payStyle.bg}`}
-            >
-              {registration.payment_status || "Pending"}
-            </span>
-          </div>
-        </div>
-
-        {/* Roster toggle */}
-        {players.length > 0 && (
-          <button
-            onClick={() => setExpanded((v) => !v)}
-            className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-white/[0.02] border border-white/[0.04] hover:bg-white/[0.04] transition"
-          >
-            <span className="inline-flex items-center gap-2 text-sm font-medium text-white">
-              <Users className="w-4 h-4 text-purple-400" />
-              Roster ({players.length})
-            </span>
-            <ChevronDown
-              className={`w-4 h-4 text-gray-400 transition-transform ${
-                expanded ? "rotate-180" : ""
-              }`}
-            />
-          </button>
-        )}
-
-        <AnimatePresence initial={false}>
-          {expanded && players.length > 0 && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              className="overflow-hidden"
-            >
-              <div className="pt-3 space-y-2">
-                {leader && <PlayerRow player={leader} isLeader />}
-                {teammates.map((p) => (
-                  <PlayerRow key={p.id} player={p} />
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
+
+  
     </motion.div>
   );
 }
@@ -284,6 +203,7 @@ export default function MyScrims({ email }) {
   const [registrations, setRegistrations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedScrim, setSelectedScrim] = useState(null);
 
   const fetchScrims = useCallback(async () => {
     if (!email) {
@@ -409,11 +329,161 @@ export default function MyScrims({ email }) {
         {!loading && !error && registrations.length > 0 && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
             {registrations.map((reg, i) => (
-              <ScrimCard key={reg.id} registration={reg} index={i} />
+              <ScrimCard key={reg.id} registration={reg} index={i} onViewDetails={setSelectedScrim} />
             ))}
           </div>
         )}
       </div>
+
+      {/* Scrim Details Modal */}
+      <ScrimDetailsModal scrim={selectedScrim} onClose={() => setSelectedScrim(null)} />
     </motion.section>
+  );
+}
+
+function ScrimDetailsModal({ scrim, onClose }) {
+  if (!scrim) return null;
+
+  const players = scrim.players || [];
+  const leader = players.find((p) => p.is_team_leader) || players[0];
+  const teammates = players.filter((p) => !p.is_team_leader);
+  const payStyle = paymentStyles[scrim.payment_status] || paymentStyles.Pending;
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+        className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[200] p-4"
+      >
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: 20 }}
+          transition={{ type: 'spring', duration: 0.3 }}
+          onClick={(e) => e.stopPropagation()}
+          className="bg-gradient-to-br from-black via-[#0a0a0f] to-black border border-white/[0.08] rounded-2xl max-w-lg w-full shadow-2xl shadow-black/50 overflow-hidden max-h-[85vh] flex flex-col"
+        >
+          {/* Cover Photo with Title Overlay */}
+          <div className="relative h-48 overflow-hidden bg-gradient-to-br from-purple-900/40 to-pink-900/30">
+            {scrim.scrim_banner_image ? (
+              <img
+                src={scrim.scrim_banner_image}
+                alt="Scrim banner"
+                className="w-full h-full object-cover"
+                crossOrigin="anonymous"
+              />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-purple-900/40 to-pink-900/30" />
+            )}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent" />
+            
+            {/* Title and Status on Photo */}
+            <div className="absolute bottom-4 left-4 right-12">
+              <h4 className="text-2xl font-bold text-white mb-2 line-clamp-2">{scrim.scrim_title}</h4>
+              <div className="flex items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium text-white bg-black/50 backdrop-blur-sm border border-white/10">
+                  <Gamepad2 className="w-3.5 h-3.5 text-purple-400" />
+                  {scrim.scrim_game}
+                </span>
+                <StatusBadge status={scrim.status} />
+              </div>
+            </div>
+            
+            {/* Close button overlay */}
+            <button
+              onClick={onClose}
+              className="absolute top-4 right-4 p-2 rounded-lg bg-black/50 border border-white/[0.1] text-gray-400 hover:text-white transition backdrop-blur-sm"
+            >
+              <X size={18} />
+            </button>
+          </div>
+
+          {/* Scrollable Content */}
+          <div className="flex-1 overflow-y-auto px-6 py-4 space-y-6">
+
+            {/* Meta Information */}
+            <div className="space-y-3">
+              <div className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.05] text-sm text-gray-300">
+                <Calendar className="w-4 h-4 text-purple-400" />
+                {formatDate(scrim.slot_date)}
+              </div>
+              <div className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.05] text-sm text-gray-300 ml-3">
+                <Clock className="w-4 h-4 text-pink-400" />
+                {formatTime(scrim.slot_time)}
+              </div>
+              {scrim.scrim_region && (
+                <div className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.05] text-sm text-gray-300 ml-3">
+                  <MapPin className="w-4 h-4 text-purple-400" />
+                  {scrim.scrim_region}
+                </div>
+              )}
+            </div>
+
+            {/* Team & Reference */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="px-3 py-2.5 rounded-xl bg-gradient-to-br from-purple-500/[0.08] to-transparent border border-purple-500/10">
+                <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-0.5">Team</p>
+                <p className="text-sm font-semibold text-white truncate flex items-center gap-1.5">
+                  <Users className="w-4 h-4 text-purple-400 flex-shrink-0" />
+                  {scrim.team_name || "—"}
+                </p>
+              </div>
+              <div className="px-3 py-2.5 rounded-xl bg-gradient-to-br from-pink-500/[0.08] to-transparent border border-pink-500/10">
+                <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-0.5">Reference</p>
+                <p className="text-sm font-semibold text-white truncate flex items-center gap-1.5">
+                  <Ticket className="w-4 h-4 text-pink-400 flex-shrink-0" />
+                  {scrim.payment_reference || "—"}
+                </p>
+              </div>
+            </div>
+
+            {/* Payment */}
+            <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-white/[0.02] border border-white/[0.04]">
+              <span className="inline-flex items-center gap-2 text-xs text-gray-400">
+                <CreditCard className="w-4 h-4" />
+                Entry Fee
+              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-semibold text-white">
+                  {Number(scrim.entry_fee) > 0 ? `BDT ${scrim.entry_fee}` : "Free"}
+                </span>
+                <span className={`px-2 py-0.5 rounded-md text-[11px] font-semibold ${payStyle.text} ${payStyle.bg}`}>
+                  {scrim.payment_status || "Pending"}
+                </span>
+              </div>
+            </div>
+
+            {/* Roster */}
+            {players.length > 0 && (
+              <div>
+                <h5 className="text-sm font-semibold text-white mb-3 flex items-center gap-2">
+                  <Users className="w-4 h-4 text-purple-400" />
+                  Roster ({players.length})
+                </h5>
+                <div className="space-y-2">
+                  {leader && <PlayerRow player={leader} isLeader />}
+                  {teammates.map((p) => (
+                    <PlayerRow key={p.id} player={p} />
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Footer */}
+          <div className="px-6 py-4 border-t border-white/[0.08] flex gap-3">
+            <button
+              onClick={onClose}
+              className="flex-1 py-2.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white text-sm font-medium hover:bg-white/[0.08] transition"
+            >
+              Close
+            </button>
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
   );
 }

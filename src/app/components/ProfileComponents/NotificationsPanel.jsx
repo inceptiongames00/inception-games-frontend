@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { getTokens } from '@/lib/api';
-import Image from 'next/image';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://inception-games.an.r.appspot.com/api/v1';
 const NOTIFICATIONS_ENDPOINT = `${API_BASE_URL}/message/SNS-7422`;
@@ -61,8 +60,8 @@ export default function NotificationsPanel() {
     return () => clearInterval(interval);
   }, []);
 
-  // Show only the first event
-  const displayEvent = notifications[0];
+  // Show only the first 2 events
+  const displayEvents = notifications.slice(0, 1);
 
   return (
     <motion.div
@@ -107,60 +106,65 @@ export default function NotificationsPanel() {
           </div>
         )}
 
-        {!loading && !error && !displayEvent && (
+        {!loading && !error && displayEvents.length === 0 && (
           <div className="text-center py-8">
             <p className="text-sm text-gray-400">No live events at the moment</p>
           </div>
         )}
 
-        {!loading && !error && displayEvent && (
-          <motion.div
-            className="relative rounded-xl border border-white/[0.08] bg-white/[0.02] p-4 hover:bg-white/[0.04] transition duration-300 overflow-hidden group"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            {/* Left accent bar */}
-            <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-pink-500 to-purple-500" />
+        {!loading && !error && displayEvents.length > 0 && (
+          <div className="space-y-3">
+            {displayEvents.map((event, idx) => (
+              <motion.div
+                key={idx}
+                className="relative rounded-xl border border-white/[0.08] bg-white/[0.02] p-4 hover:bg-white/[0.04] transition duration-300 overflow-hidden group"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 + idx * 0.1 }}
+              >
+                {/* Left accent bar */}
+                <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-pink-500 to-purple-500" />
 
-            {/* Content layout */}
-            <div className="flex items-start gap-3">
-              {/* Event icon/image */}
-              <div className="flex-shrink-0 w-12 h-12 rounded-full overflow-hidden border border-white/[0.1] bg-gradient-to-br from-purple-600/20 to-pink-600/20 flex items-center justify-center">
-                <div className="w-full h-full bg-gradient-to-br from-purple-700 to-pink-700 flex items-center justify-center text-white text-xl font-bold">
-                  {displayEvent.game_name?.[0] || 'E'}
+                {/* Content layout */}
+                <div className="flex items-start gap-3">
+                  {/* Event icon/image */}
+                  <div className="flex-shrink-0 w-12 h-12 rounded-full overflow-hidden border border-white/[0.1] bg-gradient-to-br from-purple-600/20 to-pink-600/20 flex items-center justify-center">
+                    <div className="w-full h-full bg-gradient-to-br from-purple-700 to-pink-700 flex items-center justify-center text-white text-xl font-bold">
+                      {event.game_name?.[0] || 'E'}
+                    </div>
+                  </div>
+
+                  {/* Event info */}
+                  <div className="flex-1 min-w-0">
+                    {/* Game category tag */}
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
+                        {event.game_name || 'General'}
+                      </span>
+                      <span className="w-2 h-2 bg-emerald-400 rounded-full" />
+                    </div>
+
+                    {/* Event title */}
+                    <h4 className="text-sm font-bold text-white mb-2 line-clamp-1">
+                      {event.message || 'New Event'}
+                    </h4>
+
+                    {/* Date */}
+                    <p className="text-xs text-gray-500">
+                      {formatDate(event.created_at)}
+                    </p>
+                  </div>
+
+                  {/* NEW badge */}
+                  {!event.is_read && (
+                    <div className="flex-shrink-0 px-2.5 py-1 rounded-lg bg-gradient-to-r from-pink-600 to-pink-500 text-white text-xs font-bold uppercase tracking-wider shadow-lg shadow-pink-600/50">
+                      New
+                    </div>
+                  )}
                 </div>
-              </div>
-
-              {/* Event info */}
-              <div className="flex-1 min-w-0">
-                {/* Game category tag */}
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
-                    {displayEvent.game_name || 'General'}
-                  </span>
-                  <span className="w-2 h-2 bg-emerald-400 rounded-full" />
-                </div>
-
-                {/* Event title */}
-                <h4 className="text-lg font-bold text-white mb-2 line-clamp-1">
-                  {displayEvent.message || 'New Event'}
-                </h4>
-
-                {/* Date */}
-                <p className="text-sm text-gray-500">
-                  {formatDate(displayEvent.created_at)}
-                </p>
-              </div>
-
-              {/* NEW badge */}
-              {!displayEvent.is_read && (
-                <div className="flex-shrink-0 px-3 py-1.5 rounded-lg bg-gradient-to-r from-pink-600 to-pink-500 text-white text-xs font-bold uppercase tracking-wider shadow-lg shadow-pink-600/50">
-                  New
-                </div>
-              )}
-            </div>
-          </motion.div>
+              </motion.div>
+            ))}
+          </div>
         )}
       </div>
     </motion.div>

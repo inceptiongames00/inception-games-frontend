@@ -13,6 +13,7 @@ import EditProfileModal from "../components/ProfileComponents/EditProfileModal";
 import { useAuth } from "../context/AuthContext";
 import NotificationsPanel from "../components/ProfileComponents/NotificationsPanel";
 import SubscriptionSection from "../components/ProfileComponents/SubscriptionSection";
+import ProGearShop from "../components/ProfileComponents/ProGearShop";
 
 export default function ProfilePage() {
   const { user, isAuthenticated, loading } = useAuth();
@@ -113,9 +114,10 @@ export default function ProfilePage() {
          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
   <div className="lg:col-span-3">
     <MyScrims email={mergedUser?.email} />
+    <ProGearShop />
   </div>
   <div className="lg:col-span-1">
-    {/* <NotificationsPanel /> */}
+    <NotificationsPanel />
     <SubscriptionSection />
   </div>
 </div>
