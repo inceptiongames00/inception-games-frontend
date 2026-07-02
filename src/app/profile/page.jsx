@@ -94,47 +94,41 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-[#060608] flex flex-col">
       <Header />
 
-      <main className="flex-1 pt-28 pb-20">
+      <main className="flex-1 pt-20 sm:pt-24 md:pt-28 pb-12 sm:pb-16 md:pb-20">
         {/* Subtle ambient glow */}
         <div className="fixed inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-0 left-1/3 w-[600px] h-[600px] bg-purple-600/[0.04] rounded-full blur-[120px]" />
-          <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-pink-600/[0.04] rounded-full blur-[120px]" />
+          <div className="absolute top-0 left-1/3 w-[400px] sm:w-[500px] lg:w-[600px] h-[400px] sm:h-[500px] lg:h-[600px] bg-purple-600/[0.04] rounded-full blur-[80px] sm:blur-[100px] lg:blur-[120px]" />
+          <div className="absolute bottom-0 right-1/4 w-[350px] sm:w-[400px] lg:w-[500px] h-[350px] sm:h-[400px] lg:h-[500px] bg-pink-600/[0.04] rounded-full blur-[80px] sm:blur-[100px] lg:blur-[120px]" />
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {/* Hero Banner */}
-          <div className="mb-8">
+        <div className="relative w-full mx-auto px-3 xs:px-4 sm:px-5 md:px-6 lg:px-8 xl:px-8 max-w-[100%] sm:max-w-[640px] md:max-w-[768px] lg:max-w-5xl xl:max-w-7xl">
+          {/* Hero Banner */}
+          <div className="mb-6 sm:mb-8 md:mb-10">
             <ProfileHeroBanner
               user={mergedUser}
               onEditProfile={() => setEditProfileOpen(true)}
             />
           </div>
 
-          {/* My Scrims + Live Events Grid */}
-         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
-  <div className="lg:col-span-3">
-    <MyScrims email={mergedUser?.email} />
-    <ProGearShop />
-  </div>
-  <div className="lg:col-span-1">
-    <NotificationsPanel />
-    <SubscriptionSection />
-  </div>
-</div>
+          {/* My Scrims + Notifications + Subscriptions Grid - Responsive */}
+          <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-6 mb-8 md:mb-10">
+            {/* Left Column: My Scrims & Gear Shop (wider on larger screens) */}
+            <div className="md:col-span-2 lg:col-span-3 space-y-4 sm:space-y-6 md:space-y-6">
+              <MyScrims email={mergedUser?.email} />
+              <ProGearShop />
+            </div>
 
-          {/* Events Section */}
-          <div className="space-y-6">
+            {/* Right Column: Notifications & Subscriptions (sidebar on md+) */}
+            <div className="md:col-span-1 space-y-4 sm:space-y-6 md:space-y-6">
+              <NotificationsPanel />
+              <SubscriptionSection />
+            </div>
+          </div>
+
+          {/* Events Section - Full Width */}
+          <div className="space-y-6 md:space-y-8">
             <EventsSection user={mergedUser} />
           </div>
-
-          {/* Subscription Section */}
-          <div className="mt-8">
-       
-          </div>
-
-        
-         
-         
         </div>
       </main>
 

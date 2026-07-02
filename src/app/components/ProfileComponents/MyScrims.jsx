@@ -244,16 +244,16 @@ export default function MyScrims({ email }) {
     >
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-purple-500/30 via-transparent to-transparent" />
 
-      <div className="p-4 sm:p-5">
+      <div className="p-3 xs:p-4 sm:p-5 md:p-6">
         {/* Header */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center">
-              <Trophy className="w-5 h-5 text-purple-400" />
+        <div className="flex items-center justify-between mb-4 xs:mb-5">
+          <div className="flex items-center gap-2 xs:gap-3 min-w-0">
+            <div className="w-9 xs:w-10 h-9 xs:h-10 rounded-lg xs:rounded-xl bg-purple-500/10 flex items-center justify-center flex-shrink-0">
+              <Trophy className="w-4 xs:w-5 h-4 xs:h-5 text-purple-400" />
             </div>
-            <div>
-              <h2 className="text-lg font-semibold text-white">My Scrims</h2>
-              <p className="text-xs text-gray-500">
+            <div className="min-w-0">
+              <h2 className="text-base xs:text-lg font-semibold text-white truncate">My Scrims</h2>
+              <p className="text-xs text-gray-500 truncate">
                 {registrations.length > 0
                   ? `${registrations.length} registration${
                       registrations.length > 1 ? "s" : ""
@@ -265,26 +265,26 @@ export default function MyScrims({ email }) {
           <button
             onClick={fetchScrims}
             disabled={loading}
-            className="w-9 h-9 rounded-lg bg-white/[0.03] border border-white/[0.06] flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/[0.06] transition disabled:opacity-50"
+            className="w-8 xs:w-9 h-8 xs:h-9 rounded-lg bg-white/[0.03] border border-white/[0.06] flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/[0.06] transition disabled:opacity-50 flex-shrink-0"
             aria-label="Refresh scrims"
           >
-            <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
+            <RefreshCw className={`w-3.5 xs:w-4 h-3.5 xs:h-4 ${loading ? "animate-spin" : ""}`} />
           </button>
         </div>
 
         {/* Loading */}
         {loading && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 xs:gap-3">
             {[0, 1].map((i) => (
               <div
                 key={i}
-                className="rounded-2xl border border-white/[0.06] bg-white/[0.02] overflow-hidden animate-pulse"
+                className="rounded-xl xs:rounded-2xl border border-white/[0.06] bg-white/[0.02] overflow-hidden animate-pulse"
               >
-                <div className="h-36 bg-white/[0.04]" />
-                <div className="p-5 space-y-3">
+                <div className="h-32 xs:h-36 bg-white/[0.04]" />
+                <div className="p-3 xs:p-4 sm:p-5 space-y-2 xs:space-y-3">
                   <div className="h-4 w-2/3 bg-white/[0.04] rounded" />
                   <div className="h-3 w-1/2 bg-white/[0.04] rounded" />
-                  <div className="h-10 bg-white/[0.04] rounded-xl" />
+                  <div className="h-9 xs:h-10 bg-white/[0.04] rounded-lg xs:rounded-xl" />
                 </div>
               </div>
             ))}

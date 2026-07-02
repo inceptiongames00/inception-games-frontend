@@ -137,9 +137,10 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
               <img
                 src={user.avatar || user.avatar_url}
                 className="w-full h-full object-cover"
+                alt="Profile avatar"
               />
             ) : (
-              <span className="text-4xl font-bold bg-gradient-to-br from-purple-400 to-pink-400 bg-clip-text text-transparent">
+              <span className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-br from-purple-400 to-pink-400 bg-clip-text text-transparent">
                 {initials}
               </span>
             )}
@@ -147,8 +148,7 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
         </div>
 
         {/* Online indicator */}
-        <span className="absolute bottom-3 right-3 w-4 h-4 bg-emerald-400 rounded-full border-2 border-[#0c0c14] animate-ping" />
-        <span className="absolute bottom-3 right-3 w-4 h-4 bg-emerald-500 rounded-full border-2 border-[#0c0c14]" />
+        <span className="absolute bottom-3 right-3 w-4 h-4 bg-emerald-500 rounded-full border-2 border-[#0c0c14] animate-pulse" />
       </motion.div>
 
       {/* Player Info */}
@@ -158,40 +158,42 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.3 }}
       >
-        {/* Name and tag on same line */}
-        <div className="flex items-center gap-2">
-          <h1 className="text-3xl sm:text-4xl lg:text-4xl font-bold text-white leading-tight">
-            {user?.fullName || user?.full_name || user?.username || "Player"}
-          </h1>
-          {user?.username && (
-            <span className="text-gray-400 text-sm sm:text-base">
-              @{user.username}
-            </span>
-          )}
-        </div>
+        {/* Name and tag */}
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center flex-wrap gap-2">
+            <h1 className="text-2xl xs:text-3xl sm:text-3xl md:text-4xl font-bold text-white leading-tight">
+              {user?.fullName || user?.full_name || user?.username || "Player"}
+            </h1>
+            {user?.username && (
+              <span className="text-gray-400 text-xs xs:text-sm">
+                @{user.username}
+              </span>
+            )}
+          </div>
 
-        {/* Info tags - horizontal row below name */}
-        <div className="flex flex-wrap items-center gap-2 text-sm mt-3">
-          {(user?.primaryGame || user?.primary_game || user?.game) && (
-            <div className="px-3 py-1.5 rounded-full bg-white/[0.05] border border-white/[0.1] text-gray-300 font-medium">
-              {user?.primaryGame || user?.primary_game || user?.game}
-            </div>
-          )}
-          {(user?.gameRole || user?.game_role || user?.role) && (
-            <div className="px-3 py-1.5 rounded-full bg-white/[0.05] border border-white/[0.1] text-gray-300 font-medium">
-              {user?.gameRole || user?.game_role || user?.role}
-            </div>
-          )}
-          {user?.rank && (
-            <div className="px-3 py-1.5 rounded-full bg-white/[0.05] border border-white/[0.1] text-gray-300 font-medium">
-              {user.rank}
-            </div>
-          )}
-          {user?.email && (
-            <div className="px-3 py-1.5 rounded-full bg-white/[0.05] border border-white/[0.1] text-gray-300 font-medium">
-              {user.email}
-            </div>
-          )}
+          {/* Info tags - responsive grid/flex */}
+          <div className="flex flex-wrap items-center gap-1.5 xs:gap-2 text-xs xs:text-sm mt-2">
+            {(user?.primaryGame || user?.primary_game || user?.game) && (
+              <div className="px-2 xs:px-3 py-1 xs:py-1.5 rounded-full bg-white/[0.05] border border-white/[0.1] text-gray-300 font-medium whitespace-nowrap">
+                {user?.primaryGame || user?.primary_game || user?.game}
+              </div>
+            )}
+            {(user?.gameRole || user?.game_role || user?.role) && (
+              <div className="px-2 xs:px-3 py-1 xs:py-1.5 rounded-full bg-white/[0.05] border border-white/[0.1] text-gray-300 font-medium whitespace-nowrap">
+                {user?.gameRole || user?.game_role || user?.role}
+              </div>
+            )}
+            {user?.rank && (
+              <div className="px-2 xs:px-3 py-1 xs:py-1.5 rounded-full bg-white/[0.05] border border-white/[0.1] text-gray-300 font-medium whitespace-nowrap">
+                {user.rank}
+              </div>
+            )}
+            {user?.email && (
+              <div className="px-2 xs:px-3 py-1 xs:py-1.5 rounded-full bg-white/[0.05] border border-white/[0.1] text-gray-300 font-medium whitespace-nowrap truncate max-w-[200px]">
+                {user.email}
+              </div>
+            )}
+          </div>
         </div>
       </motion.div>
     </div>
