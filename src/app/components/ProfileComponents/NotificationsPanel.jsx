@@ -57,6 +57,18 @@ export default function NotificationsPanel() {
     }
   };
 
+  // Format relative time
+const getRelativeTime = (dateString) => {
+  const date = new Date(dateString);
+  const now = new Date();
+  const seconds = Math.floor((now - date) / 1000);
+
+  if (seconds < 60) return 'Just now';
+  if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+};
+
   useEffect(() => {
     fetchNotifications();
     const interval = setInterval(fetchNotifications, 10000);
@@ -109,7 +121,7 @@ export default function NotificationsPanel() {
         </div>
 
         {/* Content */}
-        <div className="flex-1 px-4 py-4">
+        <div className="flex-1 px-3 py-3">
           {loading && (
             <div className="flex flex-col items-center justify-center gap-3 py-12">
               <div className="relative w-10 h-10">
@@ -137,7 +149,7 @@ export default function NotificationsPanel() {
               {displayEvents.map((event, idx) => (
                 <motion.div
                   key={idx}
-                  className="relative rounded-xl border border-white/[0.08] bg-white/[0.02] p-4 hover:bg-white/[0.04] transition duration-300 overflow-hidden group"
+                  className="relative rounded-xl border border-white/[0.08] bg-white/[0.02] p-3 hover:bg-white/[0.04] transition duration-300 overflow-hidden group"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 + idx * 0.1 }}
@@ -148,7 +160,7 @@ export default function NotificationsPanel() {
                   {/* Content layout */}
                   <div className="flex items-start gap-3">
                     {/* Event icon/image */}
-                    <div className="flex-shrink-0 w-12 h-12 rounded-full overflow-hidden border border-white/[0.1] bg-gradient-to-br from-purple-600/20 to-pink-600/20 flex items-center justify-center">
+                    <div className="flex-shrink-0 w-10 h-10 rounded-full overflow-hidden border border-white/[0.1] bg-gradient-to-br from-purple-600/20 to-pink-600/20 flex items-center justify-center">
                       <div className="w-full h-full bg-gradient-to-br from-purple-700 to-pink-700 flex items-center justify-center text-white text-xl font-bold">
                         {event.game_name?.[0] || 'E'}
                       </div>
@@ -170,17 +182,19 @@ export default function NotificationsPanel() {
                       </h4>
 
                       {/* Date */}
-                      <p className="text-xs text-gray-500">
-                        {formatDate(event.created_at)}
-                      </p>
+   <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#2d1b4e]/50">
+                          <p className="text-xs text-gray-500">
+                            {getRelativeTime(event.created_at)}
+                          </p>
+                          <div className="flex items-center gap-2">
+                            {/* {isUnread && ( */}
+                              <span className="text-xs font-semibold text-purple-400 bg-purple-500/20 px-2 py-0.5 rounded">
+                                New
+                              </span>
+                            {/* )} */}
+                          </div>
+                        </div>
                     </div>
-
-                    {/* NEW badge */}
-                    {!event.is_read && (
-                      <div className="flex-shrink-0 px-2.5 py-1 rounded-lg bg-gradient-to-r from-pink-600 to-pink-500 text-white text-xs font-bold uppercase tracking-wider shadow-lg shadow-pink-600/50">
-                        New
-                      </div>
-                    )}
                   </div>
                 </motion.div>
               ))}

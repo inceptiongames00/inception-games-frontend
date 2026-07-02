@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { ShoppingBag, ArrowRight } from 'lucide-react';
+import Image from 'next/image';
 
 export default function ProGearShop() {
   const gearItems = [
@@ -9,11 +10,13 @@ export default function ProGearShop() {
       id: 1,
       name: 'Elite Controller',
       icon: '🎮',
+      image: 'https://images.unsplash.com/photo-1531492746076-161ca9bcad58?w=500&h=400&fit=crop',
     },
     {
       id: 2,
       name: 'Pro Headset',
       icon: '🎧',
+      image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&h=400&fit=crop',
     },
   ];
 
@@ -51,8 +54,17 @@ export default function ProGearShop() {
               className="rounded-xl border border-white/[0.08] bg-white/[0.02] overflow-hidden hover:border-white/[0.12] transition"
             >
               {/* Placeholder Image */}
-              <div className="h-24 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
-                <span className="text-3xl">{item.icon}</span>
+              <div className="h-24 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center relative overflow-hidden">
+                {item.image ? (
+                  <Image
+                    src={item.image}
+                    alt={item.name}
+                    fill
+                    className="object-cover"
+                  />
+                ) : (
+                  <span className="text-3xl">{item.icon}</span>
+                )}
               </div>
 
               {/* Item Name */}

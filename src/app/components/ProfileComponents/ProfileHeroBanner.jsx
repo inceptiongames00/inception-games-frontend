@@ -121,8 +121,8 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
               </div>
 
               {/* Online indicator */}
-              <span className="absolute bottom-3 right-3 w-4 h-4 bg-emerald-400 rounded-full border-2 border-[#0c0c14] animate-ping" />
-              <span className="absolute bottom-3 right-3 w-4 h-4 bg-emerald-500 rounded-full border-2 border-[#0c0c14]" />
+              <span className="absolute bottom-1 right-3 w-4 h-4 bg-emerald-400 rounded-full border-2 border-[#0c0c14] animate-ping" />
+              <span className="absolute bottom-1 right-3 w-4 h-4 bg-emerald-500 rounded-full border-2 border-[#0c0c14]" />
             </motion.div>
 
             {/* Player Info */}
