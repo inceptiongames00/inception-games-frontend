@@ -21,6 +21,31 @@ export default function NotificationsPanel() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [showList, setShowList] = useState(false);
   const [selectedNotif, setSelectedNotif] = useState(null);
+  const [localReadStates, setLocalReadStates] = useState({}); // Track locally marked as read
+
+  const markNotificationAsRead = async (notificationId) => {
+    try {
+      const tokens = getTokens();
+      if (!tokens?.accessToken) return false;
+
+      // Try to call the API to mark as read
+      const response = await fetch(`${NOTIFICATIONS_ENDPOINT}/${notificationId}/read`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${tokens.accessToken}`,
+        },
+      });
+
+      if (response.ok) {
+        console.log('[v0] Notification marked as read on backend');
+        return true;
+      }
+    } catch (err) {
+      console.log('[v0] Could not mark as read on backend, using local state');
+    }
+    return false;
+  };
 
   const fetchNotifications = async () => {
     try {
@@ -45,7 +70,15 @@ export default function NotificationsPanel() {
 
       const data = await response.json();
       if (data.success && data.messages) {
-        setNotifications(data.messages);
+        // Merge API data with local read states to preserve read status
+        const updatedMessages = data.messages.map((msg) => {
+          if (localReadStates[msg.id]) {
+            return { ...msg, is_read: 1 };
+          }
+          return msg;
+        });
+
+        setNotifications(updatedMessages);
         setUnreadCount(data.unread_count || 0);
         setError(null);
       }
@@ -182,16 +215,16 @@ const getRelativeTime = (dateString) => {
                       </h4>
 
                       {/* Date */}
-   <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#2d1b4e]/50">
+                        <div className="flex items-center justify-between mt-2 pt-2 border-t border-[#2d1b4e]/50">
                           <p className="text-xs text-gray-500">
                             {getRelativeTime(event.created_at)}
                           </p>
                           <div className="flex items-center gap-2">
-                            {/* {isUnread && ( */}
+                            {!event.is_read && (
                               <span className="text-xs font-semibold text-purple-400 bg-purple-500/20 px-2 py-0.5 rounded">
                                 New
                               </span>
-                            {/* )} */}
+                            )}
                           </div>
                         </div>
                     </div>
@@ -254,6 +287,27 @@ const getRelativeTime = (dateString) => {
                       <motion.button
                         key={notif.id}
                         onClick={() => {
+                          const isUnread = !notif.is_read;
+                          
+                          // Mark as read locally immediately for instant feedback
+                          if (isUnread) {
+                            setLocalReadStates((prev) => ({
+                              ...prev,
+                              [notif.id]: true,
+                            }));
+
+                            // Update local state immediately
+                            setNotifications((prev) =>
+                              prev.map((n) =>
+                                n.id === notif.id ? { ...n, is_read: 1 } : n
+                              )
+                            );
+                            setUnreadCount((prev) => Math.max(0, prev - 1));
+
+                            // Try to persist to backend
+                            markNotificationAsRead(notif.id);
+                          }
+
                           setSelectedNotif(notif);
                           setShowList(false);
                         }}
