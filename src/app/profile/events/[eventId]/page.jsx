@@ -1,23 +1,17 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useContext, useMemo } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Trophy,
   Calendar,
-  MapPin,
-  Monitor,
+  Flag,
   Users,
   User,
   DollarSign,
-  Flag,
-  Bell,
-  Heart,
-  Share2,
   CheckCircle2,
   ArrowLeft,
-  ExternalLink,
   Clock,
   CheckCircle,
   AlertCircle,
@@ -25,8 +19,6 @@ import {
   Loader2,
   Shield,
   ArrowRight,
-  Smartphone,
-  Gamepad2,
 } from "lucide-react";
 import Image from "next/image";
 import Header from "@/app/components/Header";
@@ -34,382 +26,49 @@ import Footer from "@/app/components/Footer";
 import EventShareCard from "@/app/components/EventShareCard";
 import SharePreview from "@/app/components/SharePreview";
 import NotificationsPanel from "@/app/components/ProfileComponents/NotificationsPanel";
-import { API } from "@/lib/api";
+import PlatformDisplay from "@/app/components/EventComponents/PlatformDisplay";
+import AnimatedInput from "@/app/components/EventComponents/AnimatedInput";
 import { AuthContext } from "@/app/context/AuthContext";
-
-// Games data (from NewSignupModal)
-const games = [
-  { id: "apex", name: "Apex Legends", image: "/games/apex.png" },
-  {
-    id: "cod-bo7",
-    name: "Call of Duty: Black Ops 7",
-    image: "/games/codm.png",
-  },
-  {
-    id: "cod-warzone",
-    name: "Call of Duty: Warzone",
-    image: "/games/codm.png",
-  },
-  { id: "chess", name: "Chess", image: "/games/chess.png" },
-  { id: "cs2", name: "Counter-Strike 2", image: "/games/csgo.png" },
-  { id: "crossfire", name: "Crossfire", image: "/games/cf.jpeg" },
-  { id: "dota2", name: "Dota 2", image: "/games/dota2.png" },
-  { id: "fc26-pc", name: "FC26 - PC", image: "/games/fifapc.png" },
-  {
-    id: "fc26-consoles",
-    name: "FC26 - Consoles",
-    image: "/games/fcconsole.png",
-  },
-  { id: "fc26-mobile", name: "FC26 - Mobile", image: "/games/fcmobile.png" },
-  {
-    id: "efootball-pc",
-    name: "eFootball - PC",
-    image: "/games/efootballpc.png",
-  },
-  {
-    id: "efootball-consoles",
-    name: "eFootball - Consoles",
-    image: "/games/efootballconsole.png",
-  },
-  {
-    id: "efootball-mobile",
-    name: "eFootball - Mobile",
-    image: "/games/efootballmobile.png",
-  },
-  {
-    id: "fatal-fury",
-    name: "Fatal Fury: City of the Wolves",
-    image: "/games/ff.jpeg",
-  },
-  { id: "freefire", name: "Free Fire", image: "/games/freefire.png" },
-  { id: "hok", name: "Honor of Kings", image: "/games/hk.jpeg" },
-  { id: "lol", name: "League of Legends", image: "/games/lol.png" },
-  { id: "mlbb", name: "Mobile Legends: Bang Bang", image: "/games/mlbb.png" },
-  { id: "overwatch2", name: "Overwatch 2", image: "/games/overwatch.png" },
-  { id: "pubg", name: "PUBG / PUBG: Battlegrounds", image: "/games/pubg.png" },
-  { id: "pubg-mobile", name: "PUBG Mobile", image: "/games/pubg.png" },
-  { id: "r6x", name: "Rainbow Six Siege X", image: "/games/r6.jpeg" },
-  { id: "sf6", name: "Street Fighter 6", image: "/games/sf6.png" },
-  { id: "tft", name: "Teamfight Tactics", image: "/games/tt.jpeg" },
-  { id: "valorant", name: "VALORANT", image: "/games/valorant.png" },
-  {
-    id: "valorant-mobile",
-    name: "VALORANT Mobile",
-    image: "/games/valorant.png",
-  },
-  { id: "coc", name: "Clash of Clans", image: "/games/coc.png" },
-  { id: "tekken8", name: "Tekken 8", image: "/games/tekken.jpeg" },
-  { id: "mk11", name: "Mortal Kombat 11", image: "/games/mk11.png" },
-  { id: "brawlstars", name: "Brawl Stars", image: "/games/brawlstars.png" },
-];
-
-// Helper to get game image from title or game name
-function getGameImage(eventTitle, gameName) {
-  // Try to find a matching game from the games list
-  const searchTerm = (gameName || eventTitle || "").toLowerCase();
-  const matchedGame = games.find(
-    (g) =>
-      searchTerm.includes(g.name.toLowerCase()) ||
-      g.name.toLowerCase().includes(searchTerm.split(" ")[0]),
-  );
-  return matchedGame?.image || "/games/pubg.png"; // Default fallback
-}
-
-// Helper to determine event type from title
-function getEventType(title, organizer) {
-  const lowerTitle = (title || "").toLowerCase();
-  const lowerOrg = (organizer || "").toLowerCase();
-
-  if (
-    lowerTitle.includes("brand") ||
-    lowerTitle.includes("deal") ||
-    lowerTitle.includes("sponsor")
-  ) {
-    return "Brand Deal";
-  }
-  if (lowerTitle.includes("scrim")) {
-    return "Scrims";
-  }
-  return "Tournament";
-}
-
-// Generate sample events ONLY as fallback (lazy - only when needed)
-const generateSampleEvents = () => {
-  const eventTypes = ["Tournament", "Scrims", "Brand Deal"];
-  const statuses = ["Upcoming", "Ongoing", "Completed"];
-  const platforms = ["PC", "Mobile", "Console"];
-  const teamTypes = ["Solo", "Duo", "Squad"];
-  const locations = ["Bangladesh", "India", "Southeast Asia", "Global"];
-
-  const events = [];
-  let eventId = 0;
-
-  games.forEach((game, gameIdx) => {
-    eventTypes.forEach((eventType, typeIdx) => {
-      const idx = eventId;
-        const status = statuses[idx % 3];
-        const platform = platforms[gameIdx % 3];
-        const teamType = teamTypes[gameIdx % 3];
-
-        const baseDate = new Date();
-        baseDate.setDate(baseDate.getDate() + idx * 2 - 30);
-
-        events.push({
-          id: `event-${eventId}`,
-          title: `SNS ${game.name} ${eventType} ${eventType === "Brand Deal" ? "Opportunity" : "Championship"}`,
-          game: game,
-          gameImage: game.image,
-          banner_image: game.image,
-          absoluteBannerUrl: game.image,
-          eventType: eventType,
-          status: status,
-          date: baseDate.toISOString(),
-          endDate: new Date(
-            baseDate.getTime() + 7 * 24 * 60 * 60 * 1000,
-          ).toISOString(),
-          location: locations[gameIdx % 4],
-          platform: platform,
-          teamType: teamType,
-          prizePool: eventType === "Brand Deal" ? 0 : (gameIdx + 1) * 5000,
-          currency: "BDT",
-          totalSlots: 64,
-          filledSlots: Math.floor(Math.random() * 64),
-          registrationStart: new Date(
-            baseDate.getTime() - 14 * 24 * 60 * 60 * 1000,
-          ).toISOString(),
-          registrationEnd: new Date(
-            baseDate.getTime() - 2 * 24 * 60 * 60 * 1000,
-          ).toISOString(),
-          tournamentStart: baseDate.toISOString(),
-          tournamentEnd: new Date(
-            baseDate.getTime() + 7 * 24 * 60 * 60 * 1000,
-          ).toISOString(),
-          host: "Inception Games",
-          description: `Join the ${game.name} ${eventType.toLowerCase()} and compete against the best players in ${locations[gameIdx % 4]}!`,
-          rules: [
-            "All participants must be registered before the deadline",
-            "Fair play policy strictly enforced",
-            "All matches will be streamed on official channels",
-            "Prizes will be distributed within 7 days of event completion",
-          ],
-          address:
-            eventType !== "Brand Deal" ? "Online Event" : "Contact for Details",
-        });
-        eventId++;
-      });
-    });
-
-    return events;
-};
-
-
-
-
-const getOrdinal = (n) => {
-  const s = ["th", "st", "nd", "rd"];
-  const v = n % 100;
-  return n + (s[(v - 20) % 10] || s[v] || s[0]);
-};
-
-const formatDate = (dateStr) => {
-  if (!dateStr) return "TBD";
-  const date = new Date(dateStr);
-  const day = getOrdinal(date.getDate());
-  const month = date.toLocaleDateString("en-GB", { month: "short" });
-  const year = date.getFullYear();
-  return `${day} ${month} ${year}`;
-};
-
-function formatDateTime(dateStr) {
-  const date = new Date(dateStr);
-  return date.toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "2-digit",
-  });
-}
-
-function formatTime(dateStr) {
-  const date = new Date(dateStr);
-  return date.toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
-}
-
-function getOrdinalSuffix(day) {
-  if (day > 3 && day < 21) return "th";
-  switch (day % 10) {
-    case 1:
-      return "st";
-    case 2:
-      return "nd";
-    case 3:
-      return "rd";
-    default:
-      return "th";
-  }
-}
-
-
-
-function getStatusText(status) {
-  switch (status) {
-    case "Upcoming":
-      return "Registration Open";
-    case "Ongoing":
-      return "In Progress";
-    case "Completed":
-      return "Tournament Ended";
-    default:
-      return status;
-  }
-}
-
-// Platform Icon Component
-function PlatformDisplay({ platform }) {
-  const normalizedPlatform = platform?.toLowerCase().trim();
-  
-  let Icon, label, brandColor;
-  
-  switch (normalizedPlatform) {
-    case "pc":
-    case "pc only":
-      Icon = Monitor;
-      label = "PC";
-      brandColor = "text-blue-400";
-      break;
-    case "mobile":
-    case "mobile only":
-      Icon = Smartphone;
-      label = "Mobile";
-      brandColor = "text-pink-400";
-      break;
-    case "console":
-    case "console only":
-      Icon = Gamepad2;
-      label = "Console";
-      brandColor = "text-orange-400";
-      break;
-    case "cross-platform":
-    case "all platforms":
-    case "cross platform":
-      Icon = Monitor;
-      label = "Cross Platform";
-      brandColor = "text-purple-400";
-      break;
-    default:
-      Icon = Monitor;
-      label = "All Platforms";
-      brandColor = "text-gray-400";
-  }
-  
-  return (
-    <div className="flex items-center gap-2">
-      <Icon size={16} className={`${brandColor} font-bold`} strokeWidth={2.5} />
-      <span className={`${brandColor} font-bold`}>{label}</span>
-    </div>
-  );
-}
-
-// Animated Input Component
-function AnimatedInput({
-  label,
-  type = "text",
-  name,
-  value,
-  onChange,
-  required,
-  options,
-  placeholder,
-}) {
-  if (type === "select") {
-    return (
-      <div className="relative">
-        <select
-          name={name}
-          value={value}
-          onChange={onChange}
-          required={required}
-          className="w-full p-4 pt-6 bg-gray-800 border border-gray-700 rounded-xl text-white focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition-all appearance-none cursor-pointer"
-        >
-          <option value="">{placeholder || `Select ${label}`}</option>
-          {options?.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
-        <label className="absolute left-4 top-2 text-xs text-gray-400">
-          {label}
-        </label>
-      </div>
-    );
-  }
-
-  if (type === "textarea") {
-    return (
-      <div className="relative">
-        <textarea
-          name={name}
-          value={value}
-          onChange={onChange}
-          required={required}
-          rows={3}
-          placeholder=" "
-          className="w-full p-4 pt-6 bg-gray-800 border border-gray-700 rounded-xl text-white focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition-all peer resize-none"
-        />
-        <label
-          className={`absolute left-4 transition-all pointer-events-none ${value ? "top-2 text-xs text-purple-400" : "top-4 text-gray-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-purple-400"}`}
-        >
-          {label}
-        </label>
-      </div>
-    );
-  }
-
-  return (
-    <div className="relative">
-      <input
-        type={type}
-        name={name}
-        value={value}
-        onChange={onChange}
-        required={required}
-        placeholder=" "
-        className="w-full p-4 pt-6 bg-gray-800 border border-gray-700 rounded-xl text-white focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition-all peer"
-      />
-      <label
-        className={`absolute left-4 transition-all pointer-events-none ${value ? "top-2 text-xs text-purple-400" : "top-4 text-gray-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-purple-400"}`}
-      >
-        {label}
-      </label>
-    </div>
-  );
-}
+import { useEventData } from "@/app/hooks/useEventData";
+import { useEventRegistration } from "@/app/hooks/useEventRegistration";
+import { useEventSharing } from "@/app/hooks/useEventSharing";
+import {
+  formatDate,
+  formatTime,
+  getStatusText,
+} from "@/app/utils/eventHelpers";
+import { getGameImage } from "@/app/utils/gameData";
+import { updateMetaTags } from "@/app/utils/metaTags";
 
 export default function EventDetailPage() {
   const params = useParams();
   const router = useRouter();
   const { user } = useContext(AuthContext) || {};
+  const { event: fetchedEvent } = useEventData(params.eventId);
   const [event, setEvent] = useState(null);
   const [activeTab, setActiveTab] = useState("result");
   const [showSignupForm, setShowSignupForm] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [notification, setNotification] = useState({
-    show: false,
-    type: "",
-    message: "",
-  });
-  const [qrImageError, setQrImageError] = useState(false);
   const [otpStep, setOtpStep] = useState(null);
   const [otpValue, setOtpValue] = useState("");
   const [otpError, setOtpError] = useState("");
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [showShareMenu, setShowShareMenu] = useState(false);
   const otpInputRefs = useRef([]);
-  const shareMenuRef = useRef(null);
+
+  const {
+    isSubmitting,
+    notification,
+    showSuccessModal,
+    setShowSuccessModal,
+    showNotificationMessage,
+    handleRegistrationSubmit,
+  } = useEventRegistration(event);
+
+  const {
+    handleShare,
+    handleFacebookShare,
+    handleTwitterShare,
+    handleWhatsappShare,
+    handleCopyLink,
+  } = useEventSharing(event);
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -419,9 +78,6 @@ export default function EventDetailPage() {
     inGameId: "",
     teamName: "",
     discordId: "",
-    region: "",
-    experience: "",
-    transactionId: "",
     socialMedia: "",
     portfolio: "",
     teamMembers: "",
@@ -430,10 +86,10 @@ export default function EventDetailPage() {
     players: [],
   });
 
+  useEffect(() => {
+    if (fetchedEvent) setEvent(fetchedEvent);
+  }, [fetchedEvent]);
 
-
-
-  // Auto-fill form with user data when signup form is shown
   useEffect(() => {
     if (showSignupForm && user) {
       setFormData((prev) => ({
@@ -445,29 +101,15 @@ export default function EventDetailPage() {
     }
   }, [showSignupForm, user]);
 
-  // Initialize Facebook SDK (only if valid App ID is provided)
   useEffect(() => {
     const facebookAppId = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID;
-
-    // Only initialize if a valid Facebook App ID is provided
-    if (
-      facebookAppId &&
-      facebookAppId !== "1234567890" &&
-      facebookAppId.length > 10
-    ) {
+    if (facebookAppId && facebookAppId !== "1234567890" && facebookAppId.length > 10) {
       window.fbAsyncInit = function () {
-        FB.init({
-          appId: facebookAppId,
-          xfbml: true,
-          version: "v18.0",
-        });
+        FB.init({ appId: facebookAppId, xfbml: true, version: "v18.0" });
       };
-
-      // Load Facebook SDK
       if (!window.FB) {
         const script = document.createElement("script");
-        script.src =
-          "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v18.0";
+        script.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v18.0";
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);
@@ -475,379 +117,32 @@ export default function EventDetailPage() {
     }
   }, []);
 
-  // Set Open Graph meta tags for better social sharing
   useEffect(() => {
-    if (event) {
-      // Create or update Open Graph meta tags
-      const updateMetaTag = (property, content) => {
-        let tag = document.querySelector(`meta[property="${property}"]`);
-        if (!tag) {
-          tag = document.createElement("meta");
-          tag.setAttribute("property", property);
-          document.head.appendChild(tag);
-        }
-        tag.setAttribute("content", content);
-      };
+    if (event) updateMetaTags(event);
+  }, [event]);
 
-      const updateNameMetaTag = (name, content) => {
-        let tag = document.querySelector(`meta[name="${name}"]`);
-        if (!tag) {
-          tag = document.createElement("meta");
-          tag.setAttribute("name", name);
-          document.head.appendChild(tag);
-        }
-        tag.setAttribute("content", content);
-      };
-
-      // Get absolute base URL
-      const protocol =
-        typeof window !== "undefined" ? window.location.protocol : "http:";
-      const host =
-        typeof window !== "undefined" ? window.location.host : "localhost:3001";
-      const baseUrl = `${protocol}//${host}`;
-
-      // Get the banner image with fallback strategy - prioritize the absolute URL we created
-      let absoluteImageUrl = event.absoluteBannerUrl;
-      let bannerImagePath = event.banner_image;
-
-      // If absoluteBannerUrl doesn't exist, build it from available sources
-      if (!absoluteImageUrl) {
-        let bannerImage = event.banner_image;
-        bannerImagePath = bannerImage;
-
-        // If no banner, try alternative fields
-        if (!bannerImage) {
-          bannerImage = event.gameImage || event.game?.image;
-          bannerImagePath = bannerImage;
-        }
-
-        // If still no banner, get from game name
-        if (!bannerImage) {
-          const gameImg = getGameImage(event.title, event.gameName);
-          bannerImage = gameImg;
-          bannerImagePath = bannerImage;
-        }
-
-        // Make sure the image URL is absolute and accessible to social crawlers
-        if (bannerImage && bannerImage.startsWith("http")) {
-          absoluteImageUrl = bannerImage;
-        } else if (bannerImage && bannerImage.startsWith("/")) {
-          absoluteImageUrl = `${baseUrl}${bannerImage}`;
-        } else if (bannerImage) {
-          absoluteImageUrl = `${baseUrl}/${bannerImage}`;
-        } else {
-          absoluteImageUrl = `${baseUrl}/api/og-image/${event.id || params.eventId}`;
-        }
-      }
-
-      const eventUrl =
-        typeof window !== "undefined" ? window.location.href : "";
-
-      // Format description with location and date info
-      const eventDate =
-        event.start_date || event.date
-          ? new Date(event.start_date || event.date).toLocaleDateString(
-              "en-GB",
-              {
-                day: "2-digit",
-                month: "short",
-                year: "numeric",
-              },
-            )
-          : "TBD";
-
-      const location = event.location || event.venue || "Online";
-      const platform = event.platform || "All Platforms";
-      const status =
-        event.status === "Upcoming"
-          ? "Registration Open"
-          : event.status === "Ongoing"
-            ? "In Progress"
-            : "Completed";
-
-      let description = `${event.title} - ${status} on ${eventDate} in ${location}`;
-      if (event.prizePool && event.prizePool > 0) {
-        description += `. Prize Pool: ${event.currency} ${event.prizePool.toLocaleString()}`;
-      }
-      description += `. Join the competition on Inception Games platform!`;
-
-      // Determine image type from the banner image path
-      let imageType = "image/jpeg"; // Default
-      if (bannerImagePath) {
-        if (bannerImagePath.includes(".webp")) imageType = "image/webp";
-        else if (bannerImagePath.includes(".png")) imageType = "image/png";
-        else if (bannerImagePath.includes(".gif")) imageType = "image/gif";
-      }
-
-      // Ensure image URL is HTTPS for security and social media compatibility
-      if (
-        absoluteImageUrl &&
-        absoluteImageUrl.startsWith("http://") &&
-        typeof window !== "undefined"
-      ) {
-        const isLocalhost =
-          window.location.hostname === "localhost" ||
-          window.location.hostname === "127.0.0.1";
-        if (!isLocalhost) {
-          // Convert to HTTPS for production
-          absoluteImageUrl = absoluteImageUrl.replace("http://", "https://");
-        }
-      }
-
-      // Open Graph tags - CRITICAL for Facebook rich preview
-      updateMetaTag("og:title", event.title || "Inception Games Tournament");
-      updateMetaTag("og:description", description);
-      // Use the OG image API endpoint as fallback, or the actual banner URL if available
-      const ogImageUrl = absoluteImageUrl.includes("/api/og-image/") 
-        ? absoluteImageUrl 
-        : absoluteImageUrl;
-      updateMetaTag("og:image", ogImageUrl);
-      updateMetaTag("og:image:width", "1200");
-      updateMetaTag("og:image:height", "630");
-      updateMetaTag("og:image:type", imageType);
-      updateMetaTag("og:image:alt", `${event.title} Tournament Card`);
-      updateMetaTag("og:url", eventUrl);
-      updateMetaTag("og:type", "website");
-      updateMetaTag("og:site_name", "Inception Games");
-
-      // Facebook-specific domain verification and tags
-      updateMetaTag("fb:app_id", "1234567890"); // Update with actual FB app ID if available
-
-      // Twitter Card tags - for Twitter/X rich preview
-      updateNameMetaTag("twitter:card", "summary_large_image");
-      updateNameMetaTag(
-        "twitter:title",
-        event.title || "Inception Games Tournament",
-      );
-      updateNameMetaTag("twitter:description", description);
-      updateNameMetaTag("twitter:image", absoluteImageUrl);
-      updateNameMetaTag("twitter:image:alt", `${event.title} Tournament Card`);
-      updateNameMetaTag("twitter:site", "@SnSGames");
-      updateNameMetaTag("twitter:creator", "@SnSGames");
-      updateNameMetaTag("twitter:domain", host);
-
-      // LinkedIn tags for professional sharing
-      updateMetaTag(
-        "og:image:secure_url",
-        absoluteImageUrl.replace("http://", "https://"),
-      );
-
-      // Additional meta tags for better SEO and sharing
-      updateNameMetaTag("description", description);
-      updateMetaTag("og:locale", "en_US");
-    }
-  }, [event, params]);
-
-  // Helper to transform a scrim object into event format
-  const transformScrim = (matchedScrim) => {
-    const bannerImage = matchedScrim.banner_image;
-    return {
-      ...matchedScrim,
-      eventType: "Scrims",
-      game: {
-        name: matchedScrim.game || "Gaming Event",
-        image: getGameImage(matchedScrim.title, matchedScrim.game),
-      },
-      gameName: matchedScrim.game || "Gaming Event",
-      gameImage: getGameImage(matchedScrim.title, matchedScrim.game),
-      date: matchedScrim.start_at,
-      endDate: matchedScrim.end_at,
-      location: matchedScrim.region,
-      platform: matchedScrim.platform || "All Platforms",
-      teamType: matchedScrim.game_mode || "Open",
-      team_size: matchedScrim.team_size || 1,
-      teamSize: matchedScrim.team_size || 1,
-      prizePool: parseFloat(matchedScrim.prize_pool) || 0,
-      currency: matchedScrim.currency || "BDT",
-      totalSlots: matchedScrim.max_teams || 0,
-      filledSlots: matchedScrim.filled_teams || 0,
-      registrationStart: matchedScrim.reg_start_at,
-      registrationEnd: matchedScrim.reg_end_at,
-      tournamentStart: matchedScrim.start_at,
-      tournamentEnd: matchedScrim.end_at,
-      host: matchedScrim.hosted_by || "Inception Games",
-      organizer: matchedScrim.hosted_by || "Inception Games",
-      slots: matchedScrim.slots || [],
-      banner_image: bannerImage,
-      absoluteBannerUrl: bannerImage,
-    };
-  };
-
-  useEffect(() => {
-    const fetchEvent = async () => {
-      try {
-        const cacheKey = "scrims_cache";
-        const cacheTimestampKey = "scrims_cache_timestamp";
-        const eventCacheKey = `event_${params.eventId}`;
-        const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
-        
-        // First, check if we have this specific event cached (from navigation)
-        const cachedEvent = sessionStorage.getItem(eventCacheKey);
-        if (cachedEvent) {
-          try {
-            setEvent(JSON.parse(cachedEvent));
-            return;
-          } catch (e) {
-            // Invalid cache, continue to fetch
-          }
-        }
-
-        let allScrims = null;
-        const cachedData = sessionStorage.getItem(cacheKey);
-        const cacheTimestamp = sessionStorage.getItem(cacheTimestampKey);
-        const now = Date.now();
-
-        // Use cache if it exists and is still fresh
-        if (
-          cachedData &&
-          cacheTimestamp &&
-          now - parseInt(cacheTimestamp) < CACHE_DURATION
-        ) {
-          allScrims = JSON.parse(cachedData);
-        } else {
-          // Fetch fresh data from API
-          const scrimsRes = await fetch(
-            "https://inception-games.an.r.appspot.com/api/v1/scrims",
-          );
-          if (scrimsRes.ok) {
-            const scrimsJson = await scrimsRes.json();
-            allScrims = scrimsJson.scrims || scrimsJson.data || [];
-            // Cache the scrims data
-            sessionStorage.setItem(cacheKey, JSON.stringify(allScrims));
-            sessionStorage.setItem(cacheTimestampKey, now.toString());
-          }
-        }
-
-        // Search for matching scrim in cached/fetched data
-        if (allScrims && allScrims.length > 0) {
-          const matchedScrim = allScrims.find(
-            (s) => s.id === params.eventId || s.id === parseInt(params.eventId),
-          );
-          if (matchedScrim) {
-            const transformedEvent = transformScrim(matchedScrim);
-            setEvent(transformedEvent);
-            // Cache this specific event for instant load on back-navigation
-            sessionStorage.setItem(eventCacheKey, JSON.stringify(transformedEvent));
-            return;
-          }
-        }
-
-        // Try alternative API endpoint for tournaments/brand deals
-        const url = API.EVENTS_GET_BY_ID.replace(":eventId", params.eventId);
-        const response = await fetch(url);
-        const data = await response.json();
-
-        if (response.ok && data) {
-          let eventData =
-            data.tournament || (data.success && data.data ? data.data : data);
-
-          let bannerImage = eventData.banner_image;
-          let absoluteBannerUrl = bannerImage;
-
-          if (bannerImage) {
-            if (bannerImage.startsWith("http")) {
-              absoluteBannerUrl = bannerImage;
-            } else {
-              const apiBase = "https://inception-games.an.r.appspot.com/api/v1";
-              absoluteBannerUrl = bannerImage.startsWith("/")
-                ? `${apiBase}${bannerImage}`
-                : `${apiBase}/${bannerImage}`;
-            }
-          }
-
-          const transformedEvent = {
-            ...eventData,
-            id: eventData.id,
-            title: eventData.title,
-            game: {
-              name: eventData.game || "Gaming Event",
-              image: getGameImage(eventData.title, eventData.game),
-            },
-            gameName: eventData.game || "Gaming Event",
-            gameImage: getGameImage(eventData.title, eventData.game),
-            date: eventData.event_date || eventData.date,
-            endDate: eventData.tournament_end_at || eventData.endDate,
-            location: eventData.region || eventData.location,
-            platform: eventData.platform || "All Platforms",
-            teamType: eventData.game_mode || "Open",
-            prizePool: parseFloat(eventData.prize_pool) || 0,
-            currency: eventData.currency || "BDT",
-            totalSlots: eventData.max_slots || 64,
-            filledSlots: eventData.filled_slots || 0,
-            registrationStart: eventData.reg_start_at,
-            registration_start: eventData.reg_start_at,
-            registrationEnd: eventData.reg_end_at,
-            registration_end: eventData.reg_end_at,
-            tournamentStart: eventData.tournament_start_at,
-            tournamentEnd: eventData.tournament_end_at,
-            host: eventData.hosted_by || "Inception Games",
-            organizer: eventData.hosted_by || "Inception Games",
-            banner_image: eventData.banner_image,
-            absoluteBannerUrl: absoluteBannerUrl,
-          };
-
-          setEvent(transformedEvent);
-        } else {
-          // Last resort: fallback to sample events only if API fails
-          const foundEvent = SAMPLE_EVENTS.find(
-            (e) => e.id === `event-${params.eventId}`,
-          );
-          if (foundEvent) {
-            setEvent(foundEvent);
-          }
-        }
-      } catch (error) {
-        // Last resort: fallback to sample events only if API fails
-        const foundEvent = SAMPLE_EVENTS.find(
-          (e) => e.id === `event-${params.eventId}`,
-        );
-        if (foundEvent) {
-          setEvent(foundEvent);
-        }
-      }
-    };
-
-    if (params.eventId) {
-      fetchEvent();
-    }
-  }, [params.eventId]);
-
-  const showNotificationMessage = (type, message) => {
-    setNotification({ show: true, type, message });
-    setTimeout(
-      () => setNotification({ show: false, type: "", message: "" }),
-      4000,
-    );
-  };
+  const isSoloMode = (event?.game_mode || event?.teamType || "").toLowerCase() === "solo";
+  const additionalPlayersCount = isSoloMode
+    ? 0
+    : Math.max(0, (event?.team_size || event?.teamSize || 1) - 1);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Whether this scrim/event is a solo (single-player) mode
-  const isSoloMode =
-    (event?.game_mode || event?.teamType || "").toLowerCase() === "solo";
+  const handlePlayerChange = (index, field, value) => {
+    setFormData((prev) => {
+      const players = [...prev.players];
+      players[index] = { ...players[index], [field]: value };
+      return { ...prev, players };
+    });
+  };
 
-  // Number of additional players (excluding the captain) required by the scrim.
-  // Solo mode never requires additional team members.
-  const additionalPlayersCount = isSoloMode
-    ? 0
-    : Math.max(0, (event?.team_size || event?.teamSize || 1) - 1);
-
-  // Available slots from the scrim payload
-  const scrimSlots = event?.slots || [];
-
-  // Initialize the players array + default slot when opening a scrim registration form
   const openScrimRegistration = () => {
-    const solo =
-      (event?.game_mode || event?.teamType || "").toLowerCase() === "solo";
-    const count = solo
-      ? 0
-      : Math.max(0, (event?.team_size || event?.teamSize || 1) - 1);
-    const openSlot =
-      (event?.slots || []).find((s) => s.status === "Open") ||
-      (event?.slots || [])[0];
+    const solo = (event?.game_mode || event?.teamType || "").toLowerCase() === "solo";
+    const count = solo ? 0 : Math.max(0, (event?.team_size || event?.teamSize || 1) - 1);
+    const openSlot = (event?.slots || []).find((s) => s.status === "Open") || (event?.slots || [])[0];
     setFormData((prev) => ({
       ...prev,
       selectedSlotId: openSlot ? String(openSlot.id) : "",
@@ -863,204 +158,10 @@ export default function EventDetailPage() {
     setShowSignupForm(true);
   };
 
-  // Update a single additional player's field
-  const handlePlayerChange = (index, field, value) => {
-    setFormData((prev) => {
-      const players = [...prev.players];
-      players[index] = { ...players[index], [field]: value };
-      return { ...prev, players };
-    });
-  };
-
-  const getPrice = () => {
-    if (!event) return 0;
-    switch (event.eventType) {
-      case "Tournament":
-        return 499;
-      case "Scrims":
-        return 199;
-      case "Brand Deal":
-        return formData.brandDealType === "team" ? 999 : 499;
-      default:
-        return 0;
-    }
-  };
-
-  const handleSubmit = async (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
-
-    try {
-      // Client-side validation
-      if (!formData.fullName || formData.fullName.trim() === "") {
-        showNotificationMessage("error", "Full name is required");
-        setIsSubmitting(false);
-        return;
-      }
-
-      if (!formData.email || formData.email.trim() === "") {
-        showNotificationMessage("error", "Email is required");
-        setIsSubmitting(false);
-        return;
-      }
-
-      if (!formData.phone || formData.phone.trim() === "") {
-        showNotificationMessage("error", "Phone number is required");
-        setIsSubmitting(false);
-        return;
-      }
-
-      // ---- Scrims registration (team-based, new API) ----
-      if (event?.eventType === "Scrims") {
-        if (!formData.selectedSlotId) {
-          showNotificationMessage("error", "Please select a slot");
-          setIsSubmitting(false);
-          return;
-        }
-        if (!isSoloMode) {
-          if (!formData.teamName || formData.teamName.trim() === "") {
-            showNotificationMessage("error", "Team name is required");
-            setIsSubmitting(false);
-            return;
-          }
-        }
-        if (!formData.inGameName || !formData.inGameId) {
-          showNotificationMessage(
-            "error",
-            isSoloMode
-              ? "In-game name and ID are required"
-              : "Captain in-game name and ID are required",
-          );
-          setIsSubmitting(false);
-          return;
-        }
-
-        // Validate each additional player
-        for (let i = 0; i < formData.players.length; i++) {
-          const p = formData.players[i];
-          if (
-            !p.full_name?.trim() ||
-            !p.email?.trim() ||
-            !p.in_game_name?.trim() ||
-            !p.in_game_id?.trim()
-          ) {
-            showNotificationMessage(
-              "error",
-              `Please complete details for Player ${i + 2}`,
-            );
-            setIsSubmitting(false);
-            return;
-          }
-        }
-
-        const scrimPayload = {
-          team_name: isSoloMode
-            ? formData.inGameName.trim() || formData.fullName.trim()
-            : formData.teamName.trim(),
-          game_mode: event?.game_mode || event?.teamType || null,
-          full_name: formData.fullName.trim(),
-          email: formData.email.trim(),
-          phone: formData.phone.trim(),
-          in_game_name: formData.inGameName.trim(),
-          in_game_id: formData.inGameId.trim(),
-          // uid: formData.inGameId.trim(),
-          discord_id: formData.discordId.trim() || null,
-          players: isSoloMode
-            ? []
-            : formData.players.map((p) => ({
-            full_name: p.full_name.trim(),
-            email: p.email.trim(),
-            phone: p.phone?.trim() || null,
-            in_game_name: p.in_game_name.trim(),
-            // in_game_id: p.in_game_id.trim(),
-            uid: p.in_game_id.trim(),
-            discord_id: p.discord_id?.trim() || null,
-          })),
-        };
-   
-        const scrimRes = await fetch(
-          API.SCRIMS_REGISTER.replace(":scrimId", params.eventId).replace(
-            ":slotId",
-            formData.selectedSlotId,
-          ),
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(scrimPayload),
-          },
-        );
-
-        const scrimData = await scrimRes.json();
-
-        if (!scrimRes.ok) {
-          showNotificationMessage(
-            "error",
-            scrimData.message ||
-              scrimData.error ||
-              "Registration failed. Please try again.",
-          );
-          setIsSubmitting(false);
-          return;
-        }
-
-        setFormData((prev) => ({
-          ...prev,
-          fullName: "",
-          email: "",
-          phone: "",
-          inGameName: "",
-          inGameId: "",
-          teamName: "",
-          discordId: "",
-          selectedSlotId: "",
-          players: [],
-        }));
-        setShowSuccessModal(true);
-        setIsSubmitting(false);
-        setTimeout(() => {
-  router.push("/profile");
-}, 2000); 
-        return;
-      }
-
-      // Get game name from event
-      const gameName = event?.game?.name || event?.gameName || "EA FC 26";
-      const address = event?.address || "Online";
-
-      const payload = {
-        event_id: parseInt(params.eventId),
-        full_name: formData.fullName.trim(),
-        email: formData.email.trim(),
-        phone: formData.phone.trim(),
-        game_name: gameName,
-        address: address,
-      };
-
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/participants/tournaments/${params.eventId}/register`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        },
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        showNotificationMessage(
-          "error",
-          data.message || data.error || "Registration failed. Please try again.",
-        );
-        setIsSubmitting(false);
-        return;
-      }
-
-
-
-      // Reset form data after successful registration
+    await handleRegistrationSubmit(formData);
+    if (isSubmitting === false) {
       setFormData({
         fullName: "",
         email: "",
@@ -1069,24 +170,13 @@ export default function EventDetailPage() {
         inGameId: "",
         teamName: "",
         discordId: "",
-        region: "",
-        experience: "",
-        transactionId: "",
         socialMedia: "",
         portfolio: "",
         teamMembers: "",
         brandDealType: "solo",
+        selectedSlotId: "",
+        players: [],
       });
-
-      // success modal
-      setShowSuccessModal(true);
-    } catch (error) {
-      showNotificationMessage(
-        "error",
-        "Network error. Please check your connection and try again.",
-      );
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -1094,137 +184,17 @@ export default function EventDetailPage() {
     if (otpValue.length < 4) return;
     setOtpStep("verifying");
     await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    // Simulate success
     setOtpStep("success");
     await new Promise((resolve) => setTimeout(resolve, 2000));
-
     showNotificationMessage("success", "Registration successful!");
     setOtpStep(null);
     setShowSignupForm(false);
-    setFormData({
-      fullName: "",
-      email: "",
-      phone: "",
-      inGameName: "",
-      inGameId: "",
-      teamName: "",
-      discordId: "",
-      region: "",
-      experience: "",
-      transactionId: "",
-      socialMedia: "",
-      portfolio: "",
-      teamMembers: "",
-      brandDealType: "solo",
-    });
     setOtpValue("");
   };
 
-  const handleResendOtp = async () => {
+  const handleResendOtp = () => {
     setOtpError("OTP resent successfully!");
     setTimeout(() => setOtpError(""), 3000);
-  };
-
-  const generateShareMessage = () => {
-    const eventDate =
-      event.start_date || event.date
-        ? new Date(event.start_date || event.date).toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-          })
-        : "Soon";
-    const location = event.location || event.venue || "Online";
-    const platform = event.platform || "All Platforms";
-    const status =
-      event.status === "Upcoming"
-        ? "Registration Open"
-        : event.status === "Ongoing"
-          ? "In Progress"
-          : "Completed";
-
-    let prizeText = "";
-    if (event.prizePool && event.prizePool > 0) {
-      prizeText = ` • Prize Pool: ${event.currency} ${event.prizePool.toLocaleString()}`;
-    }
-
-    return `🎮 ${event.title}
-
-📅 ${eventDate} • ${status}
-📍 ${location} • ${platform}
-
-Join the action! Sign up now on Inception Games.${prizeText}`;
-  };
-
-  const handleShare = async () => {
-    const shareMessage = generateShareMessage();
-    const currentUrl =
-      typeof window !== "undefined" ? window.location.href : "";
-
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: event.title,
-          text: shareMessage,
-          url: currentUrl,
-        });
-      } catch (err) {}
-    } else {
-      navigator.clipboard.writeText(currentUrl);
-      showNotificationMessage("success", "Link copied to clipboard!");
-    }
-  };
-
-  const handleFacebookShare = () => {
-    const currentUrl =
-      typeof window !== "undefined" ? window.location.href : "";
-
-    // Use Facebook SDK Share Dialog if available
-    if (window.FB) {
-      FB.ui(
-        {
-          method: "share",
-          href: currentUrl,
-          hashtag: "#SnSGames",
-          quote: generateShareMessage(),
-          display: "popup",
-        },
-        function (response) {},
-      );
-    } else {
-      // Fallback to basic share - will use Open Graph meta tags
-      const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}&quote=${encodeURIComponent(generateShareMessage())}`;
-      window.open(facebookUrl, "facebook-share", "width=600,height=400");
-
-      // Also trigger Facebook's link scraper in the background to update the cache
-      if (window.FB) {
-        setTimeout(() => {
-          FB.AppEvents.logEvent("Share", null, { url: currentUrl });
-        }, 500);
-      }
-    }
-  };
-
-  const handleTwitterShare = () => {
-    const currentUrl =
-      typeof window !== "undefined" ? window.location.href : "";
-    const twitterText = `${generateShareMessage()} 🏆`;
-    const twitterShareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent(twitterText)}`;
-    window.open(twitterShareUrl, "twitter-share", "width=600,height=400");
-  };
-
-  const handleWhatsappShare = () => {
-    const currentUrl =
-      typeof window !== "undefined" ? window.location.href : "";
-    const whatsappMessage = `${generateShareMessage()} Check it out: ${currentUrl}`;
-    const whatsappShareUrl = `https://wa.me/?text=${encodeURIComponent(whatsappMessage)}`;
-    window.open(whatsappShareUrl, "whatsapp-share");
-  };
-
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(window.location.href);
-    showNotificationMessage("success", "Link copied to clipboard!");
   };
 
   if (!event) {
@@ -1242,17 +212,8 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
     );
   }
 
-  // Ensure event has required properties
-  const gameImage =
-    event.banner_image ||
-    event.game?.image ||
-    event.gameImage ||
-    "/images/default-game.jpg";
+  const gameImage = event.banner_image || event.game?.image || event.gameImage || "/images/default-game.jpg";
   const gameName = event.game?.name || event.gameName || "Unknown Game";
-  // console.log(gameName);
-  // EA FC 26
-  // Efootball Mobile
-  // Street Fighter 6
 
   const tabs = [
     { id: "rules", label: "Rules" },
@@ -1270,13 +231,9 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
     { label: "Match Ends", date: new Date("2025-06-25"), time: "23:59" },
   ];
 
-  const price = getPrice();
-
   return (
     <div className="min-h-screen bg-[#030305]">
       <Header />
-
-      {/* Event Share Card for social media preview */}
       <EventShareCard event={event} forceRender={true} />
 
       <main className="pt-20">
@@ -1301,9 +258,7 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
                 ) : (
                   <AlertCircle size={20} />
                 )}
-                <p className="font-semibold text-sm text-white">
-                  {notification.message}
-                </p>
+                <p className="font-semibold text-sm text-white">{notification.message}</p>
               </div>
             </motion.div>
           )}
@@ -1334,32 +289,12 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#030305] via-black/50 to-transparent" />
 
-                {/* Bottom Overlay — full width bar */}
+                {/* Bottom Overlay */}
                 <div className="absolute bottom-0 left-0 right-0 px-3 sm:px-4 py-2 sm:py-3 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-3 sm:gap-0">
-                  {/* Bottom Left — Registration dates */}
-                  <div className="flex flex-col gap-1 sm:gap-1.5 w-full sm:w-auto">
-                    {/* <div className="flex items-baseline gap-1.5 sm:gap-2">
-                      <span className="text-gray-400 text-xs sm:text-sm font-medium">
-                        Reg Starting:
-                      </span>
-                      <span className="text-white text-sm sm:text-base font-bold">
-                        {formatDate(event.registrationStart)}
-                      </span>
-                    </div> */}
+                  <div className="flex flex-col gap-1 sm:gap-1.5 w-full sm:w-auto" />
 
-                    {/* <div className="flex items-baseline gap-1.5 sm:gap-2">
-                      <span className="text-gray-400 text-xs sm:text-sm font-medium">
-                        Reg Ending:
-                      </span>
-                      <span className="text-white text-sm sm:text-base font-bold">
-                        {formatDate(event.registrationEnd)}
-                      </span>
-                    </div> */}
-                  </div>
-
-                  {/* Bottom Right — Game name aligned with Reg Start, badges aligned with Reg End */}
+                  {/* Badges */}
                   <div className="flex flex-col items-start sm:items-end gap-1 sm:gap-1 w-full sm:w-auto">
-                    {/* Circular badges — same visual row as Reg End */}
                     <div className="flex items-center gap-2 sm:gap-4">
                       <div className="flex flex-col items-center gap-0.5">
                         <div className="w-7 sm:w-8 h-7 sm:h-8 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center backdrop-blur-sm shadow-lg shadow-purple-500/30 flex-shrink-0">
@@ -1370,29 +305,21 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
                         </span>
                       </div>
                       <div className="flex flex-col items-center gap-0.5">
-
                         <div className="w-7 sm:w-8 h-7 sm:h-8 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center backdrop-blur-sm shadow-lg shadow-purple-500/30 flex-shrink-0">
-                          <Monitor size={12} className="sm:w-3.5 sm:h-3.5 text-white" />
+                          <Users size={12} className="sm:w-3.5 sm:h-3.5 text-white" />
                         </div>
                         <span className="text-gray-400 text-[8px] sm:text-[9px] max-w-[32px] sm:max-w-[36px] text-center truncate leading-tight">
                           {event.platform || "—"}
                         </span>
                       </div>
                       <div className="flex flex-col items-center gap-0.5">
-
-
-                        {/* <div className="w-7 sm:w-8 h-7 sm:h-8 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center backdrop-blur-sm shadow-lg shadow-purple-500/30 flex-shrink-0">
-                          <Users size={12} className="sm:w-3.5 sm:h-3.5 text-white" />
-                        </div> */}
-
-  <div className="w-7 sm:w-8 h-7 sm:h-8 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center backdrop-blur-sm shadow-lg shadow-purple-500/30 flex-shrink-0">
-  {(event.teamType || '').toLowerCase() === 'solo' ? (
-    <User size={12} className="sm:w-3.5 sm:h-3.5 text-white" />
-  ) : (
-    <Users size={12} className="sm:w-3.5 sm:h-3.5 text-white" />
-  )}
-</div>
-
+                        <div className="w-7 sm:w-8 h-7 sm:h-8 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center backdrop-blur-sm shadow-lg shadow-purple-500/30 flex-shrink-0">
+                          {(event.teamType || '').toLowerCase() === 'solo' ? (
+                            <User size={12} className="sm:w-3.5 sm:h-3.5 text-white" />
+                          ) : (
+                            <Users size={12} className="sm:w-3.5 sm:h-3.5 text-white" />
+                          )}
+                        </div>
                         <span className="text-gray-400 text-[8px] sm:text-[9px] max-w-[32px] sm:max-w-[36px] text-center truncate leading-tight">
                           {event.teamType || "—"}
                         </span>
@@ -1419,15 +346,12 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <span className="text-white font-semibold text-sm sm:text-lg">
-                    {gameName}
-                  </span>
+                  <span className="text-white font-semibold text-sm sm:text-lg">{gameName}</span>
                 </div>
 
-                <div className="flex items-center gap-1 sm:gap-2 relative">
+                <div className="flex items-center gap-1 sm:gap-2">
                   <SharePreview event={event} />
 
-                  {/* Sign Up Button — now sits under Share */}
                   {event.status !== "Completed" && !showSignupForm && (
                     <motion.button
                       onClick={() =>
@@ -1441,8 +365,7 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
                     >
                       <Users size={14} className="hidden sm:inline" />
                       <Users size={12} className="sm:hidden" />
-                      <span className="hidden sm:inline">Join</span>
-                      <span className="sm:hidden">Join</span>
+                      <span>Join</span>
                     </motion.button>
                   )}
                 </div>
@@ -1458,466 +381,34 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
                     className="overflow-hidden mb-6"
                   >
                     <div className="bg-gray-900 rounded-xl border border-purple-500/30 p-6">
-                      {/* OTP Verification */}
-                      {otpStep && (
-                        <div className="text-center">
-                          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
-                            {otpStep === "success" ? (
-                              <CheckCircle size={32} className="text-white" />
-                            ) : (
-                              <Shield size={32} className="text-white" />
-                            )}
-                          </div>
-                          <h3 className="text-xl font-bold text-white mb-2">
-                            {otpStep === "success"
-                              ? "Registration Complete!"
-                              : otpStep === "sending" || otpStep === "verifying"
-                                ? "Please Wait..."
-                                : "Verify Your Email"}
-                          </h3>
-                          <p className="text-gray-400 text-sm mb-4">
-                            {otpStep === "success"
-                              ? "You have been registered successfully"
-                              : otpStep === "sending"
-                                ? "Sending verification code..."
-                                : otpStep === "verifying"
-                                  ? "Verifying your code..."
-                                  : `We sent a code to ${formData.email}`}
-                          </p>
-
-                          {(otpStep === "sending" ||
-                            otpStep === "verifying") && (
-                            <div className="py-8">
-                              <Loader2
-                                className="animate-spin text-purple-400 mx-auto"
-                                size={40}
-                              />
-                            </div>
-                          )}
-
-                          {otpStep === "success" && (
-                            <div className="py-6">
-                              <div className="w-20 h-20 mx-auto rounded-full bg-green-500/20 flex items-center justify-center">
-                                <CheckCircle
-                                  className="text-green-400"
-                                  size={40}
-                                />
-                              </div>
-                            </div>
-                          )}
-
-                          {otpStep === "input" && (
-                            <div className="space-y-4">
-                              <div className="flex justify-center gap-2">
-                                {Array.from({ length: 6 }).map((_, i) => (
-                                  <input
-                                    key={i}
-                                    ref={(el) => {
-                                      otpInputRefs.current[i] = el;
-                                    }}
-                                    type="text"
-                                    inputMode="numeric"
-                                    maxLength={1}
-                                    className="w-10 h-12 rounded-lg bg-gray-800 border border-gray-700 text-center text-xl font-bold text-white focus:border-purple-500 outline-none transition-all"
-                                    value={otpValue[i] || ""}
-                                    onChange={(e) => {
-                                      const val = e.target.value.replace(
-                                        /\D/g,
-                                        "",
-                                      );
-                                      const newOtp =
-                                        otpValue.slice(0, i) +
-                                        val +
-                                        otpValue.slice(i + 1);
-                                      setOtpValue(newOtp.slice(0, 6));
-                                      if (val && i < 5)
-                                        otpInputRefs.current[i + 1]?.focus();
-                                    }}
-                                    onKeyDown={(e) => {
-                                      if (
-                                        e.key === "Backspace" &&
-                                        !otpValue[i] &&
-                                        i > 0
-                                      ) {
-                                        otpInputRefs.current[i - 1]?.focus();
-                                      }
-                                    }}
-                                  />
-                                ))}
-                              </div>
-
-                              {otpError && (
-                                <p
-                                  className={`text-sm ${otpError.includes("resent") ? "text-green-400" : "text-red-400"}`}
-                                >
-                                  {otpError}
-                                </p>
-                              )}
-
-                              <button
-                                onClick={handleOtpVerify}
-                                disabled={otpValue.length < 4}
-                                className="w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
-                              >
-                                Verify & Complete <ArrowRight size={16} />
-                              </button>
-
-                              <div className="flex items-center justify-between text-sm">
-                                <button
-                                  onClick={handleResendOtp}
-                                  className="text-purple-400 hover:text-purple-300 transition"
-                                >
-                                  Resend OTP
-                                </button>
-                                <button
-                                  onClick={() => {
-                                    setOtpStep(null);
-                                    setShowSignupForm(false);
-                                  }}
-                                  className="text-gray-500 hover:text-gray-300 transition"
-                                >
-                                  Cancel
-                                </button>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      )}
-
-                      {/* Registration Form */}
-                      {!otpStep && (
-                        <>
-                          <div className="flex items-center justify-between mb-3 sm:mb-4">
-                            <h3 className="text-lg sm:text-xl font-bold text-white">
-                              {event.eventType} Registration
-                            </h3>
-                            <button
-                              onClick={() => setShowSignupForm(false)}
-                              className="text-gray-400 hover:text-white transition-colors"
-                            >
-                              <X size={18} className="sm:w-5 sm:h-5" />
-                            </button>
-                          </div>
-
-                          <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4 p-2 sm:p-3 bg-gray-800 rounded-lg">
-                            <Image
-                              src={gameImage}
-                              alt={gameName}
-                              width={40}
-                              height={40}
-                              className="rounded-lg w-10 h-10 sm:w-12 sm:h-12"
-                            />
-                            <div className="min-w-0">
-                              <p className="text-white font-semibold text-sm sm:text-base truncate">
-                                {gameName}
-                              </p>
-                              <p className="text-gray-400 text-xs sm:text-sm truncate">
-                                {event.eventType}
-                              </p>
-                            </div>
-                          </div>
-
-                          {/* {price > 0 && (
-                            <div className="mb-3 sm:mb-4 p-2 sm:p-3 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg border border-purple-500/30 text-center">
-                              <p className="text-gray-400 text-xs sm:text-sm">
-                                Registration Fee
-                              </p>
-                              <p className="text-xl sm:text-2xl font-bold text-white">
-                                BDT {price}
-                              </p>
-                            </div>
-                          )} */}
-
-                          {event.eventType === "Brand Deal" && (
-                            <div className="mb-3 sm:mb-4 grid grid-cols-2 gap-2 sm:gap-3">
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  setFormData((prev) => ({
-                                    ...prev,
-                                    brandDealType: "solo",
-                                  }))
-                                }
-                                className={`p-2 sm:p-3 rounded-lg border-2 transition-all ${formData.brandDealType === "solo" ? "border-purple-500 bg-purple-500/10" : "border-gray-700 hover:border-gray-600"}`}
-                              >
-                                <p className="text-white font-semibold text-sm sm:text-base">Solo</p>
-                                <p className="text-gray-400 text-xs">BDT 499</p>
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  setFormData((prev) => ({
-                                    ...prev,
-                                    brandDealType: "team",
-                                  }))
-                                }
-                                className={`p-2 sm:p-3 rounded-lg border-2 transition-all ${formData.brandDealType === "team" ? "border-purple-500 bg-purple-500/10" : "border-gray-700 hover:border-gray-600"}`}
-                              >
-                                <p className="text-white font-semibold text-sm sm:text-base">Team</p>
-                                <p className="text-gray-400 text-xs">BDT 999</p>
-                              </button>
-                            </div>
-                          )}
-
-                          <form onSubmit={handleSubmit} className="space-y-3">
-                            <AnimatedInput
-                              label="Full Name"
-                              name="fullName"
-                              value={formData.fullName}
-                              onChange={handleInputChange}
-                              required
-                            />
-                            <AnimatedInput
-                              // label="IGL Email Address"
-                               label={
-    ["EA FC 26", "Efootball Mobile", "Street Fighter 6"].includes(gameName)
-      ? "Email Address"
-      : "IGL Email Address"
-  }
-                              type="email"
-                              name="email"
-                              value={formData.email}
-                              onChange={handleInputChange}
-                              required
-                            />
-                            <AnimatedInput
-                              label="Phone Number"
-                              name="phone"
-                              value={formData.phone}
-                              onChange={handleInputChange}
-                              required
-                            />
-
-                            {event.eventType === "Tournament" && (
-                              <>
-                                <AnimatedInput
-                                  label="In-Game Name"
-                                  name="inGameName"
-                                  value={formData.inGameName}
-                                  onChange={handleInputChange}
-                                  required
-                                />
-                                <AnimatedInput
-                                  label="In-Game ID"
-                                  name="inGameId"
-                                  value={formData.inGameId}
-                                  onChange={handleInputChange}
-                                  required
-                                />
-                                {event.teamType !== "Solo" && (
-                                  <AnimatedInput
-                                    label="Team Name"
-                                    name="teamName"
-                                    value={formData.teamName}
-                                    onChange={handleInputChange}
-                                    required
-                                  />
-                                )}
-                                <AnimatedInput
-                                  label="Discord ID (optional)"
-                                  name="discordId"
-                                  value={formData.discordId}
-                                  onChange={handleInputChange}
-                                />
-                              </>
-                            )}
-
-                            {event.eventType === "Scrims" && (
-                              <>
-                                {/* Team name - only for team-based modes (Duo/Squad), not Solo */}
-                                {!isSoloMode && (
-                                  <AnimatedInput
-                                    label="Team Name"
-                                    name="teamName"
-                                    value={formData.teamName}
-                                    onChange={handleInputChange}
-                                    required
-                                  />
-                                )}
-
-                                <AnimatedInput
-                                  label={isSoloMode ? "In-Game Name" : "IGL Name"}
-                                  name="inGameName"
-                                  value={formData.inGameName}
-                                  onChange={handleInputChange}
-                                  required
-                                />
-                                <AnimatedInput
-                                  // label={isSoloMode ? "In-Game UID" : "IGL UID"}
-                                   label={
-    gameName === "EA FC 26"
-      ? "Steam ID / PSN ID"
-      : gameName === "Efootball Mobile"
-      ? "Game ID"
-      : gameName === "Street Fighter 6"
-      ? "Capcom ID"
-      : isSoloMode
-      ? "In-Game UID"
-      : "IGL UID"
-  }
-                                  name="inGameId"
-                                  value={formData.inGameId}
-                                  onChange={handleInputChange}
-                                  required
-                                />
-                                <AnimatedInput
-                                  label={
-                                    isSoloMode
-                                      ? "Discord ID (optional)"
-                                      : "IGL Discord ID (optional)"
-                                  }
-                                  name="discordId"
-                                  value={formData.discordId}
-                                  onChange={handleInputChange}
-                                />
-
-                                {/* Additional team members - only for team modes */}
-                                {!isSoloMode && additionalPlayersCount > 0 && (
-                                  <div className="pt-1">
-                                    <p className="text-xs font-semibold text-purple-400 uppercase tracking-wider mb-2">
-                                      Team Members ({additionalPlayersCount})
-                                    </p>
-                                  </div>
-                                )}
-                                {!isSoloMode &&
-                                  formData.players.map((player, index) => (
-                                    <div
-                                      key={index}
-                                      className="space-y-3 p-3 rounded-xl border border-gray-700 bg-gray-800/40"
-                                    >
-                                      <p className="text-sm font-semibold text-white">
-                                        Player {index + 2}
-                                      </p>
-
-                                      <AnimatedInput
-                                        label="Full Name"
-                                        name={`player-${index}-full_name`}
-                                        value={player.full_name}
-                                        onChange={(e) =>
-                                          handlePlayerChange(
-                                            index,
-                                            "full_name",
-                                            e.target.value,
-                                          )
-                                        }
-                                        required
-                                      />
-                                      <AnimatedInput
-                                        label="Email Address"
-                                        type="email"
-                                        name={`player-${index}-email`}
-                                        value={player.email}
-                                        onChange={(e) =>
-                                          handlePlayerChange(
-                                            index,
-                                            "email",
-                                            e.target.value,
-                                          )
-                                        }
-                                        required
-                                      />
-                                      <AnimatedInput
-                                        label="Phone Number"
-                                        name={`player-${index}-phone`}
-                                        value={player.phone}
-                                        onChange={(e) =>
-                                          handlePlayerChange(
-                                            index,
-                                            "phone",
-                                            e.target.value,
-                                          )
-                                        }
-                                      />
-                                      <AnimatedInput
-                                        label="In-Game Name"
-                                        name={`player-${index}-in_game_name`}
-                                        value={player.in_game_name}
-                                        onChange={(e) =>
-                                          handlePlayerChange(
-                                            index,
-                                            "in_game_name",
-                                            e.target.value,
-                                          )
-                                        }
-                                        required
-                                      />
-                                      <AnimatedInput
-                                        label="In-Game ID"
-                                        name={`player-${index}-in_game_id`}
-                                        value={player.in_game_id}
-                                        onChange={(e) =>
-                                          handlePlayerChange(
-                                            index,
-                                            "in_game_id",
-                                            e.target.value,
-                                          )
-                                        }
-                                        required
-                                      />
-                                      <AnimatedInput
-                                        label="Discord ID (optional)"
-                                        name={`player-${index}-discord_id`}
-                                        value={player.discord_id}
-                                        onChange={(e) =>
-                                          handlePlayerChange(
-                                            index,
-                                            "discord_id",
-                                            e.target.value,
-                                          )
-                                        }
-                                      />
-                                    </div>
-                                  ))}
-                              </>
-                            )}
-
-                            {event.eventType === "Brand Deal" && (
-                              <>
-                                <AnimatedInput
-                                  label="Social Media Links"
-                                  name="socialMedia"
-                                  value={formData.socialMedia}
-                                  onChange={handleInputChange}
-                                  required
-                                />
-                                <AnimatedInput
-                                  label="Portfolio/Content Links"
-                                  name="portfolio"
-                                  value={formData.portfolio}
-                                  onChange={handleInputChange}
-                                />
-                                {formData.brandDealType === "team" && (
-                                  <AnimatedInput
-                                    label="Team Members"
-                                    type="textarea"
-                                    name="teamMembers"
-                                    value={formData.teamMembers}
-                                    onChange={handleInputChange}
-                                  />
-                                )}
-                              </>
-                            )}
-
-                            <motion.button
-                              type="submit"
-                              disabled={isSubmitting}
-                              className="w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
-                              whileHover={{ scale: 1.02 }}
-                              whileTap={{ scale: 0.98 }}
-                            >
-                              {isSubmitting ? (
-                                <>
-                                  <Loader2 className="animate-spin" size={20} />{" "}
-                                  Processing...
-                                </>
-                              ) : (
-                                <>
-                                  Submit Registration <ArrowRight size={16} />
-                                </>
-                              )}
-                            </motion.button>
-                          </form>
-                        </>
+                      {otpStep ? (
+                        <OtpVerificationSection
+                          otpStep={otpStep}
+                          otpValue={otpValue}
+                          otpError={otpError}
+                          otpInputRefs={otpInputRefs}
+                          formData={formData}
+                          onOtpChange={(val) => setOtpValue(val)}
+                          onOtpVerify={handleOtpVerify}
+                          onResendOtp={handleResendOtp}
+                          onCancel={() => {
+                            setOtpStep(null);
+                            setShowSignupForm(false);
+                          }}
+                        />
+                      ) : (
+                        <RegistrationForm
+                          event={event}
+                          formData={formData}
+                          isSubmitting={isSubmitting}
+                          isSoloMode={isSoloMode}
+                          additionalPlayersCount={additionalPlayersCount}
+                          gameName={gameName}
+                          onInputChange={handleInputChange}
+                          onPlayerChange={handlePlayerChange}
+                          onSubmit={handleFormSubmit}
+                          onClose={() => setShowSignupForm(false)}
+                        />
                       )}
                     </div>
                   </motion.div>
@@ -1925,20 +416,11 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
               </AnimatePresence>
 
               {/* Host + Status */}
-              <div className="flex items-center gap-2 text-sm text-gray-400 mb-3"></div>
-
-              {/* Host + Status */}
               <div className="flex items-center gap-2 text-sm text-gray-400 mb-3">
                 <Trophy size={16} />
                 <span>Hosted by {event.host}</span>
                 <span>·</span>
-                <span
-                  className={
-                    event.status === "Completed"
-                      ? "text-gray-500"
-                      : "text-emerald-400"
-                  }
-                >
+                <span className={event.status === "Completed" ? "text-gray-500" : "text-emerald-400"}>
                   {event.status === "Completed" ? "Past" : event.status}
                 </span>
               </div>
@@ -1946,9 +428,7 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
               {/* Date + Status */}
               <div className="flex items-center gap-2 text-red-400 mb-4">
                 <Calendar size={16} />
-                <span className="font-semibold">
-                  {formatDate(event.date)} 6:00 PM
-                </span>
+                <span className="font-semibold">{formatDate(event.date)} 6:00 PM</span>
                 <span>·</span>
                 <span>{getStatusText(event.status)}</span>
               </div>
@@ -1958,45 +438,17 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
                 <div className="flex items-center gap-2">
                   <Flag size={16} />
                   <span>Global Online</span>
-                  {/* <span>{event.location}</span> */}
                 </div>
                 <PlatformDisplay platform={event.platform} />
-                {/* <div className="flex items-center gap-2">
-                  <Users size={16} />
-                  <span>{event.teamType}</span>
-                </div> */}
-                    <div className="flex items-center gap-2">
-                  {event.teamType.toLowerCase() === "solo" ? (
+                <div className="flex items-center gap-2">
+                  {event.teamType?.toLowerCase() === "solo" ? (
                     <User size={16} />
                   ) : (
                     <Users size={16} />
                   )}
                   <span>{event.teamType}</span>
                 </div>
-
-
               </div>
-
-              {/* Description */}
-              {/* <div className="text-sm text-gray-400 mb-8 space-y-2 p-4 bg-white/[0.02] rounded-xl border border-white/[0.06]">
-                <p>
-                  Date:{" "}
-                  {new Date(event.date).toLocaleDateString("en-GB", {
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric",
-                  })}
-                </p>
-                <p>
-                  Game: {gameName} ({event.teamType})
-                </p>
-                <p>
-                  Location: {event.address}.
-                  <a href="#" className="text-blue-400 hover:underline ml-1">
-                    (Map Link)
-                  </a>
-                </p>
-              </div> */}
 
               {/* Tournament Progression */}
               <div className="mb-6 sm:mb-8">
@@ -2033,7 +485,12 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
                         </p>
                         <div className="flex items-center justify-center gap-1 text-xs text-gray-300 font-medium">
                           <Calendar size={10} className="sm:w-3 sm:h-3" />
-                          <span className="text-xs">{new Date(step.date).toLocaleDateString("en-GB", { day: "2-digit", month: "short" })}</span>
+                          <span className="text-xs">
+                            {new Date(step.date).toLocaleDateString("en-GB", {
+                              day: "2-digit",
+                              month: "short",
+                            })}
+                          </span>
                         </div>
                         <div className="flex items-center justify-center gap-1 text-xs text-gray-400 mt-1">
                           <Clock size={10} className="sm:w-3 sm:h-3" />
@@ -2071,151 +528,23 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
               </div>
 
               {/* Tab Content */}
-              {/* <div className="bg-white/[0.02] rounded-xl border border-white/[0.06] p-6">
-  <div className="flex flex-col items-center justify-center py-16 text-center">
-    <div className="w-16 h-16 mb-5 rounded-2xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/20 flex items-center justify-center">
-      <Clock size={28} className="text-purple-400" />
-    </div>
-    <h4 className="text-lg font-bold text-white mb-2">Coming Soon</h4>
- 
-    <p className="text-gray-500 text-sm max-w-xs">
-  {activeTab === 'result' && 'Tournament results will be posted here once the event concludes.'}
-  {activeTab === 'brackets' && 'Brackets will be revealed once the tournament begins.'}
-  {activeTab === 'schedule' && 'The full schedule will be published closer to the event date.'}
-  {activeTab === 'participants' && 'Participant list will be visible after registration closes.'}
-  {activeTab === 'rules' && 'Rules & guidelines will be available before the event starts.'}
-
-  {activeTab === 'support' && (
-    <>
-      For any kind of update, contact our Facebook page.{' '}
-      <a
-        href="https://www.facebook.com/profile.php?id=61562495805179"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-purple-400 underline hover:text-purple-300 transition-colors"
-      >
-        Visit Page
-      </a>
-    </>
-  )}
-</p>
-    <div className="mt-5 px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20">
-      <span className="text-purple-400 text-xs font-medium tracking-wide uppercase">Stay Tuned</span>
-    </div>
-  </div>
-</div> */}
-
-              {/* Tab Content */}
               {activeTab === "support" ? (
-                <div className="bg-white/[0.02] rounded-xl border border-white/[0.06] p-6">
-                  <div className="flex flex-col items-center justify-center py-16 text-center">
-                    <h4 className="text-lg font-bold text-white mb-2">
-                      Contact Support
-                    </h4>
-
-                    <p className="text-gray-500 text-sm max-w-xs">
-                      For any kind of update, contact our Facebook page.
-                    </p>
-
-                    <a
-                      href="https://www.facebook.com/profile.php?id=61562495805179"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-5 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-sm font-medium hover:bg-purple-500/20 transition"
-                    >
-                      Visit Facebook Page
-                    </a>
-                  </div>
-                </div>
+                <SupportTab />
               ) : (
-                <div className="bg-white/[0.02] rounded-xl border border-white/[0.06] p-6">
-                  <div className="flex flex-col items-center justify-center py-16 text-center">
-                    <div className="w-16 h-16 mb-5 rounded-2xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/20 flex items-center justify-center">
-                      <Clock size={28} className="text-purple-400" />
-                    </div>
-
-                    <h4 className="text-lg font-bold text-white mb-2">
-                      Coming Soon
-                    </h4>
-
-                    <p className="text-gray-500 text-sm max-w-xs">
-                      {activeTab === "result" &&
-                        "Tournament results will be posted here once the event concludes."}
-                      {activeTab === "brackets" &&
-                        "Brackets will be revealed once the tournament begins."}
-                      {activeTab === "schedule" &&
-                        "The full schedule will be published closer to the event date."}
-                      {activeTab === "participants" &&
-                        "Participant list will be visible after registration closes."}
-                      {activeTab === "rules" &&
-                        "Rules & guidelines will be available before the event starts."}
-                    </p>
-
-                    <div className="mt-5 px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20">
-                      <span className="text-purple-400 text-xs font-medium tracking-wide uppercase">
-                        Stay Tuned
-                      </span>
-                    </div>
-                  </div>
-                </div>
+                <ComingSoonTab activeTab={activeTab} />
               )}
 
-              {/* successful modal  */}
-
-              <AnimatePresence>
-                {showSuccessModal && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[100] p-4"
-                    onClick={(e) => {
-                      if (e.target === e.currentTarget)
-                        setShowSuccessModal(false);
-                    }}
-                  >
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.92, y: 20 }}
-                      animate={{ opacity: 1, scale: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.92, y: 20 }}
-                      transition={{ type: "spring", duration: 0.4 }}
-                      className="bg-gray-900 border border-white/10 rounded-2xl p-8 max-w-sm w-full text-center shadow-2xl"
-                    >
-                      <div className="w-16 h-16 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center mx-auto mb-5">
-                        <CheckCircle size={32} className="text-emerald-400" />
-                      </div>
-
-                      <span className="inline-block text-xs font-semibold tracking-widest uppercase text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full mb-4">
-                        Phase 1 Complete
-                      </span>
-
-                      <h2 className="text-2xl font-bold text-white mb-2">
-                        Registration Successful!
-                      </h2>
-                      <p className="text-gray-400 text-sm leading-relaxed mb-6">
-                        You&apos;re locked in for Phase 1. Check your email for the verification message confirming that you have been added.
-                        
-                      </p>
-
-                      <button
-                        onClick={() => setShowSuccessModal(false)}
-                        className="w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 transition-all duration-300"
-                      >
-                        Got it!
-                      </button>
-                    </motion.div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              {/* Success Modal */}
+              <SuccessModal
+                showSuccessModal={showSuccessModal}
+                onClose={() => setShowSuccessModal(false)}
+              />
             </div>
 
             {/* Sidebar */}
             <div className="lg:col-span-1">
               <div className="sticky top-24 space-y-4">
-                {/* Notifications Panel */}
                 <NotificationsPanel />
-
-                {/* Prize Pool Card */}
                 {event.prizePool > 0 && (
                   <div className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 rounded-xl border border-amber-500/20 p-6">
                     <div className="flex items-center gap-3 mb-2">
@@ -2234,5 +563,491 @@ Join the action! Sign up now on Inception Games.${prizeText}`;
       </main>
       <Footer />
     </div>
+  );
+}
+
+function OtpVerificationSection({
+  otpStep,
+  otpValue,
+  otpError,
+  otpInputRefs,
+  formData,
+  onOtpChange,
+  onOtpVerify,
+  onResendOtp,
+  onCancel,
+}) {
+  return (
+    <div className="text-center">
+      <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+        {otpStep === "success" ? (
+          <CheckCircle size={32} className="text-white" />
+        ) : (
+          <Shield size={32} className="text-white" />
+        )}
+      </div>
+      <h3 className="text-xl font-bold text-white mb-2">
+        {otpStep === "success"
+          ? "Registration Complete!"
+          : otpStep === "sending" || otpStep === "verifying"
+            ? "Please Wait..."
+            : "Verify Your Email"}
+      </h3>
+      <p className="text-gray-400 text-sm mb-4">
+        {otpStep === "success"
+          ? "You have been registered successfully"
+          : otpStep === "sending"
+            ? "Sending verification code..."
+            : otpStep === "verifying"
+              ? "Verifying your code..."
+              : `We sent a code to ${formData.email}`}
+      </p>
+
+      {(otpStep === "sending" || otpStep === "verifying") && (
+        <div className="py-8">
+          <Loader2 className="animate-spin text-purple-400 mx-auto" size={40} />
+        </div>
+      )}
+
+      {otpStep === "success" && (
+        <div className="py-6">
+          <div className="w-20 h-20 mx-auto rounded-full bg-green-500/20 flex items-center justify-center">
+            <CheckCircle className="text-green-400" size={40} />
+          </div>
+        </div>
+      )}
+
+      {otpStep === "input" && (
+        <div className="space-y-4">
+          <div className="flex justify-center gap-2">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <input
+                key={i}
+                ref={(el) => {
+                  otpInputRefs.current[i] = el;
+                }}
+                type="text"
+                inputMode="numeric"
+                maxLength={1}
+                className="w-10 h-12 rounded-lg bg-gray-800 border border-gray-700 text-center text-xl font-bold text-white focus:border-purple-500 outline-none transition-all"
+                value={otpValue[i] || ""}
+                onChange={(e) => {
+                  const val = e.target.value.replace(/\D/g, "");
+                  const newOtp = otpValue.slice(0, i) + val + otpValue.slice(i + 1);
+                  onOtpChange(newOtp.slice(0, 6));
+                  if (val && i < 5) otpInputRefs.current[i + 1]?.focus();
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Backspace" && !otpValue[i] && i > 0) {
+                    otpInputRefs.current[i - 1]?.focus();
+                  }
+                }}
+              />
+            ))}
+          </div>
+
+          {otpError && (
+            <p
+              className={`text-sm ${
+                otpError.includes("resent") ? "text-green-400" : "text-red-400"
+              }`}
+            >
+              {otpError}
+            </p>
+          )}
+
+          <button
+            onClick={onOtpVerify}
+            disabled={otpValue.length < 4}
+            className="w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+          >
+            Verify & Complete <ArrowRight size={16} />
+          </button>
+
+          <div className="flex items-center justify-between text-sm">
+            <button
+              onClick={onResendOtp}
+              className="text-purple-400 hover:text-purple-300 transition"
+            >
+              Resend OTP
+            </button>
+            <button
+              onClick={onCancel}
+              className="text-gray-500 hover:text-gray-300 transition"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function RegistrationForm({
+  event,
+  formData,
+  isSubmitting,
+  isSoloMode,
+  additionalPlayersCount,
+  gameName,
+  onInputChange,
+  onPlayerChange,
+  onSubmit,
+  onClose,
+}) {
+  return (
+    <>
+      <div className="flex items-center justify-between mb-3 sm:mb-4">
+        <h3 className="text-lg sm:text-xl font-bold text-white">
+          {event.eventType} Registration
+        </h3>
+        <button
+          onClick={onClose}
+          className="text-gray-400 hover:text-white transition-colors"
+        >
+          <X size={18} className="sm:w-5 sm:h-5" />
+        </button>
+      </div>
+
+      <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4 p-2 sm:p-3 bg-gray-800 rounded-lg">
+        <Image
+          src={event.gameImage || "/games/pubg.png"}
+          alt={gameName}
+          width={40}
+          height={40}
+          className="rounded-lg w-10 h-10 sm:w-12 sm:h-12"
+        />
+        <div className="min-w-0">
+          <p className="text-white font-semibold text-sm sm:text-base truncate">{gameName}</p>
+          <p className="text-gray-400 text-xs sm:text-sm truncate">{event.eventType}</p>
+        </div>
+      </div>
+
+      {event.eventType === "Brand Deal" && (
+        <div className="mb-3 sm:mb-4 grid grid-cols-2 gap-2 sm:gap-3">
+          {["solo", "team"].map((type) => (
+            <button
+              key={type}
+              type="button"
+              onClick={() =>
+                formData.brandDealType = type
+              }
+              className={`p-2 sm:p-3 rounded-lg border-2 transition-all ${
+                formData.brandDealType === type
+                  ? "border-purple-500 bg-purple-500/10"
+                  : "border-gray-700 hover:border-gray-600"
+              }`}
+            >
+              <p className="text-white font-semibold text-sm sm:text-base capitalize">{type}</p>
+              <p className="text-gray-400 text-xs">BDT {type === "solo" ? 499 : 999}</p>
+            </button>
+          ))}
+        </div>
+      )}
+
+      <form onSubmit={onSubmit} className="space-y-3">
+        <AnimatedInput
+          label="Full Name"
+          name="fullName"
+          value={formData.fullName}
+          onChange={onInputChange}
+          required
+        />
+        <AnimatedInput
+          label={
+            ["EA FC 26", "Efootball Mobile", "Street Fighter 6"].includes(gameName)
+              ? "Email Address"
+              : "IGL Email Address"
+          }
+          type="email"
+          name="email"
+          value={formData.email}
+          onChange={onInputChange}
+          required
+        />
+        <AnimatedInput
+          label="Phone Number"
+          name="phone"
+          value={formData.phone}
+          onChange={onInputChange}
+          required
+        />
+
+        {event.eventType === "Tournament" && (
+          <>
+            <AnimatedInput
+              label="In-Game Name"
+              name="inGameName"
+              value={formData.inGameName}
+              onChange={onInputChange}
+              required
+            />
+            <AnimatedInput
+              label="In-Game ID"
+              name="inGameId"
+              value={formData.inGameId}
+              onChange={onInputChange}
+              required
+            />
+            {event.teamType !== "Solo" && (
+              <AnimatedInput
+                label="Team Name"
+                name="teamName"
+                value={formData.teamName}
+                onChange={onInputChange}
+                required
+              />
+            )}
+            <AnimatedInput
+              label="Discord ID (optional)"
+              name="discordId"
+              value={formData.discordId}
+              onChange={onInputChange}
+            />
+          </>
+        )}
+
+        {event.eventType === "Scrims" && (
+          <>
+            {!isSoloMode && (
+              <AnimatedInput
+                label="Team Name"
+                name="teamName"
+                value={formData.teamName}
+                onChange={onInputChange}
+                required
+              />
+            )}
+
+            <AnimatedInput
+              label={isSoloMode ? "In-Game Name" : "IGL Name"}
+              name="inGameName"
+              value={formData.inGameName}
+              onChange={onInputChange}
+              required
+            />
+            <AnimatedInput
+              label={
+                gameName === "EA FC 26"
+                  ? "Steam ID / PSN ID"
+                  : gameName === "Efootball Mobile"
+                  ? "Game ID"
+                  : gameName === "Street Fighter 6"
+                  ? "Capcom ID"
+                  : isSoloMode
+                  ? "In-Game UID"
+                  : "IGL UID"
+              }
+              name="inGameId"
+              value={formData.inGameId}
+              onChange={onInputChange}
+              required
+            />
+            <AnimatedInput
+              label={isSoloMode ? "Discord ID (optional)" : "IGL Discord ID (optional)"}
+              name="discordId"
+              value={formData.discordId}
+              onChange={onInputChange}
+            />
+
+            {!isSoloMode && additionalPlayersCount > 0 && (
+              <div className="pt-1">
+                <p className="text-xs font-semibold text-purple-400 uppercase tracking-wider mb-2">
+                  Team Members ({additionalPlayersCount})
+                </p>
+              </div>
+            )}
+            {!isSoloMode &&
+              formData.players.map((player, index) => (
+                <PlayerInputs
+                  key={index}
+                  index={index}
+                  player={player}
+                  onPlayerChange={onPlayerChange}
+                />
+              ))}
+          </>
+        )}
+
+        {event.eventType === "Brand Deal" && (
+          <>
+            <AnimatedInput
+              label="Social Media Links"
+              name="socialMedia"
+              value={formData.socialMedia}
+              onChange={onInputChange}
+              required
+            />
+            <AnimatedInput
+              label="Portfolio/Content Links"
+              name="portfolio"
+              value={formData.portfolio}
+              onChange={onInputChange}
+            />
+            {formData.brandDealType === "team" && (
+              <AnimatedInput
+                label="Team Members"
+                type="textarea"
+                name="teamMembers"
+                value={formData.teamMembers}
+                onChange={onInputChange}
+              />
+            )}
+          </>
+        )}
+
+        <motion.button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+        >
+          {isSubmitting ? (
+            <>
+              <Loader2 className="animate-spin" size={20} /> Processing...
+            </>
+          ) : (
+            <>
+              Submit Registration <ArrowRight size={16} />
+            </>
+          )}
+        </motion.button>
+      </form>
+    </>
+  );
+}
+
+function PlayerInputs({ index, player, onPlayerChange }) {
+  return (
+    <div className="space-y-3 p-3 rounded-xl border border-gray-700 bg-gray-800/40">
+      <p className="text-sm font-semibold text-white">Player {index + 2}</p>
+      <AnimatedInput
+        label="Full Name"
+        value={player.full_name}
+        onChange={(e) => onPlayerChange(index, "full_name", e.target.value)}
+        required
+      />
+      <AnimatedInput
+        label="Email Address"
+        type="email"
+        value={player.email}
+        onChange={(e) => onPlayerChange(index, "email", e.target.value)}
+        required
+      />
+      <AnimatedInput
+        label="Phone Number"
+        value={player.phone}
+        onChange={(e) => onPlayerChange(index, "phone", e.target.value)}
+      />
+      <AnimatedInput
+        label="In-Game Name"
+        value={player.in_game_name}
+        onChange={(e) => onPlayerChange(index, "in_game_name", e.target.value)}
+        required
+      />
+      <AnimatedInput
+        label="In-Game ID"
+        value={player.in_game_id}
+        onChange={(e) => onPlayerChange(index, "in_game_id", e.target.value)}
+        required
+      />
+      <AnimatedInput
+        label="Discord ID (optional)"
+        value={player.discord_id}
+        onChange={(e) => onPlayerChange(index, "discord_id", e.target.value)}
+      />
+    </div>
+  );
+}
+
+function ComingSoonTab({ activeTab }) {
+  const messages = {
+    result: "Tournament results will be posted here once the event concludes.",
+    brackets: "Brackets will be revealed once the tournament begins.",
+    schedule: "The full schedule will be published closer to the event date.",
+    participants: "Participant list will be visible after registration closes.",
+    rules: "Rules & guidelines will be available before the event starts.",
+  };
+
+  return (
+    <div className="bg-white/[0.02] rounded-xl border border-white/[0.06] p-6">
+      <div className="flex flex-col items-center justify-center py-16 text-center">
+        <div className="w-16 h-16 mb-5 rounded-2xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/20 flex items-center justify-center">
+          <Clock size={28} className="text-purple-400" />
+        </div>
+        <h4 className="text-lg font-bold text-white mb-2">Coming Soon</h4>
+        <p className="text-gray-500 text-sm max-w-xs">{messages[activeTab]}</p>
+        <div className="mt-5 px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20">
+          <span className="text-purple-400 text-xs font-medium tracking-wide uppercase">Stay Tuned</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SupportTab() {
+  return (
+    <div className="bg-white/[0.02] rounded-xl border border-white/[0.06] p-6">
+      <div className="flex flex-col items-center justify-center py-16 text-center">
+        <h4 className="text-lg font-bold text-white mb-2">Contact Support</h4>
+        <p className="text-gray-500 text-sm max-w-xs">For any kind of update, contact our Facebook page.</p>
+        <a
+          href="https://www.facebook.com/profile.php?id=61562495805179"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-5 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-sm font-medium hover:bg-purple-500/20 transition"
+        >
+          Visit Facebook Page
+        </a>
+      </div>
+    </div>
+  );
+}
+
+function SuccessModal({ showSuccessModal, onClose }) {
+  return (
+    <AnimatePresence>
+      {showSuccessModal && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[100] p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) onClose();
+          }}
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.92, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.92, y: 20 }}
+            transition={{ type: "spring", duration: 0.4 }}
+            className="bg-gray-900 border border-white/10 rounded-2xl p-8 max-w-sm w-full text-center shadow-2xl"
+          >
+            <div className="w-16 h-16 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center mx-auto mb-5">
+              <CheckCircle size={32} className="text-emerald-400" />
+            </div>
+
+            <span className="inline-block text-xs font-semibold tracking-widest uppercase text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full mb-4">
+              Phase 1 Complete
+            </span>
+
+            <h2 className="text-2xl font-bold text-white mb-2">Registration Successful!</h2>
+            <p className="text-gray-400 text-sm leading-relaxed mb-6">
+              You&apos;re locked in for Phase 1. Check your email for the verification message confirming that you have been added.
+            </p>
+
+            <button
+              onClick={onClose}
+              className="w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 transition-all duration-300"
+            >
+              Got it!
+            </button>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
