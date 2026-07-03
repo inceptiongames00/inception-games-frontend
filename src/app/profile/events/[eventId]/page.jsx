@@ -19,6 +19,9 @@ import {
   Loader2,
   Shield,
   ArrowRight,
+  Monitor,
+  Smartphone,
+  Gamepad2,
 } from "lucide-react";
 import Image from "next/image";
 import Header from "@/app/components/Header";
@@ -278,7 +281,7 @@ export default function EventDetailPage() {
         <div className="max-w-6xl mx-auto px-4 pb-16">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Main Content */}
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-3">
               {/* Banner */}
               <div className="relative h-64 md:h-96 rounded-2xl overflow-hidden mb-6">
                 <Image
@@ -289,51 +292,100 @@ export default function EventDetailPage() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#030305] via-black/50 to-transparent" />
 
-                {/* Bottom Overlay */}
-                <div className="absolute bottom-0 left-0 right-0 px-3 sm:px-4 py-2 sm:py-3 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-3 sm:gap-0">
-                  <div className="flex flex-col gap-1 sm:gap-1.5 w-full sm:w-auto" />
+                {/* Overlay Content - Title and Status */}
+                <div className="absolute inset-0 flex flex-col justify-between p-4 sm:p-6">
+                  {/* Top Section - Status Badge */}
+                  <div className="flex justify-end">
+                    <div
+                      className={`px-3 sm:px-4 py-1 sm:py-2 rounded-full text-xs sm:text-sm font-semibold backdrop-blur-sm ${
+                        event.status === "Upcoming"
+                          ? "bg-emerald-500/20 border border-emerald-500/30 text-emerald-300"
+                          : event.status === "Ongoing"
+                          ? "bg-blue-500/20 border border-blue-500/30 text-blue-300"
+                          : "bg-gray-500/20 border border-gray-500/30 text-gray-300"
+                      }`}
+                    >
+                      {event.status === "Upcoming"
+                        ? "Registration Open"
+                        : event.status === "Ongoing"
+                        ? "In Progress"
+                        : "Completed"}
+                    </div>
+                  </div>
 
-                  {/* Badges */}
-                  <div className="flex flex-col items-start sm:items-end gap-1 sm:gap-1 w-full sm:w-auto">
-                    <div className="flex items-center gap-2 sm:gap-4">
-                      <div className="flex flex-col items-center gap-0.5">
-                        <div className="w-7 sm:w-8 h-7 sm:h-8 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center backdrop-blur-sm shadow-lg shadow-purple-500/30 flex-shrink-0">
-                          <Flag size={12} className="sm:w-3.5 sm:h-3.5 text-white" />
-                        </div>
-                        <span className="text-gray-400 text-[8px] sm:text-[9px] w-full text-center leading-tight">
-                          {event.location || "—"}
+                  {/* Bottom Section - Title and Badges */}
+                  <div className="flex flex-col justify-end gap-3 sm:gap-4">
+                    {/* Date and Status Line */}
+                    <div className="flex items-center gap-2 text-sm sm:text-base text-gray-300">
+                      <span className="font-semibold">{formatDate(event.date)}</span>
+                      <span className="text-gray-400">·</span>
+                      <span className={`font-semibold ${
+                        event.status === "Upcoming"
+                          ? "text-emerald-400"
+                          : event.status === "Ongoing"
+                          ? "text-blue-400"
+                          : "text-gray-400"
+                      }`}>
+                        {event.status === "Upcoming"
+                          ? "Registration Open"
+                          : event.status === "Ongoing"
+                          ? "In Progress"
+                          : "Completed"}
+                      </span>
+                    </div>
+
+                    {/* Title */}
+                    <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white leading-tight">
+                      {event.title}
+                    </h1>
+
+                    {/* Info Badges */}
+                    <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
+                      {/* Location Badge */}
+                      <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
+                        <Flag size={14} className="text-purple-400" />
+                        <span className="text-xs sm:text-sm font-medium text-gray-200">
+                          {event.location || "Global"}
                         </span>
                       </div>
-                      <div className="flex flex-col items-center gap-0.5">
-                        <div className="w-7 sm:w-8 h-7 sm:h-8 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center backdrop-blur-sm shadow-lg shadow-purple-500/30 flex-shrink-0">
-                          <Users size={12} className="sm:w-3.5 sm:h-3.5 text-white" />
-                        </div>
-                        <span className="text-gray-400 text-[8px] sm:text-[9px] max-w-[32px] sm:max-w-[36px] text-center truncate leading-tight">
-                          {event.platform || "—"}
+
+                      {/* Platform Badge */}
+                      <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
+                        {event.platform?.toLowerCase().includes("mobile") ? (
+                          <Smartphone size={14} className="text-pink-400" />
+                        ) : event.platform?.toLowerCase().includes("console") ? (
+                          <Gamepad2 size={14} className="text-orange-400" />
+                        ) : (
+                          <Monitor size={14} className="text-blue-400" />
+                        )}
+                        <span className="text-xs sm:text-sm font-medium text-gray-200">
+                          {event.platform || "All Platforms"}
                         </span>
                       </div>
-                      <div className="flex flex-col items-center gap-0.5">
-                        <div className="w-7 sm:w-8 h-7 sm:h-8 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center backdrop-blur-sm shadow-lg shadow-purple-500/30 flex-shrink-0">
-                          {(event.teamType || '').toLowerCase() === 'solo' ? (
-                            <User size={12} className="sm:w-3.5 sm:h-3.5 text-white" />
-                          ) : (
-                            <Users size={12} className="sm:w-3.5 sm:h-3.5 text-white" />
-                          )}
-                        </div>
-                        <span className="text-gray-400 text-[8px] sm:text-[9px] max-w-[32px] sm:max-w-[36px] text-center truncate leading-tight">
-                          {event.teamType || "—"}
+
+                      {/* Team Type Badge */}
+                      <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
+                        {(event.teamType || "").toLowerCase() === "solo" ? (
+                          <User size={14} className="text-yellow-400" />
+                        ) : (
+                          <Users size={14} className="text-cyan-400" />
+                        )}
+                        <span className="text-xs sm:text-sm font-medium text-gray-200">
+                          {event.teamType || "Team"}
                         </span>
+                      </div>
+
+                      {/* Date Badge */}
+                      <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
+                        <Calendar size={14} className="text-red-400" />
+                        <div className="flex flex-col gap-1">
+                          <span className="text-gray-300 text-sm font-medium">{formatDate(event.date || event.start_date)}</span>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-
-              {/* Title */}
-              <h1 className="text-xl sm:text-2xl md:text-4xl font-bold text-white mb-4 sm:mb-6 leading-tight">
-                {event.title}
-              </h1>
-
               {/* Game + Actions Row */}
               <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-4 mb-4 sm:mb-6">
                 <div className="flex items-center gap-2 sm:gap-3">
@@ -415,41 +467,28 @@ export default function EventDetailPage() {
                 )}
               </AnimatePresence>
 
-              {/* Host + Status */}
-              <div className="flex items-center gap-2 text-sm text-gray-400 mb-3">
+              {/* Host Info */}
+              <div className="flex items-center gap-2 text-sm text-gray-400 mb-6 mt-2">
                 <Trophy size={16} />
                 <span>Hosted by {event.host}</span>
                 <span>·</span>
-                <span className={event.status === "Completed" ? "text-gray-500" : "text-emerald-400"}>
-                  {event.status === "Completed" ? "Past" : event.status}
+                <span className={`font-semibold ${
+                  event.status === "Upcoming"
+                    ? "text-emerald-400"
+                    : event.status === "Ongoing"
+                    ? "text-blue-400"
+                    : "text-gray-400"
+                }`}>
+                  {event.status === "Upcoming"
+                    ? "Upcoming"
+                    : event.status === "Ongoing"
+                    ? "Ongoing"
+                    : "Completed"}
                 </span>
               </div>
+              {/************* Title and Status Section Ends *************/}
 
-              {/* Date + Status */}
-              <div className="flex items-center gap-2 text-red-400 mb-4">
-                <Calendar size={16} />
-                <span className="font-semibold">{formatDate(event.date)} 6:00 PM</span>
-                <span>·</span>
-                <span>{getStatusText(event.status)}</span>
-              </div>
-
-              {/* Meta Info */}
-              <div className="flex flex-wrap items-center gap-6 text-sm text-gray-400 mb-8">
-                <div className="flex items-center gap-2">
-                  <Flag size={16} />
-                  <span>Global Online</span>
-                </div>
-                <PlatformDisplay platform={event.platform} />
-                <div className="flex items-center gap-2">
-                  {event.teamType?.toLowerCase() === "solo" ? (
-                    <User size={16} />
-                  ) : (
-                    <Users size={16} />
-                  )}
-                  <span>{event.teamType}</span>
-                </div>
-              </div>
-
+               
               {/* Tournament Progression */}
               <div className="mb-6 sm:mb-8">
                 <h3 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6">
