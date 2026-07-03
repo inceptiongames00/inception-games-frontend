@@ -459,124 +459,7 @@ export default function EventDetailPage() {
                 </div>
               </div>
 
-              
-            {/* Description and Sidebar Section - 2 columns + 1 column layout */}
-            <div className="lg:col-span-3">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Description Section - 2 columns */}
-                <div className="lg:col-span-2">
-                  <div className="bg-white/[0.02] rounded-xl border border-white/[0.06] p-6 sm:p-8">
-                    <div className="flex items-center gap-3 mb-6">
-                      <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center">
-                        <span className="text-purple-400 text-lg">📋</span>
-                      </div>
-                      <h2 className="text-xl sm:text-2xl font-bold text-white">Description & Rules</h2>
-                    </div>
-
-                    {/* Event Description */}
-                    <p className="text-gray-300 text-sm sm:text-base leading-relaxed mb-6">
-                      {event.description || "Welcome to this event! This is an exciting opportunity to compete with other players and showcase your skills in a competitive environment."}
-                    </p>
-
-                    {/* Rules List with Checkmarks */}
-                    <div className="space-y-3">
-                      {(Array.isArray(event.rules) ? event.rules : [
-                        "All participants must be registered before the deadline",
-                        "Fair play policy strictly enforced",
-                        "All matches will be streamed on official channels",
-                        "Prizes will be distributed within 7 days of event completion"
-                      ]).map((rule, index) => (
-                        <div key={index} className="flex items-start gap-3">
-                          <div className="flex-shrink-0 w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center mt-0.5">
-                            <CheckCircle size={16} className="text-emerald-400" />
-                          </div>
-                          <p className="text-gray-300 text-sm sm:text-base">{rule}</p>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Important Note Box */}
-                    <div className="mt-6 p-4 sm:p-5 rounded-lg border border-amber-500/30 bg-amber-500/5">
-                      <div className="flex items-start gap-3">
-                        <AlertCircle size={20} className="text-amber-400 flex-shrink-0 mt-0.5" />
-                        <div>
-                          <p className="text-amber-200 font-semibold text-sm uppercase tracking-wide mb-1">Important Note</p>
-                          <p className="text-amber-100/80 text-sm leading-relaxed">
-                            All participants must join the official Discord server for match reporting and dispute resolution. Failure to check-in 15 minutes before the start will result in disqualification.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Sidebar - Notifications & Prize Pool - 1 column */}
-                <div className="lg:col-span-1">
-                  <div className="sticky top-24 space-y-4">
-                    <NotificationsPanel />
-                    {event.prizePool > 0 && (
-                      <div className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 rounded-xl border border-amber-500/20 p-6">
-                        <div className="flex items-center gap-3 mb-2">
-                          <DollarSign size={24} className="text-amber-400" />
-                          <span className="text-gray-400 text-sm">Prize Pool</span>
-                        </div>
-                        <p className="text-3xl font-bold text-white">
-                          {event.currency} {event.prizePool.toLocaleString()}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-              {/* Signup Form */}
-              <AnimatePresence>
-                {showSignupForm && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="overflow-hidden mb-6"
-                  >
-                    <div className="bg-gray-900 rounded-xl border border-purple-500/30 p-6">
-                      {otpStep ? (
-                        <OtpVerificationSection
-                          otpStep={otpStep}
-                          otpValue={otpValue}
-                          otpError={otpError}
-                          otpInputRefs={otpInputRefs}
-                          formData={formData}
-                          onOtpChange={(val) => setOtpValue(val)}
-                          onOtpVerify={handleOtpVerify}
-                          onResendOtp={handleResendOtp}
-                          onCancel={() => {
-                            setOtpStep(null);
-                            setShowSignupForm(false);
-                          }}
-                        />
-                      ) : (
-                        <RegistrationForm
-                          event={event}
-                          formData={formData}
-                          isSubmitting={isSubmitting}
-                          isSoloMode={isSoloMode}
-                          additionalPlayersCount={additionalPlayersCount}
-                          gameName={gameName}
-                          onInputChange={handleInputChange}
-                          onPlayerChange={handlePlayerChange}
-                          onSubmit={handleFormSubmit}
-                          onClose={() => setShowSignupForm(false)}
-                        />
-                      )}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-              {/************* Title and Status Section Ends *************/}
-
-               
-              {/* Tournament Progression */}
+            {/* Tournament Progression */}
               <div className="mb-6 sm:mb-8">
                 <h3 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6">
                   Tournament Progression
@@ -628,61 +511,276 @@ export default function EventDetailPage() {
                 </div>
               </div>
 
-              {/* Tabs */}
-              <div className="border-b border-gray-800 mb-4 sm:mb-6">
-                <div className="flex gap-1 overflow-x-auto pb-px">
-                  {tabs.map((tab) => (
-                    <button
-                      key={tab.id}
-                      onClick={() => setActiveTab(tab.id)}
-                      className={`px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium whitespace-nowrap transition-colors relative ${
-                        activeTab === tab.id
-                          ? "text-purple-400"
-                          : "text-gray-400 hover:text-gray-300"
-                      }`}
-                    >
-                      {tab.label}
-                      {activeTab === tab.id && (
-                        <motion.div
-                          layoutId="activeEventTab"
-                          className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-500"
-                        />
-                      )}
-                    </button>
-                  ))}
+              
+            {/* Description and Sidebar Section - 2 columns + 1 column layout */}
+            <div className="lg:col-span-3">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Description Section - 2 columns */}
+                <div className="lg:col-span-2">
+                  <div className="bg-white/[0.02] rounded-xl border border-white/[0.06] p-6 sm:p-8">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                        <span className="text-purple-400 text-lg">📋</span>
+                      </div>
+                      <h3 className="text-lg sm:text-xl font-bold text-white">Description & Rules</h3>
+                    </div>
+
+                    {/* Event Description */}
+                    <p className="text-gray-300 text-sm sm:text-base leading-relaxed mb-6">
+                      {event.description || "Welcome to this event! This is an exciting opportunity to compete with other players and showcase your skills in a competitive environment."}
+                    </p>
+
+                    {/* Rules List with Checkmarks */}
+                    <div className="space-y-3">
+                      {(Array.isArray(event.rules) ? event.rules : [
+                        "All participants must be registered before the deadline",
+                        "Fair play policy strictly enforced",
+                        "All matches will be streamed on official channels",
+                        "Prizes will be distributed within 7 days of event completion"
+                      ]).map((rule, index) => (
+                        <div key={index} className="flex items-start gap-3">
+                          <div className="flex-shrink-0 w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center mt-0.5">
+                            <CheckCircle size={16} className="text-emerald-400" />
+                          </div>
+                          <p className="text-gray-300 text-sm sm:text-base">{rule}</p>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Important Note Box */}
+                    <div className="mt-6 p-4 sm:p-5 rounded-lg border border-amber-500/30 bg-amber-500/5">
+                      <div className="flex items-start gap-3">
+                        <AlertCircle size={20} className="text-amber-400 flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="text-amber-200 font-semibold text-sm uppercase tracking-wide mb-1">Important Note</p>
+                          <p className="text-amber-100/80 text-sm leading-relaxed">
+                            All participants must join the official Discord server for match reporting and dispute resolution. Failure to check-in 15 minutes before the start will result in disqualification.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                  
+                  </div>
+
+  {/* Prize Pool Section */}
+                    {/* {event.prizePool > 0 && ( */}
+                      <div className="mt-8 p-6 sm:p-8 bg-white/[0.02] rounded-xl border border-white/[0.06]">
+                        <div className="flex items-center gap-3 mb-6 sm:mb-8">
+                          <Trophy size={28} className="text-yellow-400" />
+                          <h3 className="text-lg sm:text-xl font-bold text-white">Prize Pool</h3>
+                        </div>
+
+                        {/* Prize Cards Grid */}
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                          {/* 1st Place */}
+                          <div className="bg-gradient-to-br from-slate-800/60 to-slate-900/40 rounded-xl p-4 sm:p-6 border border-white/[0.06] flex flex-col items-center justify-center text-center">
+                            <div className="text-4xl sm:text-5xl mb-3">🏆</div>
+                            <p className="text-yellow-400 font-bold text-sm sm:text-base uppercase tracking-wider mb-2">1st Place</p>
+                            <p className="text-2xl sm:text-3xl font-bold text-white">
+                              {event.currency} {Math.round((event.prizePool * 0.5)).toLocaleString()}
+                            </p>
+                          </div>
+
+                          {/* 2nd Place */}
+                          <div className="bg-gradient-to-br from-slate-800/60 to-slate-900/40 rounded-xl p-4 sm:p-6 border border-white/[0.06] flex flex-col items-center justify-center text-center">
+                            <div className="text-4xl sm:text-5xl mb-3">🥈</div>
+                            <p className="text-gray-300 font-bold text-sm sm:text-base uppercase tracking-wider mb-2">2nd Place</p>
+                            <p className="text-2xl sm:text-3xl font-bold text-white">
+                              {event.currency} {Math.round((event.prizePool * 0.3)).toLocaleString()}
+                            </p>
+                          </div>
+
+                          {/* 3rd Place */}
+                          <div className="bg-gradient-to-br from-slate-800/60 to-slate-900/40 rounded-xl p-4 sm:p-6 border border-white/[0.06] flex flex-col items-center justify-center text-center">
+                            <div className="text-4xl sm:text-5xl mb-3">🥉</div>
+                            <p className="text-orange-400 font-bold text-sm sm:text-base uppercase tracking-wider mb-2">3rd Place</p>
+                            <p className="text-2xl sm:text-3xl font-bold text-white">
+                              {event.currency} {Math.round((event.prizePool * 0.2)).toLocaleString()}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    {/* )} */}
+
+                     {/* Game Tabs Section - Full 3 columns */}
+              <div className="lg:col-span-3 mt-8">
+                {/* Tabs Navigation */}
+                <div className="border-b border-gray-800 mb-4 sm:mb-6">
+                  <div className="flex gap-1 overflow-x-auto pb-px">
+                    {tabs.map((tab) => (
+                      <button
+                        key={tab.id}
+                        onClick={() => setActiveTab(tab.id)}
+                        className={`px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium whitespace-nowrap transition-colors relative ${
+                          activeTab === tab.id
+                            ? "text-purple-400"
+                            : "text-gray-400 hover:text-gray-300"
+                        }`}
+                      >
+                        {tab.label}
+                        {activeTab === tab.id && (
+                          <motion.div
+                            layoutId="activeEventTab"
+                            className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-500"
+                          />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Tab Content */}
+                {activeTab === "support" ? (
+                  <SupportTab />
+                ) : (
+                  <ComingSoonTab activeTab={activeTab} />
+                )}
+              </div>
+                </div>
+
+                {/* Sidebar - Event Info - 1 column */}
+                <div className="lg:col-span-1">
+                  <div className="sticky top-24 space-y-4">
+                    {/* Event Info Card */}
+                    <div className="bg-white/[0.02] rounded-xl border border-white/[0.06] p-6 sm:p-8">
+                      <h3 className="text-lg sm:text-xl font-bold text-white mb-8">Event Info</h3>
+                      
+                      {/* Info Grid */}
+                      <div className="space-y-6">
+                        {/* Host */}
+                        <div className="flex justify-between items-start">
+                          <span className="text-gray-400 text-sm font-medium">Host</span>
+                          <span className="text-white font-semibold text-right">{event.host || event.organizer || 'Inception Games'}</span>
+                        </div>
+
+                        {/* Format */}
+                        <div className="flex justify-between items-start">
+                          <span className="text-gray-400 text-sm font-medium">Format</span>
+                          <span className="text-white font-semibold text-right">{event.format || event.teamType || 'Team'}</span>
+                        </div>
+
+                        {/* Platform */}
+                        <div className="flex justify-between items-start">
+                          <span className="text-gray-400 text-sm font-medium">Platform</span>
+                          <span className="text-white font-semibold text-right">{event.platform || 'All Platforms'}</span>
+                        </div>
+
+                        {/* Region */}
+                        <div className="flex justify-between items-start">
+                          <span className="text-gray-400 text-sm font-medium">Region</span>
+                          <span className="text-white font-semibold text-right">{event.location || 'Global (GMT)'}</span>
+                        </div>
+
+                        {/* Status */}
+                        <div className="flex justify-between items-start">
+                          <span className="text-gray-400 text-sm font-medium">Status</span>
+                          <span className={`font-semibold text-right ${
+                            event.status === "Upcoming"
+                              ? "text-emerald-400"
+                              : event.status === "Ongoing"
+                              ? "text-blue-400"
+                              : "text-gray-400"
+                          }`}>
+                            {event.status === "Upcoming"
+                              ? "Registration Open"
+                              : event.status === "Ongoing"
+                              ? "In Progress"
+                              : "Completed"}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Discord Button */}
+                      <a
+                        href="https://discord.com/invite/9AtUGVqKs3"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full mt-8 px-4 py-3 rounded-xl font-semibold text-white bg-[#5865F2] hover:bg-[#4752C4] transition-all duration-300 flex items-center justify-center gap-2"
+                      >
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.036.055a19.926 19.926 0 0 0 5.993 3.03.077.077 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z" />
+                        </svg>
+                        Join Discord
+                      </a>
+
+                      {/* Registration Fill Section */}
+                      <div className="mt-8 pt-8 border-t border-white/[0.06]">
+                        <div className="flex justify-between items-center mb-4">
+                          <span className="text-xs font-bold text-gray-400 tracking-widest">REGISTRATION FILL</span>
+                          <span className="text-sm font-bold text-white">{Math.round((event.filledSlots || 0) / (event.totalSlots || 1) * 100)}% FILLED</span>
+                        </div>
+
+                        {/* Progress Bar */}
+                        <div className="w-full h-2 bg-gray-800/50 rounded-full overflow-hidden mb-3">
+                          <div
+                            className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all duration-300"
+                            style={{ width: `${Math.round((event.filledSlots || 0) / (event.totalSlots || 1) * 100)}%` }}
+                          />
+                        </div>
+
+                        {/* Info Text */}
+                        <p className="text-xs text-gray-400 text-center">
+                          {(event.totalSlots || 0) - (event.filledSlots || 0)} spots remaining - Closes in 4 days
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
+            </div>
 
-              {/* Tab Content */}
-              {activeTab === "support" ? (
-                <SupportTab />
-              ) : (
-                <ComingSoonTab activeTab={activeTab} />
-              )}
+              {/* Signup Form */}
+              <AnimatePresence>
+                {showSignupForm && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="overflow-hidden mb-6"
+                  >
+                    <div className="bg-gray-900 rounded-xl border border-purple-500/30 p-6">
+                      {otpStep ? (
+                        <OtpVerificationSection
+                          otpStep={otpStep}
+                          otpValue={otpValue}
+                          otpError={otpError}
+                          otpInputRefs={otpInputRefs}
+                          formData={formData}
+                          onOtpChange={(val) => setOtpValue(val)}
+                          onOtpVerify={handleOtpVerify}
+                          onResendOtp={handleResendOtp}
+                          onCancel={() => {
+                            setOtpStep(null);
+                            setShowSignupForm(false);
+                          }}
+                        />
+                      ) : (
+                        <RegistrationForm
+                          event={event}
+                          formData={formData}
+                          isSubmitting={isSubmitting}
+                          isSoloMode={isSoloMode}
+                          additionalPlayersCount={additionalPlayersCount}
+                          gameName={gameName}
+                          onInputChange={handleInputChange}
+                          onPlayerChange={handlePlayerChange}
+                          onSubmit={handleFormSubmit}
+                          onClose={() => setShowSignupForm(false)}
+                        />
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+           
 
               {/* Success Modal */}
               <SuccessModal
                 showSuccessModal={showSuccessModal}
                 onClose={() => setShowSuccessModal(false)}
               />
-            </div>
-
-            {/* Sidebar */}
-            <div className="lg:col-span-1">
-              <div className="sticky top-24 space-y-4">
-                <NotificationsPanel />
-                {event.prizePool > 0 && (
-                  <div className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 rounded-xl border border-amber-500/20 p-6">
-                    <div className="flex items-center gap-3 mb-2">
-                      <DollarSign size={24} className="text-amber-400" />
-                      <span className="text-gray-400 text-sm">Prize Pool</span>
-                    </div>
-                    <p className="text-3xl font-bold text-white">
-                      {event.currency} {event.prizePool.toLocaleString()}
-                    </p>
-                  </div>
-                )}
-              </div>
             </div>
           </div>
         </div>
