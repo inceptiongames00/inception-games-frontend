@@ -283,7 +283,7 @@ export default function EventDetailPage() {
             {/* Main Content */}
             <div className="lg:col-span-3">
               {/* Banner */}
-              <div className="relative h-64 md:h-96 rounded-2xl overflow-hidden mb-6">
+              <div className="relative h-64 md:h-80 lg:h-[450px] rounded-2xl overflow-hidden mb-6">
                 <Image
                   src={gameImage}
                   alt={gameName}
@@ -383,45 +383,152 @@ export default function EventDetailPage() {
                         </div>
                       </div>
                     </div>
+
+                    {/* Game + Actions Row - Moved Inside Banner Overlay */}
+                    <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-4 mt-4 sm:mt-6">
+                      <div className="flex items-center gap-2 sm:gap-3">
+                        <div className="w-10 sm:w-12 h-10 sm:h-12 rounded-lg sm:rounded-xl overflow-hidden bg-gray-800 flex-shrink-0">
+                          <Image
+                            src={gameImage}
+                            alt={gameName}
+                            width={48}
+                            height={48}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <span className="text-white font-semibold text-sm sm:text-lg">{gameName}</span>
+                        <Trophy size={16} />
+                <span>Hosted by {event.host}</span>
+                <span>·</span>
+                <span className={`font-semibold ${
+                  event.status === "Upcoming"
+                    ? "text-emerald-400"
+                    : event.status === "Ongoing"
+                    ? "text-blue-400"
+                    : "text-gray-400"
+                }`}>
+                  {event.status === "Upcoming"
+                    ? "Upcoming"
+                    : event.status === "Ongoing"
+                    ? "Ongoing"
+                    : "Completed"}
+                </span>
+                      </div>
+                       {/* <div className="flex items-center gap-2 text-sm text-gray-400 mb-6 mt-2">
+                <Trophy size={16} />
+                <span>Hosted by {event.host}</span>
+                <span>·</span>
+                <span className={`font-semibold ${
+                  event.status === "Upcoming"
+                    ? "text-emerald-400"
+                    : event.status === "Ongoing"
+                    ? "text-blue-400"
+                    : "text-gray-400"
+                }`}>
+                  {event.status === "Upcoming"
+                    ? "Upcoming"
+                    : event.status === "Ongoing"
+                    ? "Ongoing"
+                    : "Completed"}
+                </span>
+              </div> */}
+
+                      <div className="flex items-center gap-1 sm:gap-2">
+                        <SharePreview event={event} />
+
+                        {event.status !== "Completed" && !showSignupForm && (
+                          <motion.button
+                            onClick={() =>
+                              event.eventType === "Scrims"
+                                ? openScrimRegistration()
+                                : setShowSignupForm(true)
+                            }
+                            className="px-2 sm:px-4 py-2 sm:py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold rounded-lg transition-all duration-300 flex items-center gap-1 sm:gap-2 shadow-lg shadow-purple-500/20 text-xs sm:text-sm"
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                          >
+                            <Users size={14} className="hidden sm:inline" />
+                            <Users size={12} className="sm:hidden" />
+                            <span>Join</span>
+                          </motion.button>
+                        )}
+                      </div>
+                    </div>
+                    
                   </div>
                 </div>
               </div>
-              {/* Game + Actions Row */}
-              <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-4 mb-4 sm:mb-6">
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="w-10 sm:w-12 h-10 sm:h-12 rounded-lg sm:rounded-xl overflow-hidden bg-gray-800 flex-shrink-0">
-                    <Image
-                      src={gameImage}
-                      alt={gameName}
-                      width={48}
-                      height={48}
-                      className="w-full h-full object-cover"
-                    />
+
+              
+            {/* Description and Sidebar Section - 2 columns + 1 column layout */}
+            <div className="lg:col-span-3">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Description Section - 2 columns */}
+                <div className="lg:col-span-2">
+                  <div className="bg-white/[0.02] rounded-xl border border-white/[0.06] p-6 sm:p-8">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                        <span className="text-purple-400 text-lg">📋</span>
+                      </div>
+                      <h2 className="text-xl sm:text-2xl font-bold text-white">Description & Rules</h2>
+                    </div>
+
+                    {/* Event Description */}
+                    <p className="text-gray-300 text-sm sm:text-base leading-relaxed mb-6">
+                      {event.description || "Welcome to this event! This is an exciting opportunity to compete with other players and showcase your skills in a competitive environment."}
+                    </p>
+
+                    {/* Rules List with Checkmarks */}
+                    <div className="space-y-3">
+                      {(Array.isArray(event.rules) ? event.rules : [
+                        "All participants must be registered before the deadline",
+                        "Fair play policy strictly enforced",
+                        "All matches will be streamed on official channels",
+                        "Prizes will be distributed within 7 days of event completion"
+                      ]).map((rule, index) => (
+                        <div key={index} className="flex items-start gap-3">
+                          <div className="flex-shrink-0 w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center mt-0.5">
+                            <CheckCircle size={16} className="text-emerald-400" />
+                          </div>
+                          <p className="text-gray-300 text-sm sm:text-base">{rule}</p>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Important Note Box */}
+                    <div className="mt-6 p-4 sm:p-5 rounded-lg border border-amber-500/30 bg-amber-500/5">
+                      <div className="flex items-start gap-3">
+                        <AlertCircle size={20} className="text-amber-400 flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="text-amber-200 font-semibold text-sm uppercase tracking-wide mb-1">Important Note</p>
+                          <p className="text-amber-100/80 text-sm leading-relaxed">
+                            All participants must join the official Discord server for match reporting and dispute resolution. Failure to check-in 15 minutes before the start will result in disqualification.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <span className="text-white font-semibold text-sm sm:text-lg">{gameName}</span>
                 </div>
 
-                <div className="flex items-center gap-1 sm:gap-2">
-                  <SharePreview event={event} />
-
-                  {event.status !== "Completed" && !showSignupForm && (
-                    <motion.button
-                      onClick={() =>
-                        event.eventType === "Scrims"
-                          ? openScrimRegistration()
-                          : setShowSignupForm(true)
-                      }
-                      className="px-2 sm:px-4 py-2 sm:py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold rounded-lg transition-all duration-300 flex items-center gap-1 sm:gap-2 shadow-lg shadow-purple-500/20 text-xs sm:text-sm"
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      <Users size={14} className="hidden sm:inline" />
-                      <Users size={12} className="sm:hidden" />
-                      <span>Join</span>
-                    </motion.button>
-                  )}
+                {/* Sidebar - Notifications & Prize Pool - 1 column */}
+                <div className="lg:col-span-1">
+                  <div className="sticky top-24 space-y-4">
+                    <NotificationsPanel />
+                    {event.prizePool > 0 && (
+                      <div className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 rounded-xl border border-amber-500/20 p-6">
+                        <div className="flex items-center gap-3 mb-2">
+                          <DollarSign size={24} className="text-amber-400" />
+                          <span className="text-gray-400 text-sm">Prize Pool</span>
+                        </div>
+                        <p className="text-3xl font-bold text-white">
+                          {event.currency} {event.prizePool.toLocaleString()}
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
+            </div>
 
               {/* Signup Form */}
               <AnimatePresence>
@@ -466,26 +573,6 @@ export default function EventDetailPage() {
                   </motion.div>
                 )}
               </AnimatePresence>
-
-              {/* Host Info */}
-              <div className="flex items-center gap-2 text-sm text-gray-400 mb-6 mt-2">
-                <Trophy size={16} />
-                <span>Hosted by {event.host}</span>
-                <span>·</span>
-                <span className={`font-semibold ${
-                  event.status === "Upcoming"
-                    ? "text-emerald-400"
-                    : event.status === "Ongoing"
-                    ? "text-blue-400"
-                    : "text-gray-400"
-                }`}>
-                  {event.status === "Upcoming"
-                    ? "Upcoming"
-                    : event.status === "Ongoing"
-                    ? "Ongoing"
-                    : "Completed"}
-                </span>
-              </div>
               {/************* Title and Status Section Ends *************/}
 
                
