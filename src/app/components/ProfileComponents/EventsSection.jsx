@@ -603,7 +603,7 @@ const EventCard = React.memo(function EventCard({ event, onClick }) {
         {/* Join Event Button */}
         <motion.button
           onClick={() => onClick(event)}
-          className="w-full mt-2 py-3 bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white font-bold text-sm rounded-xl transition-all duration-200 uppercase tracking-wider"
+          className="w-full mt-2 py-3 cursor-pointer bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white font-bold text-sm rounded-xl transition-all duration-200 uppercase tracking-wider"
           whileHover={{ scale: 1.01 }}
           whileTap={{ scale: 0.98 }}
         >

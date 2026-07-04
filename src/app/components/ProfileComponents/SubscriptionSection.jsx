@@ -101,14 +101,14 @@ export default function SubscriptionSection() {
               </div>
 
               {/* Upgrade Button */}
-              <motion.button
-                onClick={() => setIsUpgradeModalOpen(true)}
-                className={`w-full py-3 rounded-xl font-bold text-white text-sm sm:text-sm transition duration-300 shadow-lg shadow-purple-500/20 ${tier.buttonStyle}`}
-                whileHover={{ scale: 1.02, y: -1 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                {tier.buttonText}
-              </motion.button>
+           <motion.button
+  onClick={() => setIsUpgradeModalOpen(true)}
+  className={`w-full cursor-pointer py-3 rounded-xl font-bold text-white text-sm sm:text-sm transition duration-300 shadow-lg shadow-purple-500/20 ${tier.buttonStyle}`}
+  whileHover={{ scale: 1.02, y: -1 }}
+  whileTap={{ scale: 0.98 }}
+>
+  {tier.buttonText}
+</motion.button>
             </motion.div>
           ))}
         
