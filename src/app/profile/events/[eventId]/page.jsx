@@ -289,17 +289,17 @@ export default function EventDetailPage() {
         </AnimatePresence>
 
         {/* Back Button */}
-        <div className="max-w-6xl mx-auto px-4 py-4">
+        <div className="max-w-7xl mx-auto px-4 py-4">
           <button
             onClick={() => router.back()}
-            className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
+            className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors cursor-pointer"
           >
             <ArrowLeft size={20} />
             <span>Back to Events</span>
           </button>
         </div>
 
-        <div className="max-w-6xl mx-auto px-4 pb-16">
+        <div className="max-w-7xl mx-auto px-4 pb-16">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Main Content */}
             <div className="lg:col-span-3">
