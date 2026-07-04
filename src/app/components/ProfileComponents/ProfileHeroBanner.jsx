@@ -154,7 +154,7 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
 
   return (
     <motion.div
-      className="relative w-full rounded-2xl overflow-hidden border border-white/[0.06] min-h-[320px] sm:min-h-[280px] md:min-h-[240px]"
+      className={isMobile ? "relative w-full rounded-2xl overflow-hidden border border-white/[0.06] min-h-[180px]" : "relative w-full rounded-2xl overflow-hidden border border-white/[0.06] min-h-[320px] sm:min-h-[280px] md:min-h-[240px]"}
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7 }}
@@ -298,7 +298,7 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
         </div>
       ) : (
         // MOBILE LAYOUT
-        <div className="relative z-10 flex flex-col justify-end px-4 sm:px-6 md:px-8 lg:px-10 pb-6 sm:pb-8 pt-auto min-h-[320px] sm:min-h-[280px] md:min-h-[240px]">
+        <div className="relative z-10 flex flex-col justify-end px-4 sm:px-6 md:px-8 lg:px-10 pb-6 sm:pb-8 pt-auto min-h-[180px]">
           <div className="flex flex-row items-start justify-between gap-3 w-full">
             {/* Left: Avatar + Info */}
             <div className="flex flex-row items-start gap-3 flex-1 min-w-0">
