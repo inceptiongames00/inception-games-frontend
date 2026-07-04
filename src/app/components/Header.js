@@ -7,6 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import UnifiedAuthModal from "./AuthModals/UnifiedAuthModal";
 import LaunchCountdownModal from "./LaunchCountdownModal";
+import UpgradePlanModal from "./ProfileComponents/UpgradePlanModal";
 import { useAuth } from "../../hooks/useAuth";
 import { useHomeNavigation } from "../../hooks/useHomeNavigation";
 import { useProfileNavigation } from "../../hooks/useProfileNavigation";
@@ -53,6 +54,7 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [countdownModalOpen, setCountdownModalOpen] = useState(false);
+  const [upgradePlanModalOpen, setUpgradePlanModalOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [esportsDropdownOpen, setEsportsDropdownOpen] = useState(false);
   const [ecosystemDropdownOpen, setEcosystemDropdownOpen] = useState(false);
@@ -307,7 +309,7 @@ export default function Header() {
               Career
             </Link> */}
             <button
-              onClick={() => navigateToSection("contact")}
+              onClick={() => setUpgradePlanModalOpen(true)}
               className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors cursor-pointer"
             >
               Pricing
@@ -660,6 +662,15 @@ export default function Header() {
               <button
                 onClick={() => {
                   handleLinkClick();
+                  setUpgradePlanModalOpen(true);
+                }}
+                className="text-white text-base font-medium py-3 border-b border-purple-500/10 hover:text-purple-400 transition-colors w-full text-left cursor-pointer"
+              >
+                Pricing
+              </button>
+              <button
+                onClick={() => {
+                  handleLinkClick();
                   navigateToSection("career");
                 }}
                 className="text-white text-base font-medium py-3 border-b border-purple-500/10 hover:text-purple-400 transition-colors w-full text-left cursor-pointer"
@@ -695,6 +706,12 @@ export default function Header() {
         isOpen={loginModalOpen}
         onClose={() => setLoginModalOpen(false)}
         initialMode="login"
+      />
+
+      {/* Upgrade Plan Modal - Opens from Pricing button */}
+      <UpgradePlanModal
+        isOpen={upgradePlanModalOpen}
+        onClose={() => setUpgradePlanModalOpen(false)}
       />
     </>
   );
