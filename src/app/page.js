@@ -157,7 +157,7 @@ function HomeContent() {
   <div className="relative min-h-screen flex items-start justify-center overflow-hidden">
     <div className="absolute inset-0">
       <Image
-        src="/Hero/bg.jpeg"
+        src="https://res.cloudinary.com/jvpygp4b/image/upload/v1783144123/bg_pbzann.jpg"
         alt="Esports Arena"
         fill
         className="object-cover"

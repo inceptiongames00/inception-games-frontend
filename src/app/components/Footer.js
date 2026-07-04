@@ -1,49 +1,49 @@
-"use client"
-import { motion, AnimatePresence } from "framer-motion"
-import { useState } from "react"
-import { ChevronDown } from "lucide-react"
-import Link from "next/link"
-import { FaFacebookF, FaLinkedin } from "react-icons/fa"
+"use client";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
+import { ChevronDown } from "lucide-react";
+import Link from "next/link";
+import { FaFacebookF, FaLinkedin } from "react-icons/fa";
 
 export default function Footer() {
-  const [ecosystemDropdownOpen, setEcosystemDropdownOpen] = useState(false)
+  const [ecosystemDropdownOpen, setEcosystemDropdownOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     message: "",
-  })
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState("")
-  const [success, setSuccess] = useState(false)
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
 
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
-    })
-  }
+    });
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setLoading(true)
-    setError("")
+    e.preventDefault();
+    setLoading(true);
+    setError("");
 
     try {
-      setSuccess(true)
+      setSuccess(true);
       setTimeout(() => {
         setFormData({
           name: "",
           email: "",
           message: "",
-        })
-        setSuccess(false)
-      }, 3000)
+        });
+        setSuccess(false);
+      }, 3000);
     } catch (err) {
-      setError(err.message)
+      setError(err.message);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <>
@@ -58,12 +58,21 @@ export default function Footer() {
               transition={{ duration: 0.6 }}
               className="flex flex-col items-start gap-4"
             >
-              <Link href="/" aria-label="Inceptions Home" className="inline-flex">
-                <img src="/Logo/Logo.png" alt="Inceptions Logo" className="w-20 h-auto" />
+              <Link
+                href="/"
+                aria-label="Inceptions Home"
+                className="inline-flex"
+              >
+                <img
+                  src="https://res.cloudinary.com/jvpygp4b/image/upload/v1783146365/Logo_fb2wvg.png"
+                  alt="Inceptions Logo"
+                  className="w-20 h-auto"
+                />
               </Link>
 
               <p className="text-gray-400 text-sm leading-relaxed text-left max-w-xs">
-                Compete. Connect. Conquer. — Your home for premier esports tournaments and gaming excellence.
+                Compete. Connect. Conquer. — Your home for premier esports
+                tournaments and gaming excellence.
               </p>
 
               <div
@@ -84,8 +93,7 @@ export default function Footer() {
               <h3
                 className="font-bold text-base sm:text-lg mb-4 tracking-wider uppercase"
                 style={{
-                  backgroundImage:
-                    "linear-gradient(90deg, #ec4899, #8116f1)",
+                  backgroundImage: "linear-gradient(90deg, #ec4899, #8116f1)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
@@ -107,7 +115,12 @@ export default function Footer() {
                     stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 7l5 5m0 0l-5 5m5-5H6"
+                    />
                   </svg>
                 </motion.a>
 
@@ -124,7 +137,12 @@ export default function Footer() {
                     stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 7l5 5m0 0l-5 5m5-5H6"
+                    />
                   </svg>
                 </motion.a>
 
@@ -170,8 +188,7 @@ export default function Footer() {
               <h3
                 className="font-bold text-base sm:text-lg mb-4 tracking-wider uppercase"
                 style={{
-                  backgroundImage:
-                    "linear-gradient(90deg, #ec4899, #8116f1)",
+                  backgroundImage: "linear-gradient(90deg, #ec4899, #8116f1)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
@@ -182,7 +199,9 @@ export default function Footer() {
               <div className="space-y-3 w-full">
                 <div className="relative">
                   <button
-                    onClick={() => setEcosystemDropdownOpen(!ecosystemDropdownOpen)}
+                    onClick={() =>
+                      setEcosystemDropdownOpen(!ecosystemDropdownOpen)
+                    }
                     className="flex items-center justify-start gap-2 text-white hover:text-pink-300 transition-colors group w-full text-sm md:text-base"
                   >
                     <span>Ecosystem</span>
@@ -204,8 +223,10 @@ export default function Footer() {
                         <Link
                           href="#ecosystem-partners"
                           onClick={() => {
-                            setEcosystemDropdownOpen(false)
-                            document.getElementById("ecosystem-partners")?.scrollIntoView({ behavior: "smooth" })
+                            setEcosystemDropdownOpen(false);
+                            document
+                              .getElementById("ecosystem-partners")
+                              ?.scrollIntoView({ behavior: "smooth" });
                           }}
                           className="block text-white/80 text-sm hover:text-pink-300 transition-colors cursor-pointer pl-0"
                         >
@@ -214,8 +235,10 @@ export default function Footer() {
                         <Link
                           href="#ecosystem-games"
                           onClick={() => {
-                            setEcosystemDropdownOpen(false)
-                            document.getElementById("ecosystem-games")?.scrollIntoView({ behavior: "smooth" })
+                            setEcosystemDropdownOpen(false);
+                            document
+                              .getElementById("ecosystem-games")
+                              ?.scrollIntoView({ behavior: "smooth" });
                           }}
                           className="block text-white/80 text-sm hover:text-pink-300 transition-colors cursor-pointer pl-0"
                         >
@@ -224,8 +247,10 @@ export default function Footer() {
                         <Link
                           href="#ecosystem-community"
                           onClick={() => {
-                            setEcosystemDropdownOpen(false)
-                            document.getElementById("ecosystem-community")?.scrollIntoView({ behavior: "smooth" })
+                            setEcosystemDropdownOpen(false);
+                            document
+                              .getElementById("ecosystem-community")
+                              ?.scrollIntoView({ behavior: "smooth" });
                           }}
                           className="block text-white/80 text-sm hover:text-pink-300 transition-colors cursor-pointer pl-0"
                         >
@@ -264,8 +289,7 @@ export default function Footer() {
               <h3
                 className="font-bold text-base sm:text-lg mb-4 tracking-wider uppercase"
                 style={{
-                  backgroundImage:
-                    "linear-gradient(90deg, #ec4899, #8116f1)",
+                  backgroundImage: "linear-gradient(90deg, #ec4899, #8116f1)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
@@ -341,8 +365,18 @@ export default function Footer() {
                     </div>
                   ) : success ? (
                     <div className="flex items-center justify-center space-x-1">
-                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      <svg
+                        className="w-4 h-4 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
                       </svg>
                       <span>Sent!</span>
                     </div>
@@ -363,5 +397,5 @@ export default function Footer() {
         </p>
       </div>
     </>
-  )
+  );
 }

@@ -2,14 +2,46 @@ export const communityData = {
   title: "Our Community",
   subtitle: "Join thousands of passionate gamers",
   items: [
-    { id: 1, photo: "/Ecosystem/Community/c1.jpg" },
-    { id: 2, photo: "/Ecosystem/Community/c2.jpg" },
-    { id: 3, photo: "/Ecosystem/Community/c3.jpg" },
-    { id: 4, photo: "/Ecosystem/Community/c4.jpg" },
-    { id: 5, photo: "/Ecosystem/Community/c6.JPG" },
-    { id: 6, photo: "/Ecosystem/Community/c7.JPG" },
-    { id: 7, photo: "/Ecosystem/Community/c8.JPG" },
-    { id: 8, photo: "/Ecosystem/Community/c17.jpg" },
+    {
+      id: 1,
+      photo:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783146526/c1_oboa3t.jpg",
+    },
+    {
+      id: 2,
+      photo:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783146523/c2_j8gqgm.jpg",
+    },
+    {
+      id: 3,
+      photo:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783146526/c3_j3yoag.jpg",
+    },
+    {
+      id: 4,
+      photo:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783146528/c4_ztd1sr.jpg",
+    },
+    {
+      id: 6,
+      photo:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783146530/c6_lhwwsj.jpg",
+    },
+    {
+      id: 7,
+      photo:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783146941/c7_knftcn.jpg",
+    },
+    {
+      id: 8,
+      photo:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783146940/c8_xoi6zb.jpg",
+    },
+    {
+      id: 17,
+      photo:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783146525/c17_l2nols.jpg",
+    },
   ],
 };
 

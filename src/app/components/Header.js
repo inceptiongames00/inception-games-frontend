@@ -120,14 +120,15 @@ export default function Header() {
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2 flex-shrink-0">
-            <Image 
-              src="/assets/updated_logo.png" 
-              alt="Inceptions Logo" 
+            <Image
+              src="https://res.cloudinary.com/jvpygp4b/image/upload/v1783154173/updated_logo_omz86q.png"
+              alt="Inceptions Logo"
               width={56}
               height={56}
-              className="h-7 sm:h-8 md:h-14 w-auto" 
+              className="h-7 sm:h-8 md:h-14 w-auto"
               style={{
-                filter: "drop-shadow(0 0 20px #ff0040) drop-shadow(0 0 40px #8116f1)",
+                filter:
+                  "drop-shadow(0 0 20px #ff0040) drop-shadow(0 0 40px #8116f1)",
               }}
             />
           </Link>
@@ -210,7 +211,7 @@ export default function Header() {
               Store
             </Link> */}
 
-              <button
+            <button
               onClick={() => navigateToSection("eshop")}
               className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors cursor-pointer"
             >
@@ -309,7 +310,7 @@ export default function Header() {
               onClick={() => navigateToSection("contact")}
               className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors cursor-pointer"
             >
-             Pricing
+              Pricing
             </button>
           </nav>
 

@@ -106,13 +106,18 @@ export default function EventDetailPage() {
 
   useEffect(() => {
     const facebookAppId = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID;
-    if (facebookAppId && facebookAppId !== "1234567890" && facebookAppId.length > 10) {
+    if (
+      facebookAppId &&
+      facebookAppId !== "1234567890" &&
+      facebookAppId.length > 10
+    ) {
       window.fbAsyncInit = function () {
         FB.init({ appId: facebookAppId, xfbml: true, version: "v18.0" });
       };
       if (!window.FB) {
         const script = document.createElement("script");
-        script.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v18.0";
+        script.src =
+          "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v18.0";
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);
@@ -124,7 +129,8 @@ export default function EventDetailPage() {
     if (event) updateMetaTags(event);
   }, [event]);
 
-  const isSoloMode = (event?.game_mode || event?.teamType || "").toLowerCase() === "solo";
+  const isSoloMode =
+    (event?.game_mode || event?.teamType || "").toLowerCase() === "solo";
   const additionalPlayersCount = isSoloMode
     ? 0
     : Math.max(0, (event?.team_size || event?.teamSize || 1) - 1);
@@ -143,9 +149,14 @@ export default function EventDetailPage() {
   };
 
   const openScrimRegistration = () => {
-    const solo = (event?.game_mode || event?.teamType || "").toLowerCase() === "solo";
-    const count = solo ? 0 : Math.max(0, (event?.team_size || event?.teamSize || 1) - 1);
-    const openSlot = (event?.slots || []).find((s) => s.status === "Open") || (event?.slots || [])[0];
+    const solo =
+      (event?.game_mode || event?.teamType || "").toLowerCase() === "solo";
+    const count = solo
+      ? 0
+      : Math.max(0, (event?.team_size || event?.teamSize || 1) - 1);
+    const openSlot =
+      (event?.slots || []).find((s) => s.status === "Open") ||
+      (event?.slots || [])[0];
     setFormData((prev) => ({
       ...prev,
       selectedSlotId: openSlot ? String(openSlot.id) : "",
@@ -215,7 +226,11 @@ export default function EventDetailPage() {
     );
   }
 
-  const gameImage = event.banner_image || event.game?.image || event.gameImage || "/images/default-game.jpg";
+  const gameImage =
+    event.banner_image ||
+    event.game?.image ||
+    event.gameImage ||
+    "/images/default-game.jpg";
   const gameName = event.game?.name || event.gameName || "Unknown Game";
 
   const tabs = [
@@ -228,7 +243,11 @@ export default function EventDetailPage() {
   ];
 
   const progressionSteps = [
-    { label: "Reg Starting", date: new Date("2025-05-01 12:00:00"), time: "12:00" },
+    {
+      label: "Reg Starting",
+      date: new Date("2025-05-01 12:00:00"),
+      time: "12:00",
+    },
     { label: "Reg Ending", date: new Date("2025-06-14"), time: "23:59" },
     { label: "Match Starts", date: new Date("2025-06-15"), time: "12:00" },
     { label: "Match Ends", date: new Date("2025-06-25"), time: "23:59" },
@@ -261,7 +280,9 @@ export default function EventDetailPage() {
                 ) : (
                   <AlertCircle size={20} />
                 )}
-                <p className="font-semibold text-sm text-white">{notification.message}</p>
+                <p className="font-semibold text-sm text-white">
+                  {notification.message}
+                </p>
               </div>
             </motion.div>
           )}
@@ -301,15 +322,15 @@ export default function EventDetailPage() {
                         event.status === "Upcoming"
                           ? "bg-emerald-500/20 border border-emerald-500/30 text-emerald-300"
                           : event.status === "Ongoing"
-                          ? "bg-blue-500/20 border border-blue-500/30 text-blue-300"
-                          : "bg-gray-500/20 border border-gray-500/30 text-gray-300"
+                            ? "bg-blue-500/20 border border-blue-500/30 text-blue-300"
+                            : "bg-gray-500/20 border border-gray-500/30 text-gray-300"
                       }`}
                     >
                       {event.status === "Upcoming"
                         ? "Registration Open"
                         : event.status === "Ongoing"
-                        ? "In Progress"
-                        : "Completed"}
+                          ? "In Progress"
+                          : "Completed"}
                     </div>
                   </div>
 
@@ -317,20 +338,24 @@ export default function EventDetailPage() {
                   <div className="flex flex-col justify-end gap-3 sm:gap-4">
                     {/* Date and Status Line */}
                     <div className="flex items-center gap-2 text-sm sm:text-base text-gray-300">
-                      <span className="font-semibold">{formatDate(event.date)}</span>
+                      <span className="font-semibold">
+                        {formatDate(event.date)}
+                      </span>
                       <span className="text-gray-400">·</span>
-                      <span className={`font-semibold ${
-                        event.status === "Upcoming"
-                          ? "text-emerald-400"
-                          : event.status === "Ongoing"
-                          ? "text-blue-400"
-                          : "text-gray-400"
-                      }`}>
+                      <span
+                        className={`font-semibold ${
+                          event.status === "Upcoming"
+                            ? "text-emerald-400"
+                            : event.status === "Ongoing"
+                              ? "text-blue-400"
+                              : "text-gray-400"
+                        }`}
+                      >
                         {event.status === "Upcoming"
                           ? "Registration Open"
                           : event.status === "Ongoing"
-                          ? "In Progress"
-                          : "Completed"}
+                            ? "In Progress"
+                            : "Completed"}
                       </span>
                     </div>
 
@@ -353,7 +378,9 @@ export default function EventDetailPage() {
                       <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
                         {event.platform?.toLowerCase().includes("mobile") ? (
                           <Smartphone size={14} className="text-pink-400" />
-                        ) : event.platform?.toLowerCase().includes("console") ? (
+                        ) : event.platform
+                            ?.toLowerCase()
+                            .includes("console") ? (
                           <Gamepad2 size={14} className="text-orange-400" />
                         ) : (
                           <Monitor size={14} className="text-blue-400" />
@@ -379,7 +406,9 @@ export default function EventDetailPage() {
                       <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
                         <Calendar size={14} className="text-red-400" />
                         <div className="flex flex-col gap-1">
-                          <span className="text-gray-300 text-sm font-medium">{formatDate(event.date || event.start_date)}</span>
+                          <span className="text-gray-300 text-sm font-medium">
+                            {formatDate(event.date || event.start_date)}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -396,25 +425,29 @@ export default function EventDetailPage() {
                             className="w-full h-full object-cover"
                           />
                         </div>
-                        <span className="text-white font-semibold text-sm sm:text-lg">{gameName}</span>
+                        <span className="text-white font-semibold text-sm sm:text-lg">
+                          {gameName}
+                        </span>
                         <Trophy size={16} />
-                <span>Hosted by {event.host}</span>
-                <span>·</span>
-                <span className={`font-semibold ${
-                  event.status === "Upcoming"
-                    ? "text-emerald-400"
-                    : event.status === "Ongoing"
-                    ? "text-blue-400"
-                    : "text-gray-400"
-                }`}>
-                  {event.status === "Upcoming"
-                    ? "Upcoming"
-                    : event.status === "Ongoing"
-                    ? "Ongoing"
-                    : "Completed"}
-                </span>
+                        <span>Hosted by {event.host}</span>
+                        <span>·</span>
+                        <span
+                          className={`font-semibold ${
+                            event.status === "Upcoming"
+                              ? "text-emerald-400"
+                              : event.status === "Ongoing"
+                                ? "text-blue-400"
+                                : "text-gray-400"
+                          }`}
+                        >
+                          {event.status === "Upcoming"
+                            ? "Upcoming"
+                            : event.status === "Ongoing"
+                              ? "Ongoing"
+                              : "Completed"}
+                        </span>
                       </div>
-                       {/* <div className="flex items-center gap-2 text-sm text-gray-400 mb-6 mt-2">
+                      {/* <div className="flex items-center gap-2 text-sm text-gray-400 mb-6 mt-2">
                 <Trophy size={16} />
                 <span>Hosted by {event.host}</span>
                 <span>·</span>
@@ -454,12 +487,11 @@ export default function EventDetailPage() {
                         )}
                       </div>
                     </div>
-                    
                   </div>
                 </div>
               </div>
 
-            {/* Tournament Progression */}
+              {/* Tournament Progression */}
               <div className="mb-6 sm:mb-8">
                 <h3 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6">
                   Tournament Progression
@@ -503,7 +535,9 @@ export default function EventDetailPage() {
                         </div>
                         <div className="flex items-center justify-center gap-1 text-xs text-gray-400 mt-1">
                           <Clock size={10} className="sm:w-3 sm:h-3" />
-                          <span className="text-xs">{step.time || formatTime(step.date)}</span>
+                          <span className="text-xs">
+                            {step.time || formatTime(step.date)}
+                          </span>
                         </div>
                       </div>
                     );
@@ -511,224 +545,291 @@ export default function EventDetailPage() {
                 </div>
               </div>
 
-              
-            {/* Description and Sidebar Section - 2 columns + 1 column layout */}
-            <div className="lg:col-span-3">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Description Section - 2 columns */}
-                <div className="lg:col-span-2">
-                  <div className="bg-white/[0.02] rounded-xl border border-white/[0.06] p-6 sm:p-8">
-                    <div className="flex items-center gap-3 mb-6">
-                      <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center">
-                        <span className="text-purple-400 text-lg">📋</span>
-                      </div>
-                      <h3 className="text-lg sm:text-xl font-bold text-white">Description & Rules</h3>
-                    </div>
-
-                    {/* Event Description */}
-                    <p className="text-gray-300 text-sm sm:text-base leading-relaxed mb-6">
-                      {event.description || "Welcome to this event! This is an exciting opportunity to compete with other players and showcase your skills in a competitive environment."}
-                    </p>
-
-                    {/* Rules List with Checkmarks */}
-                    <div className="space-y-3">
-                      {(Array.isArray(event.rules) ? event.rules : [
-                        "All participants must be registered before the deadline",
-                        "Fair play policy strictly enforced",
-                        "All matches will be streamed on official channels",
-                        "Prizes will be distributed within 7 days of event completion"
-                      ]).map((rule, index) => (
-                        <div key={index} className="flex items-start gap-3">
-                          <div className="flex-shrink-0 w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center mt-0.5">
-                            <CheckCircle size={16} className="text-emerald-400" />
-                          </div>
-                          <p className="text-gray-300 text-sm sm:text-base">{rule}</p>
+              {/* Description and Sidebar Section - 2 columns + 1 column layout */}
+              <div className="lg:col-span-3">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                  {/* Description Section - 2 columns */}
+                  <div className="lg:col-span-2">
+                    <div className="bg-white/[0.02] rounded-xl border border-white/[0.06] p-6 sm:p-8">
+                      <div className="flex items-center gap-3 mb-6">
+                        <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                          <span className="text-purple-400 text-lg">📋</span>
                         </div>
-                      ))}
+                        <h3 className="text-lg sm:text-xl font-bold text-white">
+                          Description & Rules
+                        </h3>
+                      </div>
+
+                      {/* Event Description */}
+                      <p className="text-gray-300 text-sm sm:text-base leading-relaxed mb-6">
+                        {event.description ||
+                          "Welcome to this event! This is an exciting opportunity to compete with other players and showcase your skills in a competitive environment."}
+                      </p>
+
+                      {/* Rules List with Checkmarks */}
+                      <div className="space-y-3">
+                        {(Array.isArray(event.rules)
+                          ? event.rules
+                          : [
+                              "All participants must be registered before the deadline",
+                              "Fair play policy strictly enforced",
+                              "All matches will be streamed on official channels",
+                              "Prizes will be distributed within 7 days of event completion",
+                            ]
+                        ).map((rule, index) => (
+                          <div key={index} className="flex items-start gap-3">
+                            <div className="flex-shrink-0 w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center mt-0.5">
+                              <CheckCircle
+                                size={16}
+                                className="text-emerald-400"
+                              />
+                            </div>
+                            <p className="text-gray-300 text-sm sm:text-base">
+                              {rule}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Important Note Box */}
+                      <div className="mt-6 p-4 sm:p-5 rounded-lg border border-amber-500/30 bg-amber-500/5">
+                        <div className="flex items-start gap-3">
+                          <AlertCircle
+                            size={20}
+                            className="text-amber-400 flex-shrink-0 mt-0.5"
+                          />
+                          <div>
+                            <p className="text-amber-200 font-semibold text-sm uppercase tracking-wide mb-1">
+                              Important Note
+                            </p>
+                            <p className="text-amber-100/80 text-sm leading-relaxed">
+                              All participants must join the official Discord
+                              server for match reporting and dispute resolution.
+                              Failure to check-in 15 minutes before the start
+                              will result in disqualification.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
                     </div>
 
-                    {/* Important Note Box */}
-                    <div className="mt-6 p-4 sm:p-5 rounded-lg border border-amber-500/30 bg-amber-500/5">
-                      <div className="flex items-start gap-3">
-                        <AlertCircle size={20} className="text-amber-400 flex-shrink-0 mt-0.5" />
-                        <div>
-                          <p className="text-amber-200 font-semibold text-sm uppercase tracking-wide mb-1">Important Note</p>
-                          <p className="text-amber-100/80 text-sm leading-relaxed">
-                            All participants must join the official Discord server for match reporting and dispute resolution. Failure to check-in 15 minutes before the start will result in disqualification.
+                    {/* Prize Pool Section */}
+                    {/* {event.prizePool > 0 && ( */}
+                    <div className="mt-8 p-6 sm:p-8 bg-white/[0.02] rounded-xl border border-white/[0.06]">
+                      <div className="flex items-center gap-3 mb-6 sm:mb-8">
+                        <Trophy size={28} className="text-yellow-400" />
+                        <h3 className="text-lg sm:text-xl font-bold text-white">
+                          Prize Pool
+                        </h3>
+                      </div>
+
+                      {/* Prize Cards Grid */}
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                        {/* 1st Place */}
+                        <div className="bg-gradient-to-br from-slate-800/60 to-slate-900/40 rounded-xl p-4 sm:p-6 border border-white/[0.06] flex flex-col items-center justify-center text-center">
+                          <div className="text-4xl sm:text-5xl mb-3">🏆</div>
+                          <p className="text-yellow-400 font-bold text-sm sm:text-base uppercase tracking-wider mb-2">
+                            1st Place
+                          </p>
+                          <p className="text-2xl sm:text-3xl font-bold text-white">
+                            {event.currency}{" "}
+                            {Math.round(event.prizePool * 0.5).toLocaleString()}
+                          </p>
+                        </div>
+
+                        {/* 2nd Place */}
+                        <div className="bg-gradient-to-br from-slate-800/60 to-slate-900/40 rounded-xl p-4 sm:p-6 border border-white/[0.06] flex flex-col items-center justify-center text-center">
+                          <div className="text-4xl sm:text-5xl mb-3">🥈</div>
+                          <p className="text-gray-300 font-bold text-sm sm:text-base uppercase tracking-wider mb-2">
+                            2nd Place
+                          </p>
+                          <p className="text-2xl sm:text-3xl font-bold text-white">
+                            {event.currency}{" "}
+                            {Math.round(event.prizePool * 0.3).toLocaleString()}
+                          </p>
+                        </div>
+
+                        {/* 3rd Place */}
+                        <div className="bg-gradient-to-br from-slate-800/60 to-slate-900/40 rounded-xl p-4 sm:p-6 border border-white/[0.06] flex flex-col items-center justify-center text-center">
+                          <div className="text-4xl sm:text-5xl mb-3">🥉</div>
+                          <p className="text-orange-400 font-bold text-sm sm:text-base uppercase tracking-wider mb-2">
+                            3rd Place
+                          </p>
+                          <p className="text-2xl sm:text-3xl font-bold text-white">
+                            {event.currency}{" "}
+                            {Math.round(event.prizePool * 0.2).toLocaleString()}
                           </p>
                         </div>
                       </div>
                     </div>
-
-                  
-                  </div>
-
-  {/* Prize Pool Section */}
-                    {/* {event.prizePool > 0 && ( */}
-                      <div className="mt-8 p-6 sm:p-8 bg-white/[0.02] rounded-xl border border-white/[0.06]">
-                        <div className="flex items-center gap-3 mb-6 sm:mb-8">
-                          <Trophy size={28} className="text-yellow-400" />
-                          <h3 className="text-lg sm:text-xl font-bold text-white">Prize Pool</h3>
-                        </div>
-
-                        {/* Prize Cards Grid */}
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-                          {/* 1st Place */}
-                          <div className="bg-gradient-to-br from-slate-800/60 to-slate-900/40 rounded-xl p-4 sm:p-6 border border-white/[0.06] flex flex-col items-center justify-center text-center">
-                            <div className="text-4xl sm:text-5xl mb-3">🏆</div>
-                            <p className="text-yellow-400 font-bold text-sm sm:text-base uppercase tracking-wider mb-2">1st Place</p>
-                            <p className="text-2xl sm:text-3xl font-bold text-white">
-                              {event.currency} {Math.round((event.prizePool * 0.5)).toLocaleString()}
-                            </p>
-                          </div>
-
-                          {/* 2nd Place */}
-                          <div className="bg-gradient-to-br from-slate-800/60 to-slate-900/40 rounded-xl p-4 sm:p-6 border border-white/[0.06] flex flex-col items-center justify-center text-center">
-                            <div className="text-4xl sm:text-5xl mb-3">🥈</div>
-                            <p className="text-gray-300 font-bold text-sm sm:text-base uppercase tracking-wider mb-2">2nd Place</p>
-                            <p className="text-2xl sm:text-3xl font-bold text-white">
-                              {event.currency} {Math.round((event.prizePool * 0.3)).toLocaleString()}
-                            </p>
-                          </div>
-
-                          {/* 3rd Place */}
-                          <div className="bg-gradient-to-br from-slate-800/60 to-slate-900/40 rounded-xl p-4 sm:p-6 border border-white/[0.06] flex flex-col items-center justify-center text-center">
-                            <div className="text-4xl sm:text-5xl mb-3">🥉</div>
-                            <p className="text-orange-400 font-bold text-sm sm:text-base uppercase tracking-wider mb-2">3rd Place</p>
-                            <p className="text-2xl sm:text-3xl font-bold text-white">
-                              {event.currency} {Math.round((event.prizePool * 0.2)).toLocaleString()}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
                     {/* )} */}
 
-                     {/* Game Tabs Section - Full 3 columns */}
-              <div className="lg:col-span-3 mt-8">
-                {/* Tabs Navigation */}
-                <div className="border-b border-gray-800 mb-4 sm:mb-6">
-                  <div className="flex gap-1 overflow-x-auto pb-px">
-                    {tabs.map((tab) => (
-                      <button
-                        key={tab.id}
-                        onClick={() => setActiveTab(tab.id)}
-                        className={`px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium whitespace-nowrap transition-colors relative ${
-                          activeTab === tab.id
-                            ? "text-purple-400"
-                            : "text-gray-400 hover:text-gray-300"
-                        }`}
-                      >
-                        {tab.label}
-                        {activeTab === tab.id && (
-                          <motion.div
-                            layoutId="activeEventTab"
-                            className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-500"
-                          />
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Tab Content */}
-                {activeTab === "support" ? (
-                  <SupportTab />
-                ) : (
-                  <ComingSoonTab activeTab={activeTab} />
-                )}
-              </div>
-                </div>
-
-                {/* Sidebar - Event Info - 1 column */}
-                <div className="lg:col-span-1">
-                  <div className="sticky top-24 space-y-4">
-                    {/* Event Info Card */}
-                    <div className="bg-white/[0.02] rounded-xl border border-white/[0.06] p-6 sm:p-8">
-                      <h3 className="text-lg sm:text-xl font-bold text-white mb-8">Event Info</h3>
-                      
-                      {/* Info Grid */}
-                      <div className="space-y-6">
-                        {/* Host */}
-                        <div className="flex justify-between items-start">
-                          <span className="text-gray-400 text-sm font-medium">Host</span>
-                          <span className="text-white font-semibold text-right">{event.host || event.organizer || 'Inception Games'}</span>
-                        </div>
-
-                        {/* Format */}
-                        <div className="flex justify-between items-start">
-                          <span className="text-gray-400 text-sm font-medium">Format</span>
-                          <span className="text-white font-semibold text-right">{event.format || event.teamType || 'Team'}</span>
-                        </div>
-
-                        {/* Platform */}
-                        <div className="flex justify-between items-start">
-                          <span className="text-gray-400 text-sm font-medium">Platform</span>
-                          <span className="text-white font-semibold text-right">{event.platform || 'All Platforms'}</span>
-                        </div>
-
-                        {/* Region */}
-                        <div className="flex justify-between items-start">
-                          <span className="text-gray-400 text-sm font-medium">Region</span>
-                          <span className="text-white font-semibold text-right">{event.location || 'Global (GMT)'}</span>
-                        </div>
-
-                        {/* Status */}
-                        <div className="flex justify-between items-start">
-                          <span className="text-gray-400 text-sm font-medium">Status</span>
-                          <span className={`font-semibold text-right ${
-                            event.status === "Upcoming"
-                              ? "text-emerald-400"
-                              : event.status === "Ongoing"
-                              ? "text-blue-400"
-                              : "text-gray-400"
-                          }`}>
-                            {event.status === "Upcoming"
-                              ? "Registration Open"
-                              : event.status === "Ongoing"
-                              ? "In Progress"
-                              : "Completed"}
-                          </span>
+                    {/* Game Tabs Section - Full 3 columns */}
+                    <div className="lg:col-span-3 mt-8">
+                      {/* Tabs Navigation */}
+                      <div className="border-b border-gray-800 mb-4 sm:mb-6">
+                        <div className="flex gap-1 overflow-x-auto pb-px">
+                          {tabs.map((tab) => (
+                            <button
+                              key={tab.id}
+                              onClick={() => setActiveTab(tab.id)}
+                              className={`px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium whitespace-nowrap transition-colors relative ${
+                                activeTab === tab.id
+                                  ? "text-purple-400"
+                                  : "text-gray-400 hover:text-gray-300"
+                              }`}
+                            >
+                              {tab.label}
+                              {activeTab === tab.id && (
+                                <motion.div
+                                  layoutId="activeEventTab"
+                                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-500"
+                                />
+                              )}
+                            </button>
+                          ))}
                         </div>
                       </div>
 
-                      {/* Discord Button */}
-                      <a
-                        href="https://discord.com/invite/9AtUGVqKs3"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-full mt-8 px-4 py-3 rounded-xl font-semibold text-white bg-[#5865F2] hover:bg-[#4752C4] transition-all duration-300 flex items-center justify-center gap-2"
-                      >
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.036.055a19.926 19.926 0 0 0 5.993 3.03.077.077 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z" />
-                        </svg>
-                        Join Discord
-                      </a>
+                      {/* Tab Content */}
+                      {activeTab === "support" ? (
+                        <SupportTab />
+                      ) : (
+                        <ComingSoonTab activeTab={activeTab} />
+                      )}
+                    </div>
+                  </div>
 
-                      {/* Registration Fill Section */}
-                      <div className="mt-8 pt-8 border-t border-white/[0.06]">
-                        <div className="flex justify-between items-center mb-4">
-                          <span className="text-xs font-bold text-gray-400 tracking-widest">REGISTRATION FILL</span>
-                          <span className="text-sm font-bold text-white">{Math.round((event.filledSlots || 0) / (event.totalSlots || 1) * 100)}% FILLED</span>
+                  {/* Sidebar - Event Info - 1 column */}
+                  <div className="lg:col-span-1">
+                    <div className="sticky top-24 space-y-4">
+                      {/* Event Info Card */}
+                      <div className="bg-white/[0.02] rounded-xl border border-white/[0.06] p-6 sm:p-8">
+                        <h3 className="text-lg sm:text-xl font-bold text-white mb-8">
+                          Event Info
+                        </h3>
+
+                        {/* Info Grid */}
+                        <div className="space-y-6">
+                          {/* Host */}
+                          <div className="flex justify-between items-start">
+                            <span className="text-gray-400 text-sm font-medium">
+                              Host
+                            </span>
+                            <span className="text-white font-semibold text-right">
+                              {event.host ||
+                                event.organizer ||
+                                "Inception Games"}
+                            </span>
+                          </div>
+
+                          {/* Format */}
+                          <div className="flex justify-between items-start">
+                            <span className="text-gray-400 text-sm font-medium">
+                              Format
+                            </span>
+                            <span className="text-white font-semibold text-right">
+                              {event.format || event.teamType || "Team"}
+                            </span>
+                          </div>
+
+                          {/* Platform */}
+                          <div className="flex justify-between items-start">
+                            <span className="text-gray-400 text-sm font-medium">
+                              Platform
+                            </span>
+                            <span className="text-white font-semibold text-right">
+                              {event.platform || "All Platforms"}
+                            </span>
+                          </div>
+
+                          {/* Region */}
+                          <div className="flex justify-between items-start">
+                            <span className="text-gray-400 text-sm font-medium">
+                              Region
+                            </span>
+                            <span className="text-white font-semibold text-right">
+                              {event.location || "Global (GMT)"}
+                            </span>
+                          </div>
+
+                          {/* Status */}
+                          <div className="flex justify-between items-start">
+                            <span className="text-gray-400 text-sm font-medium">
+                              Status
+                            </span>
+                            <span
+                              className={`font-semibold text-right ${
+                                event.status === "Upcoming"
+                                  ? "text-emerald-400"
+                                  : event.status === "Ongoing"
+                                    ? "text-blue-400"
+                                    : "text-gray-400"
+                              }`}
+                            >
+                              {event.status === "Upcoming"
+                                ? "Registration Open"
+                                : event.status === "Ongoing"
+                                  ? "In Progress"
+                                  : "Completed"}
+                            </span>
+                          </div>
                         </div>
 
-                        {/* Progress Bar */}
-                        <div className="w-full h-2 bg-gray-800/50 rounded-full overflow-hidden mb-3">
-                          <div
-                            className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all duration-300"
-                            style={{ width: `${Math.round((event.filledSlots || 0) / (event.totalSlots || 1) * 100)}%` }}
-                          />
-                        </div>
+                        {/* Discord Button */}
+                        <a
+                          href="https://discord.com/invite/9AtUGVqKs3"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full mt-8 px-4 py-3 rounded-xl font-semibold text-white bg-[#5865F2] hover:bg-[#4752C4] transition-all duration-300 flex items-center justify-center gap-2"
+                        >
+                          <svg
+                            className="w-5 h-5"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.036.055a19.926 19.926 0 0 0 5.993 3.03.077.077 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z" />
+                          </svg>
+                          Join Discord
+                        </a>
 
-                        {/* Info Text */}
-                        <p className="text-xs text-gray-400 text-center">
-                          {(event.totalSlots || 0) - (event.filledSlots || 0)} spots remaining - Closes in 4 days
-                        </p>
+                        {/* Registration Fill Section */}
+                        <div className="mt-8 pt-8 border-t border-white/[0.06]">
+                          <div className="flex justify-between items-center mb-4">
+                            <span className="text-xs font-bold text-gray-400 tracking-widest">
+                              REGISTRATION FILL
+                            </span>
+                            <span className="text-sm font-bold text-white">
+                              {Math.round(
+                                ((event.filledSlots || 0) /
+                                  (event.totalSlots || 1)) *
+                                  100,
+                              )}
+                              % FILLED
+                            </span>
+                          </div>
+
+                          {/* Progress Bar */}
+                          <div className="w-full h-2 bg-gray-800/50 rounded-full overflow-hidden mb-3">
+                            <div
+                              className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all duration-300"
+                              style={{
+                                width: `${Math.round(((event.filledSlots || 0) / (event.totalSlots || 1)) * 100)}%`,
+                              }}
+                            />
+                          </div>
+
+                          {/* Info Text */}
+                          <p className="text-xs text-gray-400 text-center">
+                            {(event.totalSlots || 0) - (event.filledSlots || 0)}{" "}
+                            spots remaining - Closes in 4 days
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
 
               {/* Signup Form */}
               <AnimatePresence>
@@ -773,8 +874,6 @@ export default function EventDetailPage() {
                   </motion.div>
                 )}
               </AnimatePresence>
-
-           
 
               {/* Success Modal */}
               <SuccessModal
@@ -857,7 +956,8 @@ function OtpVerificationSection({
                 value={otpValue[i] || ""}
                 onChange={(e) => {
                   const val = e.target.value.replace(/\D/g, "");
-                  const newOtp = otpValue.slice(0, i) + val + otpValue.slice(i + 1);
+                  const newOtp =
+                    otpValue.slice(0, i) + val + otpValue.slice(i + 1);
                   onOtpChange(newOtp.slice(0, 6));
                   if (val && i < 5) otpInputRefs.current[i + 1]?.focus();
                 }}
@@ -936,15 +1036,22 @@ function RegistrationForm({
 
       <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4 p-2 sm:p-3 bg-gray-800 rounded-lg">
         <Image
-          src={event.gameImage || "/games/pubg.png"}
+          src={
+            event.gameImage ||
+            "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148367/pubg_ss1pcn.png"
+          }
           alt={gameName}
           width={40}
           height={40}
           className="rounded-lg w-10 h-10 sm:w-12 sm:h-12"
         />
         <div className="min-w-0">
-          <p className="text-white font-semibold text-sm sm:text-base truncate">{gameName}</p>
-          <p className="text-gray-400 text-xs sm:text-sm truncate">{event.eventType}</p>
+          <p className="text-white font-semibold text-sm sm:text-base truncate">
+            {gameName}
+          </p>
+          <p className="text-gray-400 text-xs sm:text-sm truncate">
+            {event.eventType}
+          </p>
         </div>
       </div>
 
@@ -954,17 +1061,19 @@ function RegistrationForm({
             <button
               key={type}
               type="button"
-              onClick={() =>
-                formData.brandDealType = type
-              }
+              onClick={() => (formData.brandDealType = type)}
               className={`p-2 sm:p-3 rounded-lg border-2 transition-all ${
                 formData.brandDealType === type
                   ? "border-purple-500 bg-purple-500/10"
                   : "border-gray-700 hover:border-gray-600"
               }`}
             >
-              <p className="text-white font-semibold text-sm sm:text-base capitalize">{type}</p>
-              <p className="text-gray-400 text-xs">BDT {type === "solo" ? 499 : 999}</p>
+              <p className="text-white font-semibold text-sm sm:text-base capitalize">
+                {type}
+              </p>
+              <p className="text-gray-400 text-xs">
+                BDT {type === "solo" ? 499 : 999}
+              </p>
             </button>
           ))}
         </div>
@@ -980,7 +1089,9 @@ function RegistrationForm({
         />
         <AnimatedInput
           label={
-            ["EA FC 26", "Efootball Mobile", "Street Fighter 6"].includes(gameName)
+            ["EA FC 26", "Efootball Mobile", "Street Fighter 6"].includes(
+              gameName,
+            )
               ? "Email Address"
               : "IGL Email Address"
           }
@@ -1056,12 +1167,12 @@ function RegistrationForm({
                 gameName === "EA FC 26"
                   ? "Steam ID / PSN ID"
                   : gameName === "Efootball Mobile"
-                  ? "Game ID"
-                  : gameName === "Street Fighter 6"
-                  ? "Capcom ID"
-                  : isSoloMode
-                  ? "In-Game UID"
-                  : "IGL UID"
+                    ? "Game ID"
+                    : gameName === "Street Fighter 6"
+                      ? "Capcom ID"
+                      : isSoloMode
+                        ? "In-Game UID"
+                        : "IGL UID"
               }
               name="inGameId"
               value={formData.inGameId}
@@ -1069,7 +1180,11 @@ function RegistrationForm({
               required
             />
             <AnimatedInput
-              label={isSoloMode ? "Discord ID (optional)" : "IGL Discord ID (optional)"}
+              label={
+                isSoloMode
+                  ? "Discord ID (optional)"
+                  : "IGL Discord ID (optional)"
+              }
               name="discordId"
               value={formData.discordId}
               onChange={onInputChange}
@@ -1204,7 +1319,9 @@ function ComingSoonTab({ activeTab }) {
         <h4 className="text-lg font-bold text-white mb-2">Coming Soon</h4>
         <p className="text-gray-500 text-sm max-w-xs">{messages[activeTab]}</p>
         <div className="mt-5 px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20">
-          <span className="text-purple-400 text-xs font-medium tracking-wide uppercase">Stay Tuned</span>
+          <span className="text-purple-400 text-xs font-medium tracking-wide uppercase">
+            Stay Tuned
+          </span>
         </div>
       </div>
     </div>
@@ -1216,7 +1333,9 @@ function SupportTab() {
     <div className="bg-white/[0.02] rounded-xl border border-white/[0.06] p-6">
       <div className="flex flex-col items-center justify-center py-16 text-center">
         <h4 className="text-lg font-bold text-white mb-2">Contact Support</h4>
-        <p className="text-gray-500 text-sm max-w-xs">For any kind of update, contact our Facebook page.</p>
+        <p className="text-gray-500 text-sm max-w-xs">
+          For any kind of update, contact our Facebook page.
+        </p>
         <a
           href="https://www.facebook.com/profile.php?id=61562495805179"
           target="_blank"
@@ -1258,9 +1377,12 @@ function SuccessModal({ showSuccessModal, onClose }) {
               Phase 1 Complete
             </span>
 
-            <h2 className="text-2xl font-bold text-white mb-2">Registration Successful!</h2>
+            <h2 className="text-2xl font-bold text-white mb-2">
+              Registration Successful!
+            </h2>
             <p className="text-gray-400 text-sm leading-relaxed mb-6">
-              You&apos;re locked in for Phase 1. Check your email for the verification message confirming that you have been added.
+              You&apos;re locked in for Phase 1. Check your email for the
+              verification message confirming that you have been added.
             </p>
 
             <button

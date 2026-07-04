@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 export default function EShop() {
   const products = [
@@ -7,30 +7,34 @@ export default function EShop() {
       title: "Elite Mechanical Keyboard",
       description: "Precision engineering for the competitive edge.",
       buttonText: "Buy",
-      image: "/News/showcase.jpg",
+      image:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157035/showcase_eh4z5f.jpg",
     },
     {
       category: "MOUSE",
       title: "Precision Wireless Mouse",
       description: "Ultra-lightweight, zero-latency performance.",
       buttonText: "Buy",
-      image: "/News/news3.jpg",
+      image:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157043/news3_freort.jpg",
     },
     {
       category: "DISPLAY",
       title: "Ultra-Wide Curved Monitor",
       description: "Immersive visuals with 240Hz refresh rate.",
       buttonText: "Buy",
-      image: "/News/news4.jpg",
+      image:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157047/news4_u9saum.jpg",
     },
     {
       category: "BUNDLE",
       title: "Pro Gaming Bundle",
       description: "The ultimate setup for professional play.",
       buttonText: "Shop the Bundle",
-      image: "/News/summit.jpg",
+      image:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157148/summit_rsjhhe.jpg",
     },
-  ]
+  ];
 
   return (
     <section className="py-20 px-4 sm:px-6 bg-zinc-950">
@@ -48,7 +52,8 @@ export default function EShop() {
             <div className="w-70 h-1.5 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 rounded-full" />
           </div>
           <p className="text-zinc-400 text-base sm:text-lg max-w-2xl mx-auto">
-            Level up your setup with exclusive Neon Pulse merchandise and high-performance
+            Level up your setup with exclusive Neon Pulse merchandise and
+            high-performance
           </p>
         </div>
 
@@ -168,5 +173,5 @@ export default function EShop() {
         }
       `}</style>
     </section>
-  )
+  );
 }

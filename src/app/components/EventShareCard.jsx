@@ -133,7 +133,7 @@ export default function EventShareCard({ event, forceRender = false }) {
         event.banner_image ||
         event.gameImage ||
         event.game?.image ||
-        "/games/pubg.png";
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148367/pubg_ss1pcn.png";
     } else {
       // Draw gradient background if no image
       const fallbackGradient = ctx.createLinearGradient(0, 0, canvas.width, 280);

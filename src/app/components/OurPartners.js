@@ -1,120 +1,145 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { ChevronLeft, ChevronRight, X } from "lucide-react"
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 
 export default function OurPartners() {
-  const [activeSlide, setActiveSlide] = useState(0)
-  const [autoPlay, setAutoPlay] = useState(true)
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [autoPlay, setAutoPlay] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     companyName: "",
     phone: "",
     email: "",
     website: "",
-  })
+  });
 
   const partners = [
     {
       title: "MIME GO: The Future of Entertainment",
-      description: "Experience the next generation of streaming, calling, and savings. Everything you need for your digital lifestyle in one powerful app. Join the MIME community and revolutionize your internet experience.",
+      description:
+        "Experience the next generation of streaming, calling, and savings. Everything you need for your digital lifestyle in one powerful app. Join the MIME community and revolutionize your internet experience.",
       badge: "EXCLUSIVE LAUNCH",
-      image: "/Ecosystem/Partners/mime2.jpeg",
+      image:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783147172/mime2_hhp4nf.jpg",
       bgGradient: "from-blue-600/20 via-purple-600/20 to-cyan-600/20",
     },
     {
       title: "MOAR: Next Level Gaming",
-      description: "Join a revolutionary platform designed for gamers and esports enthusiasts. Compete, earn rewards, and connect with the global gaming community. Discover exclusive partnerships and opportunities.",
+      description:
+        "Join a revolutionary platform designed for gamers and esports enthusiasts. Compete, earn rewards, and connect with the global gaming community. Discover exclusive partnerships and opportunities.",
       badge: "FEATURED PARTNER",
-      image: "/Ecosystem/Partners/MOAR.png",
+      image:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783147168/MOAR_hkr10h.png",
       bgGradient: "from-pink-600/20 via-purple-600/20 to-blue-600/20",
     },
     {
       title: "iFarmer: Connecting Communities",
-      description: "Building bridges between technology and agriculture. Experience innovative solutions that empower businesses and communities. Join us in creating sustainable growth through digital transformation.",
+      description:
+        "Building bridges between technology and agriculture. Experience innovative solutions that empower businesses and communities. Join us in creating sustainable growth through digital transformation.",
       badge: "INNOVATION PARTNER",
-      image: "/Ecosystem/Partners/ifarmer2.jpeg",
+      image:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783147170/ifarmer2_utju6u.jpg",
       bgGradient: "from-green-600/20 via-emerald-600/20 to-cyan-600/20",
     },
-  ]
+  ];
 
   const updates = [
     {
       title: "Neon Dawn Launch",
-      description: "The biggest update yet brings new maps, characters, and a complete overhaul of the ranking system.",
+      description:
+        "The biggest update yet brings new maps, characters, and a complete overhaul of the ranking system.",
       category: "UPDATES",
-      image: "/News/bignews.jpg",
+      image:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157039/bignews_jmxxbf.jpg",
     },
     {
       title: "Neon Dawn Launch",
-      description: "The biggest update yet brings new maps, characters, and a complete overhaul of the ranking system.",
+      description:
+        "The biggest update yet brings new maps, characters, and a complete overhaul of the ranking system.",
       category: "UPDATES",
-      image: "/News/news3.jpg",
+      image:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157043/news3_freort.jpg",
     },
     {
       title: "Neon Dawn Launch",
-      description: "The biggest update yet brings new maps, characters, and a complete overhaul of the ranking system.",
+      description:
+        "The biggest update yet brings new maps, characters, and a complete overhaul of the ranking system.",
       category: "UPDATES",
-      image: "/News/news4.jpg",
+      image:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157047/news4_u9saum.jpg",
     },
     {
       title: "Neon Dawn Launch",
-      description: "The biggest update yet brings new maps, characters, and a complete overhaul of the ranking system.",
+      description:
+        "The biggest update yet brings new maps, characters, and a complete overhaul of the ranking system.",
       category: "UPDATES",
-      image: "/News/showcase.jpg",
+      image:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157035/showcase_eh4z5f.jpg",
     },
     {
       title: "Neon Dawn Launch",
-      description: "The biggest update yet brings new maps, characters, and a complete overhaul of the ranking system.",
+      description:
+        "The biggest update yet brings new maps, characters, and a complete overhaul of the ranking system.",
       category: "UPDATES",
-      image: "/News/summit.jpg",
+      image:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157148/summit_rsjhhe.jpg",
     },
-  ]
+  ];
 
   useEffect(() => {
-    if (!autoPlay) return
+    if (!autoPlay) return;
 
     const timer = setInterval(() => {
-      setActiveSlide((prev) => (prev + 1) % partners.length)
-    }, 5000)
+      setActiveSlide((prev) => (prev + 1) % partners.length);
+    }, 5000);
 
-    return () => clearInterval(timer)
-  }, [autoPlay, partners.length])
+    return () => clearInterval(timer);
+  }, [autoPlay, partners.length]);
 
   const goToSlide = (index) => {
-    setActiveSlide(index)
-    setAutoPlay(false)
-  }
+    setActiveSlide(index);
+    setAutoPlay(false);
+  };
 
   const nextSlide = () => {
-    setActiveSlide((prev) => (prev + 1) % partners.length)
-    setAutoPlay(false)
-  }
+    setActiveSlide((prev) => (prev + 1) % partners.length);
+    setAutoPlay(false);
+  };
 
   const prevSlide = () => {
-    setActiveSlide((prev) => (prev - 1 + partners.length) % partners.length)
-    setAutoPlay(false)
-  }
+    setActiveSlide((prev) => (prev - 1 + partners.length) % partners.length);
+    setAutoPlay(false);
+  };
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setFormData(prev => ({
+    const { name, value } = e.target;
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
-    }))
-  }
+      [name]: value,
+    }));
+  };
 
   const handleSubmit = (e) => {
-    e.preventDefault()
-    console.log("Partnership Form Data:", formData)
-    setFormData({ name: "", companyName: "", phone: "", email: "", website: "" })
-    setIsModalOpen(false)
-  }
+    e.preventDefault();
+    console.log("Partnership Form Data:", formData);
+    setFormData({
+      name: "",
+      companyName: "",
+      phone: "",
+      email: "",
+      website: "",
+    });
+    setIsModalOpen(false);
+  };
 
   return (
- <section className="py-20 px-4 sm:px-6" style={{ backgroundColor: "#0a0a14" }}>
+    <section
+      className="py-20 px-4 sm:px-6"
+      style={{ backgroundColor: "#0a0a14" }}
+    >
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
@@ -241,7 +266,7 @@ export default function OurPartners() {
         </motion.div>
 
         {/* Updates Carousel Section */}
-        <div>  
+        <div>
           {/* Carousel Container */}
           <div className="relative overflow-hidden">
             {/* Gradient overlays for smooth fade effect */}
@@ -492,5 +517,5 @@ export default function OurPartners() {
         </AnimatePresence>
       </div>
     </section>
-  )
+  );
 }

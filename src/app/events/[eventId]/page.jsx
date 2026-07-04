@@ -28,12 +28,42 @@ import { useAuth } from "@/hooks/useAuth";
 
 // Games data
 const games = [
-  { id: "ea-fc-26", name: "EA FC 26", image: "/games/fifapc.png" },
-  { id: "efootball", name: "eFootball", image: "/games/efootballpc.png" },
-  { id: "valorant", name: "VALORANT", image: "/games/valorant.png" },
-  { id: "cs2", name: "Counter-Strike 2", image: "/games/csgo.png" },
-  { id: "dota2", name: "Dota 2", image: "/games/dota2.png" },
-  { id: "lol", name: "League of Legends", image: "/games/lol.png" },
+  {
+    id: "ea-fc-26",
+    name: "EA FC 26",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148346/fifapc_ekgtge.png",
+  },
+  {
+    id: "efootball",
+    name: "eFootball",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148334/efootballpc_ykrrpz.png",
+  },
+  {
+    id: "valorant",
+    name: "VALORANT",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148302/valorant_nr0uf9.png",
+  },
+  {
+    id: "cs2",
+    name: "Counter-Strike 2",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148322/csgo_osyrgj.png",
+  },
+  {
+    id: "dota2",
+    name: "Dota 2",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148325/dota2_bnitad.png",
+  },
+  {
+    id: "lol",
+    name: "League of Legends",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148355/lol_iox7ut.png",
+  },
 ];
 
 // Helper to get game image from name
@@ -44,7 +74,10 @@ function getGameImage(gameName) {
       searchTerm.includes(g.name.toLowerCase()) ||
       g.name.toLowerCase().includes(searchTerm.split(" ")[0]),
   );
-  return matchedGame?.image || "/games/pubg.png";
+  return (
+    matchedGame?.image ||
+    "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148367/pubg_ss1pcn.png"
+  );
 }
 
 const getOrdinal = (n) => {
@@ -75,7 +108,7 @@ export default function EventDetailsPage() {
   const router = useRouter();
   const params = useParams();
   const eventId = params.eventId;
-  
+
   const { isAuthenticated, user } = useAuth();
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -95,47 +128,48 @@ export default function EventDetailsPage() {
   useEffect(() => {
     if (!event) return;
 
-    const title = event?.title || 'Inception Games Event';
+    const title = event?.title || "Inception Games Event";
     const description = `Join ${title} on Inception Games. Register now for this amazing esports event!`;
-    
+
     // Use a fallback image if banner_image is not available
-    let imageUrl = event?.banner_image || '/og-default.png';
-    
+    let imageUrl = event?.banner_image || "/og-default.png";
+
     // Ensure image URL is absolute for social media crawlers
-    if (imageUrl && !imageUrl.startsWith('http')) {
-      imageUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}${imageUrl}`;
+    if (imageUrl && !imageUrl.startsWith("http")) {
+      imageUrl = `${typeof window !== "undefined" ? window.location.origin : ""}${imageUrl}`;
     }
-    
-    const pageUrl = typeof window !== 'undefined' ? window.location.href : '';
+
+    const pageUrl = typeof window !== "undefined" ? window.location.href : "";
 
     // Update existing meta tags or create new ones
     const updateMetaTag = (name, content) => {
-      let tag = document.querySelector(`meta[property="${name}"]`) || 
-                document.querySelector(`meta[name="${name}"]`);
+      let tag =
+        document.querySelector(`meta[property="${name}"]`) ||
+        document.querySelector(`meta[name="${name}"]`);
       if (!tag) {
-        tag = document.createElement('meta');
-        const propName = name.startsWith('og:') ? 'property' : 'name';
+        tag = document.createElement("meta");
+        const propName = name.startsWith("og:") ? "property" : "name";
         tag.setAttribute(propName, name);
         document.head.appendChild(tag);
       }
       tag.content = content;
     };
 
-    updateMetaTag('og:title', title);
-    updateMetaTag('og:description', description);
-    updateMetaTag('og:image', imageUrl);
-    updateMetaTag('og:image:width', '1200');
-    updateMetaTag('og:image:height', '630');
-    updateMetaTag('og:url', pageUrl);
-    updateMetaTag('og:type', 'website');
-    updateMetaTag('og:site_name', 'Inception Games');
-    updateMetaTag('twitter:card', 'summary_large_image');
-    updateMetaTag('twitter:title', title);
-    updateMetaTag('twitter:description', description);
-    updateMetaTag('twitter:image', imageUrl);
+    updateMetaTag("og:title", title);
+    updateMetaTag("og:description", description);
+    updateMetaTag("og:image", imageUrl);
+    updateMetaTag("og:image:width", "1200");
+    updateMetaTag("og:image:height", "630");
+    updateMetaTag("og:url", pageUrl);
+    updateMetaTag("og:type", "website");
+    updateMetaTag("og:site_name", "Inception Games");
+    updateMetaTag("twitter:card", "summary_large_image");
+    updateMetaTag("twitter:title", title);
+    updateMetaTag("twitter:description", description);
+    updateMetaTag("twitter:image", imageUrl);
 
     // Update document title
-    document.title = title + ' - Inception Games';
+    document.title = title + " - Inception Games";
   }, [event]);
 
   const fetchEventDetails = async () => {
@@ -146,7 +180,7 @@ export default function EventDetailsPage() {
       // There is no single-scrim endpoint, so fetch the list and match by id.
       try {
         const response = await fetch(
-          "https://inception-games.an.r.appspot.com/api/v1/scrims"
+          "https://inception-games.an.r.appspot.com/api/v1/scrims",
         );
 
         if (response.ok) {
@@ -154,7 +188,7 @@ export default function EventDetailsPage() {
           const allScrims = data.scrims || data.data || [];
 
           const matchedScrim = allScrims.find(
-            (s) => s.id === eventId || s.id === parseInt(eventId)
+            (s) => s.id === eventId || s.id === parseInt(eventId),
           );
 
           if (matchedScrim) {
@@ -175,7 +209,10 @@ export default function EventDetailsPage() {
     return (
       <div className="min-h-screen bg-[#030305] text-white pt-24 flex items-center justify-center">
         <div className="text-center">
-          <Loader2 size={40} className="text-purple-500 animate-spin mx-auto mb-4" />
+          <Loader2
+            size={40}
+            className="text-purple-500 animate-spin mx-auto mb-4"
+          />
           <p className="text-gray-400">Loading event details...</p>
         </div>
       </div>
@@ -186,12 +223,20 @@ export default function EventDetailsPage() {
     return (
       <div className="min-h-screen bg-[#030305] text-white pt-24 pb-12">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center py-16"
+          >
             <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-500/10 flex items-center justify-center">
               <Trophy size={32} className="text-red-400" />
             </div>
-            <h2 className="text-2xl font-bold text-white mb-4">Event Not Found</h2>
-            <p className="text-gray-400 mb-6">The event you're looking for doesn't exist or has been removed.</p>
+            <h2 className="text-2xl font-bold text-white mb-4">
+              Event Not Found
+            </h2>
+            <p className="text-gray-400 mb-6">
+              The event you're looking for doesn't exist or has been removed.
+            </p>
             <button
               onClick={() => router.push("/events")}
               className="inline-flex items-center gap-2 px-6 py-3 bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/30 rounded-lg text-purple-300 font-semibold transition-all"
@@ -205,8 +250,12 @@ export default function EventDetailsPage() {
     );
   }
 
-  const eventImage = event.banner_image || event.image || getGameImage(event.game_name || event.gameName || event.title);
-  const gameName = event.game?.name || event.game_name || event.gameName || "Gaming Event";
+  const eventImage =
+    event.banner_image ||
+    event.image ||
+    getGameImage(event.game_name || event.gameName || event.title);
+  const gameName =
+    event.game?.name || event.game_name || event.gameName || "Gaming Event";
   const gameImage = getGameImage(gameName);
   const status = event.status || "Upcoming";
 
@@ -218,25 +267,32 @@ export default function EventDetailsPage() {
   ];
 
   const progressionSteps = [
-    { 
-      label: "Reg Starting", 
-      date: event.reg_start_at || event.registration_start_date || event.registrationStart,
-      time: event.registration_start_time || "TBD"
+    {
+      label: "Reg Starting",
+      date:
+        event.reg_start_at ||
+        event.registration_start_date ||
+        event.registrationStart,
+      time: event.registration_start_time || "TBD",
     },
-    { 
-      label: "Reg Ending", 
-      date: event.reg_end_at || event.registration_end_date || event.registrationEnd,
-      time: event.registration_end_time || "TBD"
+    {
+      label: "Reg Ending",
+      date:
+        event.reg_end_at ||
+        event.registration_end_date ||
+        event.registrationEnd,
+      time: event.registration_end_time || "TBD",
     },
-    { 
-      label: "Match Starts", 
-      date: event.start_at || event.tournament_start_date || event.tournamentStart,
-      time: event.tournament_start_time || "TBD"
+    {
+      label: "Match Starts",
+      date:
+        event.start_at || event.tournament_start_date || event.tournamentStart,
+      time: event.tournament_start_time || "TBD",
     },
-    { 
-      label: "Match Ends", 
+    {
+      label: "Match Ends",
       date: event.end_at || event.tournament_end_date || event.tournamentEnd,
-      time: event.tournament_end_time || "TBD"
+      time: event.tournament_end_time || "TBD",
     },
   ];
 
@@ -295,7 +351,8 @@ export default function EventDetailsPage() {
                   fill
                   className="object-cover"
                   onError={(e) => {
-                    e.currentTarget.src = "/games/pubg.png";
+                    e.currentTarget.src =
+                      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148367/pubg_ss1pcn.png";
                   }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#030305] via-black/50 to-transparent" />
@@ -366,9 +423,11 @@ export default function EventDetailsPage() {
               </div>
 
               {/* Tournament Progression */}
-              {progressionSteps.some(s => s.date) && (
+              {progressionSteps.some((s) => s.date) && (
                 <div className="mb-12">
-                  <h2 className="text-2xl font-bold text-white mb-6">Tournament Progression</h2>
+                  <h2 className="text-2xl font-bold text-white mb-6">
+                    Tournament Progression
+                  </h2>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {progressionSteps.map((step, idx) => (
                       <div
@@ -379,15 +438,15 @@ export default function EventDetailsPage() {
                           <div className="w-6 h-6 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
                             <CheckCircle size={14} className="text-white" />
                           </div>
-                          <h3 className="text-white font-semibold text-sm">{step.label}</h3>
+                          <h3 className="text-white font-semibold text-sm">
+                            {step.label}
+                          </h3>
                         </div>
                         <div className="space-y-1">
                           <p className="text-gray-400 text-xs">
                             {step.date ? formatDate(step.date) : "TBD"}
                           </p>
-                          <p className="text-gray-400 text-xs">
-                            {step.time}
-                          </p>
+                          <p className="text-gray-400 text-xs">{step.time}</p>
                         </div>
                       </div>
                     ))}
@@ -416,32 +475,34 @@ export default function EventDetailsPage() {
               <div className="mb-12">
                 {activeTab === "rules" && (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                    <h3 className="text-xl font-bold text-white mb-4">Rules & Requirements</h3>
+                    <h3 className="text-xl font-bold text-white mb-4">
+                      Rules & Requirements
+                    </h3>
                     <div className="bg-gray-900/50 p-6 rounded-xl border border-gray-700/50">
                       {event.rules ? (
                         <ul className="space-y-3 text-gray-300">
-                          {typeof event.rules === "string"
-                            ? event.rules.split("\n").map((rule, idx) =>
-                                rule.trim() ? (
-                                  <li key={idx} className="flex gap-3">
-                                    <span className="text-purple-400">•</span>
-                                    <span>{rule.trim()}</span>
-                                  </li>
-                                ) : null
-                              )
-                            : Array.isArray(event.rules)
-                              ? event.rules.map((rule, idx) => (
-                                  <li key={idx} className="flex gap-3">
-                                    <span className="text-purple-400">•</span>
-                                    <span>{rule}</span>
-                                  </li>
-                                ))
-                              : (
-                                  <li className="flex gap-3">
-                                    <span className="text-purple-400">•</span>
-                                    <span>{event.rules}</span>
-                                  </li>
-                                )}
+                          {typeof event.rules === "string" ? (
+                            event.rules.split("\n").map((rule, idx) =>
+                              rule.trim() ? (
+                                <li key={idx} className="flex gap-3">
+                                  <span className="text-purple-400">•</span>
+                                  <span>{rule.trim()}</span>
+                                </li>
+                              ) : null,
+                            )
+                          ) : Array.isArray(event.rules) ? (
+                            event.rules.map((rule, idx) => (
+                              <li key={idx} className="flex gap-3">
+                                <span className="text-purple-400">•</span>
+                                <span>{rule}</span>
+                              </li>
+                            ))
+                          ) : (
+                            <li className="flex gap-3">
+                              <span className="text-purple-400">•</span>
+                              <span>{event.rules}</span>
+                            </li>
+                          )}
                         </ul>
                       ) : (
                         <p className="text-gray-400">No rules specified yet.</p>
@@ -453,7 +514,9 @@ export default function EventDetailsPage() {
                 {activeTab === "brackets" && (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                     <div className="bg-gray-900/50 p-8 rounded-xl border border-gray-700/50 text-center">
-                      <p className="text-gray-400">Bracket information coming soon...</p>
+                      <p className="text-gray-400">
+                        Bracket information coming soon...
+                      </p>
                     </div>
                   </motion.div>
                 )}
@@ -461,7 +524,9 @@ export default function EventDetailsPage() {
                 {activeTab === "schedule" && (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                     <div className="bg-gray-900/50 p-8 rounded-xl border border-gray-700/50 text-center">
-                      <p className="text-gray-400">Schedule details coming soon...</p>
+                      <p className="text-gray-400">
+                        Schedule details coming soon...
+                      </p>
                     </div>
                   </motion.div>
                 )}
@@ -469,7 +534,9 @@ export default function EventDetailsPage() {
                 {activeTab === "participants" && (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                     <div className="bg-gray-900/50 p-8 rounded-xl border border-gray-700/50 text-center">
-                      <p className="text-gray-400">Participant list coming soon...</p>
+                      <p className="text-gray-400">
+                        Participant list coming soon...
+                      </p>
                     </div>
                   </motion.div>
                 )}
@@ -478,7 +545,9 @@ export default function EventDetailsPage() {
               {/* Description */}
               {event.description && (
                 <div className="mb-12">
-                  <h2 className="text-2xl font-bold text-white mb-4">About This Event</h2>
+                  <h2 className="text-2xl font-bold text-white mb-4">
+                    About This Event
+                  </h2>
                   <p className="text-gray-300 leading-relaxed whitespace-pre-wrap">
                     {event.description}
                   </p>
@@ -503,7 +572,9 @@ export default function EventDetailsPage() {
 
                 {/* Event Info Card */}
                 <div className="bg-gradient-to-b from-gray-900/80 to-gray-900/40 p-6 rounded-lg border border-gray-700/50 backdrop-blur-md">
-                  <h3 className="text-lg font-bold text-white mb-4">Event Info</h3>
+                  <h3 className="text-lg font-bold text-white mb-4">
+                    Event Info
+                  </h3>
 
                   {event.location && (
                     <div className="mb-4 pb-4 border-b border-gray-700/50">
@@ -511,7 +582,9 @@ export default function EventDetailsPage() {
                         <MapPin size={16} />
                         Location
                       </p>
-                      <p className="text-white font-semibold">{event.location}</p>
+                      <p className="text-white font-semibold">
+                        {event.location}
+                      </p>
                     </div>
                   )}
 
@@ -521,14 +594,18 @@ export default function EventDetailsPage() {
                         <Clock size={16} />
                         Start Time
                       </p>
-                      <p className="text-white font-semibold">{event.start_time}</p>
+                      <p className="text-white font-semibold">
+                        {event.start_time}
+                      </p>
                     </div>
                   )}
 
                   {event.platform && (
                     <div>
                       <p className="text-gray-400 text-sm mb-2">Platform</p>
-                      <p className="text-white font-semibold">{event.platform}</p>
+                      <p className="text-white font-semibold">
+                        {event.platform}
+                      </p>
                     </div>
                   )}
                 </div>

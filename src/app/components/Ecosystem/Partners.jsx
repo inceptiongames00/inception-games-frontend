@@ -10,7 +10,8 @@ export const partnersData = {
     {
       id: 1,
       name: "Ifarmer",
-      photo: "/Ecosystem/Partners/ifarmer2.jpeg",
+      photo:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783147170/ifarmer2_utju6u.jpg",
       type: "image",
       link: "https://www.ifarmer.asia",
       caption: {
@@ -22,7 +23,8 @@ export const partnersData = {
     {
       id: 2,
       name: "Mime",
-      photo: "/Ecosystem/Partners/MIME.jpeg",
+      photo:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783147172/mime2_hhp4nf.jpg",
       link: "https://www.mimebd.com",
       caption: {
         normalText: "Mime is our official Internet Sponsor — ",
@@ -33,8 +35,10 @@ export const partnersData = {
     {
       id: 3,
       name: "Moar",
-      photo: "/Ecosystem/Partners/MOAR.png",
-      video: "/Ecosystem/Partners/MOAR.mp4",
+      photo:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783147168/MOAR_hkr10h.png",
+      video:
+        "https://res.cloudinary.com/jvpygp4b/video/upload/v1783155274/MOAR_jwtpmk.mp4",
       isVideo: false,
       link: "https://moarbd.com",
       imageStyle: {
