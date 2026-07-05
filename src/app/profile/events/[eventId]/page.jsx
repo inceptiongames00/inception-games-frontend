@@ -51,6 +51,7 @@ export default function EventDetailPage() {
   const [event, setEvent] = useState(null);
   const [activeTab, setActiveTab] = useState("result");
   const [showSignupForm, setShowSignupForm] = useState(false);
+  const [showRegistrationModal, setShowRegistrationModal] = useState(false);
   const [otpStep, setOtpStep] = useState(null);
   const [otpValue, setOtpValue] = useState("");
   const [otpError, setOtpError] = useState("");
@@ -86,6 +87,8 @@ export default function EventDetailPage() {
     teamMembers: "",
     brandDealType: "solo",
     selectedSlotId: "",
+    slotDate: "",
+    slotTime: "",
     players: [],
   });
 
@@ -94,7 +97,7 @@ export default function EventDetailPage() {
   }, [fetchedEvent]);
 
   useEffect(() => {
-    if (showSignupForm && user) {
+    if ((showSignupForm || showRegistrationModal) && user) {
       setFormData((prev) => ({
         ...prev,
         fullName: user.fullName || user.name || "",
@@ -102,7 +105,7 @@ export default function EventDetailPage() {
         phone: user.phone || "",
       }));
     }
-  }, [showSignupForm, user]);
+  }, [showSignupForm, showRegistrationModal, user]);
 
   useEffect(() => {
     const facebookAppId = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID;
@@ -471,11 +474,7 @@ export default function EventDetailPage() {
 
                         {event.status !== "Completed" && !showSignupForm && (
                           <motion.button
-                            onClick={() =>
-                              event.eventType === "Scrims"
-                                ? openScrimRegistration()
-                                : setShowSignupForm(true)
-                            }
+                            onClick={() => setShowRegistrationModal(true)}
                             className="px-2 sm:px-4 py-2 sm:py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold rounded-lg transition-all duration-300 flex items-center gap-1 sm:gap-2 shadow-lg shadow-purple-500/20 text-xs sm:text-sm"
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
@@ -795,7 +794,7 @@ export default function EventDetailPage() {
 
                         {/* Tournament Registration Button */}
                         <button
-                          onClick={() => setShowSignupForm(true)}
+                          onClick={() => setShowRegistrationModal(true)}
                           className="w-full mt-4 px-4 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 transition-all duration-300 flex items-center justify-center gap-2"
                         >
                           <Trophy size={18} />
@@ -910,6 +909,270 @@ export default function EventDetailPage() {
                 showSuccessModal={showSuccessModal}
                 onClose={() => setShowSuccessModal(false)}
               />
+
+              {/* Enhanced Registration Modal with Slot Fields */}
+              <AnimatePresence>
+                {showRegistrationModal && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+                    onClick={() => setShowRegistrationModal(false)}
+                  >
+                    <motion.div
+                      initial={{ scale: 0.9, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0.9, opacity: 0 }}
+                      onClick={(e) => e.stopPropagation()}
+                      className="bg-gradient-to-br from-[#0c0c14] to-[#14141f] rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto border border-purple-500/20"
+                    >
+                      {/* Modal Header */}
+                      <div className="flex items-center justify-between p-6 border-b border-white/10">
+                        <h3 className="text-2xl font-bold text-white">Scrims Registration</h3>
+                        <button
+                          onClick={() => setShowRegistrationModal(false)}
+                          className="text-gray-400 hover:text-white transition-colors"
+                        >
+                          <X size={24} />
+                        </button>
+                      </div>
+
+                      {/* Event Info */}
+                      <div className="p-6 border-b border-white/10">
+                        <div className="flex items-center gap-4">
+                          <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                            <Trophy className="text-white" size={24} />
+                          </div>
+                          <div>
+                            <h4 className="text-xl font-semibold text-white">{event.title}</h4>
+                            <p className="text-gray-400">Scrims</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Registration Form */}
+                      <div className="p-6">
+                        <form 
+                          onSubmit={async (e) => {
+                            e.preventDefault();
+                            
+                            // Prepare registration data with the required structure
+                            const submitData = {
+                              user_id: user?.id || "USR000123",
+                              slot_date: formData.slotDate,
+                              slot_time: formData.slotTime,
+                              team_name: formData.teamName,
+                              full_name: formData.fullName,
+                              email: formData.email,
+                              phone: formData.phone,
+                              in_game_name: formData.inGameName,
+                              in_game_id: formData.inGameId,
+                              players: formData.players || []
+                            };
+                            
+                            console.log('[Event Registration] Registration Data:', submitData);
+                            
+                            try {
+                              // Make API call to register for the event
+                              const response = await fetch('/api/events/register', {
+                                method: 'POST',
+                                headers: {
+                                  'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify(submitData)
+                              });
+
+                              const result = await response.json();
+
+                              if (response.ok && result.success) {
+                                // Show success message and close modal
+                                showNotificationMessage('success', result.message || 'Registration successful! Check your email for confirmation.');
+                                setShowRegistrationModal(false);
+                                
+                                // Reset form data
+                                setFormData({
+                                  fullName: "",
+                                  email: "",
+                                  phone: "",
+                                  inGameName: "",
+                                  inGameId: "",
+                                  teamName: "",
+                                  discordId: "",
+                                  socialMedia: "",
+                                  portfolio: "",
+                                  teamMembers: "",
+                                  brandDealType: "solo",
+                                  selectedSlotId: "",
+                                  slotDate: "",
+                                  slotTime: "",
+                                  players: [],
+                                });
+                              } else {
+                                console.error('[Event Registration] API Error:', result);
+                                showNotificationMessage('error', result.message || 'Registration failed. Please try again.');
+                              }
+                            } catch (error) {
+                              console.error('[Event Registration] Network Error:', error);
+                              showNotificationMessage('error', 'Network error. Please check your connection and try again.');
+                            }
+                          }}
+                          className="space-y-4"
+                        >
+                          {/* Slot Date & Time */}
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <label className="block text-sm font-medium text-gray-300 mb-2">
+                                Slot Date *
+                              </label>
+                              <input
+                                type="date"
+                                required
+                                value={formData.slotDate}
+                                onChange={(e) => setFormData(prev => ({...prev, slotDate: e.target.value}))}
+                                min={new Date().toISOString().split('T')[0]}
+                                className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-gray-300 mb-2">
+                                Slot Time *
+                              </label>
+                              <input
+                                type="time"
+                                required
+                                value={formData.slotTime}
+                                onChange={(e) => setFormData(prev => ({...prev, slotTime: e.target.value}))}
+                                className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
+                              />
+                            </div>
+                          </div>
+
+                          {/* Team Name */}
+                          <div>
+                            <label className="block text-sm font-medium text-gray-300 mb-2">
+                              Team Name *
+                            </label>
+                            <input
+                              type="text"
+                              required
+                              value={formData.teamName}
+                              onChange={(e) => setFormData(prev => ({...prev, teamName: e.target.value}))}
+                              className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
+                              placeholder="Enter your team name"
+                            />
+                          </div>
+
+                          {/* Basic Info */}
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <label className="block text-sm font-medium text-gray-300 mb-2">
+                                Full Name *
+                              </label>
+                              <input
+                                type="text"
+                                required
+                                value={formData.fullName}
+                                onChange={(e) => setFormData(prev => ({...prev, fullName: e.target.value}))}
+                                className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
+                                placeholder="Tonmoy"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-gray-300 mb-2">
+                                Email Address *
+                              </label>
+                              <input
+                                type="email"
+                                required
+                                value={formData.email}
+                                onChange={(e) => setFormData(prev => ({...prev, email: e.target.value}))}
+                                className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
+                                placeholder="tonmoyzohani@gmail.com"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <label className="block text-sm font-medium text-gray-300 mb-2">
+                                Phone Number *
+                              </label>
+                              <input
+                                type="tel"
+                                required
+                                value={formData.phone}
+                                onChange={(e) => setFormData(prev => ({...prev, phone: e.target.value}))}
+                                className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
+                                placeholder="+880 1XXXXXXXXX"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-gray-300 mb-2">
+                                In-Game Name *
+                              </label>
+                              <input
+                                type="text"
+                                required
+                                value={formData.inGameName}
+                                onChange={(e) => setFormData(prev => ({...prev, inGameName: e.target.value}))}
+                                className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
+                                placeholder="In-Game Name"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <label className="block text-sm font-medium text-gray-300 mb-2">
+                                Steam ID / PSN ID *
+                              </label>
+                              <input
+                                type="text"
+                                required
+                                value={formData.inGameId}
+                                onChange={(e) => setFormData(prev => ({...prev, inGameId: e.target.value}))}
+                                className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
+                                placeholder="Steam ID / PSN ID"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-gray-300 mb-2">
+                                Discord ID (optional)
+                              </label>
+                              <input
+                                type="text"
+                                value={formData.discordId}
+                                onChange={(e) => setFormData(prev => ({...prev, discordId: e.target.value}))}
+                                className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
+                                placeholder="Discord ID (optional)"
+                              />
+                            </div>
+                          </div>
+
+                          {/* Action Buttons */}
+                          <div className="pt-6 flex gap-3">
+                            <button
+                              type="button"
+                              onClick={() => setShowRegistrationModal(false)}
+                              className="flex-1 px-6 py-3 rounded-lg border border-gray-600 text-gray-300 hover:bg-gray-800/50 transition-colors"
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              type="submit"
+                              className="flex-1 px-6 py-3 rounded-lg bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white font-semibold transition-all flex items-center justify-center gap-2"
+                            >
+                              Submit Registration
+                              <ArrowRight size={16} />
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    </motion.div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </div>
