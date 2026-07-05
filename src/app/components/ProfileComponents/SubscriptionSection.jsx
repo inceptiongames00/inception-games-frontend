@@ -7,53 +7,105 @@ import UpgradePlanModal from './UpgradePlanModal';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://inception-games.an.r.appspot.com/api/v1';
 
-export default function SubscriptionSection() {
+export default function SubscriptionSection({ userProfile }) {
   const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
   const [subscriptionTiers, setSubscriptionTiers] = useState([]);
   const [apiPlans, setApiPlans] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [activeSubscription, setActiveSubscription] = useState(null);
+  const [hasMounted, setHasMounted] = useState(false);
 
+  // Handle client-side mounting to prevent hydration mismatches
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  // Extract and display active subscription from userProfile
+  useEffect(() => {
+    if (!hasMounted) return;
+
+    console.log('[SubscriptionSection] userProfile:', userProfile);
+    console.log('[SubscriptionSection] subscriptions array:', userProfile?.subscriptions);
+
+    if (userProfile?.subscriptions && Array.isArray(userProfile.subscriptions) && userProfile.subscriptions.length > 0) {
+      const activeSub = userProfile.subscriptions[0];
+      console.log('[SubscriptionSection] Active Subscription Found:', activeSub);
+      setActiveSubscription(activeSub);
+      
+      const statusColors = {
+        active: 'bg-emerald-500/20 border-emerald-500/40 text-emerald-400',
+        pending: 'bg-yellow-500/20 border-yellow-500/40 text-yellow-400',
+        expired: 'bg-red-500/20 border-red-500/40 text-red-400',
+      };
+      
+      // Format date safely (YYYY-MM-DD) to avoid hydration mismatch
+      let expirationText = 'No expiration';
+      if (activeSub.end_date) {
+        const date = new Date(activeSub.end_date);
+        const day = date.getUTCDate();
+        const month = date.toLocaleString('en-US', { month: 'short', timeZone: 'UTC' });
+        const year = date.getUTCFullYear();
+        
+        // Get ordinal suffix (st, nd, rd, th)
+        const suffix = ['th', 'st', 'nd', 'rd'][day % 10 > 3 ? 0 : (day % 100 - 20 > 3 ? 0 : day % 10)] || 'th';
+        
+        expirationText = `Expires: ${day}${suffix} ${month} ${year}`;
+      }
+      
+      const displaySub = {
+        name: activeSub.plan || activeSub.plan_name || 'Plan',
+        badge: activeSub.status?.toUpperCase() || 'PENDING',
+        badgeColor: statusColors[activeSub.status] || statusColors.pending,
+        price: activeSub.price ? `${activeSub.price} BDT` : 'FREE',
+        expiration: expirationText,
+        features: [
+          'Priority Access',
+          'Exclusive Tournaments',
+          'Enhanced Support',
+        ],
+        buttonText: activeSub.status === 'expired' ? 'RENEW PLAN' : 'UPGRADE PLAN',
+        buttonStyle: activeSub.status === 'expired' 
+          ? 'bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-500 hover:to-orange-400'
+          : 'bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400',
+      };
+      
+      console.log('[SubscriptionSection] Setting display subscription:', displaySub);
+      setSubscriptionTiers([displaySub]);
+    } else {
+      console.log('[SubscriptionSection] No active subscription, keeping default');
+    }
+  }, [userProfile, hasMounted]);
+
+  console.log('User Profile',userProfile?.subscriptions)
+
+  // Fetch available plans
   useEffect(() => {
     const fetchPlans = async () => {
       try {
         const response = await fetch(`${API_BASE_URL}/cms/subscription/plans`);
         const data = await response.json();
 
-        console.log('[SubscriptionSection] API Response:', data);
+        console.log('[SubscriptionSection] API Subscription Plans:', data);
 
         if (data.plans && Array.isArray(data.plans)) {
-          // Store raw API plans for modal
           setApiPlans(data.plans);
-          
-          // Transform just first plan for subscription section display
-          const firstPlan = data.plans[0];
-          const displayPlan = {
-            name: firstPlan.plan || 'Plan',
-            badge: firstPlan.badge || 'PLAN',
-            badgeColor: 'bg-emerald-500/20 border-emerald-500/40 text-emerald-400',
-            price: firstPlan.price ? `${firstPlan.price} BDT` : 'FREE',
-            expiration: 'No expiration',
-            features: [
-              'Priority Access',
-              'Exclusive Tournaments',
-              'Exclusive Tournaments',
-            ],
-            buttonText: 'UPGRADE PLAN',
-            buttonStyle: 'bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400',
-          };
-
-          setSubscriptionTiers([displayPlan]);
         }
       } catch (error) {
-        console.log('Error fetching subscription plans:', error);
-        // Keep default static data on error
+        console.log('[SubscriptionSection] Error fetching subscription plans:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchPlans();
-  }, []);
+    if (hasMounted) {
+      fetchPlans();
+    }
+  }, [hasMounted]);
+
+  // Don't render until client is mounted to prevent hydration mismatch
+  if (!hasMounted) {
+    return null;
+  }
 
   return (
     <motion.div
@@ -86,10 +138,10 @@ export default function SubscriptionSection() {
           </h3>
         </motion.div>
     
-          {subscriptionTiers.map((tier, index) => (
+        {subscriptionTiers.length > 0 ? (
+          subscriptionTiers.map((tier, index) => (
             <motion.div
               key={index}
-              // className="rounded-xl border border-white/[0.06] hover:border-purple-500/20 transition duration-300"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 * (index + 1) }}
@@ -103,9 +155,15 @@ export default function SubscriptionSection() {
               </div>
 
               {/* Price */}
-<p className="text-1xl sm:text-2xl font-bold text-white mt-1">
-  {parseInt(tier.price) === 0 ? 'FREE' : parseInt(tier.price)}
-</p>
+              <div className="mt-1 flex items-baseline gap-1">
+                <p className="text-1xl sm:text-2xl font-bold text-white">
+                  {parseInt(tier.price) === 0 ? 'FREE' : parseInt(tier.price)} BDT
+                </p>
+                {parseInt(tier.price) !== 0 && (
+                  <span className="text-xs sm:text-sm text-gray-400">/month</span>
+                )}
+              </div>
+              
               {/* Expiration */}
               <p className="text-gray-500 text-sm mt-0.5">{tier.expiration}</p>
 
@@ -131,16 +189,19 @@ export default function SubscriptionSection() {
               </div>
 
               {/* Upgrade Button */}
-           <motion.button
-  onClick={() => setIsUpgradeModalOpen(true)}
-  className={`w-full cursor-pointer py-3 rounded-xl font-bold text-white text-sm sm:text-sm transition duration-300 shadow-lg shadow-purple-500/20 ${tier.buttonStyle}`}
-  whileHover={{ scale: 1.02, y: -1 }}
-  whileTap={{ scale: 0.98 }}
->
-  {tier.buttonText}
-</motion.button>
+              <motion.button
+                onClick={() => setIsUpgradeModalOpen(true)}
+                className={`w-full cursor-pointer py-3 rounded-xl font-bold text-white text-sm sm:text-sm transition duration-300 shadow-lg shadow-purple-500/20 ${tier.buttonStyle}`}
+                whileHover={{ scale: 1.02, y: -1 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                {tier.buttonText}
+              </motion.button>
             </motion.div>
-          ))}
+          ))
+        ) : (
+          <div className="text-gray-500 text-sm">Loading subscription...</div>
+        )}
         
       </div>
 
