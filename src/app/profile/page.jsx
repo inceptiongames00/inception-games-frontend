@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-// import { useAuth } from '@/hooks/useAuth.js'
 import { useRouter } from "next/navigation";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -14,17 +13,63 @@ import { useAuth } from "../context/AuthContext";
 import NotificationsPanel from "../components/ProfileComponents/NotificationsPanel";
 import SubscriptionSection from "../components/ProfileComponents/SubscriptionSection";
 import ProGearShop from "../components/ProfileComponents/ProGearShop";
+import { getTokens } from "@/lib/api";
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://inception-games.an.r.appspot.com/api/v1';
 
 export default function ProfilePage() {
   const { user, isAuthenticated, loading } = useAuth();
   const router = useRouter();
   const [gamingProfile, setGamingProfile] = useState(null);
   const [editProfileOpen, setEditProfileOpen] = useState(false);
+  const [apiUserProfile, setApiUserProfile] = useState(null);
+  const [loadingProfile, setLoadingProfile] = useState(true);
 
+  // Fetch user profile from API
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const tokens = getTokens();
+        console.log('[ProfilePage] Tokens:', tokens);
+        
+        if (!tokens?.accessToken) {
+          console.log('[ProfilePage] No access token found');
+          setLoadingProfile(false);
+          return;
+        }
 
+        const userId = tokens.userId || 'SNS-1524';
+        const apiUrl = `${API_BASE_URL}/auth/user-profile/${userId}`;
+        console.log('[ProfilePage] Fetching from URL:', apiUrl);
 
-  // NOTE: Profile data is stored in the user object from AuthContext
-  // No need to fetch separately - data is collected during registration
+        const response = await fetch(apiUrl, {
+          headers: {
+            'Authorization': `Bearer ${tokens.accessToken}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        console.log('[ProfilePage] Response Status:', response.status, response.statusText);
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log('[ProfilePage] Full API Response:', data);
+          console.log('[ProfilePage] Response Data:', data.data || data);
+          setApiUserProfile(data.data || data);
+        } else {
+          const errorData = await response.json();
+          console.log('[ProfilePage] Error Response:', errorData);
+        }
+      } catch (error) {
+        console.log('[ProfilePage] Error fetching user profile:', error);
+        console.error('[ProfilePage] Error Details:', error);
+      } finally {
+        setLoadingProfile(false);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
 
   // Load gaming profile from sessionStorage whenever user changes
   useEffect(() => {
@@ -67,25 +112,29 @@ export default function ProfilePage() {
   }
 
   // Use user data from API which includes gaming profile data
-  // The user object already contains primaryGame, gameRole, rank, region, etc. from the API
+  // Merge API profile data with existing user data
   const mergedUser = {
     ...user,
+    ...apiUserProfile,
     // Use API data first, fallback to gamingProfile sessionStorage if needed
     username:
+      apiUserProfile?.username ||
       user?.username ||
       gamingProfile?.username ||
       user?.fullName ||
       user?.email?.split("@")[0] ||
       "Player",
-    bio: user?.bio || gamingProfile?.bio || "",
-    primaryGame: user?.primaryGame || gamingProfile?.game || "",
-    gameRole: user?.gameRole || gamingProfile?.role || "",
-    region: user?.region || gamingProfile?.region || "",
-    rank: user?.rank || gamingProfile?.rank || "",
-    discord: user?.discord || gamingProfile?.discord || "",
+    bio: apiUserProfile?.bio || user?.bio || gamingProfile?.bio || "",
+    primaryGame: apiUserProfile?.primaryGame || apiUserProfile?.primary_game || user?.primaryGame || gamingProfile?.game || "",
+    gameRole: apiUserProfile?.gameRole || apiUserProfile?.game_role || user?.gameRole || gamingProfile?.role || "",
+    region: apiUserProfile?.region || user?.region || gamingProfile?.region || "",
+    rank: apiUserProfile?.rank || user?.rank || gamingProfile?.rank || "",
+    discord: apiUserProfile?.discord || user?.discord || gamingProfile?.discord || "",
+    avatar: apiUserProfile?.avatar || apiUserProfile?.avatar_url || user?.avatar || "",
+    banner: apiUserProfile?.banner || apiUserProfile?.banner_url || user?.banner || "",
     // Legacy fields for compatibility
-    game: user?.primaryGame || gamingProfile?.game || "",
-    role: user?.gameRole || gamingProfile?.role || "",
+    game: apiUserProfile?.primaryGame || apiUserProfile?.primary_game || user?.primaryGame || gamingProfile?.game || "",
+    role: apiUserProfile?.gameRole || apiUserProfile?.game_role || user?.gameRole || gamingProfile?.role || "",
   };
 
 
