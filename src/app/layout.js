@@ -12,6 +12,16 @@ export default function RootLayout({ children }) {
           name="description"
           content="Inception Games - Bangladesh's premier esports platform for tournaments, events, and gaming community."
         />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Inception Games" />
+        <meta property="og:title" content="Inception Games - Esports Platform" />
+        <meta property="og:description" content="Bangladesh's premier esports platform for tournaments, events, and gaming community." />
+        <meta property="og:image" content="https://inception-games.an.r.appspot.com/assets/updated_logo.png" />
+        <meta property="og:url" content="https://inception-games.an.r.appspot.com" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Inception Games - Esports Platform" />
+        <meta name="twitter:description" content="Bangladesh's premier esports platform for tournaments, events, and gaming community." />
+        <meta name="twitter:image" content="https://inception-games.an.r.appspot.com/assets/updated_logo.png" />
         <link
           href={process.env.NEXT_PUBLIC_FONTSHARE_URL}
           rel="stylesheet"

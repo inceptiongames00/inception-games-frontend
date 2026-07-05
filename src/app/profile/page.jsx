@@ -39,8 +39,8 @@ export default function ProfilePage() {
         return;
       }
 
-      const userId = 'SNS-1524';
-        //  const userId = user?.id;
+      // const userId = 'SNS-1524';
+      const userId = user?.id;
       const apiUrl = `${API_BASE_URL}/auth/user-profile/${userId}`;
       console.log('[ProfilePage] User ID:', userId);
       console.log('[ProfilePage] Fetching from URL:', apiUrl);

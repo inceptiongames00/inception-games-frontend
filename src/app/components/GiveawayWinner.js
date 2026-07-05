@@ -4,6 +4,26 @@ import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { FaFacebookF, FaTwitter, FaLinkedin, FaWhatsapp } from "react-icons/fa"
 
+// Initialize Facebook SDK
+const initializeFacebookSDK = () => {
+  if (typeof window !== 'undefined' && !window.FB) {
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId: process.env.NEXT_PUBLIC_FACEBOOK_APP_ID || '1234567890',
+        xfbml: true,
+        version: 'v18.0'
+      });
+    };
+
+    const script = document.createElement('script');
+    script.async = true;
+    script.defer = true;
+    script.crossOrigin = 'anonymous';
+    script.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v18.0';
+    document.body.appendChild(script);
+  }
+}
+
 export default function GiveawayWinner() {
   const [currentIndex, setCurrentIndex] = useState(0)
 
@@ -55,14 +75,87 @@ export default function GiveawayWinner() {
     const shareUrl = typeof window !== 'undefined' ? window.location.href : ''
     const title = winner.title
     const description = winner.description
+    const image = winner.image
+
+    // Update Open Graph meta tags dynamically for social sharing
+    if (typeof window !== 'undefined') {
+      const updateMetaTags = () => {
+        let ogTitle = document.querySelector('meta[property="og:title"]')
+        let ogDescription = document.querySelector('meta[property="og:description"]')
+        let ogImage = document.querySelector('meta[property="og:image"]')
+        let ogUrl = document.querySelector('meta[property="og:url"]')
+        let twitterTitle = document.querySelector('meta[name="twitter:title"]')
+        let twitterDescription = document.querySelector('meta[name="twitter:description"]')
+        let twitterImage = document.querySelector('meta[name="twitter:image"]')
+
+        if (!ogTitle) {
+          ogTitle = document.createElement('meta')
+          ogTitle.setAttribute('property', 'og:title')
+          document.head.appendChild(ogTitle)
+        }
+        if (!ogDescription) {
+          ogDescription = document.createElement('meta')
+          ogDescription.setAttribute('property', 'og:description')
+          document.head.appendChild(ogDescription)
+        }
+        if (!ogImage) {
+          ogImage = document.createElement('meta')
+          ogImage.setAttribute('property', 'og:image')
+          document.head.appendChild(ogImage)
+        }
+        if (!ogUrl) {
+          ogUrl = document.createElement('meta')
+          ogUrl.setAttribute('property', 'og:url')
+          document.head.appendChild(ogUrl)
+        }
+        if (!twitterTitle) {
+          twitterTitle = document.createElement('meta')
+          twitterTitle.setAttribute('name', 'twitter:title')
+          document.head.appendChild(twitterTitle)
+        }
+        if (!twitterDescription) {
+          twitterDescription = document.createElement('meta')
+          twitterDescription.setAttribute('name', 'twitter:description')
+          document.head.appendChild(twitterDescription)
+        }
+        if (!twitterImage) {
+          twitterImage = document.createElement('meta')
+          twitterImage.setAttribute('name', 'twitter:image')
+          document.head.appendChild(twitterImage)
+        }
+
+        ogTitle.setAttribute('content', title)
+        ogDescription.setAttribute('content', description)
+        ogImage.setAttribute('content', image)
+        ogUrl.setAttribute('content', shareUrl)
+        twitterTitle.setAttribute('content', title)
+        twitterDescription.setAttribute('content', description)
+        twitterImage.setAttribute('content', image)
+      }
+
+      updateMetaTags()
+    }
+
     let shareLink = ''
 
     switch (platform) {
       case 'facebook':
-        shareLink = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(title + ' - ' + description)}`
+        // Use Facebook Share Dialog - requires app ID but gives better results
+        if (typeof window !== 'undefined' && window.FB) {
+          FB.ui({
+            method: 'share',
+            href: shareUrl,
+            hashtag: '#InceptionGames',
+            display: 'popup',
+          }, function(){});
+          return
+        } else {
+          // Fallback to direct share
+          shareLink = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(title)}`
+        }
         break
       case 'twitter':
-        shareLink = `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(title + ' - ' + description)}`
+        shareLink = `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(title + ' - ' + description)}&hashtags=InceptionGames,Esports`
         break
       case 'linkedin':
         shareLink = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`
@@ -74,7 +167,7 @@ export default function GiveawayWinner() {
         return
     }
 
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && shareLink) {
       window.open(shareLink, 'share-dialog', 'width=800,height=600')
     }
   }
