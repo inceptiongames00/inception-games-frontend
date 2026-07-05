@@ -1,28 +1,59 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Check, Crown } from 'lucide-react';
 import UpgradePlanModal from './UpgradePlanModal';
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://inception-games.an.r.appspot.com/api/v1';
+
 export default function SubscriptionSection() {
   const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
-  const subscriptionTiers = [
-    {
-      name: 'Free Gamer Plan',
-      badge: 'FREE',
-      badgeColor: 'bg-emerald-500/20 border-emerald-500/40 text-emerald-400',
-      price: 'FREE',
-      expiration: 'No expiration',
-      features: [
-        'Priority Access',
-        'Exclusive Tournaments',
-        'Exclusive Tournaments',
-      ],
-      buttonText: 'UPGRADE PLAN',
-      buttonStyle: 'bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400',
-    },
-  ];
+  const [subscriptionTiers, setSubscriptionTiers] = useState([]);
+  const [apiPlans, setApiPlans] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/cms/subscription/plans`);
+        const data = await response.json();
+
+        console.log('[SubscriptionSection] API Response:', data);
+
+        if (data.plans && Array.isArray(data.plans)) {
+          // Store raw API plans for modal
+          setApiPlans(data.plans);
+          
+          // Transform just first plan for subscription section display
+          const firstPlan = data.plans[0];
+          const displayPlan = {
+            name: firstPlan.plan || 'Plan',
+            badge: firstPlan.badge || 'PLAN',
+            badgeColor: 'bg-emerald-500/20 border-emerald-500/40 text-emerald-400',
+            price: firstPlan.price ? `${firstPlan.price} BDT` : 'FREE',
+            expiration: 'No expiration',
+            features: [
+              'Priority Access',
+              'Exclusive Tournaments',
+              'Exclusive Tournaments',
+            ],
+            buttonText: 'UPGRADE PLAN',
+            buttonStyle: 'bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400',
+          };
+
+          setSubscriptionTiers([displayPlan]);
+        }
+      } catch (error) {
+        console.log('Error fetching subscription plans:', error);
+        // Keep default static data on error
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPlans();
+  }, []);
 
   return (
     <motion.div
@@ -115,7 +146,7 @@ export default function SubscriptionSection() {
       </div>
 
       {/* Upgrade Plan Modal */}
-      <UpgradePlanModal isOpen={isUpgradeModalOpen} onClose={() => setIsUpgradeModalOpen(false)} />
+      <UpgradePlanModal isOpen={isUpgradeModalOpen} onClose={() => setIsUpgradeModalOpen(false)} plans={apiPlans} />
     </motion.div>
   );
 }

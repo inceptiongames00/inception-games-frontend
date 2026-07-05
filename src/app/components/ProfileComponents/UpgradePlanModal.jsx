@@ -5,20 +5,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Check } from 'lucide-react';
 import { getTokens } from '@/lib/api';
 
-export default function UpgradePlanModal({ isOpen, onClose }) {
+export default function UpgradePlanModal({ isOpen, onClose, plans = [] }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
 
-  const planNameMap = {
-    'free': 'Free Gamer',
-    'pro': 'Pro Gamer',
-    'elite': 'Elite Gamer',
-    'legendary': 'Legendary Gamer',
-  };
-
-  const handleSubscribe = async (planId) => {
-    if (planId === 'free') return; // Skip for free plan
+  const handleSubscribe = async (planName) => {
+    if (!planName || planName.toLowerCase().includes('free')) return;
 
     setLoading(true);
     setError(null);
@@ -41,18 +34,19 @@ export default function UpgradePlanModal({ isOpen, onClose }) {
           },
           body: JSON.stringify({
             user_id: tokens.userId || 'SNS-1524',
-            plan: planNameMap[planId],
+            plan: planName,
           }),
         }
       );
 
       const data = await response.json();
+      console.log('[UpgradePlanModal] Subscription Response:', data);
 
       if (!response.ok) {
         throw new Error(data.message || 'Subscription failed');
       }
 
-      setSuccess(`Successfully upgraded to ${planNameMap[planId]}`);
+      setSuccess(`Successfully upgraded to ${planName}`);
       setTimeout(() => {
         onClose();
       }, 2000);
@@ -63,79 +57,33 @@ export default function UpgradePlanModal({ isOpen, onClose }) {
       setLoading(false);
     }
   };
-  const plans = [
-    {
-      id: 'free',
-      name: 'Free Gamer',
-      price: 'Free',
-      period: '',
-      badge: 'CURRENT PLAN',
-      badgeColor: 'bg-gray-700/50 text-gray-400',
-      isCurrentPlan: true,
-      features: [
-        'Basic Matchmaking',
-        'Community Forum Access',
-        { text: 'No Advanced Stats', disabled: true },
-      ],
-      buttonText: 'CURRENTLY ACTIVE',
-      buttonStyle: 'bg-gray-700 hover:bg-gray-700 cursor-default',
-      highlighted: false,
-    },
-    {
-      id: 'pro',
-      name: 'Pro Gamer',
-      price: '249 BDT',
-      period: '/mo',
-      badge: 'MOST POPULAR',
-      badgeColor: 'bg-purple-600 text-white',
-      isCurrentPlan: false,
-      features: [
-        'Advanced Performance Stats',
-        'Pro Gear Discounts (10%)',
-        'Ad-free Experience',
-        'Priority Server Entry',
-      ],
-      buttonText: 'UPGRADE TO PRO',
-      buttonStyle: 'bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400',
-      highlighted: true,
-    },
-    {
-      id: 'elite',
-      name: 'Elite Gamer',
-      price: '349 BDT',
-      period: '/mo',
-      badge: null,
-      badgeColor: '',
-      isCurrentPlan: false,
-      features: [
-        'All Pro Features',
-        '1-on-1 Coaching Session',
-        'Exclusive Tournament Entry',
-        'Beta Game Access',
-      ],
-      buttonText: 'GO ELITE',
-      buttonStyle: 'bg-transparent border-2 border-purple-500 text-purple-400 hover:bg-purple-500/10',
-      highlighted: false,
-    },
-    {
-      id: 'legendary',
-      name: 'Legendary Gamer',
-      price: '449 BDT',
-      period: '/mo',
-      badge: null,
-      badgeColor: '',
-      isCurrentPlan: false,
-      features: [
-        'All Elite Features',
-        'Personal Account Manager',
-        'Custom Profile Badge',
-        'Early Access to New Games',
-      ],
-      buttonText: 'GO LEGENDARY',
-      buttonStyle: 'bg-transparent border-2 border-purple-500 text-purple-400 hover:bg-purple-500/10',
-      highlighted: false,
-    },
-  ];
+
+  // Transform API plans to display format
+  const transformedPlans = plans.length > 0 
+    ? plans.map((plan, idx) => ({
+        id: plan.id,
+        name: plan.plan,
+        price: `${plan.price} BDT`,
+        period: `/month`,
+        badge: idx === 1 ? 'MOST POPULAR' : null,
+        badgeColor: idx === 1 ? 'bg-purple-600 text-white' : '',
+        isCurrentPlan: false,
+        duration_days: plan.duration_days,
+        features: [
+          `${plan.duration_days}-day access`,
+          'Premium Features Included',
+          'Priority Support',
+          'Exclusive Tournaments Access',
+        ],
+        buttonText: 'UPGRADE NOW',
+        buttonStyle: idx === 1 
+          ? 'bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400'
+          : 'bg-transparent border-2 border-purple-500 text-purple-400 hover:bg-purple-500/10',
+        highlighted: idx === 1,
+      }))
+    : [];
+
+  const displayPlans = transformedPlans;
 
   return (
     <AnimatePresence>
@@ -176,7 +124,7 @@ export default function UpgradePlanModal({ isOpen, onClose }) {
                   Level Up Your Experience
                 </h2>
                 <p className="text-lg text-gray-400">
-                  Level up with premium perks, elite gear, and expert coaching.
+                  Choose the perfect plan for your gaming journey.
                 </p>
               </motion.div>
 
@@ -208,7 +156,8 @@ export default function UpgradePlanModal({ isOpen, onClose }) {
                     ✓ {success}
                   </motion.div>
                 )}
-                {plans.map((plan, index) => (
+
+                {displayPlans.map((plan, index) => (
                   <motion.div
                     key={plan.id}
                     initial={{ opacity: 0, y: 20 }}
@@ -268,7 +217,7 @@ export default function UpgradePlanModal({ isOpen, onClose }) {
 
                       {/* Button */}
                       <motion.button
-                        onClick={() => handleSubscribe(plan.id)}
+                        onClick={() => handleSubscribe(plan.name)}
                         disabled={plan.isCurrentPlan || loading}
                         className={`w-full py-3 rounded-lg font-bold text-sm uppercase tracking-wider transition-all duration-300 ${plan.buttonStyle} ${loading && !plan.isCurrentPlan ? 'opacity-50' : ''}`}
                         whileHover={{ scale: plan.isCurrentPlan || loading ? 1 : 1.02 }}

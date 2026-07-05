@@ -123,15 +123,15 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2 flex-shrink-0">
             <Image
-              src="https://res.cloudinary.com/jvpygp4b/image/upload/v1783154173/updated_logo_omz86q.png"
+              src="https://res.cloudinary.com/jvpygp4b/image/upload/v1783240841/logo_lh4bu1.png"
               alt="Inceptions Logo"
               width={56}
               height={56}
               className="h-7 sm:h-8 md:h-14 w-auto"
-              style={{
-                filter:
-                  "drop-shadow(0 0 20px #ff0040) drop-shadow(0 0 40px #8116f1)",
-              }}
+              // style={{
+              //   filter:
+              //     "drop-shadow(0 0 20px #ff0040) drop-shadow(0 0 40px #8116f1)",
+              // }}
             />
           </Link>
 

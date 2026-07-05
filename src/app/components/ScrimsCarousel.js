@@ -115,7 +115,7 @@ function GameCard({ game, onClick, isHydrated, user }) {
         <div
           className="relative transition-all duration-300 hover:scale-105 h-full"
           style={{
-            backgroundImage: 'url(/assets/frame.png)',
+            backgroundImage: 'url(https://res.cloudinary.com/jvpygp4b/image/upload/v1783241169/frame_qqaibz.png)',
             backgroundSize: '100% 100%',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
