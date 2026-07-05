@@ -64,7 +64,7 @@ export default function UpgradePlanModal({ isOpen, onClose, plans = [] }) {
         id: plan.id,
         name: plan.plan,
         price: `${plan.price} BDT`,
-        period: `/month`,
+        period: `month`,
         badge: idx === 1 ? 'MOST POPULAR' : null,
         badgeColor: idx === 1 ? 'bg-purple-600 text-white' : '',
         isCurrentPlan: false,
@@ -182,13 +182,19 @@ export default function UpgradePlanModal({ isOpen, onClose, plans = [] }) {
                       <h3 className="text-xl font-bold text-white mb-2">{plan.name}</h3>
 
                       {/* Price */}
-                      <div className="flex items-baseline gap-1 mb-6">
-                        <span className="text-3xl font-bold text-white">{plan.price}</span>
-                        {plan.period && (
-                          <span className="text-sm text-gray-500">{plan.period}</span>
-                        )}
-                      </div>
-
+<div className="flex items-baseline gap-1 mb-6">
+  {parseInt(plan.price) === 0 ? (
+    <span className="text-3xl font-bold text-white">FREE</span>
+  ) : (
+    <>
+      <span className="text-3xl font-bold text-white">{parseInt(plan.price)}</span>
+      <span className="text-sm font-medium text-gray-400">BDT</span>
+    </>
+  )}
+  {plan.period && parseInt(plan.price) !== 0 && (
+    <span className="text-sm text-gray-500">/{plan.period}</span>
+  )}
+</div>
                       {/* Features */}
                       <div className="space-y-3 mb-6">
                         {plan.features.map((feature, idx) => {

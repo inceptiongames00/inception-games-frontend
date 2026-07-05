@@ -103,10 +103,9 @@ export default function SubscriptionSection() {
               </div>
 
               {/* Price */}
-              <p className="text-1xl sm:text-2xl font-bold text-white mt-1">
-                {tier.price}
-              </p>
-
+<p className="text-1xl sm:text-2xl font-bold text-white mt-1">
+  {parseInt(tier.price) === 0 ? 'FREE' : parseInt(tier.price)}
+</p>
               {/* Expiration */}
               <p className="text-gray-500 text-sm mt-0.5">{tier.expiration}</p>
 
