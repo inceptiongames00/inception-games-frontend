@@ -101,7 +101,7 @@ export default function ProfilePage() {
           <div className="absolute bottom-0 right-1/4 w-[350px] sm:w-[400px] lg:w-[500px] h-[350px] sm:h-[400px] lg:h-[500px] bg-pink-600/[0.04] rounded-full blur-[80px] sm:blur-[100px] lg:blur-[120px]" />
         </div>
 
-        <div className="relative w-full mx-auto px-3 xs:px-4 sm:px-5 md:px-6 lg:px-8 xl:px-8 max-w-[100%] sm:max-w-[640px] md:max-w-[768px] lg:max-w-5xl xl:max-w-7xl">
+        <div className="relative w-full mx-auto max-w-[100%] sm:max-w-[640px] md:max-w-[768px] lg:max-w-5xl xl:max-w-7xl">
           {/* Hero Banner */}
           <div className="mb-6 sm:mb-8 md:mb-10">
             <ProfileHeroBanner
