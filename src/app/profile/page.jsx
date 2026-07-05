@@ -26,53 +26,51 @@ export default function ProfilePage() {
   const [loadingProfile, setLoadingProfile] = useState(true);
 
   // Fetch user profile from API
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const tokens = getTokens();
-        console.log('[ProfilePage] Tokens:', tokens);
-        
-        if (!tokens?.accessToken) {
-          console.log('[ProfilePage] No access token found');
-          setLoadingProfile(false);
-          return;
-        }
-
-        // const userId = user?.id || '';
-           const userId = 'SNS-1524';
-        const apiUrl = `${API_BASE_URL}/auth/user-profile/${userId}`;
-        console.log('[ProfilePage] User ID:', userId);
-        console.log('[ProfilePage] Fetching from URL:', apiUrl);
-
-        const response = await fetch(apiUrl, {
-          headers: {
-            'Authorization': `Bearer ${tokens.accessToken}`,
-            'Content-Type': 'application/json',
-          },
-        });
-
-        console.log('[ProfilePage] Response Status:', response.status, response.statusText);
-
-        if (response.ok) {
-          const data = await response.json();
-          console.log('[ProfilePage] Full API Response:', data);
-          // API returns object directly with subscriptions array
-          const profileData = data.data || data;
-          console.log('[ProfilePage] Response Data:', profileData);
-          console.log('[ProfilePage] Subscriptions:', profileData?.subscriptions);
-          setApiUserProfile(profileData);
-        } else {
-          const errorData = await response.json();
-          console.log('[ProfilePage] Error Response:', errorData);
-        }
-      } catch (error) {
-        console.log('[ProfilePage] Error fetching user profile:', error);
-        console.error('[ProfilePage] Error Details:', error);
-      } finally {
+  const fetchUserProfile = async () => {
+    try {
+      const tokens = getTokens();
+      console.log('[ProfilePage] Tokens:', tokens);
+      
+      if (!tokens?.accessToken) {
+        console.log('[ProfilePage] No access token found');
         setLoadingProfile(false);
+        return;
       }
-    };
 
+      const userId = 'SNS-1524';
+      const apiUrl = `${API_BASE_URL}/auth/user-profile/${userId}`;
+      console.log('[ProfilePage] User ID:', userId);
+      console.log('[ProfilePage] Fetching from URL:', apiUrl);
+
+      const response = await fetch(apiUrl, {
+        headers: {
+          'Authorization': `Bearer ${tokens.accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      console.log('[ProfilePage] Response Status:', response.status, response.statusText);
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('[ProfilePage] Full API Response:', data);
+        const profileData = data.data || data;
+        console.log('[ProfilePage] Response Data:', profileData);
+        console.log('[ProfilePage] Subscriptions:', profileData?.subscriptions);
+        setApiUserProfile(profileData);
+      } else {
+        const errorData = await response.json();
+        console.log('[ProfilePage] Error Response:', errorData);
+      }
+    } catch (error) {
+      console.log('[ProfilePage] Error fetching user profile:', error);
+      console.error('[ProfilePage] Error Details:', error);
+    } finally {
+      setLoadingProfile(false);
+    }
+  };
+
+  useEffect(() => {
     fetchUserProfile();
   }, []);
 
@@ -179,7 +177,7 @@ export default function ProfilePage() {
             {/* Right Column: Notifications & Subscriptions (sidebar on md+) */}
             <div className="md:col-span-1 space-y-4 sm:space-y-6 md:space-y-6">
               <NotificationsPanel />
-              <SubscriptionSection userProfile={apiUserProfile} />
+              <SubscriptionSection userProfile={apiUserProfile} onSubscriptionSuccess={() => fetchUserProfile()} />
             </div>
           </div>
 

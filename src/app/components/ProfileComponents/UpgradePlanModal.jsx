@@ -4,8 +4,9 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Check } from 'lucide-react';
 import { getTokens } from '@/lib/api';
+import Swal from 'sweetalert2';
 
-export default function UpgradePlanModal({ isOpen, onClose, plans = [] }) {
+export default function UpgradePlanModal({ isOpen, onClose, plans = [], activePlanName = null, onSubscriptionSuccess }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
@@ -20,7 +21,12 @@ export default function UpgradePlanModal({ isOpen, onClose, plans = [] }) {
     try {
       const tokens = getTokens();
       if (!tokens?.accessToken) {
-        setError('Not authenticated');
+        Swal.fire({
+          icon: 'error',
+          title: 'Authentication Error',
+          text: 'Not authenticated',
+          confirmButtonColor: '#a855f7',
+        });
         return;
       }
 
@@ -46,13 +52,34 @@ export default function UpgradePlanModal({ isOpen, onClose, plans = [] }) {
         throw new Error(data.message || 'Subscription failed');
       }
 
-      setSuccess(`Successfully upgraded to ${planName}`);
+      // Show success alert
+      Swal.fire({
+        icon: 'success',
+        title: 'Subscription Successful!',
+        html: `<p>You have successfully subscribed to <strong>${planName}</strong></p>`,
+        confirmButtonColor: '#a855f7',
+        timer: 2000,
+        timerProgressBar: true,
+      });
+
+      // Call callback to refresh profile
+      if (onSubscriptionSuccess) {
+        setTimeout(() => {
+          onSubscriptionSuccess();
+        }, 500);
+      }
+
       setTimeout(() => {
         onClose();
       }, 2000);
     } catch (err) {
-      console.error('Subscription error:', err);
-      setError(err.message || 'Failed to complete subscription');
+      console.error('[UpgradePlanModal] Subscription error:', err);
+      Swal.fire({
+        icon: 'error',
+        title: 'Subscription Failed',
+        text: err.message || 'Failed to complete subscription',
+        confirmButtonColor: '#a855f7',
+      });
     } finally {
       setLoading(false);
     }
@@ -60,27 +87,32 @@ export default function UpgradePlanModal({ isOpen, onClose, plans = [] }) {
 
   // Transform API plans to display format
   const transformedPlans = plans.length > 0 
-    ? plans.map((plan, idx) => ({
-        id: plan.id,
-        name: plan.plan,
-        price: `${plan.price} BDT`,
-        period: `month`,
-        badge: idx === 1 ? 'MOST POPULAR' : null,
-        badgeColor: idx === 1 ? 'bg-purple-600 text-white' : '',
-        isCurrentPlan: false,
-        duration_days: plan.duration_days,
-        features: [
-          `${plan.duration_days}-day access`,
-          'Premium Features Included',
-          'Priority Support',
-          'Exclusive Tournaments Access',
-        ],
-        buttonText: 'UPGRADE NOW',
-        buttonStyle: idx === 1 
-          ? 'bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400'
-          : 'bg-transparent border-2 border-purple-500 text-purple-400 hover:bg-purple-500/10',
-        highlighted: idx === 1,
-      }))
+    ? plans.map((plan, idx) => {
+        const isActive = activePlanName && plan.plan === activePlanName;
+        return {
+          id: plan.id,
+          name: plan.plan,
+          price: `${plan.price} BDT`,
+          period: `month`,
+          badge: isActive ? 'ACTIVE' : (idx === 1 ? 'MOST POPULAR' : null),
+          badgeColor: isActive ? 'bg-emerald-500 text-white' : (idx === 1 ? 'bg-purple-600 text-white' : ''),
+          isCurrentPlan: isActive,
+          duration_days: plan.duration_days,
+          features: [
+            `${plan.duration_days}-day access`,
+            'Premium Features Included',
+            'Priority Support',
+            'Exclusive Tournaments Access',
+          ],
+          buttonText: isActive ? 'CURRENT PLAN' : 'UPGRADE NOW',
+          buttonStyle: isActive
+            ? 'bg-gray-500 cursor-not-allowed opacity-60'
+            : (idx === 1 
+              ? 'bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400'
+              : 'bg-transparent border-2 border-purple-500 text-purple-400 hover:bg-purple-500/10'),
+          highlighted: idx === 1 && !isActive,
+        };
+      })
     : [];
 
   const displayPlans = transformedPlans;

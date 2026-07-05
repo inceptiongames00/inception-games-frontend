@@ -7,7 +7,7 @@ import UpgradePlanModal from './UpgradePlanModal';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://inception-games.an.r.appspot.com/api/v1';
 
-export default function SubscriptionSection({ userProfile }) {
+export default function SubscriptionSection({ userProfile, onSubscriptionSuccess }) {
   const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
   const [subscriptionTiers, setSubscriptionTiers] = useState([]);
   const [apiPlans, setApiPlans] = useState([]);
@@ -206,7 +206,7 @@ export default function SubscriptionSection({ userProfile }) {
       </div>
 
       {/* Upgrade Plan Modal */}
-      <UpgradePlanModal isOpen={isUpgradeModalOpen} onClose={() => setIsUpgradeModalOpen(false)} plans={apiPlans} />
+      <UpgradePlanModal isOpen={isUpgradeModalOpen} onClose={() => setIsUpgradeModalOpen(false)} plans={apiPlans} activePlanName={activeSubscription?.plan || activeSubscription?.plan_name} onSubscriptionSuccess={onSubscriptionSuccess} />
     </motion.div>
   );
 }
