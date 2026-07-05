@@ -25,6 +25,8 @@ export default function ProfilePage() {
   const [apiUserProfile, setApiUserProfile] = useState(null);
   const [loadingProfile, setLoadingProfile] = useState(true);
 
+  console.log('User Profile',user)
+
   // Fetch user profile from API
   const fetchUserProfile = async () => {
     try {
@@ -38,6 +40,7 @@ export default function ProfilePage() {
       }
 
       const userId = 'SNS-1524';
+        //  const userId = user?.id;
       const apiUrl = `${API_BASE_URL}/auth/user-profile/${userId}`;
       console.log('[ProfilePage] User ID:', userId);
       console.log('[ProfilePage] Fetching from URL:', apiUrl);
