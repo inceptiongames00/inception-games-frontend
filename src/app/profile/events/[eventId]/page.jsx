@@ -793,6 +793,15 @@ export default function EventDetailPage() {
                           Join Discord
                         </a>
 
+                        {/* Tournament Registration Button */}
+                        <button
+                          onClick={() => setShowSignupForm(true)}
+                          className="w-full mt-4 px-4 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 transition-all duration-300 flex items-center justify-center gap-2"
+                        >
+                          <Trophy size={18} />
+                          Register for Tournament
+                        </button>
+
                         {/* Registration Fill Section */}
                         <div className="mt-8 pt-8 border-t border-white/[0.06]">
                           <div className="flex justify-between items-center mb-4">
@@ -831,46 +840,67 @@ export default function EventDetailPage() {
                 </div>
               </div>
 
-              {/* Signup Form */}
+              {/* Signup Form Modal */}
               <AnimatePresence>
                 {showSignupForm && (
                   <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="overflow-hidden mb-6"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+                    onClick={() => setShowSignupForm(false)}
                   >
-                    <div className="bg-gray-900 rounded-xl border border-purple-500/30 p-6">
-                      {otpStep ? (
-                        <OtpVerificationSection
-                          otpStep={otpStep}
-                          otpValue={otpValue}
-                          otpError={otpError}
-                          otpInputRefs={otpInputRefs}
-                          formData={formData}
-                          onOtpChange={(val) => setOtpValue(val)}
-                          onOtpVerify={handleOtpVerify}
-                          onResendOtp={handleResendOtp}
-                          onCancel={() => {
-                            setOtpStep(null);
-                            setShowSignupForm(false);
-                          }}
-                        />
-                      ) : (
-                        <RegistrationForm
-                          event={event}
-                          formData={formData}
-                          isSubmitting={isSubmitting}
-                          isSoloMode={isSoloMode}
-                          additionalPlayersCount={additionalPlayersCount}
-                          gameName={gameName}
-                          onInputChange={handleInputChange}
-                          onPlayerChange={handlePlayerChange}
-                          onSubmit={handleFormSubmit}
-                          onClose={() => setShowSignupForm(false)}
-                        />
-                      )}
-                    </div>
+                    <motion.div
+                      initial={{ scale: 0.9, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0.9, opacity: 0 }}
+                      onClick={(e) => e.stopPropagation()}
+                      className="bg-gradient-to-br from-[#0c0c14] to-[#14141f] rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-purple-500/20"
+                    >
+                      {/* Modal Header */}
+                      <div className="flex items-center justify-between p-6 border-b border-white/10">
+                        <h3 className="text-2xl font-bold text-white">Tournament Registration</h3>
+                        <button
+                          onClick={() => setShowSignupForm(false)}
+                          className="text-gray-400 hover:text-white transition-colors"
+                        >
+                          <X size={24} />
+                        </button>
+                      </div>
+
+                      {/* Modal Content */}
+                      <div className="p-6">
+                        {otpStep ? (
+                          <OtpVerificationSection
+                            otpStep={otpStep}
+                            otpValue={otpValue}
+                            otpError={otpError}
+                            otpInputRefs={otpInputRefs}
+                            formData={formData}
+                            onOtpChange={(val) => setOtpValue(val)}
+                            onOtpVerify={handleOtpVerify}
+                            onResendOtp={handleResendOtp}
+                            onCancel={() => {
+                              setOtpStep(null);
+                              setShowSignupForm(false);
+                            }}
+                          />
+                        ) : (
+                          <RegistrationForm
+                            event={event}
+                            formData={formData}
+                            isSubmitting={isSubmitting}
+                            isSoloMode={isSoloMode}
+                            additionalPlayersCount={additionalPlayersCount}
+                            gameName={gameName}
+                            onInputChange={handleInputChange}
+                            onPlayerChange={handlePlayerChange}
+                            onSubmit={handleFormSubmit}
+                            onClose={() => setShowSignupForm(false)}
+                          />
+                        )}
+                      </div>
+                    </motion.div>
                   </motion.div>
                 )}
               </AnimatePresence>
