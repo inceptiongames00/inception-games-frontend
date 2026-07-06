@@ -127,7 +127,6 @@ export default function CommunityActivies() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Partnership Form Data:", formData);
     setFormData({
       name: "",
       companyName: "",

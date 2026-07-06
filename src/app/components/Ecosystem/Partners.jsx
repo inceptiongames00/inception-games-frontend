@@ -68,7 +68,7 @@ export function PartnerCard({ item, isFeatured = false }) {
         try {
           await video.play();
         } catch (err) {
-          console.log("Autoplay blocked:", err);
+          console.error("Autoplay blocked:", err);
         }
       };
 

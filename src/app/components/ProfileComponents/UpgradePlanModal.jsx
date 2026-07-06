@@ -20,8 +20,6 @@ export default function UpgradePlanModal({
   const [success, setSuccess] = useState(null);
   const tokens = getTokens();
 
-  console.log("tokens", tokens);
-
   const handleSubscribe = async (planName) => {
     if (!planName || planName.toLowerCase().includes("free")) return;
 
@@ -56,7 +54,6 @@ export default function UpgradePlanModal({
       );
 
       const data = await response.json();
-      console.log("[UpgradePlanModal] Subscription Response:", data);
 
       if (!response.ok) {
         throw new Error(data.message || "Subscription failed");

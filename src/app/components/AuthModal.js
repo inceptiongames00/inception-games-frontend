@@ -61,11 +61,9 @@ export default function AuthModal({ isOpen, onClose }) {
       if (activeTab === TABS.LOGIN) {
         const response = await loginSendOTP(email);
         setMessage(response.message || 'OTP sent to your email! Check your inbox.');
-        console.log('AuthModal Login send OTP response:', response);
       } else {
         const response = await signupSendOTP(email, phone || undefined);
         setMessage(response.message || 'OTP sent to your email! Check your inbox.');
-        console.log('AuthModal Signup send OTP response:', response);
       }
       setStep('otp');
     } catch (err) {
@@ -96,11 +94,9 @@ export default function AuthModal({ isOpen, onClose }) {
     try {
       if (activeTab === TABS.LOGIN) {
         const response = await loginVerifyOTP(email, otp);
-        console.log('AuthModal Login verify response:', response);
         setMessage('Login successful!');
       } else {
         const response = await signupVerifyOTP(email, otp.trim());
-        console.log('AuthModal Signup verify response:', response);
         setMessage('Account created successfully!');
       }
       setTimeout(() => handleClose(), 1200);
@@ -119,7 +115,6 @@ export default function AuthModal({ isOpen, onClose }) {
     setGoogleLoading(true);
     try {
       const response = await loginWithGoogle();
-      console.log('AuthModal Google login response:', response);
       setMessage(response.isNewUser ? 'Account created with Google!' : 'Signed in with Google!');
       setTimeout(() => handleClose(), 1200);
     } catch (err) {

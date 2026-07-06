@@ -43,7 +43,7 @@ export default function MinimalNotification() {
         }
       }
     } catch (err) {
-      console.log("[v0] Error fetching notifications:", err);
+      console.error("[v0] Error fetching notifications:", err);
     } finally {
       setLoading(false);
     }

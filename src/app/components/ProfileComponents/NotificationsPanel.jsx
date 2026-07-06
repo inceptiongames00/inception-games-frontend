@@ -53,11 +53,10 @@ export default function NotificationsPanel() {
       );
 
       if (response.ok) {
-        console.log("[v0] Notification marked as read on backend");
         return true;
       }
     } catch (err) {
-      console.log("[v0] Could not mark as read on backend, using local state");
+      console.error("[v0] Could not mark as read on backend, using local state");
     }
     return false;
   };
@@ -98,7 +97,7 @@ export default function NotificationsPanel() {
         setError(null);
       }
     } catch (err) {
-      console.log("[v0] Error fetching notifications:", err);
+      console.error("[v0] Error fetching notifications:", err);
       setError(err.message);
     } finally {
       setLoading(false);
