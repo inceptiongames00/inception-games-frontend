@@ -1,6 +1,16 @@
 export const communityData = {
   title: "Our Community",
   subtitle: "Join thousands of passionate gamers",
+  // items: [
+  //   { id: 1, photo: "/Ecosystem/Community/c1.jpg" },
+  //   { id: 2, photo: "/Ecosystem/Community/c2.jpg" },
+  //   { id: 3, photo: "/Ecosystem/Community/c3.jpg" },
+  //   { id: 4, photo: "/Ecosystem/Community/c4.jpg" },
+  //   { id: 5, photo: "/Ecosystem/Community/c6.JPG" },
+  //   { id: 6, photo: "/Ecosystem/Community/c7.JPG" },
+  //   { id: 7, photo: "/Ecosystem/Community/c8.JPG" },
+  //   { id: 8, photo: "/Ecosystem/Community/c17.jpg" },
+  // ],
   items: [
     {
       id: 1,

@@ -224,7 +224,7 @@ export default function Header() {
               onClick={() => navigateToSection("ecosystem-games")}
               className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors cursor-pointer"
             >
-              Games
+              Game
             </button>
 
             {/* <button

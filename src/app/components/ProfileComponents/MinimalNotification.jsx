@@ -1,18 +1,23 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { getTokens } from '@/lib/api';
-import { Bell, X } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { getTokens } from "@/lib/api";
+import { Bell, X } from "lucide-react";
+import { useAuth } from "@/app/context/AuthContext";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://inception-games.an.r.appspot.com/api/v1';
-const NOTIFICATIONS_ENDPOINT = `${API_BASE_URL}/message/SNS-7422`;
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  "https://inception-games.an.r.appspot.com/api/v1";
 
 export default function MinimalNotification() {
+  const { user } = useAuth();
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [selectedNotif, setSelectedNotif] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const NOTIFICATIONS_ENDPOINT = `${API_BASE_URL}/message/${user?.id}`;
 
   const fetchNotifications = async () => {
     try {
@@ -23,10 +28,10 @@ export default function MinimalNotification() {
       }
 
       const response = await fetch(NOTIFICATIONS_ENDPOINT, {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${tokens.accessToken}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${tokens.accessToken}`,
         },
       });
 
@@ -38,7 +43,7 @@ export default function MinimalNotification() {
         }
       }
     } catch (err) {
-      console.log('[v0] Error fetching notifications:', err);
+      console.log("[v0] Error fetching notifications:", err);
     } finally {
       setLoading(false);
     }
@@ -62,7 +67,7 @@ export default function MinimalNotification() {
         whileTap={{ scale: 0.95 }}
       >
         <Bell size={16} />
-        
+
         {/* Badge */}
         {unreadCount > 0 && (
           <motion.div
@@ -70,7 +75,7 @@ export default function MinimalNotification() {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
           >
-            {unreadCount > 9 ? '9+' : unreadCount}
+            {unreadCount > 9 ? "9+" : unreadCount}
           </motion.div>
         )}
       </motion.button>
@@ -89,14 +94,15 @@ export default function MinimalNotification() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ type: 'spring', duration: 0.3 }}
+              transition={{ type: "spring", duration: 0.3 }}
               onClick={(e) => e.stopPropagation()}
               className="bg-gradient-to-br from-black via-[#0a0a0f] to-black border border-white/[0.08] rounded-2xl max-w-2xl w-full shadow-2xl shadow-black/50 overflow-hidden max-h-150 flex flex-col"
             >
               {/* Header */}
               <div className="px-6 py-4 border-b border-white/[0.08] bg-white/[0.02] flex items-center justify-between">
                 <h3 className="text-lg font-bold text-white">
-                  Notifications {notifications.length > 0 && `(${notifications.length})`}
+                  Notifications{" "}
+                  {notifications.length > 0 && `(${notifications.length})`}
                 </h3>
                 <button
                   onClick={() => setShowList(false)}
@@ -136,22 +142,25 @@ export default function MinimalNotification() {
                       >
                         {/* Game icon */}
                         <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-emerald-400 mt-2" />
-                        
+
                         {/* Content */}
                         <div className="flex-1 min-w-0">
                           <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">
-                            {notif.game_name || 'General'}
+                            {notif.game_name || "General"}
                           </p>
                           <p className="text-sm text-white group-hover:text-gray-100 transition">
                             {notif.message}
                           </p>
                           <p className="text-xs text-gray-600 mt-2">
-                            {new Date(notif.created_at).toLocaleDateString('en-US', {
-                              month: 'short',
-                              day: 'numeric',
-                              hour: '2-digit',
-                              minute: '2-digit',
-                            })}
+                            {new Date(notif.created_at).toLocaleDateString(
+                              "en-US",
+                              {
+                                month: "short",
+                                day: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              },
+                            )}
                           </p>
                         </div>
 
@@ -183,7 +192,7 @@ export default function MinimalNotification() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ type: 'spring', duration: 0.3 }}
+              transition={{ type: "spring", duration: 0.3 }}
               onClick={(e) => e.stopPropagation()}
               className="bg-gradient-to-br from-black via-[#0a0a0f] to-black border border-white/[0.08] rounded-2xl max-w-md w-full shadow-2xl shadow-black/50 overflow-hidden"
             >
@@ -207,20 +216,23 @@ export default function MinimalNotification() {
                   <div className="flex items-center gap-2 mb-3">
                     <div className="w-3 h-3 bg-emerald-400 rounded-full animate-pulse" />
                     <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
-                      {selectedNotif.game_name || 'General'}
+                      {selectedNotif.game_name || "General"}
                     </span>
                   </div>
                   <h3 className="text-xl font-bold text-white">
-                    {selectedNotif.message || 'New Notification'}
+                    {selectedNotif.message || "New Notification"}
                   </h3>
                   <p className="text-xs text-gray-500 mt-2">
-                    {new Date(selectedNotif.created_at).toLocaleDateString('en-US', {
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
+                    {new Date(selectedNotif.created_at).toLocaleDateString(
+                      "en-US",
+                      {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      },
+                    )}
                   </p>
                 </motion.div>
 
@@ -235,14 +247,18 @@ export default function MinimalNotification() {
                   className="space-y-4"
                 >
                   <div>
-                    <p className="text-xs uppercase tracking-wider text-gray-500 mb-2">Game</p>
+                    <p className="text-xs uppercase tracking-wider text-gray-500 mb-2">
+                      Game
+                    </p>
                     <p className="text-sm text-white font-medium">
-                      {selectedNotif.game_name || 'N/A'}
+                      {selectedNotif.game_name || "N/A"}
                     </p>
                   </div>
 
                   <div>
-                    <p className="text-xs uppercase tracking-wider text-gray-500 mb-2">Details</p>
+                    <p className="text-xs uppercase tracking-wider text-gray-500 mb-2">
+                      Details
+                    </p>
                     <p className="text-sm text-gray-300 leading-relaxed">
                       {selectedNotif.message}
                     </p>
@@ -250,7 +266,9 @@ export default function MinimalNotification() {
 
                   {selectedNotif.notification_type && (
                     <div>
-                      <p className="text-xs uppercase tracking-wider text-gray-500 mb-2">Type</p>
+                      <p className="text-xs uppercase tracking-wider text-gray-500 mb-2">
+                        Type
+                      </p>
                       <p className="text-sm text-white font-medium">
                         {selectedNotif.notification_type}
                       </p>
