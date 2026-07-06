@@ -43,6 +43,7 @@ export default function SubscriptionSection({
         active: "bg-emerald-500/20 border-emerald-500/40 text-emerald-400",
         pending: "bg-yellow-500/20 border-yellow-500/40 text-yellow-400",
         expired: "bg-red-500/20 border-red-500/40 text-red-400",
+        "waiting for approval": "bg-blue-500/20 border-blue-500/40 text-blue-400",
       };
 
       // Format date safely (YYYY-MM-DD) to avoid hydration mismatch
@@ -67,8 +68,11 @@ export default function SubscriptionSection({
 
       const displaySub = {
         name: activeSub.plan || activeSub.plan_name || "Plan",
-        badge: activeSub.status?.toUpperCase() || "PENDING",
-        badgeColor: statusColors[activeSub.status] || statusColors.pending,
+        badge: activeSub.status?.toLowerCase() === "waiting for approval" 
+          ? "APPROVAL PENDING" 
+          : activeSub.status?.toUpperCase() || "PENDING",
+        badgeColor: statusColors[activeSub.status?.toLowerCase()] || statusColors[activeSub.status] || statusColors.pending,
+        showBadge: activeSub.status?.toLowerCase() !== "waiting for approval",
         price: activeSub.price ? `${activeSub.price} BDT` : "FREE",
         expiration: expirationText,
         features: [
@@ -77,17 +81,22 @@ export default function SubscriptionSection({
           "Enhanced Support",
         ],
         buttonText:
-          activeSub.status === "pending"
-            ? "ACTIVATE SUBSCRIPTION"
-            : activeSub.status === "expired"
-              ? "RENEW PLAN"
-              : "UPGRADE PLAN",
+          activeSub.status?.toLowerCase() === "waiting for approval"
+            ? "APPROVAL PENDING"
+            : activeSub.status === "pending"
+              ? "ACTIVATE SUBSCRIPTION"
+              : activeSub.status === "expired"
+                ? "RENEW PLAN"
+                : "UPGRADE PLAN",
         buttonStyle:
-          activeSub.status === "pending"
-            ? "bg-gradient-to-r from-yellow-600 to-yellow-500 hover:from-yellow-500 hover:to-yellow-400"
-            : activeSub.status === "expired"
-              ? "bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-500 hover:to-orange-400"
-              : "bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400",
+          activeSub.status?.toLowerCase() === "waiting for approval"
+            ? "bg-gradient-to-r from-gray-600 to-gray-500 hover:from-gray-600 hover:to-gray-500 cursor-not-allowed opacity-60"
+            : activeSub.status === "pending"
+              ? "bg-gradient-to-r from-yellow-600 to-yellow-500 hover:from-yellow-500 hover:to-yellow-400"
+              : activeSub.status === "expired"
+                ? "bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-500 hover:to-orange-400"
+                : "bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400",
+        isDisabled: activeSub.status?.toLowerCase() === "waiting for approval",
       };
 
       setSubscriptionTiers([displaySub]);
@@ -164,11 +173,13 @@ export default function SubscriptionSection({
                 <h4 className="text-lg sm:text-xl font-bold text-white">
                   {tier.name}
                 </h4>
-                <span
-                  className={`px-2.5 py-0.5 rounded-lg border text-[10px] sm:text-xs font-bold uppercase tracking-wider ${tier.badgeColor}`}
-                >
-                  {tier.badge}
-                </span>
+                {tier.showBadge && (
+                  <span
+                    className={`px-2.5 py-0.5 rounded-lg border text-[10px] sm:text-xs font-bold uppercase tracking-wider ${tier.badgeColor}`}
+                  >
+                    {tier.badge}
+                  </span>
+                )}
               </div>
 
               {/* Price */}
@@ -213,15 +224,18 @@ export default function SubscriptionSection({
               {/* Upgrade Button */}
               <motion.button
                 onClick={() => {
-                  if (tier.badge === "PENDING") {
-                    setIsActivateModalOpen(true);
-                  } else {
-                    setIsUpgradeModalOpen(true);
+                  if (!tier.isDisabled) {
+                    if (tier.badge === "PENDING") {
+                      setIsActivateModalOpen(true);
+                    } else {
+                      setIsUpgradeModalOpen(true);
+                    }
                   }
                 }}
-                className={`w-full cursor-pointer py-3 rounded-xl font-bold text-white text-sm sm:text-sm transition duration-300 shadow-lg shadow-purple-500/20 ${tier.buttonStyle}`}
-                whileHover={{ scale: 1.02, y: -1 }}
-                whileTap={{ scale: 0.98 }}
+                disabled={tier.isDisabled}
+                className={`w-full py-3 rounded-xl font-bold text-white text-sm sm:text-sm transition duration-300 shadow-lg shadow-purple-500/20 ${tier.isDisabled ? 'cursor-not-allowed' : 'cursor-pointer'} ${tier.buttonStyle}`}
+                whileHover={!tier.isDisabled ? { scale: 1.02, y: -1 } : {}}
+                whileTap={!tier.isDisabled ? { scale: 0.98 } : {}}
               >
                 {tier.buttonText}
               </motion.button>
