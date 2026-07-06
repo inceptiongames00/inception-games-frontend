@@ -288,7 +288,7 @@ export default function UpgradePlanModal({
                       <motion.button
                         onClick={() => handleSubscribe(plan.name)}
                         disabled={plan.isCurrentPlan || loading}
-                        className={`w-full py-3 rounded-lg font-bold text-sm uppercase tracking-wider transition-all duration-300 ${plan.buttonStyle} ${loading && !plan.isCurrentPlan ? "opacity-50" : ""}`}
+                        className={`w-full py-3 cursor-pointer rounded-lg font-bold text-sm uppercase tracking-wider transition-all duration-300 ${plan.buttonStyle} ${loading && !plan.isCurrentPlan ? "opacity-50" : ""}`}
                         whileHover={{
                           scale: plan.isCurrentPlan || loading ? 1 : 1.02,
                         }}

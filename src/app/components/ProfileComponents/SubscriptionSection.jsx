@@ -4,14 +4,15 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Check, Crown } from 'lucide-react';
 import UpgradePlanModal from './UpgradePlanModal';
+import ActivateSubscriptionModal from './ActivateSubscriptionModal';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://inception-games.an.r.appspot.com/api/v1';
 
-export default function SubscriptionSection({ userProfile, onSubscriptionSuccess }) {
+export default function SubscriptionSection({ userProfile, userId, onSubscriptionSuccess }) {
   const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
+  const [isActivateModalOpen, setIsActivateModalOpen] = useState(false);
   const [subscriptionTiers, setSubscriptionTiers] = useState([]);
   const [apiPlans, setApiPlans] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [activeSubscription, setActiveSubscription] = useState(null);
   const [hasMounted, setHasMounted] = useState(false);
 
@@ -63,8 +64,10 @@ export default function SubscriptionSection({ userProfile, onSubscriptionSuccess
           'Exclusive Tournaments',
           'Enhanced Support',
         ],
-        buttonText: activeSub.status === 'expired' ? 'RENEW PLAN' : 'UPGRADE PLAN',
-        buttonStyle: activeSub.status === 'expired' 
+        buttonText: activeSub.status === 'pending' ? 'ACTIVATE SUBSCRIPTION' : activeSub.status === 'expired' ? 'RENEW PLAN' : 'UPGRADE PLAN',
+        buttonStyle: activeSub.status === 'pending'
+          ? 'bg-gradient-to-r from-yellow-600 to-yellow-500 hover:from-yellow-500 hover:to-yellow-400'
+          : activeSub.status === 'expired' 
           ? 'bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-500 hover:to-orange-400'
           : 'bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400',
       };
@@ -190,7 +193,13 @@ export default function SubscriptionSection({ userProfile, onSubscriptionSuccess
 
               {/* Upgrade Button */}
               <motion.button
-                onClick={() => setIsUpgradeModalOpen(true)}
+                onClick={() => {
+                  if (tier.badge === 'PENDING') {
+                    setIsActivateModalOpen(true);
+                  } else {
+                    setIsUpgradeModalOpen(true);
+                  }
+                }}
                 className={`w-full cursor-pointer py-3 rounded-xl font-bold text-white text-sm sm:text-sm transition duration-300 shadow-lg shadow-purple-500/20 ${tier.buttonStyle}`}
                 whileHover={{ scale: 1.02, y: -1 }}
                 whileTap={{ scale: 0.98 }}
@@ -204,6 +213,14 @@ export default function SubscriptionSection({ userProfile, onSubscriptionSuccess
         )}
         
       </div>
+
+      {/* Activate Subscription Modal */}
+      <ActivateSubscriptionModal 
+        isOpen={isActivateModalOpen} 
+        onClose={() => setIsActivateModalOpen(false)} 
+        subscription={activeSubscription}
+        userId={userId}
+      />
 
       {/* Upgrade Plan Modal */}
       <UpgradePlanModal isOpen={isUpgradeModalOpen} onClose={() => setIsUpgradeModalOpen(false)} plans={apiPlans} activePlanName={activeSubscription?.plan || activeSubscription?.plan_name} onSubscriptionSuccess={onSubscriptionSuccess} />

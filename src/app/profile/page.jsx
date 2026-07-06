@@ -191,7 +191,7 @@ export default function ProfilePage() {
             {/* Right Column: Notifications & Subscriptions (sidebar on md+) */}
             <div className="md:col-span-1 space-y-4 sm:space-y-6 md:space-y-6">
               <NotificationsPanel />
-              <SubscriptionSection userProfile={apiUserProfile} onSubscriptionSuccess={() => {
+              <SubscriptionSection userProfile={apiUserProfile} userId={user?.id} onSubscriptionSuccess={() => {
                 const tokens = getTokens();
                 if (user?.id && tokens?.accessToken) {
                   fetchUserProfile(user.id, tokens.accessToken);
