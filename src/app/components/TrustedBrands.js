@@ -1,25 +1,49 @@
-"use client"
+"use client";
 
 export default function TrustedBrands() {
   const brands = [
-    { name: "Bangladesh Hi-Tech Park Authority", logo: "/brands/bangladesh-hitech.png" },
-    { name: "IDEB", logo: "/brands/ideb.png" },
-    { name: "The World Bank", logo: "/brands/world-bank.png" },
-    { name: "ICT Division", logo: "/brands/ict-division.png" },
-    { name: "Accelerating Bangladesh", logo: "/brands/accelerating-bangladesh.png" },
-  ]
+    {
+      name: "Bangladesh Hi-Tech Park Authority",
+      logo: "https://res.cloudinary.com/jvpygp4b/image/upload/v1783147392/bangladesh-hitech_chniu2.png",
+    },
+    {
+      name: "IDEB",
+      logo: "https://res.cloudinary.com/jvpygp4b/image/upload/v1783147398/ideb_exytob.png",
+    },
+    {
+      name: "The World Bank",
+      logo: "https://res.cloudinary.com/jvpygp4b/image/upload/v1783147390/world-bank_vpopdt.png",
+    },
+    {
+      name: "ICT Division",
+      logo: "https://res.cloudinary.com/jvpygp4b/image/upload/v1783147395/ict-division_scveaw.png",
+    },
+    {
+      name: "Accelerating Bangladesh",
+      logo: "https://res.cloudinary.com/jvpygp4b/image/upload/v1783147387/accelerating-bangladesh_lp6znp.png",
+    },
+  ];
 
   return (
     <section className="py-16 overflow-hidden bg-gradient-to-b from-[#0a0a14] to-[#1a0a2e]">
-      <div className="container mx-auto px-4 mb-8">
-        <h2 className="text-4xl md:text-5xl font-bold text-center text-white mb-2">SUPPORTED BY </h2>
-        <div className="h-1 w-32 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto rounded-full"></div>
+      <div className="container mx-auto px-4 mb-8 text-center">
+        {/* <h2 className="text-4xl md:text-5xl font-bold text-center text-white mb-2">SUPPORTED BY </h2> */}
+        <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4">
+          SUPPORTED{" "}
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
+            BY
+          </span>
+        </h2>
+        {/* Underline accent */}
+        <div className="flex justify-center gap-2 mt-4">
+          <div className="w-50 h-1.5 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 rounded-full" />
+        </div>
       </div>
 
       <div className="relative">
         {/* Gradient overlays for smooth fade effect */}
-        <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-[#1a0a2e] to-transparent z-10"></div>
-        <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-[#1a0a2e] to-transparent z-10"></div>
+        <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-24 md:w-32 lg:w-40 bg-gradient-to-r from-[#1a0a2e] to-transparent z-10"></div>
+        <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 md:w-32 lg:w-40 bg-gradient-to-l from-[#1a0a2e] to-transparent z-10"></div>
 
         {/* Infinite scrolling container */}
         <div className="flex animate-infinite-scroll">
@@ -73,5 +97,5 @@ export default function TrustedBrands() {
         }
       `}</style>
     </section>
-  )
+  );
 }

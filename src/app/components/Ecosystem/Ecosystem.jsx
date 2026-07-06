@@ -233,30 +233,45 @@ export default function ShowcaseCarousel() {
     <section className="py-8 sm:py-12 md:py-20 bg-[#0a0a14]">
       <div className="container mx-auto px-2 sm:px-4">
         {/* Header */}
-        <div className="text-center mb-8 sm:mb-12 md:mb-16">
+        {/* <div className="text-center mb-8 sm:mb-12 md:mb-16">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white">
             Discover Our Ecosystem
           </h2>
-        </div>
+        </div> */}
 
         {/* Partners */}
-        <div id="ecosystem-partners" className="mb-12 sm:mb-16 md:mb-20">
+        {/* <div id="ecosystem-partners" className="mb-12 sm:mb-16 md:mb-20">
           <CarouselSection tabKey="partners" />
-        </div>
+        </div> */}
 
         {/* Games */}
         <div id="ecosystem-games" className="mb-12 sm:mb-16 md:mb-20">
-          <div className="text-center mb-4 sm:mb-6 md:mb-8">
-            <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">{gamesData.title}</h3>
-            <p className="text-white/60 text-sm sm:text-base mt-1 sm:mt-2">{gamesData.subtitle}</p>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4">
+              OUR{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
+                GAMES
+              </span>
+            </h2>
+            {/* Underline accent */}
+            <div className="flex justify-center gap-2 mt-4">
+            <div className="w-50 h-1.5 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 rounded-full" />
           </div>
+            {/* <p className="text-white/60 text-base sm:text-lg mt-6">{gamesData.subtitle}</p> */}
+          </motion.div>
           <GamesCarousel />
         </div>
 
         {/* Community */}
-        <div id="ecosystem-community">
+        {/* <div id="ecosystem-community">
           <CarouselSection tabKey="community" />
-        </div>
+        </div> */}
       </div>
     </section>
   );

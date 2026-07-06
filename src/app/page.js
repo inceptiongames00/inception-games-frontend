@@ -1,103 +1,48 @@
 "use client";
-import { useState, useEffect, useRef, Suspense } from "react";
+
+import { useState, useEffect, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
+import { useProfileNavigation } from "@/hooks/useProfileNavigation";
 import { motion } from "framer-motion";
 import {
   Trophy,
-  Swords,
-  Video,
-  Briefcase,
   Users,
-  Calendar,
-  Clock,
-  DollarSign,
-  TrendingUp,
-  MessageSquare,
-  ShoppingBag,
-  Shirt,
-  Package,
-  Star,
-  Bell,
-  Zap,
-  ChevronRight,
-  Play,
-  ArrowRight,
   Gamepad2,
-  Target,
+  DollarSign,
+  ArrowRight,
   Flame,
-  Lock,
-  CheckCircle,
-  ExternalLink,
-  Globe,
 } from "lucide-react";
-// import { ImageWithFallback } from "./components/figma/ImageWithFallback";
 import Header from "./components/Header";
-import HeroSection from "./components/HeroSection";
-import TournamentCarousel from "./components/TournamentCarousel.js";
 import TrustedBrands from "./components/TrustedBrands";
-import ShowcaseCarousel from "./components/ShowcaseCarousel";
-import UpcomingEvents from "./components/UpcomingEvents";
-import LatestNews from "./components/LatestNews";
-import ContactSection from "./components/ContactSection";
-import Footer from "./components/Footer";
-// import AllGamesLoop from "./components/AllGamesLoop";
+import GiveawayWinner from "./components/GiveawayWinner";
+import OurPartners from "./components/OurPartners";
+import CommunityActivies from "./components/CommunityActivies";
+import EShop from "./components/EShop";
 import Ecosystem from "../../src/app/components/Ecosystem/Ecosystem.jsx";
-import Image from "next/image";
 import UnifiedAuthModal from "./components/AuthModals/UnifiedAuthModal";
 import LaunchCountdownModal from "./components/LaunchCountdownModal";
+import LatestNews from "./components/LatestNews";
+import Footer from "./components/Footer";
+import ScrimsCarousel from "./components/ScrimsCarousel";
+import Image from "next/image";
 
-function AnimatedCounter({ target, suffix = "", prefix = "" }) {
-  const [count, setCount] = useState(0);
-  const ref = useRef(null);
-  const started = useRef(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !started.current) {
-          started.current = true;
-          let start = 0;
-          const step = target / 60;
-
-          const id = setInterval(() => {
-            start += step;
-            if (start >= target) {
-              setCount(target);
-              clearInterval(id);
-            } else {
-              setCount(Math.floor(start));
-            }
-          }, 16);
-        }
-      },
-      { threshold: 0.3 },
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [target]);
-
-  return (
-    <span ref={ref}>
-      {prefix}
-      {count.toLocaleString()}
-      {suffix}
-    </span>
-  );
-}
+// Constants for scroll management
+const HEADER_OFFSET = 120;
+const SCROLL_THRESHOLD = 0.3;
+const ANIMATION_INTERVAL = 16;
+const MAX_SCROLL_ATTEMPTS = 50;
+const SCROLL_INITIAL_DELAY = 800;
+const POLL_INTERVAL = 300;
 
 function HomeContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { user } = useAuth();
+  const { navigateToTab } = useProfileNavigation();
   const scrollTimeoutRef = useRef(null);
   const observerRef = useRef(null);
   const pollIntervalRef = useRef(null);
-  const [showSignIn, setShowSignIn] = useState(false);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [countdownModalOpen, setCountdownModalOpen] = useState(false);
 
@@ -137,20 +82,12 @@ function HomeContent() {
   ];
 
   useEffect(() => {
-    // Also check window.location on first load in case useSearchParams doesn't catch it
     const section =
       searchParams.get("section") ||
       new URLSearchParams(window.location.search).get("section");
-    console.log(
-      "[v0] Section param detected:",
-      section,
-      "URL:",
-      window.location.href,
-    );
 
     if (!section) return;
 
-    // Cleanup previous timers
     if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
     if (observerRef.current) observerRef.current.disconnect();
     if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
@@ -159,43 +96,25 @@ function HomeContent() {
       const element = document.getElementById(section);
 
       if (!element) {
-        // Log all available IDs for debugging
-        const allIds = Array.from(document.querySelectorAll("[id]")).map(
-          (el) => el.id,
-        );
-        console.log(
-          "[v0] Element not found:",
-          section,
-          "Available IDs:",
-          allIds,
-        );
-      } else {
-        console.log("[v0] Element found! Scrolling to:", section);
-        // Scroll with proper offset for fixed header
-        const headerOffset = 120;
-        const elementPosition =
-          element.getBoundingClientRect().top + window.pageYOffset;
-        window.scrollTo({
-          top: elementPosition - headerOffset,
-          behavior: "smooth",
-        });
-
-        // Cleanup
-        if (observerRef.current) observerRef.current.disconnect();
-        if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+        return false;
       }
 
-      return !!element;
+      const elementPosition =
+        element.getBoundingClientRect().top + window.pageYOffset;
+      window.scrollTo({
+        top: elementPosition - HEADER_OFFSET,
+        behavior: "smooth",
+      });
+
+      if (observerRef.current) observerRef.current.disconnect();
+      if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+
+      return true;
     };
 
-    // Start scrolling attempt after a longer initial delay to let components render
     scrollTimeoutRef.current = setTimeout(() => {
-      console.log("[v0] Starting scroll attempt for section:", section);
-
-      // First try immediately
       if (doScroll()) return;
 
-      // Set up MutationObserver to catch DOM changes
       observerRef.current = new MutationObserver(() => {
         doScroll();
       });
@@ -207,22 +126,19 @@ function HomeContent() {
         characterData: false,
       });
 
-      // Polling fallback with more attempts and longer intervals
       let scrollAttempts = 0;
-      const maxAttempts = 50;
 
       pollIntervalRef.current = setInterval(() => {
         scrollAttempts++;
         if (doScroll()) {
           clearInterval(pollIntervalRef.current);
           if (observerRef.current) observerRef.current.disconnect();
-        } else if (scrollAttempts >= maxAttempts) {
-          console.log("[v0] Max scroll attempts reached for section:", section);
+        } else if (scrollAttempts >= MAX_SCROLL_ATTEMPTS) {
           clearInterval(pollIntervalRef.current);
           if (observerRef.current) observerRef.current.disconnect();
         }
-      }, 300);
-    }, 800);
+      }, POLL_INTERVAL);
+    }, SCROLL_INITIAL_DELAY);
 
     return () => {
       if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
@@ -232,234 +148,128 @@ function HomeContent() {
   }, [searchParams]);
 
   return (
-    <main className="min-h-screen" style={{ backgroundColor: "#0a0a14" }}>
+    <main className="min-h-screen bg-zinc-950">
       <Header />
-      {/* ── HERO ── */}
-      <section className="relative min-h-screen flex items-center overflow-hidden">
-        <div className="absolute inset-0">
-          <Image
-            // src="https://images.unsplash.com/photo-1699962700191-0f5633845733?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1920"
-            src="/Hero/bg.jpeg"
-            alt="Esports Arena"
-            fill
-            className="object-cover"
-            priority
-          />{" "}
-          <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/90 to-zinc-950/50" />
-          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-zinc-950/20" />
-        </div>
 
-        {/* Neon grid overlay */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(139,92,246,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(139,92,246,0.03) 1px, transparent 1px)",
-            backgroundSize: "60px 60px",
-          }}
-        />
+      {/* ── HERO + SCRIMS WEEK ── */}
+   <section className="relative bg-zinc-950 overflow-hidden">
+  {/* Hero Section */}
+  <div className="relative min-h-screen flex items-start justify-center overflow-hidden">
+    <div className="absolute inset-0">
+      <Image
+        src="https://res.cloudinary.com/jvpygp4b/image/upload/v1783144123/bg_pbzann.jpg"
+        alt="Esports Arena"
+        fill
+        className="object-cover"
+        priority
+      />
+      <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/80 to-zinc-950/60" />
+      <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-zinc-950/30" />
+    </div>
 
-        <div className="relative max-w-7xl mx-auto px-6 w-full pt-28 pb-20">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-            >
-              {/* Live badge */}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.1 }}
-                className="inline-flex items-center gap-2 bg-zinc-900/80 border border-purple-700 rounded-full px-4 py-1.5 mb-6"
-              >
-                <span className="w-2 h-2 bg-purple-600 rounded-full animate-pulse" />
-                <span className="text-xs text-zinc-300">
-                  500 Gamers Earning,{" "}
-                  <span className="text-purple-500">Right now</span>
-                </span>
-
-                {/* Logo */}
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                // transition={{
-                //   duration: ANIMATION_DURATION,
-                //   delay: ANIMATION_DELAYS.logo,
-                // }}
-                className="mb-0"
-              >
-                <div className="flex items-center pt-4 pb-2">
-                  <img
-                    src="/Logo/fulllogo.jpg"
-                    alt="SNS Logo"
-                    className="w-50  h-13"
-                  />
-                </div>
-              </motion.div>
-
-              <motion.h1
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2, duration: 0.8 }}
-                className="text-6xl lg:text-7xl mb-4 tracking-tight leading-[0.92]"
-              >
-                PLAY GAMES.
-                <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
-                  GET PAID.
-                </span>
-                <br />
-                <span className="text-3xl lg:text-4xl text-zinc-400">
-                  BUILD YOUR LEGACY.
-                </span>
-              </motion.h1>
-
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.4 }}
-                className="text-lg text-zinc-300 mb-8 max-w-lg leading-relaxed"
-              >
-                {
-                  "From casual solo to esports grinder - turn your skills into real earnings through Scrims, tournaments, and creator brand deals, all in one place."
-                }
-              </motion.p>
-
-              {/* Earning path teaser */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
-                className="flex flex-wrap gap-2 mb-8"
-              >
-                {[
-                  "🏆 Play Scrims",
-                  "🏆 Play Tournaments",
-                  "🤝 Brand Deals",
-                  "🎁 Free Merch @ 500 Fans",
-                ].map((pill) => (
-                  <span
-                    key={pill}
-                    className="text-xs bg-zinc-800/80 border border-zinc-700 rounded-full px-3 py-1.5 text-zinc-300"
-                  >
-                    {pill}
-                  </span>
-                ))}
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
-                className="flex flex-wrap gap-4 mb-10"
-              >
-                <button
-                  onClick={() => {
-                    const element = document.getElementById("how-to-earn");
-                    if (element) {
-                      const headerOffset = 120;
-                      const elementPosition =
-                        element.getBoundingClientRect().top +
-                        window.pageYOffset;
-                      window.scrollTo({
-                        top: elementPosition - headerOffset,
-                        behavior: "smooth",
-                      });
-                    }
-                  }}
-                  className="relative px-8 py-4 bg-purple-800 cursor-pointer hover:bg-transparent transition-all duration-500 rounded-full flex items-center gap-2 border border-zinc-700 overflow-hidden group"
-                >
-                  {/* base background */}
-                  <div className="absolute inset-0 bg-zinc-800/80 group-hover:opacity-0 transition-opacity duration-500 rounded-full" />
-
-                  {/* glass effect on hover */}
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-white/5 backdrop-blur-md rounded-full" />
-
-                  {/* premium purple-pink glow sweep */}
-                  <motion.div className="absolute inset-0 opacity-0 group-hover:opacity-100">
-                    <motion.div
-                      className="absolute -left-1/2 top-0 w-1/2 h-full bg-gradient-to-r from-transparent via-purple-400/25 to-transparent"
-                      animate={{ x: ["0%", "250%"] }}
-                      transition={{
-                        duration: 1.3,
-                        repeat: Infinity,
-                        ease: "linear",
-                      }}
-                    />
-                  </motion.div>
-
-                  {/* glowing border */}
-                  <div className="absolute inset-0 rounded-full border border-purple-500/0 group-hover:border-pink-400/30 transition-all duration-500" />
-
-                  {/* content */}
-                  <span className="relative z-10 flex items-center gap-2 text-white group-hover:text-purple-200 transition-colors duration-300">
-                    <Play className="w-5 h-5 text-purple-400 group-hover:scale-110 transition-transform duration-300" />
-                    Watch How It Works
-                  </span>
-                </button>
-              </motion.div>
-
-              {/* Stats */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.8 }}
-                className="grid grid-cols-3 gap-4 border-t border-zinc-800/60 pt-6"
-              >
-                {[
-                  {
-                    target: 1500,
-                    suffix: "+",
-                    prefix: "$",
-                    label: "Paid Out",
-                  },
-                  {
-                    target: 5000,
-                    suffix: "+",
-                    prefix: "",
-                    label: "Active Gamers",
-                  },
-                  {
-                    target: 1000,
-                    suffix: "+",
-                    prefix: "$",
-                    label: "Prize Pools",
-                  },
-                ].map(({ target, suffix, prefix, label }) => (
-                  <div key={label}>
-                    <div className="text-2xl text-purple-400">
-                      <AnimatedCounter
-                        target={target}
-                        suffix={suffix}
-                        prefix={prefix}
-                      />
-                    </div>
-                    <div className="text-xs text-zinc-500">{label}</div>
-                  </div>
-                ))}
-              </motion.div>
-            </motion.div>
-          </div>
-        </div>
-
-        {/* Scroll indicator */}
+    <div className="relative max-w-7xl mx-auto px-4 sm:px-6 w-full pt-30">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="flex flex-col items-center gap-6"
+      >
+        {/* Live badge */}
         <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-zinc-600"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.1 }}
+          className="inline-flex items-center gap-2 bg-zinc-900/60 border border-purple-500/50 rounded-full px-4 sm:px-5 py-1.5 sm:py-2"
         >
-          <span className="text-xs">Scroll to explore</span>
-          <div className="w-5 h-8 border-2 border-zinc-700 rounded-full flex items-start justify-center pt-1">
-            <motion.div
-              animate={{ y: [0, 10, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-              className="w-1 h-2 bg-purple-500 rounded-full"
-            />
-          </div>
+          <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 bg-green-400 rounded-full animate-pulse" />
+          <span className="text-xs sm:text-sm text-zinc-300 whitespace-nowrap">
+            500 Gamers Earning,{" "}
+            <span className="text-purple-400 font-semibold">Right Now</span>
+          </span>
         </motion.div>
-      </section>
+
+        {/* Main Headline */}
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.8 }}
+          className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight leading-tight text-center"
+        >
+          PLAY GAMES.{" "}
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
+            GET PAID.
+          </span>
+        </motion.h1>
+
+        {/* Description */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="text-base sm:text-lg text-zinc-300 max-w-2xl text-center leading-relaxed px-4"
+        >
+          From casual solo to esports grinder - turn your skills into real
+          earnings through Scrims, tournaments, and creator brand deals, all
+          in one place.
+        </motion.p>
+
+        {/* CTA Pills - Responsive flex wrap */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4 pt-3 sm:pt-4 md:pt-6 px-2"
+        >
+          {[
+            { icon: "🏆", text: "Play Scrims" },
+            { icon: "🏆", text: "Play Tournaments" },
+            { icon: "💎", text: "Brand Deals" },
+            { icon: "🎁", text: "Free Entry @ 500 Fans" },
+          ].map((item, i) => (
+            <motion.button
+              key={i}
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.95 }}
+              className="relative px-4 sm:px-6 md:px-8 py-2 sm:py-3 rounded-full text-white font-semibold transition-all duration-300 group whitespace-nowrap overflow-hidden border border-white/20 text-xs sm:text-sm"
+              style={{
+                background: "rgba(20, 20, 30, 0.3)",
+                backdropFilter: "blur(10px)",
+              }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-white/10 via-white/5 to-transparent opacity-60 rounded-full" />
+              <span className="flex items-center gap-1.5 sm:gap-2 relative z-10">
+                <span className="text-base sm:text-lg">{item.icon}</span>
+                {item.text}
+              </span>
+            </motion.button>
+          ))}
+        </motion.div>
+
+
+        {/* Scrims Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7 }}
+          className="max-w-full w-full mt-8"
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6">
+            <div className="text-center mb-8 sm:mb-12">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold italic text-white">
+                SCRIMS WEEK
+              </h2>
+              <p className="text-sm sm:text-base text-zinc-400 tracking-widest">
+                REGISTRATION GOING ON
+              </p>
+            </div>
+          </div>
+
+          <ScrimsCarousel onLoginClick={() => setLoginModalOpen(true)} />
+        </motion.div>
+      </motion.div>
+    </div>
+  </div>
+  </section>
 
       {/* ── HOW TO EARN ── */}
       <section
@@ -479,10 +289,10 @@ function HomeContent() {
               <Flame className="w-4 h-4 text-orange-400" />
               <span className="text-sm text-purple-300">Your Earning Path</span>
             </div>
-            <h2 className="text-5xl mb-4">
-              How You{" "}
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4">
+              HOW YOU{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
-                Earn Money
+               EARN MONEY
               </span>
             </h2>
             <p className="text-zinc-400 text-lg max-w-2xl mx-auto">
@@ -492,13 +302,10 @@ function HomeContent() {
           </motion.div>
 
           <div className="grid md:grid-cols-4 gap-8 relative py-16">
-            {/* ===== Processing Bar Fill - Gray fills to Purple-Pink ===== */}
             <div className="hidden md:block absolute top-36 left-[5%] right-[5%] h-1 pointer-events-none">
-              {/* Container for the processing line */}
               <div className="processing-line w-full h-full" />
             </div>
 
-            {/* Step Cards */}
             {howToEarn.map((item, i) => (
               <motion.div
                 key={i}
@@ -515,7 +322,6 @@ function HomeContent() {
                 }}
                 className="relative flex flex-col items-center text-center group"
               >
-                {/* Icon container - starts gray, reveals to purple-pink glow */}
                 <motion.div
                   whileHover={{
                     scale: 1.2,
@@ -527,7 +333,6 @@ function HomeContent() {
                     boxShadow: `0 20px 40px rgba(100, 100, 100, 0.1)`,
                   }}
                 >
-                  {/* Rotating border - starts gray, reveals purple on animation */}
                   <motion.div
                     animate={{ rotate: [0, 360] }}
                     transition={{
@@ -540,11 +345,9 @@ function HomeContent() {
                       borderColor: "rgb(129, 23, 241)",
                     }}
                   />
-                  {/* Icon - starts gray, reveals to purple as line passes */}
                   <item.icon className="w-10 h-10 relative z-20 icon-color" />
                 </motion.div>
 
-                {/* Step Label - starts gray, reveals purple */}
                 <motion.div
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: 1 }}
@@ -558,7 +361,6 @@ function HomeContent() {
                   STEP {item.step}
                 </motion.div>
 
-                {/* Title - starts gray, reveals to light gray as animation plays */}
                 <motion.h3
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: 1 }}
@@ -572,7 +374,6 @@ function HomeContent() {
                   {item.title}
                 </motion.h3>
 
-                {/* Description - starts gray, reveals lighter gray */}
                 <motion.p
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: 1 }}
@@ -586,7 +387,6 @@ function HomeContent() {
                   {item.desc}
                 </motion.p>
 
-                {/* Animated bottom accent underline */}
                 <motion.div
                   initial={{ scaleX: 0 }}
                   whileInView={{ scaleX: 1 }}
@@ -615,19 +415,15 @@ function HomeContent() {
                 if (user) {
                   router.push("/profile");
                 } else {
-                  // setCountdownModalOpen(true);
                   setLoginModalOpen(true);
                 }
               }}
               className="relative cursor-pointer px-10 py-3 bg-gradient-to-r from-purple-900 to-pink-800 hover:bg-transparent transition-all duration-500 rounded-[40px] inline-flex items-center gap-2 shadow-lg shadow-purple-500/20 font-semibold text-lg overflow-hidden group"
             >
-              {/* fade out gradient on hover */}
               <div className="absolute inset-0 bg-gradient-to-r from-purple-900 to-pink-800 group-hover:opacity-0 transition-opacity duration-500 rounded-[40px]" />
 
-              {/* glass layer appears on hover */}
               <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-white/5 backdrop-blur-md rounded-[40px]" />
 
-              {/* animated glow sweep (only visible on hover) */}
               <motion.div className="absolute inset-0 opacity-0 group-hover:opacity-100">
                 <motion.div
                   className="absolute -left-1/2 top-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/25 to-transparent"
@@ -640,10 +436,8 @@ function HomeContent() {
                 />
               </motion.div>
 
-              {/* border glow on hover */}
               <div className="absolute inset-0 rounded-[40px] border border-white/0 group-hover:border-purple-300/30 transition-all duration-500" />
 
-              {/* content */}
               <span className="relative z-10 text-white group-hover:text-purple-200 transition-colors duration-300">
                 {user ? "My Profile" : "Start Your Journey"}
               </span>
@@ -654,17 +448,19 @@ function HomeContent() {
         </div>
       </section>
 
-      {/* <HeroSection /> */}
-      {/* <ComingSoon/> */}
-      {/* <TournamentCarousel /> */}
-      {/* <AllGamesLoop /> */}
       <TrustedBrands />
+      <GiveawayWinner />
+      <OurPartners />
+      <div id="community">
+        <CommunityActivies />
+      </div>
+      <div id="eshop">
+        <EShop />
+      </div>
+      <div id="news">
+        <LatestNews />
+      </div>
       <Ecosystem />
-      {/* <ShowcaseCarousel /> */}
-      {/* <UpcomingEvents /> */}
-      <LatestNews />
-      <div id="career">{/* Career section can be added here if needed */}</div>
-      <ContactSection />
       <Footer />
 
       {/* Countdown Modal */}
@@ -687,16 +483,5 @@ function HomeContent() {
 }
 
 export default function Home() {
-  return (
-    <Suspense fallback={<div />}>
-      <HomeContent />
-    </Suspense>
-  );
+  return <HomeContent />;
 }
-
-
-//uid issue solved
-//new changed
-// new video removed
-// what is the issue on blocking 
-// update

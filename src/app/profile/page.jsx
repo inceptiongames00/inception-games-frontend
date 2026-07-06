@@ -2,33 +2,80 @@
 
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-// import { useAuth } from '@/hooks/useAuth.js'
 import { useRouter } from "next/navigation";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import ProfileHeroBanner from "../components/ProfileComponents/ProfileHeroBanner";
-import CareerStats from "../components/ProfileComponents/CareerStats";
-import QuickInfo from "../components/ProfileComponents/QuickInfo";
 import EventsSection from "../components/ProfileComponents/EventsSection";
 import MyScrims from "../components/ProfileComponents/MyScrims";
-import MatchHistory from "../components/ProfileComponents/MatchHistory";
-import Availability from "../components/ProfileComponents/Availability";
-import FeaturedCarousel from "../components/ProfileComponents/FeaturedCarousel";
 import EditProfileModal from "../components/ProfileComponents/EditProfileModal";
 import { useAuth } from "../context/AuthContext";
 import NotificationsPanel from "../components/ProfileComponents/NotificationsPanel";
+import SubscriptionSection from "../components/ProfileComponents/SubscriptionSection";
+import ProGearShop from "../components/ProfileComponents/ProGearShop";
+import { getTokens } from "@/lib/api";
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://inception-games.an.r.appspot.com/api/v1';
 
 export default function ProfilePage() {
   const { user, isAuthenticated, loading } = useAuth();
   const router = useRouter();
   const [gamingProfile, setGamingProfile] = useState(null);
   const [editProfileOpen, setEditProfileOpen] = useState(false);
-  const [profileLoading, setProfileLoading] = useState(false);
+  const [apiUserProfile, setApiUserProfile] = useState(null);
+  const [loadingProfile, setLoadingProfile] = useState(true);
 
+  console.log('User Profile',user)
 
+  // Fetch user profile from API
+  const fetchUserProfile = async () => {
+    try {
+      const tokens = getTokens();
+      console.log('[ProfilePage] Tokens:', tokens);
+      
+      if (!tokens?.accessToken) {
+        console.log('[ProfilePage] No access token found');
+        setLoadingProfile(false);
+        return;
+      }
 
-  // NOTE: Profile data is stored in the user object from AuthContext
-  // No need to fetch separately - data is collected during registration
+      // const userId = 'SNS-1524';
+      const userId = user?.id;
+      const apiUrl = `${API_BASE_URL}/auth/user-profile/${userId}`;
+      console.log('[ProfilePage] User ID:', userId);
+      console.log('[ProfilePage] Fetching from URL:', apiUrl);
+
+      const response = await fetch(apiUrl, {
+        headers: {
+          'Authorization': `Bearer ${tokens.accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      console.log('[ProfilePage] Response Status:', response.status, response.statusText);
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('[ProfilePage] Full API Response:', data);
+        const profileData = data.data || data;
+        console.log('[ProfilePage] Response Data:', profileData);
+        console.log('[ProfilePage] Subscriptions:', profileData?.subscriptions);
+        setApiUserProfile(profileData);
+      } else {
+        const errorData = await response.json();
+        console.log('[ProfilePage] Error Response:', errorData);
+      }
+    } catch (error) {
+      console.log('[ProfilePage] Error fetching user profile:', error);
+      console.error('[ProfilePage] Error Details:', error);
+    } finally {
+      setLoadingProfile(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
 
   // Load gaming profile from sessionStorage whenever user changes
   useEffect(() => {
@@ -53,7 +100,7 @@ export default function ProfilePage() {
     }
   }, [isAuthenticated, loading, router]);
 
-  if (!user || profileLoading) {
+  if (!user) {
     return (
       <div className="min-h-screen bg-[#060608] flex items-center justify-center">
         <motion.div
@@ -71,25 +118,29 @@ export default function ProfilePage() {
   }
 
   // Use user data from API which includes gaming profile data
-  // The user object already contains primaryGame, gameRole, rank, region, etc. from the API
+  // Merge API profile data with existing user data
   const mergedUser = {
     ...user,
+    ...apiUserProfile,
     // Use API data first, fallback to gamingProfile sessionStorage if needed
     username:
+      apiUserProfile?.username ||
       user?.username ||
       gamingProfile?.username ||
       user?.fullName ||
       user?.email?.split("@")[0] ||
       "Player",
-    bio: user?.bio || gamingProfile?.bio || "",
-    primaryGame: user?.primaryGame || gamingProfile?.game || "",
-    gameRole: user?.gameRole || gamingProfile?.role || "",
-    region: user?.region || gamingProfile?.region || "",
-    rank: user?.rank || gamingProfile?.rank || "",
-    discord: user?.discord || gamingProfile?.discord || "",
+    bio: apiUserProfile?.bio || user?.bio || gamingProfile?.bio || "",
+    primaryGame: apiUserProfile?.primaryGame || apiUserProfile?.primary_game || user?.primaryGame || gamingProfile?.game || "",
+    gameRole: apiUserProfile?.gameRole || apiUserProfile?.game_role || user?.gameRole || gamingProfile?.role || "",
+    region: apiUserProfile?.region || user?.region || gamingProfile?.region || "",
+    rank: apiUserProfile?.rank || user?.rank || gamingProfile?.rank || "",
+    discord: apiUserProfile?.discord || user?.discord || gamingProfile?.discord || "",
+    avatar: apiUserProfile?.avatar || apiUserProfile?.avatar_url || user?.avatar || "",
+    banner: apiUserProfile?.banner || apiUserProfile?.banner_url || user?.banner || "",
     // Legacy fields for compatibility
-    game: user?.primaryGame || gamingProfile?.game || "",
-    role: user?.gameRole || gamingProfile?.role || "",
+    game: apiUserProfile?.primaryGame || apiUserProfile?.primary_game || user?.primaryGame || gamingProfile?.game || "",
+    role: apiUserProfile?.gameRole || apiUserProfile?.game_role || user?.gameRole || gamingProfile?.role || "",
   };
 
 
@@ -98,44 +149,45 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-[#060608] flex flex-col">
       <Header />
 
-      <main className="flex-1 pt-28 pb-20">
+      <main className="flex-1 pt-20 sm:pt-24 md:pt-28 pb-12 sm:pb-16 md:pb-20">
         {/* Subtle ambient glow */}
         <div className="fixed inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-0 left-1/3 w-[600px] h-[600px] bg-purple-600/[0.04] rounded-full blur-[120px]" />
-          <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-pink-600/[0.04] rounded-full blur-[120px]" />
+          <div className="absolute top-0 left-1/3 w-[400px] sm:w-[500px] lg:w-[600px] h-[400px] sm:h-[500px] lg:h-[600px] bg-purple-600/[0.04] rounded-full blur-[80px] sm:blur-[100px] lg:blur-[120px]" />
+          <div className="absolute bottom-0 right-1/4 w-[350px] sm:w-[400px] lg:w-[500px] h-[350px] sm:h-[400px] lg:h-[500px] bg-pink-600/[0.04] rounded-full blur-[80px] sm:blur-[100px] lg:blur-[120px]" />
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative w-full mx-auto max-w-[100%] sm:max-w-[640px] md:max-w-[768px] lg:max-w-5xl xl:max-w-7xl">
           {/* Hero Banner */}
-          <div className="mb-8">
+          <div className="mb-6 sm:mb-8 md:mb-10">
             <ProfileHeroBanner
               user={mergedUser}
               onEditProfile={() => setEditProfileOpen(true)}
             />
           </div>
 
-          {/* Player Info + Notifications */}
-          <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="col-span-2">
-              <QuickInfo user={mergedUser} />
-            </div>
-            <div className="col-span-1">
+          {/* My Scrims + Notifications + Subscriptions Grid - Responsive */}
+          <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-6 mb-8 md:mb-10">
+            {/* Left Column: My Scrims & Gear Shop (wider on larger screens) */}
+          <div className="md:col-span-2 lg:col-span-3 space-y-3 sm:space-y-5 md:space-y-5">
+  <MyScrims email={mergedUser?.email} />
+  
+  {/* Hide on mobile, show on md screens and above */}
+  <div className="hidden md:block">
+    <ProGearShop />
+  </div>
+</div>
+
+            {/* Right Column: Notifications & Subscriptions (sidebar on md+) */}
+            <div className="md:col-span-1 space-y-4 sm:space-y-6 md:space-y-6">
               <NotificationsPanel />
+              <SubscriptionSection userProfile={apiUserProfile} onSubscriptionSuccess={() => fetchUserProfile()} />
             </div>
           </div>
 
-
-           {/* My Scrims */}
-          <div className="mt-8 mb-14">
-            <MyScrims email={mergedUser?.email} />
-          </div>
-
-          {/* Events Section */}
-          <div className="space-y-6">
+          {/* Events Section - Full Width */}
+          <div className="space-y-6 md:space-y-8">
             <EventsSection user={mergedUser} />
           </div>
-
-         
         </div>
       </main>
 

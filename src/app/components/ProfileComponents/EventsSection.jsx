@@ -35,68 +35,186 @@ import { API } from "@/lib/api";
 
 // Games data (for mapping game names to images)
 const games = [
-  { id: "apex", name: "Apex Legends", image: "/games/apex.png" },
+  {
+    id: "apex",
+    name: "Apex Legends",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148305/apex_btoyw6.png",
+  },
   {
     id: "cod-bo7",
     name: "Call of Duty: Black Ops 7",
-    image: "/games/codm.png",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148320/codm_jsuidq.png",
   },
   {
     id: "cod-warzone",
     name: "Call of Duty: Warzone",
-    image: "/games/codm.png",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148320/codm_jsuidq.png",
   },
-  { id: "chess", name: "Chess", image: "/games/chess.png" },
-  { id: "cs2", name: "Counter-Strike 2", image: "/games/csgo.png" },
-  { id: "crossfire", name: "Crossfire", image: "/games/cf.jpeg" },
-  { id: "dota2", name: "Dota 2", image: "/games/dota2.png" },
-  { id: "fc26-pc", name: "FC26 - PC", image: "/games/fifapc.png" },
+  {
+    id: "chess",
+    name: "Chess",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148314/chess_vpyepf.png",
+  },
+  {
+    id: "cs2",
+    name: "Counter-Strike 2",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148322/csgo_osyrgj.png",
+  },
+  {
+    id: "crossfire",
+    name: "Crossfire",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148311/cf_mbdfng.jpg",
+  },
+  {
+    id: "dota2",
+    name: "Dota 2",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148325/dota2_bnitad.png",
+  },
+  {
+    id: "fc26-pc",
+    name: "FC26 - PC",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148346/fifapc_ekgtge.png",
+  },
   {
     id: "fc26-consoles",
     name: "FC26 - Consoles",
-    image: "/games/fcconsole.png",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148337/fcconsole_ze4njl.png",
   },
-  { id: "fc26-mobile", name: "FC26 - Mobile", image: "/games/fcmobile.png" },
+  {
+    id: "fc26-mobile",
+    name: "FC26 - Mobile",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148340/fcmobile_fwbjpw.png",
+  },
   {
     id: "efootball-pc",
     name: "eFootball - PC",
-    image: "/games/efootballpc.png",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148334/efootballpc_ykrrpz.png",
   },
   {
     id: "efootball-consoles",
     name: "eFootball - Consoles",
-    image: "/games/efootballconsole.png",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148328/efootballconsole_gwo20c.png",
   },
   {
     id: "efootball-mobile",
     name: "eFootball - Mobile",
-    image: "/games/efootballmobile.png",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148331/efootballmobile_dt6pct.png",
   },
   {
     id: "fatal-fury",
     name: "Fatal Fury: City of the Wolves",
-    image: "/games/ff.jpeg",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148343/ff_kgnye5.jpg",
   },
-  { id: "freefire", name: "Free Fire", image: "/games/freefire.png" },
-  { id: "hok", name: "Honor of Kings", image: "/games/hk.jpeg" },
-  { id: "lol", name: "League of Legends", image: "/games/lol.png" },
-  { id: "mlbb", name: "Mobile Legends: Bang Bang", image: "/games/mlbb.png" },
-  { id: "overwatch2", name: "Overwatch 2", image: "/games/overwatch.png" },
-  { id: "pubg", name: "PUBG / PUBG: Battlegrounds", image: "/games/pubg.png" },
-  { id: "pubg-mobile", name: "PUBG Mobile", image: "/games/pubg.png" },
-  { id: "r6x", name: "Rainbow Six Siege X", image: "/games/r6.jpeg" },
-  { id: "sf6", name: "Street Fighter 6", image: "/games/sf6.png" },
-  { id: "tft", name: "Teamfight Tactics", image: "/games/tt.jpeg" },
-  { id: "valorant", name: "VALORANT", image: "/games/valorant.png" },
+  {
+    id: "freefire",
+    name: "Free Fire",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148349/freefire_yvwde4.png",
+  },
+  {
+    id: "hok",
+    name: "Honor of Kings",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148352/hk_ggqjvd.jpg",
+  },
+  {
+    id: "lol",
+    name: "League of Legends",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148355/lol_iox7ut.png",
+  },
+  {
+    id: "mlbb",
+    name: "Mobile Legends: Bang Bang",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148360/mlbb_o2upi2.png",
+  },
+  {
+    id: "overwatch2",
+    name: "Overwatch 2",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148363/overwatch_sz5p67.png",
+  },
+  {
+    id: "pubg",
+    name: "PUBG / PUBG: Battlegrounds",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148367/pubg_ss1pcn.png",
+  },
+  {
+    id: "pubg-mobile",
+    name: "PUBG Mobile",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148367/pubg_ss1pcn.png",
+  },
+  {
+    id: "r6x",
+    name: "Rainbow Six Siege X",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148653/r6_lssnv3.jpg",
+  },
+  {
+    id: "sf6",
+    name: "Street Fighter 6",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148295/sf6_vf3lca.png",
+  },
+  {
+    id: "tft",
+    name: "Teamfight Tactics",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148299/tt_qlofbx.jpg",
+  },
+  {
+    id: "valorant",
+    name: "VALORANT",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148302/valorant_nr0uf9.png",
+  },
   {
     id: "valorant-mobile",
     name: "VALORANT Mobile",
-    image: "/games/valorant.png",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148302/valorant_nr0uf9.png",
   },
-  { id: "coc", name: "Clash of Clans", image: "/games/coc.png" },
-  { id: "tekken8", name: "Tekken 8", image: "/games/tekken.jpeg" },
-  { id: "mk11", name: "Mortal Kombat 11", image: "/games/mk11.png" },
-  { id: "brawlstars", name: "Brawl Stars", image: "/games/brawlstars.png" },
+  {
+    id: "coc",
+    name: "Clash of Clans",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148317/coc_yosnc6.png",
+  },
+  {
+    id: "tekken8",
+    name: "Tekken 8",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148297/tekken_dn33wd.jpg",
+  },
+  {
+    id: "mk11",
+    name: "Mortal Kombat 11",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148357/mk11_ecv0mw.png",
+  },
+  {
+    id: "brawlstars",
+    name: "Brawl Stars",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148308/brawlstars_ffxvrc.png",
+  },
 ];
 
 // Helper to get game image from title or game name
@@ -108,7 +226,10 @@ function getGameImage(eventTitle, gameName) {
       searchTerm.includes(g.name.toLowerCase()) ||
       g.name.toLowerCase().includes(searchTerm.split(" ")[0]),
   );
-  return matchedGame?.image || "/games/pubg.png"; // Default fallback
+  return (
+    matchedGame?.image ||
+    "https://res.cloudinary.com/jvpygp4b/image/upload/v1783148367/pubg_ss1pcn.png"
+  ); // Default fallback
 }
 
 // Helper to determine event type from title
@@ -187,10 +308,10 @@ function getStatusText(status) {
 // Platform Icon Component
 function PlatformDisplay({ platform }) {
   const normalizedPlatform = platform?.toLowerCase().trim();
-  
+
   // Determine icon and label based on platform
   let Icon, label, brandColor;
-  
+
   switch (normalizedPlatform) {
     case "pc":
     case "pc only":
@@ -225,7 +346,7 @@ function PlatformDisplay({ platform }) {
       label = "All Platforms";
       brandColor = "text-gray-400";
   }
-  
+
   return (
     <div className="flex items-center gap-1.5">
       <Icon size={16} className={`${brandColor} font-bold`} strokeWidth={2.5} />
@@ -234,11 +355,16 @@ function PlatformDisplay({ platform }) {
   );
 }
 
-// Coming Soon Card Component
-function ComingSoonCard({ category, icon: IconComponent }) {
+// Coming Soon Card Component - Memoized
+const ComingSoonCard = React.memo(function ComingSoonCard({
+  category,
+  icon: IconComponent,
+}) {
   const isComingSoonDate = new Date("2025-05-01");
-  const daysUntil = Math.ceil((isComingSoonDate - new Date()) / (1000 * 60 * 60 * 24));
-  
+  const daysUntil = Math.ceil(
+    (isComingSoonDate - new Date()) / (1000 * 60 * 60 * 24),
+  );
+
   const categoryColors = {
     Tournament: {
       bg: "from-orange-600/20 to-red-600/20",
@@ -266,31 +392,39 @@ function ComingSoonCard({ category, icon: IconComponent }) {
     >
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className={`absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br ${colors.bg} rounded-full opacity-20 blur-3xl`} />
-        <div className={`absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br ${colors.bg} rounded-full opacity-20 blur-3xl`} />
+        <div
+          className={`absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br ${colors.bg} rounded-full opacity-20 blur-3xl`}
+        />
+        <div
+          className={`absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br ${colors.bg} rounded-full opacity-20 blur-3xl`}
+        />
       </div>
 
       {/* Content */}
       <div className="relative z-10 space-y-4">
         {/* Icon */}
-        <div className={`mx-auto w-16 h-16 rounded-2xl ${colors.accent} flex items-center justify-center border`}>
+        <div
+          className={`mx-auto w-16 h-16 rounded-2xl ${colors.accent} flex items-center justify-center border`}
+        >
           <IconComponent className={`w-8 h-8 ${colors.icon}`} />
         </div>
 
         {/* Category Name */}
-        <h3 className="text-2xl font-bold text-white">
-          {category} Events
-        </h3>
+        <h3 className="text-2xl font-bold text-white">{category} Events</h3>
 
         {/* Lock/Coming Soon Badge */}
-        <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full ${colors.accent} border`}>
+        <div
+          className={`inline-flex items-center gap-2 px-4 py-2 rounded-full ${colors.accent} border`}
+        >
           <Lock className={`w-4 h-4 ${colors.icon}`} />
           <span className={colors.text}>Registration Coming Soon</span>
         </div>
 
         {/* Coming Soon Date */}
         <div className="space-y-2 pt-2">
-          <p className="text-gray-300 text-sm font-medium">Opens June 20th, 2026</p>
+          <p className="text-gray-300 text-sm font-medium">
+            Opens June 20th, 2026
+          </p>
           <p className="text-gray-500 text-xs">
             {/* {daysUntil > 0 ? `In ${daysUntil} days` : "Available now!"} */}
           </p>
@@ -311,10 +445,11 @@ function ComingSoonCard({ category, icon: IconComponent }) {
       </div>
     </motion.div>
   );
-}
+});
+ComingSoonCard.displayName = "ComingSoonCard";
 
-// Event Card Component
-function EventCard({ event, onClick }) {
+// Event Card Component - Memoized
+const EventCard = React.memo(function EventCard({ event, onClick }) {
   const [expanded, setExpanded] = useState(false);
   const eventType =
     event.eventType || getEventType(event.title, event.organizer);
@@ -331,167 +466,188 @@ function EventCard({ event, onClick }) {
 
   return (
     <motion.div
-      className="bg-[#111115] border border-white/[0.06] rounded-2xl overflow-hidden hover:border-white/[0.12] transition-all duration-300"
-      whileHover={{ y: -4 }}
+      className="bg-gradient-to-b from-gray-900/40 via-[#111115] to-black/60 border border-white/[0.08] rounded-2xl overflow-hidden hover:border-white/[0.15] transition-all duration-300 group"
+      whileHover={{ y: -6 }}
       layout
     >
-      {/* Banner - Game Image */}
+      {/* Banner - Game Image with decorative elements */}
       <div
-        className="relative h-48 cursor-pointer overflow-hidden"
+        className="relative h-56 cursor-pointer overflow-hidden bg-gradient-to-br from-purple-900/20 to-black"
         onClick={() => onClick(event)}
       >
-        <Image src={gameImage} alt={gameName} fill className="object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+        <Image
+          src={gameImage}
+          alt={gameName}
+          fill
+          className="object-cover group-hover:scale-105 transition-transform duration-300"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#111115] via-black/40 to-transparent" />
 
-        {/* Game Logo Overlay */}
-        <div className="absolute bottom-4 left-4 right-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-black/60 backdrop-blur-sm rounded-lg">
-              <Calendar size={14} className="text-amber-400" />
-              <span className="text-white text-sm font-medium">
-                {event.start_date
-                  ? new Date(event.start_date)
-                      .toLocaleDateString("en-GB", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric",
-                      })
-                      .toUpperCase()
-                  : "TBD"}
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className="p-4">
-        {/* Game + Status */}
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg overflow-hidden bg-gray-800 flex-shrink-0">
-              <Image
-                src={gameImage}
-                alt={gameName}
-                width={32}
-                height={32}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <span className="text-white text-sm font-medium truncate max-w-[120px]">
-              {gameName.length > 15
-                ? gameName.split(":")[0].split(" ").slice(0, 2).join(" ")
-                : gameName}
+        {/* Date Badge - Top Left */}
+        <div className="absolute top-4 left-4">
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-black/50 backdrop-blur-sm rounded-full border border-yellow-400/30">
+            <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse" />
+            <span className="text-white text-xs font-bold uppercase">
+              {event.start_date
+                ? new Date(event.start_date)
+                    .toLocaleDateString("en-US", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })
+                    .toUpperCase()
+                : "TBD"}
             </span>
           </div>
+        </div>
+
+        {/* Status Badge - Top Right */}
+        <div className="absolute top-4 right-4">
           <span
-            className={`px-2 py-0.5 text-xs font-semibold rounded border capitalize ${getStatusColor(event.status)}`}
+            className={`px-4 py-1.5 text-xs font-bold rounded-full border capitalize inline-block ${getStatusColor(event.status)}`}
           >
             {event.status || "Upcoming"}
           </span>
         </div>
 
-        {/* Title */}
-        <h3
-          className="text-white font-bold text-lg mb-2 cursor-pointer hover:text-purple-400 transition-colors line-clamp-2"
-          onClick={() => onClick(event)}
-        >
-          {event.title}
-        </h3>
-
-        {/* Date & Status */}
-        <div className="flex items-center gap-2 text-sm mb-3">
-          <Calendar size={14} className="text-red-400" />
-          <span className="text-red-400 font-medium">
-            {formatDate(event.start_date)}
+        {/* Event Type Label - Bottom Left */}
+        <div className="absolute bottom-4 left-4">
+          <span className="text-gray-400 text-xs font-bold uppercase tracking-wider">
+            {eventType}
           </span>
-          <span className="text-gray-500">·</span>
-          <span className="text-red-400">{getStatusText(event.status)}</span>
+        </div>
+      </div>
+
+      {/* Content Section */}
+      <div className="p-6 space-y-4">
+        {/* Game Icon + Organizer */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-800 flex-shrink-0 border border-white/[0.1]">
+              <Image
+                src={gameImage}
+                alt={gameName}
+                width={40}
+                height={40}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <span className="text-white text-sm font-semibold max-w-[120px] truncate">
+              {gameName.length > 15
+                ? gameName.split(":")[0].split(" ").slice(0, 2).join(" ")
+                : gameName}
+            </span>
+          </div>
+          {event.organizer && (
+            <span className="px-3 py-1 text-xs font-bold text-purple-300 bg-purple-500/20 rounded-full border border-purple-500/30 uppercase">
+              {event.organizer}
+            </span>
+          )}
         </div>
 
-        {/* Meta Info */}
-        <div className="flex items-center gap-4 text-sm text-gray-400 mb-3">
-          <div className="flex items-center gap-1">
-            <Flag size={12} />
+        {/* Title */}
+        <div>
+          <h3
+            className="text-white font-bold text-xl cursor-pointer hover:text-purple-400 transition-colors line-clamp-2 leading-tight"
+            onClick={() => onClick(event)}
+          >
+            {event.title}
+          </h3>
+        </div>
+
+        {/* Date & Status Text */}
+        <div className="flex items-center gap-3 text-sm">
+          <span className="text-red-400 font-semibold">
+            {formatDate(event.start_date)}
+          </span>
+          <span className="text-green-400 font-semibold">
+            {getStatusText(event.status)}
+          </span>
+        </div>
+
+        {/* Meta Info - Location, Platform, Team Type */}
+        <div className="flex flex-wrap items-center gap-3 text-xs text-gray-300">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/[0.03] border border-white/[0.06]">
+            <Flag size={13} className="text-gray-500" />
             <span>{event.venue || event.location || "Online"}</span>
           </div>
           <PlatformDisplay platform={event.platform} />
-          {/* <div className="flex items-center gap-1">
-            <Users size={12} />
-            <span>{event.teamType || "Open"}</span>
-          </div> */}
-  <div className="flex items-center gap-1">
-  {(event.teamType || '').toLowerCase() === 'solo' ? (
-    <User size={12} />
-  ) : (
-    <Users size={12} />
-  )}
-  <span>{event.teamType}</span>
-</div>
-
-
-
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/[0.03] border border-white/[0.06]">
+            {(event.teamType || "").toLowerCase() === "solo" ? (
+              <User size={13} className="text-gray-500" />
+            ) : (
+              <Users size={13} className="text-gray-500" />
+            )}
+            <span>{event.teamType || "Team"}</span>
+          </div>
         </div>
 
-{/* always-visible content  */}
+        {/* Prize Pool - if exists */}
         {event.prizePool > 0 && (
-  <div className="flex items-center gap-2 text-sm mb-3">
-    <DollarSign size={14} className="text-amber-400" />
-    <span className="text-white font-semibold">
-      {event.currency || "BDT"} {event.prizePool.toLocaleString()} PrizePool
-    </span>
-  </div>
-)}
+          <div className="flex items-center gap-2 text-sm py-2 px-3 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+            <DollarSign size={16} className="text-amber-400" />
+            <span className="text-white font-semibold">
+              {event.currency || "BDT"} {event.prizePool.toLocaleString()} Prize
+              Pool
+            </span>
+          </div>
+        )}
 
-{event.description && (
-  <p className="text-gray-400 text-sm mb-3 line-clamp-3">
-    {event.description}
-  </p>
-)}
+        {/* Description - if exists */}
+        {event.description && (
+          <p className="text-gray-400 text-sm line-clamp-2 leading-relaxed">
+            {event.description}
+          </p>
+        )}
 
-<div className="flex items-center gap-2">
-  <span className="px-3 py-1 text-xs font-medium text-gray-300 bg-gray-800 rounded-full border border-gray-700">
-    {eventType}
-  </span>
-  {event.organizer && (
-    <span className="px-3 py-1 text-xs font-medium text-purple-300 bg-purple-800/30 rounded-full border border-purple-700/30">
-      {event.organizer}
-    </span>
-  )}
-</div>
-
-        
+        {/* Join Event Button */}
+        <motion.button
+          onClick={() => onClick(event)}
+          className="w-full mt-2 py-3 cursor-pointer bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white font-bold text-sm rounded-xl transition-all duration-200 uppercase tracking-wider"
+          whileHover={{ scale: 1.01 }}
+          whileTap={{ scale: 0.98 }}
+        >
+          Join Event
+        </motion.button>
       </div>
     </motion.div>
   );
-}
+});
+EventCard.displayName = "EventCard";
 
 // Main Events Section Component
-export default function EventsSection({ user, initialFilter = "all", routePrefix = "/profile" }) {
+export default function EventsSection({
+  user,
+  initialFilter = "all",
+  routePrefix = "/profile",
+}) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const sectionRef = useRef(null);
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   // Initialize activeFilter from URL params, fallback to initialFilter
   const [activeFilter, setActiveFilter] = useState(() => {
-    const tabParam = searchParams?.get('tab');
+    const tabParam = searchParams?.get("tab");
     return tabParam || initialFilter;
   });
-  
+
   const [searchQuery, setSearchQuery] = useState("");
 
   // Update activeFilter whenever URL searchParams change
   useEffect(() => {
-    const tabParam = searchParams.get('tab');
+    const tabParam = searchParams.get("tab");
     if (tabParam) {
       setActiveFilter(tabParam);
       // Scroll to Events section after a small delay to allow state update
       setTimeout(() => {
         if (sectionRef.current) {
-          sectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          sectionRef.current.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
         }
       }, 100);
     }
@@ -504,14 +660,17 @@ export default function EventsSection({ user, initialFilter = "all", routePrefix
       // Scroll to Events section after a small delay
       setTimeout(() => {
         if (sectionRef.current) {
-          sectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          sectionRef.current.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
         }
       }, 100);
     };
 
-    window.addEventListener('switchProfileTab', handleTabSwitch);
+    window.addEventListener("switchProfileTab", handleTabSwitch);
     return () => {
-      window.removeEventListener('switchProfileTab', handleTabSwitch);
+      window.removeEventListener("switchProfileTab", handleTabSwitch);
     };
   }, []);
 
@@ -580,6 +739,10 @@ export default function EventsSection({ user, initialFilter = "all", routePrefix
           };
         });
         setEvents(transformedEvents);
+
+        // Cache the scrims list for detail page to use
+        sessionStorage.setItem("scrims_cache", JSON.stringify(scrimsData));
+        sessionStorage.setItem("scrims_cache_timestamp", Date.now().toString());
       } else {
         setEvents([]);
       }
@@ -597,54 +760,78 @@ export default function EventsSection({ user, initialFilter = "all", routePrefix
   }, [fetchEvents]);
 
   // Calculate filter counts - Tournaments and Brand Deals show as "coming soon" so count is not displayed from API
-  const scrimmageEvents = events.filter((e) => e.eventType === "Scrims");
-  
-  const filterCounts = {
-    all: events.length + 2, // Add 2 for the coming soon categories
-    Tournament: 0, // Coming soon category
-    Scrims: scrimmageEvents.length,
-    "Brand Deal": 0, // Coming soon category
-  };
+  const scrimmageEvents = React.useMemo(() => {
+    return events.filter((e) => e.eventType === "Scrims");
+  }, [events]);
 
-  const FILTER_TABS = [
-    { id: "all", label: "All", count: filterCounts.all },
-    {
-      id: "Tournament",
-      label: "Tournaments",
-      count: filterCounts.Tournament,
-      icon: Trophy,
-    },
-    { id: "Scrims", label: "Scrims", count: filterCounts.Scrims, icon: Swords },
-    {
-      id: "Brand Deal",
-      label: "Brand Deals",
-      count: filterCounts["Brand Deal"],
-      icon: Briefcase,
-    },
-  ];
+  const filterCounts = React.useMemo(() => {
+    return {
+      all: events.length + 2, // Add 2 for the coming soon categories
+      Tournament: 0, // Coming soon category
+      Scrims: scrimmageEvents.length,
+      "Brand Deal": 0, // Coming soon category
+    };
+  }, [events.length, scrimmageEvents.length]);
 
-  const filteredEvents = events.filter((event) => {
-    // Only show Scrims from API
-    const matchesFilter =
-      activeFilter === "all" 
-        ? event.eventType === "Scrims"
-        : (event.eventType === activeFilter && event.eventType === "Scrims");
-    const matchesSearch =
-      (event.title || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (event.game?.name || "")
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
-      (event.organizer || "").toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesFilter && matchesSearch;
-  });
+  const FILTER_TABS = React.useMemo(
+    () => [
+      { id: "all", label: "All", count: filterCounts.all },
+      {
+        id: "Tournament",
+        label: "Tournaments",
+        count: filterCounts.Tournament,
+        icon: Trophy,
+      },
+      {
+        id: "Scrims",
+        label: "Scrims",
+        count: filterCounts.Scrims,
+        icon: Swords,
+      },
+      {
+        id: "Brand Deal",
+        label: "Brand Deals",
+        count: filterCounts["Brand Deal"],
+        icon: Briefcase,
+      },
+    ],
+    [filterCounts],
+  );
 
-  // Determine which coming soon cards to show
-  const showComingSoonCards = {
-    Tournament: activeFilter === "all" || activeFilter === "Tournament",
-    "Brand Deal": activeFilter === "all" || activeFilter === "Brand Deal",
-  };
+  // Memoize filtered events to prevent unnecessary recalculations
+  const filteredEvents = React.useMemo(() => {
+    return events.filter((event) => {
+      // Only show Scrims from API
+      const matchesFilter =
+        activeFilter === "all"
+          ? event.eventType === "Scrims"
+          : event.eventType === activeFilter && event.eventType === "Scrims";
+      const matchesSearch =
+        (event.title || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (event.game?.name || "")
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase()) ||
+        (event.organizer || "")
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase());
+      return matchesFilter && matchesSearch;
+    });
+  }, [events, activeFilter, searchQuery]);
+
+  // Memoize which coming soon cards to show
+  const showComingSoonCards = React.useMemo(
+    () => ({
+      Tournament: activeFilter === "all" || activeFilter === "Tournament",
+      "Brand Deal": activeFilter === "all" || activeFilter === "Brand Deal",
+    }),
+    [activeFilter],
+  );
 
   const handleEventClick = (event) => {
+    // Cache the event data for instant load on detail page
+    const eventCacheKey = `event_${event.id}`;
+    sessionStorage.setItem(eventCacheKey, JSON.stringify(event));
+
     // Navigate to event detail page with actual event ID
     router.push(`${routePrefix}/events/${event.id}`);
   };
@@ -662,26 +849,28 @@ export default function EventsSection({ user, initialFilter = "all", routePrefix
         {/* Filter Tabs */}
         <div className="overflow-x-auto">
           <div className="flex items-center gap-1 bg-[#111115] p-1 rounded-xl border border-white/[0.06] min-w-max">
-          {FILTER_TABS.map((tab) => {
-            const IconComponent = tab.icon
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveFilter(tab.id)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
-                  activeFilter === tab.id
-                    ? 'bg-purple-600 text-white'
-                    : 'text-gray-400 hover:text-white hover:bg-white/[0.05]'
-                }`}
-              >
-                {IconComponent && <IconComponent size={14} />}
-                {tab.label}
-                <span className={`text-xs ${activeFilter === tab.id ? 'text-purple-200' : 'text-gray-500'}`}>
-                  ({tab.count})
-                </span>
-              </button>
-            )
-          })}
+            {FILTER_TABS.map((tab) => {
+              const IconComponent = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveFilter(tab.id)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 cursor-pointer ${
+                    activeFilter === tab.id
+                      ? "bg-purple-600 text-white"
+                      : "text-gray-400 hover:text-white hover:bg-white/[0.05]"
+                  }`}
+                >
+                  {IconComponent && <IconComponent size={14} />}
+                  {tab.label}
+                  <span
+                    className={`text-xs ${activeFilter === tab.id ? "text-purple-200" : "text-gray-500"}`}
+                  >
+                    ({tab.count})
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -726,7 +915,7 @@ export default function EventsSection({ user, initialFilter = "all", routePrefix
           <button
             onClick={fetchEvents}
             disabled={loading}
-            className="p-2.5 bg-[#111115] border border-white/[0.06] rounded-xl text-gray-400 hover:text-white hover:border-white/[0.12] transition-all disabled:opacity-50"
+            className="p-2.5 bg-[#111115] border border-white/[0.06] rounded-xl text-gray-400 hover:text-white hover:border-white/[0.12] transition-all disabled:opacity-50 cursor-pointer"
           >
             <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
           </button>
@@ -767,17 +956,17 @@ export default function EventsSection({ user, initialFilter = "all", routePrefix
       {!loading && !error && (
         <motion.div
           className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
-          layout
+          layout={false}
         >
-          <AnimatePresence mode="popLayout">
+          <AnimatePresence mode="wait">
             {/* Coming Soon Cards - Tournaments */}
             {showComingSoonCards.Tournament && (
               <motion.div
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
+                key="tournament-card"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.2 }}
               >
                 <ComingSoonCard category="Tournament" icon={Trophy} />
               </motion.div>
@@ -787,33 +976,49 @@ export default function EventsSection({ user, initialFilter = "all", routePrefix
             {filteredEvents.map((event) => (
               <motion.div
                 key={event.id}
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.2 }}
               >
                 <EventCard event={event} onClick={handleEventClick} />
               </motion.div>
             ))}
+
+            {/* Coming Soon Cards - Brand Deals */}
+            {showComingSoonCards["Brand Deal"] && (
+              <motion.div
+                key="brand-deal-card"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.2 }}
+              >
+                <ComingSoonCard category="Brand Deal" icon={Briefcase} />
+              </motion.div>
+            )}
           </AnimatePresence>
 
           {/* Empty State for Scrims with no data */}
-          {activeFilter === "Scrims" && filteredEvents.length === 0 && !loading && (
-            <motion.div
-              className="col-span-full text-center py-16"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-            >
-              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-500/10 flex items-center justify-center">
-                <Swords size={28} className="text-blue-400" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-2">No Scrims Available</h3>
-              <p className="text-gray-400">Check back soon for new scrim opportunities</p>
-            </motion.div>
-          )}
-
-
+          {activeFilter === "Scrims" &&
+            filteredEvents.length === 0 &&
+            !loading && (
+              <motion.div
+                className="col-span-full text-center py-16"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+              >
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-500/10 flex items-center justify-center">
+                  <Swords size={28} className="text-blue-400" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-2">
+                  No Scrims Available
+                </h3>
+                <p className="text-gray-400">
+                  Check back soon for new scrim opportunities
+                </p>
+              </motion.div>
+            )}
         </motion.div>
       )}
     </motion.div>
