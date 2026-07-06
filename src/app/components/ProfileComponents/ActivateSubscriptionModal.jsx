@@ -1,41 +1,19 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Upload, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
+import { X, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://inception-games.an.r.appspot.com/api/v1';
 
 export default function ActivateSubscriptionModal({ isOpen, onClose, subscription, userId }) {
   const [trxId, setTrxId] = useState('');
   const [reference, setReference] = useState('');
-  const [proofFile, setProofFile] = useState(null);
-  const [fileName, setFileName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState(null); // 'success', 'error', null
   const [errorMessage, setErrorMessage] = useState('');
-  const fileInputRef = useRef(null);
 
   if (!subscription) return null;
-
-  const handleFileChange = (e) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // Validate file type (images only)
-      if (!file.type.startsWith('image/')) {
-        setErrorMessage('Please upload an image file');
-        return;
-      }
-      // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        setErrorMessage('File size must be less than 5MB');
-        return;
-      }
-      setProofFile(file);
-      setFileName(file.name);
-      setErrorMessage('');
-    }
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -59,19 +37,19 @@ export default function ActivateSubscriptionModal({ isOpen, onClose, subscriptio
     setIsSubmitting(true);
 
     try {
-      // Create FormData for file upload
-      const formData = new FormData();
-      formData.append('user_id', userId);
-      formData.append('reference', reference.trim());
-      formData.append('trx_id', trxId.trim());
-      // Only append proof_image if file is selected
-      if (proofFile) {
-        formData.append('proof_image', proofFile);
-      }
+      // Create JSON payload with only required fields
+      const payload = {
+        user_id: userId,
+        reference: reference.trim(),
+        trx_id: trxId.trim(),
+      };
 
       const response = await fetch(`${API_BASE_URL}/subscription/submit-proof`, {
         method: 'POST',
-        body: formData,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
       });
 
       const data = await response.json();
@@ -81,8 +59,6 @@ export default function ActivateSubscriptionModal({ isOpen, onClose, subscriptio
         // Reset form
         setTrxId('');
         setReference('');
-        setProofFile(null);
-        setFileName('');
         
         // Close modal after 2 seconds
         setTimeout(() => {
@@ -90,12 +66,12 @@ export default function ActivateSubscriptionModal({ isOpen, onClose, subscriptio
         }, 2000);
       } else {
         setStatus('error');
-        setErrorMessage(data.message || 'Failed to submit payment proof. Please try again.');
+        setErrorMessage(data.message || 'Failed to submit payment details. Please try again.');
       }
     } catch (error) {
       setStatus('error');
       setErrorMessage('Network error. Please check your connection and try again.');
-      console.error('Error submitting payment proof:', error);
+      console.error('Error submitting payment details:', error);
     } finally {
       setIsSubmitting(false);
     }
@@ -105,8 +81,6 @@ export default function ActivateSubscriptionModal({ isOpen, onClose, subscriptio
     if (!isSubmitting) {
       setTrxId('');
       setReference('');
-      setProofFile(null);
-      setFileName('');
       setStatus(null);
       setErrorMessage('');
       onClose();
@@ -184,7 +158,7 @@ export default function ActivateSubscriptionModal({ isOpen, onClose, subscriptio
                   {/* Info Box */}
                   <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/30">
                     <p className="text-blue-300 text-sm leading-relaxed">
-                      <strong>Payment Instructions:</strong> Pay manually to activate your subscription. Then provide your transaction details and payment proof below.
+                      <strong>Payment Instructions:</strong> Pay manually to activate your subscription. Then provide your transaction details below.
                     </p>
                   </div>
 
@@ -218,41 +192,6 @@ export default function ActivateSubscriptionModal({ isOpen, onClose, subscriptio
                     />
                   </div>
 
-                  {/* File Upload */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Payment Proof <span className="text-gray-500">(Optional)</span>
-                    </label>
-                    <div
-                      onClick={() => !isSubmitting && fileInputRef.current?.click()}
-                      className="border-2 border-dashed border-white/[0.2] rounded-lg p-6 text-center cursor-pointer hover:border-white/[0.4] hover:bg-white/[0.02] transition"
-                    >
-                      <input
-                        ref={fileInputRef}
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFileChange}
-                        className="hidden"
-                        disabled={isSubmitting}
-                      />
-                      {fileName ? (
-                        <div className="flex items-center justify-center gap-3">
-                          <CheckCircle size={24} className="text-emerald-400" />
-                          <div className="text-left">
-                            <p className="text-white font-medium">{fileName}</p>
-                            <p className="text-gray-500 text-sm">Ready to upload</p>
-                          </div>
-                        </div>
-                      ) : (
-                        <div>
-                          <Upload size={24} className="text-gray-500 mx-auto mb-2" />
-                          <p className="text-gray-400 text-sm">Click to upload or drag and drop</p>
-                          <p className="text-gray-500 text-xs mt-1">PNG, JPG, GIF up to 5MB</p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
                   {/* Error Message */}
                   {errorMessage && !status && (
                     <motion.div
@@ -279,7 +218,7 @@ export default function ActivateSubscriptionModal({ isOpen, onClose, subscriptio
                         Submitting...
                       </>
                     ) : (
-                      'Submit Payment Proof'
+                      'Activate Subscription'
                     )}
                   </motion.button>
                 </form>

@@ -829,10 +829,12 @@ export default function EventsSection({
 
   const handleEventClick = (event) => {
     // Cache the event data for instant load on detail page
+    // Store the transformed version for immediate display
     const eventCacheKey = `event_${event.id}`;
     sessionStorage.setItem(eventCacheKey, JSON.stringify(event));
 
     // Navigate to event detail page with actual event ID
+    // Don't wait for async operations, push immediately for snappy navigation
     router.push(`${routePrefix}/events/${event.id}`);
   };
 

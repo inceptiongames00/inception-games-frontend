@@ -245,14 +245,6 @@ export default function EventDetailPage() {
     { id: "support", label: "Contact Support" },
   ];
 
-  // const progressionSteps = [
-  //   { label: "Reg Starting", date: new Date("2025-05-01 12:00:00"), time: "12:00" },
-  //   { label: "Reg Ending", date: new Date("2025-06-14"), time: "23:59" },
-  //   { label: "Match Starts", date: new Date("2025-06-15"), time: "12:00" },
-  //   { label: "Match Ends", date: new Date("2025-06-25"), time: "23:59" },
-  // ];
-
-
   const progressionSteps = [
     {
       label: "Reg Starting",

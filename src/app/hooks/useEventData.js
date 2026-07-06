@@ -5,8 +5,29 @@ import { getGameImage } from "@/app/utils/gameData";
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
 export const useEventData = (eventId) => {
-  const [event, setEvent] = useState(null);
-  const [loading, setLoading] = useState(true);
+  // Initialize state with potential cached value
+  const [event, setEvent] = useState(() => {
+    if (typeof window !== 'undefined' && eventId) {
+      const cachedEvent = sessionStorage.getItem(`event_${eventId}`);
+      if (cachedEvent) {
+        try {
+          return JSON.parse(cachedEvent);
+        } catch (e) {
+          return null;
+        }
+      }
+    }
+    return null;
+  });
+  
+  const [loading, setLoading] = useState(() => {
+    if (typeof window !== 'undefined' && eventId) {
+      const cachedEvent = sessionStorage.getItem(`event_${eventId}`);
+      return !cachedEvent;
+    }
+    return true;
+  });
+  
   const [error, setError] = useState(null);
 
   const transformScrim = (matchedScrim) => {
@@ -48,7 +69,6 @@ export const useEventData = (eventId) => {
 
     const fetchEvent = async () => {
       try {
-        setLoading(true);
         const cacheKey = "scrims_cache";
         const cacheTimestampKey = "scrims_cache_timestamp";
         const eventCacheKey = `event_${eventId}`;
@@ -57,13 +77,16 @@ export const useEventData = (eventId) => {
         const cachedEvent = sessionStorage.getItem(eventCacheKey);
         if (cachedEvent) {
           try {
-            setEvent(JSON.parse(cachedEvent));
+            const parsedEvent = JSON.parse(cachedEvent);
+            setEvent(parsedEvent);
             setLoading(false);
             return;
           } catch (e) {
             // Invalid cache, continue to fetch
           }
         }
+
+        setLoading(true);
 
         let allScrims = null;
         const cachedData = sessionStorage.getItem(cacheKey);
