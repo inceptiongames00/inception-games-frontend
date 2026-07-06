@@ -28,26 +28,22 @@ export default function ProfilePage() {
   console.log('User Profile',user)
 
   // Fetch user profile from API
-  const fetchUserProfile = async () => {
+  const fetchUserProfile = async (userId, accessToken) => {
     try {
-      const tokens = getTokens();
-      console.log('[ProfilePage] Tokens:', tokens);
+      console.log('[ProfilePage] fetchUserProfile called with userId:', userId);
       
-      if (!tokens?.accessToken) {
-        console.log('[ProfilePage] No access token found');
+      if (!userId || !accessToken) {
+        console.log('[ProfilePage] Missing userId or accessToken');
         setLoadingProfile(false);
         return;
       }
 
-      // const userId = 'SNS-1524';
-      const userId = user?.id;
       const apiUrl = `${API_BASE_URL}/auth/user-profile/${userId}`;
-      console.log('[ProfilePage] User ID:', userId);
       console.log('[ProfilePage] Fetching from URL:', apiUrl);
 
       const response = await fetch(apiUrl, {
         headers: {
-          'Authorization': `Bearer ${tokens.accessToken}`,
+          'Authorization': `Bearer ${accessToken}`,
           'Content-Type': 'application/json',
         },
       });
@@ -73,9 +69,24 @@ export default function ProfilePage() {
     }
   };
 
+  // Fetch profile whenever user or authentication changes
   useEffect(() => {
-    fetchUserProfile();
-  }, []);
+    if (!user?.id) {
+      console.log('[ProfilePage] No user ID available');
+      setLoadingProfile(false);
+      return;
+    }
+
+    const tokens = getTokens();
+    if (!tokens?.accessToken) {
+      console.log('[ProfilePage] No access token found');
+      setLoadingProfile(false);
+      return;
+    }
+
+    setLoadingProfile(true);
+    fetchUserProfile(user.id, tokens.accessToken);
+  }, [user?.id]);
 
   // Load gaming profile from sessionStorage whenever user changes
   useEffect(() => {
@@ -180,7 +191,12 @@ export default function ProfilePage() {
             {/* Right Column: Notifications & Subscriptions (sidebar on md+) */}
             <div className="md:col-span-1 space-y-4 sm:space-y-6 md:space-y-6">
               <NotificationsPanel />
-              <SubscriptionSection userProfile={apiUserProfile} onSubscriptionSuccess={() => fetchUserProfile()} />
+              <SubscriptionSection userProfile={apiUserProfile} onSubscriptionSuccess={() => {
+                const tokens = getTokens();
+                if (user?.id && tokens?.accessToken) {
+                  fetchUserProfile(user.id, tokens.accessToken);
+                }
+              }} />
             </div>
           </div>
 
