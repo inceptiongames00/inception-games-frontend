@@ -855,7 +855,7 @@ export default function EventsSection({
                 <button
                   key={tab.id}
                   onClick={() => setActiveFilter(tab.id)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 cursor-pointer ${
                     activeFilter === tab.id
                       ? "bg-purple-600 text-white"
                       : "text-gray-400 hover:text-white hover:bg-white/[0.05]"
@@ -915,7 +915,7 @@ export default function EventsSection({
           <button
             onClick={fetchEvents}
             disabled={loading}
-            className="p-2.5 bg-[#111115] border border-white/[0.06] rounded-xl text-gray-400 hover:text-white hover:border-white/[0.12] transition-all disabled:opacity-50"
+            className="p-2.5 bg-[#111115] border border-white/[0.06] rounded-xl text-gray-400 hover:text-white hover:border-white/[0.12] transition-all disabled:opacity-50 cursor-pointer"
           >
             <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
           </button>

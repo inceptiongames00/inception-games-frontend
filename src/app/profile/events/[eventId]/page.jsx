@@ -475,7 +475,7 @@ export default function EventDetailPage() {
                         {event.status !== "Completed" && !showSignupForm && (
                           <motion.button
                             onClick={() => setShowRegistrationModal(true)}
-                            className="px-2 sm:px-4 py-2 sm:py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold rounded-lg transition-all duration-300 flex items-center gap-1 sm:gap-2 shadow-lg shadow-purple-500/20 text-xs sm:text-sm"
+                            className="px-2 sm:px-4 py-2 sm:py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold rounded-lg transition-all duration-300 flex items-center gap-1 sm:gap-2 shadow-lg shadow-purple-500/20 text-xs sm:text-sm cursor-pointer"
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                           >
@@ -672,7 +672,7 @@ export default function EventDetailPage() {
                             <button
                               key={tab.id}
                               onClick={() => setActiveTab(tab.id)}
-                              className={`px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium whitespace-nowrap transition-colors relative ${
+                              className={`px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium whitespace-nowrap transition-colors relative cursor-pointer ${
                                 activeTab === tab.id
                                   ? "text-purple-400"
                                   : "text-gray-400 hover:text-gray-300"
@@ -795,7 +795,7 @@ export default function EventDetailPage() {
                         {/* Tournament Registration Button */}
                         <button
                           onClick={() => setShowRegistrationModal(true)}
-                          className="w-full mt-4 px-4 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 transition-all duration-300 flex items-center justify-center gap-2"
+                          className="w-full mt-4 px-4 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
                         >
                           <Trophy size={18} />
                           Register for Tournament
@@ -858,7 +858,9 @@ export default function EventDetailPage() {
                     >
                       {/* Modal Header */}
                       <div className="flex items-center justify-between p-6 border-b border-white/10">
-                        <h3 className="text-2xl font-bold text-white">Tournament Registration</h3>
+                        <h3 className="text-2xl font-bold text-white">
+                          Tournament Registration
+                        </h3>
                         <button
                           onClick={() => setShowSignupForm(false)}
                           className="text-gray-400 hover:text-white transition-colors"
@@ -929,7 +931,9 @@ export default function EventDetailPage() {
                     >
                       {/* Modal Header */}
                       <div className="flex items-center justify-between p-6 border-b border-white/10">
-                        <h3 className="text-2xl font-bold text-white">Scrims Registration</h3>
+                        <h3 className="text-2xl font-bold text-white">
+                          Scrims Registration
+                        </h3>
                         <button
                           onClick={() => setShowRegistrationModal(false)}
                           className="text-gray-400 hover:text-white transition-colors"
@@ -945,7 +949,9 @@ export default function EventDetailPage() {
                             <Trophy className="text-white" size={24} />
                           </div>
                           <div>
-                            <h4 className="text-xl font-semibold text-white">{event.title}</h4>
+                            <h4 className="text-xl font-semibold text-white">
+                              {event.title}
+                            </h4>
                             <p className="text-gray-400">Scrims</p>
                           </div>
                         </div>
@@ -953,10 +959,10 @@ export default function EventDetailPage() {
 
                       {/* Registration Form */}
                       <div className="p-6">
-                        <form 
+                        <form
                           onSubmit={async (e) => {
                             e.preventDefault();
-                            
+
                             // Prepare registration data with the required structure
                             const submitData = {
                               user_id: user?.id || "USR000123",
@@ -968,28 +974,38 @@ export default function EventDetailPage() {
                               phone: formData.phone,
                               in_game_name: formData.inGameName,
                               in_game_id: formData.inGameId,
-                              players: formData.players || []
+                              players: formData.players || [],
                             };
-                            
-                            console.log('[Event Registration] Registration Data:', submitData);
-                            
+
+                            console.log(
+                              "[Event Registration] Registration Data:",
+                              submitData,
+                            );
+
                             try {
                               // Make API call to register for the event
-                              const response = await fetch('/api/events/register', {
-                                method: 'POST',
-                                headers: {
-                                  'Content-Type': 'application/json',
+                              const response = await fetch(
+                                "/api/events/register",
+                                {
+                                  method: "POST",
+                                  headers: {
+                                    "Content-Type": "application/json",
+                                  },
+                                  body: JSON.stringify(submitData),
                                 },
-                                body: JSON.stringify(submitData)
-                              });
+                              );
 
                               const result = await response.json();
 
                               if (response.ok && result.success) {
                                 // Show success message and close modal
-                                showNotificationMessage('success', result.message || 'Registration successful! Check your email for confirmation.');
+                                showNotificationMessage(
+                                  "success",
+                                  result.message ||
+                                    "Registration successful! Check your email for confirmation.",
+                                );
                                 setShowRegistrationModal(false);
-                                
+
                                 // Reset form data
                                 setFormData({
                                   fullName: "",
@@ -1009,12 +1025,25 @@ export default function EventDetailPage() {
                                   players: [],
                                 });
                               } else {
-                                console.error('[Event Registration] API Error:', result);
-                                showNotificationMessage('error', result.message || 'Registration failed. Please try again.');
+                                console.error(
+                                  "[Event Registration] API Error:",
+                                  result,
+                                );
+                                showNotificationMessage(
+                                  "error",
+                                  result.message ||
+                                    "Registration failed. Please try again.",
+                                );
                               }
                             } catch (error) {
-                              console.error('[Event Registration] Network Error:', error);
-                              showNotificationMessage('error', 'Network error. Please check your connection and try again.');
+                              console.error(
+                                "[Event Registration] Network Error:",
+                                error,
+                              );
+                              showNotificationMessage(
+                                "error",
+                                "Network error. Please check your connection and try again.",
+                              );
                             }
                           }}
                           className="space-y-4"
@@ -1029,8 +1058,13 @@ export default function EventDetailPage() {
                                 type="date"
                                 required
                                 value={formData.slotDate}
-                                onChange={(e) => setFormData(prev => ({...prev, slotDate: e.target.value}))}
-                                min={new Date().toISOString().split('T')[0]}
+                                onChange={(e) =>
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    slotDate: e.target.value,
+                                  }))
+                                }
+                                min={new Date().toISOString().split("T")[0]}
                                 className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
                               />
                             </div>
@@ -1042,7 +1076,12 @@ export default function EventDetailPage() {
                                 type="time"
                                 required
                                 value={formData.slotTime}
-                                onChange={(e) => setFormData(prev => ({...prev, slotTime: e.target.value}))}
+                                onChange={(e) =>
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    slotTime: e.target.value,
+                                  }))
+                                }
                                 className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
                               />
                             </div>
@@ -1057,7 +1096,12 @@ export default function EventDetailPage() {
                               type="text"
                               required
                               value={formData.teamName}
-                              onChange={(e) => setFormData(prev => ({...prev, teamName: e.target.value}))}
+                              onChange={(e) =>
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  teamName: e.target.value,
+                                }))
+                              }
                               className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
                               placeholder="Enter your team name"
                             />
@@ -1073,7 +1117,12 @@ export default function EventDetailPage() {
                                 type="text"
                                 required
                                 value={formData.fullName}
-                                onChange={(e) => setFormData(prev => ({...prev, fullName: e.target.value}))}
+                                onChange={(e) =>
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    fullName: e.target.value,
+                                  }))
+                                }
                                 className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
                                 placeholder="Tonmoy"
                               />
@@ -1086,7 +1135,12 @@ export default function EventDetailPage() {
                                 type="email"
                                 required
                                 value={formData.email}
-                                onChange={(e) => setFormData(prev => ({...prev, email: e.target.value}))}
+                                onChange={(e) =>
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    email: e.target.value,
+                                  }))
+                                }
                                 className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
                                 placeholder="tonmoyzohani@gmail.com"
                               />
@@ -1102,7 +1156,12 @@ export default function EventDetailPage() {
                                 type="tel"
                                 required
                                 value={formData.phone}
-                                onChange={(e) => setFormData(prev => ({...prev, phone: e.target.value}))}
+                                onChange={(e) =>
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    phone: e.target.value,
+                                  }))
+                                }
                                 className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
                                 placeholder="+880 1XXXXXXXXX"
                               />
@@ -1115,7 +1174,12 @@ export default function EventDetailPage() {
                                 type="text"
                                 required
                                 value={formData.inGameName}
-                                onChange={(e) => setFormData(prev => ({...prev, inGameName: e.target.value}))}
+                                onChange={(e) =>
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    inGameName: e.target.value,
+                                  }))
+                                }
                                 className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
                                 placeholder="In-Game Name"
                               />
@@ -1131,7 +1195,12 @@ export default function EventDetailPage() {
                                 type="text"
                                 required
                                 value={formData.inGameId}
-                                onChange={(e) => setFormData(prev => ({...prev, inGameId: e.target.value}))}
+                                onChange={(e) =>
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    inGameId: e.target.value,
+                                  }))
+                                }
                                 className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
                                 placeholder="Steam ID / PSN ID"
                               />
@@ -1143,7 +1212,12 @@ export default function EventDetailPage() {
                               <input
                                 type="text"
                                 value={formData.discordId}
-                                onChange={(e) => setFormData(prev => ({...prev, discordId: e.target.value}))}
+                                onChange={(e) =>
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    discordId: e.target.value,
+                                  }))
+                                }
                                 className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
                                 placeholder="Discord ID (optional)"
                               />
@@ -1155,13 +1229,13 @@ export default function EventDetailPage() {
                             <button
                               type="button"
                               onClick={() => setShowRegistrationModal(false)}
-                              className="flex-1 px-6 py-3 rounded-lg border border-gray-600 text-gray-300 hover:bg-gray-800/50 transition-colors"
+                              className="flex-1 px-6 py-3 rounded-lg border border-gray-600 text-gray-300 hover:bg-gray-800/50 transition-colors cursor-pointer"
                             >
                               Cancel
                             </button>
                             <button
                               type="submit"
-                              className="flex-1 px-6 py-3 rounded-lg bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white font-semibold transition-all flex items-center justify-center gap-2"
+                              className="flex-1 px-6 py-3 rounded-lg bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer"
                             >
                               Submit Registration
                               <ArrowRight size={16} />

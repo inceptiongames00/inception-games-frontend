@@ -104,7 +104,7 @@ export default function Footer() {
               <div className="space-y-3 w-full">
                 <motion.a
                   href={process.env.NEXT_PUBLIC_LINKEDIN_URL}
-                  className="flex items-center justify-start space-x-3 text-white hover:text-pink-300 transition-colors group"
+                  className="flex items-center justify-start space-x-3 text-white hover:text-pink-300 transition-colors group cursor-pointer"
                   whileHover={{ x: 5 }}
                 >
                   <FaLinkedin className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
@@ -126,7 +126,7 @@ export default function Footer() {
 
                 <motion.a
                   href={process.env.NEXT_PUBLIC_FACEBOOK_URL}
-                  className="flex items-center justify-start space-x-3 text-white hover:text-pink-300 transition-colors group"
+                  className="flex items-center justify-start space-x-3 text-white hover:text-pink-300 transition-colors group cursor-pointer"
                   whileHover={{ x: 5 }}
                 >
                   <FaFacebookF className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
@@ -197,17 +197,19 @@ export default function Footer() {
                 Quick Links
               </h3>
               <div className="space-y-3 w-full">
-                <div className="relative">
+                <motion.div className="relative" whileHover={{ x: 5 }}>
                   <button
                     onClick={() =>
                       setEcosystemDropdownOpen(!ecosystemDropdownOpen)
                     }
-                    className="flex items-center justify-start gap-2 text-white hover:text-pink-300 transition-colors group w-full text-sm md:text-base"
+                    className="flex items-center justify-start gap-2 text-white hover:text-pink-300 transition-colors group w-full text-sm md:text-base cursor-pointer"
                   >
                     <span>Ecosystem</span>
                     <ChevronDown
                       size={16}
-                      className={`transition-transform duration-200 ${ecosystemDropdownOpen ? "rotate-180" : ""}`}
+                      className={`transition-transform duration-200 ${
+                        ecosystemDropdownOpen ? "rotate-180" : ""
+                      }`}
                     />
                   </button>
 
@@ -218,7 +220,7 @@ export default function Footer() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.15 }}
-                        className="mt-2 space-y-2 text-center md:text-left"
+                        className="absolute left-0 top-full mt-2 z-50 w-44 rounded-md bg-[#1A1A2E] p-3 shadow-lg space-y-2"
                       >
                         <Link
                           href="#ecosystem-partners"
@@ -228,10 +230,11 @@ export default function Footer() {
                               .getElementById("ecosystem-partners")
                               ?.scrollIntoView({ behavior: "smooth" });
                           }}
-                          className="block text-white/80 text-sm hover:text-pink-300 transition-colors cursor-pointer pl-0"
+                          className="block text-white/80 text-sm hover:text-pink-300 transition-colors"
                         >
                           Partners
                         </Link>
+
                         <Link
                           href="#ecosystem-games"
                           onClick={() => {
@@ -240,10 +243,11 @@ export default function Footer() {
                               .getElementById("ecosystem-games")
                               ?.scrollIntoView({ behavior: "smooth" });
                           }}
-                          className="block text-white/80 text-sm hover:text-pink-300 transition-colors cursor-pointer pl-0"
+                          className="block text-white/80 text-sm hover:text-pink-300 transition-colors"
                         >
                           Games
                         </Link>
+
                         <Link
                           href="#ecosystem-community"
                           onClick={() => {
@@ -252,14 +256,14 @@ export default function Footer() {
                               .getElementById("ecosystem-community")
                               ?.scrollIntoView({ behavior: "smooth" });
                           }}
-                          className="block text-white/80 text-sm hover:text-pink-300 transition-colors cursor-pointer pl-0"
+                          className="block text-white/80 text-sm hover:text-pink-300 transition-colors"
                         >
                           Community
                         </Link>
                       </motion.div>
                     )}
                   </AnimatePresence>
-                </div>
+                </motion.div>
 
                 <motion.a
                   href="#news"
@@ -352,7 +356,7 @@ export default function Footer() {
                 <motion.button
                   type="submit"
                   disabled={loading || success}
-                  className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold py-2 px-4 rounded-lg transition-all shadow-lg hover:shadow-pink-500/50 disabled:opacity-50 disabled:cursor-not-allowed text-xs uppercase tracking-wider"
+                  className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold py-2 px-4 rounded-lg transition-all shadow-lg hover:shadow-pink-500/50 disabled:opacity-50 disabled:cursor-not-allowed text-xs uppercase tracking-wider cursor-pointer"
                   whileHover={{
                     scale: loading || success ? 1 : 1.02,
                   }}

@@ -57,15 +57,15 @@ export default function CommunityBanner() {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="mt-12 flex flex-col gap-3 sm:gap-4 md:flex-row md:flex-wrap md:justify-center"
         >
-          <button className="w-full sm:w-auto rounded-xl border border-white/10 bg-white/5 px-6 sm:px-8 py-3 sm:py-4 font-semibold text-sm sm:text-base backdrop-blur-md transition hover:border-purple-400/40 hover:bg-white/10">
+          <button className="w-full sm:w-auto rounded-xl border border-white/10 bg-white/5 px-6 sm:px-8 py-3 sm:py-4 font-semibold text-sm sm:text-base backdrop-blur-md transition hover:border-purple-400/40 hover:bg-white/10 cursor-pointer">
             Explore Zones
           </button>
 
-          <button className="w-full sm:w-auto rounded-xl border border-white/10 bg-white/5 px-6 sm:px-8 py-3 sm:py-4 font-semibold text-sm sm:text-base backdrop-blur-md transition hover:border-purple-400/40 hover:bg-white/10">
+          <button className="w-full sm:w-auto rounded-xl border border-white/10 bg-white/5 px-6 sm:px-8 py-3 sm:py-4 font-semibold text-sm sm:text-base backdrop-blur-md transition hover:border-purple-400/40 hover:bg-white/10 cursor-pointer">
             Community Works
           </button>
 
-          <button className="w-full sm:w-auto rounded-xl border border-white/10 bg-white/5 px-6 sm:px-8 py-3 sm:py-4 font-semibold text-sm sm:text-base backdrop-blur-md transition hover:border-purple-400/40 hover:bg-white/10">
+          <button className="w-full sm:w-auto rounded-xl border border-white/10 bg-white/5 px-6 sm:px-8 py-3 sm:py-4 font-semibold text-sm sm:text-base backdrop-blur-md transition hover:border-purple-400/40 hover:bg-white/10 cursor-pointer">
             Latest News
           </button>
 

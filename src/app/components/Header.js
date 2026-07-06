@@ -401,7 +401,7 @@ export default function Header() {
             ) : (
               <button
                 onClick={handleLoginClick}
-                className="relative group px-6 py-2.5 rounded-full font-semibold text-white overflow-hidden"
+                className="relative group px-6 py-2.5 rounded-full font-semibold text-white overflow-hidden cursor-pointer"
               >
                 {/* Animated gradient background */}
                 <span className="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 bg-[length:200%_100%] animate-gradient-x" />

@@ -10,7 +10,7 @@ const events = [
     id: 1,
     title: "Gaming Tournament",
     image:
-      "https://res.cloudinary.com/dpwjt3jxx/image/upload/v1782306822/roman_pic_mine_kq3ilm.jpg",
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157035/showcase_eh4z5f.jpg",
     date: "Oct 24, 7:00 PM",
     type: "upcoming",
     badge: "UPCOMING",
@@ -19,7 +19,7 @@ const events = [
     id: 2,
     title: "University Meetup",
     image:
-      "https://res.cloudinary.com/dpwjt3jxx/image/upload/v1782306822/roman_pic_mine_kq3ilm.jpg",
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157043/news3_freort.jpg",
     date: "Oct 26, 6:30 PM",
     type: "upcoming",
     badge: "STARTING SOON",
@@ -28,7 +28,7 @@ const events = [
     id: 3,
     title: "Online Community Feedback",
     image:
-      "https://res.cloudinary.com/dpwjt3jxx/image/upload/v1782306822/roman_pic_mine_kq3ilm.jpg",
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157047/news4_u9saum.jpg",
     date: "Oct 28, 9:00 PM",
     type: "upcoming",
   },
@@ -36,17 +36,8 @@ const events = [
     id: 4,
     title: "Winter Scrims 2023",
     image:
-      "https://res.cloudinary.com/dpwjt3jxx/image/upload/v1782306822/roman_pic_mine_kq3ilm.jpg",
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157148/summit_rsjhhe.jpg",
     date: "December 15, 2023",
-    type: "past",
-    badge: "COMPLETED",
-  },
-  {
-    id: 5,
-    title: "Summer LAN Party",
-    image:
-      "https://res.cloudinary.com/dpwjt3jxx/image/upload/v1782306822/roman_pic_mine_kq3ilm.jpg",
-    date: "August 12, 2023",
     type: "past",
     badge: "COMPLETED",
   },
@@ -86,7 +77,13 @@ export default function UpcomingComEvents() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Event Registration Data:", formData, "Event:", selectedEvent);
-    setFormData({ name: "", companyName: "", phone: "", email: "", website: "" });
+    setFormData({
+      name: "",
+      companyName: "",
+      phone: "",
+      email: "",
+      website: "",
+    });
     setIsModalOpen(false);
     setSelectedEvent(null);
   };
@@ -113,9 +110,9 @@ export default function UpcomingComEvents() {
         >
           <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white tracking-tight">
             {/* Upcoming{" "} */}
-            COMMUNITY {" "}
+            COMMUNITY{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
-             EVENTS
+              EVENTS
             </span>
           </h2>
 
@@ -137,7 +134,7 @@ export default function UpcomingComEvents() {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`relative pb-3 text-xs uppercase tracking-widest transition ${
+              className={`relative pb-3 text-xs uppercase tracking-widest transition cursor-pointer ${
                 activeTab === tab
                   ? "text-purple-300"
                   : "text-zinc-400 hover:text-white"
@@ -201,7 +198,7 @@ export default function UpcomingComEvents() {
 
                 <button
                   onClick={() => openEventModal(event)}
-                  className="mt-6 inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-500 rounded-full text-white font-semibold text-xs uppercase tracking-wider transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/50 group/link"
+                  className="mt-6 inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-500 rounded-full text-white font-semibold text-xs uppercase tracking-wider transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/50 group/link cursor-pointer"
                 >
                   Join Event
                 </button>
@@ -255,7 +252,9 @@ export default function UpcomingComEvents() {
                       Join Event
                     </h2>
                     {selectedEvent && (
-                      <p className="text-xs sm:text-sm text-zinc-400 mt-1 line-clamp-2">{selectedEvent.title}</p>
+                      <p className="text-xs sm:text-sm text-zinc-400 mt-1 line-clamp-2">
+                        {selectedEvent.title}
+                      </p>
                     )}
                   </div>
                   <button
@@ -268,7 +267,10 @@ export default function UpcomingComEvents() {
               </div>
 
               {/* Form */}
-              <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6 space-y-3 sm:space-y-4">
+              <form
+                onSubmit={handleSubmit}
+                className="flex-1 overflow-y-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6 space-y-3 sm:space-y-4"
+              >
                 {/* Name */}
                 <div>
                   <label className="block text-xs sm:text-sm font-semibold text-zinc-300 mb-2">

@@ -134,21 +134,21 @@ function ScrimCard({ registration, index, onViewDetails }) {
             {registration.scrim_title || "Scrim Registration"}
           </h3>
 
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.05] text-xs text-gray-300">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.05] text-xs text-gray-300">
             <Calendar className="w-3.5 h-3.5 text-purple-400" />
             {formatDate(registration.slot_date)}
           </div>
-           <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.05] text-xs text-gray-300 mb-2">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.05] text-xs text-gray-300 mb-2">
             <Clock className="w-3.5 h-3.5 text-pink-400" />
             {formatTime(registration.slot_time)}
           </div>
-             {registration.scrim_region && (
+          {registration.scrim_region && (
             <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.05] text-xs text-gray-300">
               <MapPin className="w-3.5 h-3.5 text-purple-400" />
               {registration.scrim_region}
             </div>
           )}
-            {registration.scrim_platform && (
+          {registration.scrim_platform && (
             <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.05] text-xs text-gray-300">
               <Gamepad2 className="w-3.5 h-3.5 text-pink-400" />
               {registration.scrim_platform}
@@ -156,8 +156,6 @@ function ScrimCard({ registration, index, onViewDetails }) {
           )}
         </div>
       </div>
-
-  
     </motion.div>
   );
 }
@@ -252,7 +250,9 @@ export default function MyScrims({ email }) {
               <Trophy className="w-4 xs:w-5 h-4 xs:h-5 text-purple-400" />
             </div>
             <div className="min-w-0">
-              <h2 className="text-base xs:text-lg font-semibold text-white truncate">My Scrims</h2>
+              <h2 className="text-base xs:text-lg font-semibold text-white truncate">
+                My Scrims
+              </h2>
               <p className="text-xs text-gray-500 truncate">
                 {registrations.length > 0
                   ? `${registrations.length} registration${
@@ -265,10 +265,12 @@ export default function MyScrims({ email }) {
           <button
             onClick={fetchScrims}
             disabled={loading}
-            className="w-8 xs:w-9 h-8 xs:h-9 rounded-lg bg-white/[0.03] border border-white/[0.06] flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/[0.06] transition disabled:opacity-50 flex-shrink-0"
+            className="w-8 xs:w-9 h-8 xs:h-9 rounded-lg bg-white/[0.03] border border-white/[0.06] flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/[0.06] transition disabled:opacity-50 flex-shrink-0 cursor-pointer"
             aria-label="Refresh scrims"
           >
-            <RefreshCw className={`w-3.5 xs:w-4 h-3.5 xs:h-4 ${loading ? "animate-spin" : ""}`} />
+            <RefreshCw
+              className={`w-3.5 xs:w-4 h-3.5 xs:h-4 ${loading ? "animate-spin" : ""}`}
+            />
           </button>
         </div>
 
@@ -347,11 +349,24 @@ export default function MyScrims({ email }) {
               }
             `}</style>
             {/* Mobile: Horizontal scroll */}
-            <div className="md:hidden overflow-x-auto pb-2 -mx-3 xs:-mx-4 sm:-mx-5 px-3 xs:px-4 sm:px-5 scrims-scroll" style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(147, 51, 234, 0.3) transparent' }}>
+            <div
+              className="md:hidden overflow-x-auto pb-2 -mx-3 xs:-mx-4 sm:-mx-5 px-3 xs:px-4 sm:px-5 scrims-scroll"
+              style={{
+                scrollbarWidth: "thin",
+                scrollbarColor: "rgba(147, 51, 234, 0.3) transparent",
+              }}
+            >
               <div className="flex gap-3 xs:gap-4 flex-nowrap">
                 {registrations.map((reg, i) => (
-                  <div key={reg.id} className="flex-shrink-0 w-full sm:w-[calc(50%-0.5rem)] h-auto">
-                    <ScrimCard registration={reg} index={i} onViewDetails={setSelectedScrim} />
+                  <div
+                    key={reg.id}
+                    className="flex-shrink-0 w-full sm:w-[calc(50%-0.5rem)] h-auto"
+                  >
+                    <ScrimCard
+                      registration={reg}
+                      index={i}
+                      onViewDetails={setSelectedScrim}
+                    />
                   </div>
                 ))}
               </div>
@@ -360,7 +375,12 @@ export default function MyScrims({ email }) {
             {/* Desktop: Grid layout */}
             <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-3 xs:gap-4">
               {registrations.map((reg, i) => (
-                <ScrimCard key={reg.id} registration={reg} index={i} onViewDetails={setSelectedScrim} />
+                <ScrimCard
+                  key={reg.id}
+                  registration={reg}
+                  index={i}
+                  onViewDetails={setSelectedScrim}
+                />
               ))}
             </div>
           </>
@@ -368,7 +388,10 @@ export default function MyScrims({ email }) {
       </div>
 
       {/* Scrim Details Modal */}
-      <ScrimDetailsModal scrim={selectedScrim} onClose={() => setSelectedScrim(null)} />
+      <ScrimDetailsModal
+        scrim={selectedScrim}
+        onClose={() => setSelectedScrim(null)}
+      />
     </motion.section>
   );
 }
@@ -394,7 +417,7 @@ function ScrimDetailsModal({ scrim, onClose }) {
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          transition={{ type: 'spring', duration: 0.3 }}
+          transition={{ type: "spring", duration: 0.3 }}
           onClick={(e) => e.stopPropagation()}
           className="bg-gradient-to-br from-black via-[#0a0a0f] to-black border border-white/[0.08] rounded-2xl max-w-lg w-full shadow-2xl shadow-black/50 overflow-hidden max-h-[85vh] flex flex-col"
         >
@@ -411,10 +434,12 @@ function ScrimDetailsModal({ scrim, onClose }) {
               <div className="w-full h-full bg-gradient-to-br from-purple-900/40 to-pink-900/30" />
             )}
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent" />
-            
+
             {/* Title and Status on Photo */}
             <div className="absolute bottom-4 left-4 right-12">
-              <h4 className="text-2xl font-bold text-white mb-2 line-clamp-2">{scrim.scrim_title}</h4>
+              <h4 className="text-2xl font-bold text-white mb-2 line-clamp-2">
+                {scrim.scrim_title}
+              </h4>
               <div className="flex items-center gap-2">
                 <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium text-white bg-black/50 backdrop-blur-sm border border-white/10">
                   <Gamepad2 className="w-3.5 h-3.5 text-purple-400" />
@@ -423,7 +448,7 @@ function ScrimDetailsModal({ scrim, onClose }) {
                 <StatusBadge status={scrim.status} />
               </div>
             </div>
-            
+
             {/* Close button overlay */}
             <button
               onClick={onClose}
@@ -435,7 +460,6 @@ function ScrimDetailsModal({ scrim, onClose }) {
 
           {/* Scrollable Content */}
           <div className="flex-1 overflow-y-auto px-6 py-4 space-y-6">
-
             {/* Meta Information */}
             <div className="space-y-3">
               <div className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.05] text-sm text-gray-300">
@@ -457,14 +481,18 @@ function ScrimDetailsModal({ scrim, onClose }) {
             {/* Team & Reference */}
             <div className="grid grid-cols-2 gap-3">
               <div className="px-3 py-2.5 rounded-xl bg-gradient-to-br from-purple-500/[0.08] to-transparent border border-purple-500/10">
-                <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-0.5">Team</p>
+                <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-0.5">
+                  Team
+                </p>
                 <p className="text-sm font-semibold text-white truncate flex items-center gap-1.5">
                   <Users className="w-4 h-4 text-purple-400 flex-shrink-0" />
                   {scrim.team_name || "—"}
                 </p>
               </div>
               <div className="px-3 py-2.5 rounded-xl bg-gradient-to-br from-pink-500/[0.08] to-transparent border border-pink-500/10">
-                <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-0.5">Reference</p>
+                <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-0.5">
+                  Reference
+                </p>
                 <p className="text-sm font-semibold text-white truncate flex items-center gap-1.5">
                   <Ticket className="w-4 h-4 text-pink-400 flex-shrink-0" />
                   {scrim.payment_reference || "—"}
@@ -480,9 +508,13 @@ function ScrimDetailsModal({ scrim, onClose }) {
               </span>
               <div className="flex items-center gap-2">
                 <span className="text-sm font-semibold text-white">
-                  {Number(scrim.entry_fee) > 0 ? `BDT ${scrim.entry_fee}` : "Free"}
+                  {Number(scrim.entry_fee) > 0
+                    ? `BDT ${scrim.entry_fee}`
+                    : "Free"}
                 </span>
-                <span className={`px-2 py-0.5 rounded-md text-[11px] font-semibold ${payStyle.text} ${payStyle.bg}`}>
+                <span
+                  className={`px-2 py-0.5 rounded-md text-[11px] font-semibold ${payStyle.text} ${payStyle.bg}`}
+                >
                   {scrim.payment_status || "Pending"}
                 </span>
               </div>

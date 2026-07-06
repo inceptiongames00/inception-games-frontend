@@ -1,9 +1,9 @@
-"use client"
-import { ArrowRight, X } from "lucide-react"
-import { motion, AnimatePresence } from "framer-motion"
-import { useState } from "react"
-import Image from "next/image"
-import { FaFacebookF, FaTwitter, FaLinkedin, FaWhatsapp } from "react-icons/fa"
+"use client";
+import { ArrowRight, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
+import Image from "next/image";
+import { FaFacebookF, FaTwitter, FaLinkedin, FaWhatsapp } from "react-icons/fa";
 
 const newsItems = [
   {
@@ -13,7 +13,8 @@ const newsItems = [
     title: "Season 5: Neon Dawn Launch",
     description:
       "The biggest update yet brings new maps, characters, and a complete overhaul of the ranking system.",
-    image: "https://res.cloudinary.com/dpwjt3jxx/image/upload/v1782524556/71RgJZeOr-L._AC_UF894_1000_QL80__koq6v3.jpg",
+    image:
+      "https://res.cloudinary.com/dpwjt3jxx/image/upload/v1782524556/71RgJZeOr-L._AC_UF894_1000_QL80__koq6v3.jpg",
   },
   {
     id: 2,
@@ -22,51 +23,55 @@ const newsItems = [
     title: "Global Finals 2024 Announced",
     description:
       "The road to the championship begins in Tokyo. Check out the full schedule and ticket information.",
-    image: "https://res.cloudinary.com/dpwjt3jxx/image/upload/v1782524556/71RgJZeOr-L._AC_UF894_1000_QL80__koq6v3.jpg",
+    image:
+      "https://res.cloudinary.com/dpwjt3jxx/image/upload/v1782524556/71RgJZeOr-L._AC_UF894_1000_QL80__koq6v3.jpg",
   },
   {
     id: 3,
     category: "COMMUNITY",
-    categoryColor: "bg-purple-500/20 text-purple-300 border border-purple-500/30",
+    categoryColor:
+      "bg-purple-500/20 text-purple-300 border border-purple-500/30",
     title: "Creator Spotlight: Zen_Gamer",
     description:
       "Meet the visionary behind some of our community's most popular custom maps and game modes.",
-    image: "https://res.cloudinary.com/dpwjt3jxx/image/upload/v1782524556/71RgJZeOr-L._AC_UF894_1000_QL80__koq6v3.jpg",
+    image:
+      "https://res.cloudinary.com/dpwjt3jxx/image/upload/v1782524556/71RgJZeOr-L._AC_UF894_1000_QL80__koq6v3.jpg",
   },
-]
+];
 
-const loremText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+const loremText =
+  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
 
 export default function LatestNews() {
-  const [selectedNews, setSelectedNews] = useState(null)
+  const [selectedNews, setSelectedNews] = useState(null);
 
   const handleShare = (platform, news) => {
-    const shareUrl = typeof window !== 'undefined' ? window.location.href : ''
-    const title = news.title
-    const description = news.description
-    let shareLink = ''
+    const shareUrl = typeof window !== "undefined" ? window.location.href : "";
+    const title = news.title;
+    const description = news.description;
+    let shareLink = "";
 
     switch (platform) {
-      case 'facebook':
-        shareLink = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(title + ' - ' + description)}`
-        break
-      case 'twitter':
-        shareLink = `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(title + ' - ' + description)}`
-        break
-      case 'linkedin':
-        shareLink = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`
-        break
-      case 'whatsapp':
-        shareLink = `https://wa.me/?text=${encodeURIComponent(title + ' - ' + description + ' ' + shareUrl)}`
-        break
+      case "facebook":
+        shareLink = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(title + " - " + description)}`;
+        break;
+      case "twitter":
+        shareLink = `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(title + " - " + description)}`;
+        break;
+      case "linkedin":
+        shareLink = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
+        break;
+      case "whatsapp":
+        shareLink = `https://wa.me/?text=${encodeURIComponent(title + " - " + description + " " + shareUrl)}`;
+        break;
       default:
-        return
+        return;
     }
 
-    if (typeof window !== 'undefined') {
-      window.open(shareLink, 'share-dialog', 'width=800,height=600')
+    if (typeof window !== "undefined") {
+      window.open(shareLink, "share-dialog", "width=800,height=600");
     }
-  }
+  };
 
   return (
     <section className="py-20 px-4 sm:px-6 bg-zinc-950">
@@ -85,7 +90,7 @@ export default function LatestNews() {
               NEWS
             </span>
           </h2>
-    
+
           {/* Underline accent */}
           <div className="flex justify-center gap-2 mt-4">
             <div className="w-50 h-1.5 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 rounded-full" />
@@ -143,50 +148,50 @@ export default function LatestNews() {
                     <div className="flex items-center gap-3">
                       <button
                         onClick={(e) => {
-                          e.stopPropagation()
-                          setSelectedNews(news)
+                          e.stopPropagation();
+                          setSelectedNews(news);
                         }}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-500 rounded-full text-white font-semibold text-xs uppercase tracking-wider transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/50 group/link"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-500 rounded-full text-white font-semibold text-xs uppercase tracking-wider transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/50 group/link cursor-pointer"
                       >
                         Read More
                         <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform duration-300" />
                       </button>
                       <button
                         onClick={(e) => {
-                          e.stopPropagation()
-                          handleShare("facebook", news)
+                          e.stopPropagation();
+                          handleShare("facebook", news);
                         }}
-                        className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 hover:bg-[#1877F2] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
+                        className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 hover:bg-[#1877F2] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110 cursor-pointer"
                         aria-label="Share on Facebook"
                       >
                         <FaFacebookF className="text-white text-sm md:text-base" />
                       </button>
                       <button
                         onClick={(e) => {
-                          e.stopPropagation()
-                          handleShare("twitter", news)
+                          e.stopPropagation();
+                          handleShare("twitter", news);
                         }}
-                        className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 hover:bg-[#1DA1F2] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
+                        className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 hover:bg-[#1DA1F2] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110 cursor-pointer"
                         aria-label="Share on Twitter"
                       >
                         <FaTwitter className="text-white text-sm md:text-base" />
                       </button>
                       <button
                         onClick={(e) => {
-                          e.stopPropagation()
-                          handleShare("linkedin", news)
+                          e.stopPropagation();
+                          handleShare("linkedin", news);
                         }}
-                        className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 hover:bg-[#0A66C2] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
+                        className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 hover:bg-[#0A66C2] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110 cursor-pointer"
                         aria-label="Share on LinkedIn"
                       >
                         <FaLinkedin className="text-white text-sm md:text-base" />
                       </button>
                       <button
                         onClick={(e) => {
-                          e.stopPropagation()
-                          handleShare("whatsapp", news)
+                          e.stopPropagation();
+                          handleShare("whatsapp", news);
                         }}
-                        className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 hover:bg-[#25D366] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
+                        className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 hover:bg-[#25D366] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110 cursor-pointer"
                         aria-label="Share on WhatsApp"
                       >
                         <FaWhatsapp className="text-white text-sm md:text-base" />
@@ -199,137 +204,138 @@ export default function LatestNews() {
           ))}
         </div>
 
-      {/* News Detail Modal */}
-      <AnimatePresence>
-        {selectedNews && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setSelectedNews(null)}
-            className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4"
-          >
+        {/* News Detail Modal */}
+        <AnimatePresence>
+          {selectedNews && (
             <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 40 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 40 }}
-              onClick={(e) => e.stopPropagation()}
-              className="bg-gradient-to-br from-zinc-900 via-zinc-900 to-black border border-purple-500/30 rounded-3xl shadow-2xl shadow-purple-500/30 max-w-6xl w-full max-h-[85vh] overflow-hidden flex flex-col"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedNews(null)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4"
             >
-              {/* Header with Image */}
-              <div className="relative">
-                <div
-                  className="h-48 sm:h-56 md:h-72 lg:h-96 bg-gradient-to-br from-slate-700 to-slate-900 bg-cover bg-center"
-                  style={{
-                    backgroundImage: `url('${selectedNews.image}')`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    backgroundRepeat: "no-repeat",
-                  }}
-                >
-                  {/* Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-                </div>
-
-                {/* Close Button */}
-                <button
-                  onClick={() => setSelectedNews(null)}
-                  className="absolute top-3 sm:top-4 right-3 sm:right-4 p-2 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-lg transition-colors z-10"
-                >
-                  <X className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                </button>
-
-                {/* Title and Category Overlay */}
-                <div className="absolute bottom-0 left-0 right-0 px-4 sm:px-6 md:px-8 py-5 sm:py-6 bg-gradient-to-t from-black via-black/80 to-transparent">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, y: 40 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 40 }}
+                onClick={(e) => e.stopPropagation()}
+                className="bg-gradient-to-br from-zinc-900 via-zinc-900 to-black border border-purple-500/30 rounded-3xl shadow-2xl shadow-purple-500/30 max-w-6xl w-full max-h-[85vh] overflow-hidden flex flex-col"
+              >
+                {/* Header with Image */}
+                <div className="relative">
                   <div
-                    className={`inline-block mb-2 sm:mb-3 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${selectedNews.categoryColor} backdrop-blur-sm`}
+                    className="h-48 sm:h-56 md:h-72 lg:h-96 bg-gradient-to-br from-slate-700 to-slate-900 bg-cover bg-center"
+                    style={{
+                      backgroundImage: `url('${selectedNews.image}')`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      backgroundRepeat: "no-repeat",
+                    }}
                   >
-                    {selectedNews.category}
+                    {/* Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
                   </div>
-                  <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white leading-tight">
-                    {selectedNews.title}
-                  </h2>
-                </div>
-              </div>
 
-              {/* Scrollable Content */}
-              <div className="flex-1 overflow-y-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6">
-                <div className="space-y-4 sm:space-y-6">
-                  <p className="text-sm sm:text-base md:text-lg text-zinc-300 leading-relaxed">
-                    {selectedNews.description}
-                  </p>
+                  {/* Close Button */}
+                  <button
+                    onClick={() => setSelectedNews(null)}
+                    className="absolute top-3 sm:top-4 right-3 sm:right-4 p-2 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-lg transition-colors z-10"
+                  >
+                    <X className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                  </button>
 
-                  <div className="h-1 bg-gradient-to-r from-purple-500/0 via-purple-500/50 to-purple-500/0 rounded-full" />
-
-                  <div className="space-y-3 sm:space-y-4">
-                    <h3 className="text-lg sm:text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
-                      Full Story
-                    </h3>
-                    <p className="text-xs sm:text-sm md:text-base text-zinc-400 leading-relaxed">
-                      {loremText}
-                    </p>
-                    <p className="text-xs sm:text-sm md:text-base text-zinc-400 leading-relaxed">
-                      {loremText}
-                    </p>
+                  {/* Title and Category Overlay */}
+                  <div className="absolute bottom-0 left-0 right-0 px-4 sm:px-6 md:px-8 py-5 sm:py-6 bg-gradient-to-t from-black via-black/80 to-transparent">
+                    <div
+                      className={`inline-block mb-2 sm:mb-3 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${selectedNews.categoryColor} backdrop-blur-sm`}
+                    >
+                      {selectedNews.category}
+                    </div>
+                    <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white leading-tight">
+                      {selectedNews.title}
+                    </h2>
                   </div>
                 </div>
 
-                {/* Custom scrollbar styles */}
-                <style jsx>{`
-                  div::-webkit-scrollbar {
-                    width: 8px;
-                  }
-                  div::-webkit-scrollbar-track {
-                    background: rgba(24, 24, 27, 0.5);
-                  }
-                  div::-webkit-scrollbar-thumb {
-                    background: rgba(168, 85, 247, 0.5);
-                    border-radius: 4px;
-                  }
-                  div::-webkit-scrollbar-thumb:hover {
-                    background: rgba(168, 85, 247, 0.8);
-                  }
-                `}</style>
-              </div>
+                {/* Scrollable Content */}
+                <div className="flex-1 overflow-y-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6">
+                  <div className="space-y-4 sm:space-y-6">
+                    <p className="text-sm sm:text-base md:text-lg text-zinc-300 leading-relaxed">
+                      {selectedNews.description}
+                    </p>
 
-              {/* Footer with Share Buttons */}
-              <div className="border-t border-zinc-700/50 px-4 sm:px-6 md:px-8 py-3 sm:py-4 bg-zinc-900/50 flex items-center gap-2 sm:gap-3 flex-wrap sm:flex-nowrap">
-                <span className="text-xs sm:text-sm text-zinc-400 font-medium">Share:</span>
-                <button
-                  onClick={() => handleShare("facebook", selectedNews)}
-                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/10 hover:bg-[#1877F2] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
-                  aria-label="Share on Facebook"
-                >
-                  <FaFacebookF className="text-white text-xs sm:text-sm" />
-                </button>
-                <button
-                  onClick={() => handleShare("twitter", selectedNews)}
-                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/10 hover:bg-[#1DA1F2] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
-                  aria-label="Share on Twitter"
-                >
-                  <FaTwitter className="text-white text-xs sm:text-sm" />
-                </button>
-                <button
-                  onClick={() => handleShare("linkedin", selectedNews)}
-                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/10 hover:bg-[#0A66C2] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
-                  aria-label="Share on LinkedIn"
-                >
-                  <FaLinkedin className="text-white text-xs sm:text-sm" />
-                </button>
-                <button
-                  onClick={() => handleShare("whatsapp", selectedNews)}
-                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/10 hover:bg-[#25D366] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
-                  aria-label="Share on WhatsApp"
-                >
-                  <FaWhatsapp className="text-white text-xs sm:text-sm" />
-                </button>
-              </div>
+                    <div className="h-1 bg-gradient-to-r from-purple-500/0 via-purple-500/50 to-purple-500/0 rounded-full" />
+
+                    <div className="space-y-3 sm:space-y-4">
+                      <h3 className="text-lg sm:text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
+                        Full Story
+                      </h3>
+                      <p className="text-xs sm:text-sm md:text-base text-zinc-400 leading-relaxed">
+                        {loremText}
+                      </p>
+                      <p className="text-xs sm:text-sm md:text-base text-zinc-400 leading-relaxed">
+                        {loremText}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Custom scrollbar styles */}
+                  <style jsx>{`
+                    div::-webkit-scrollbar {
+                      width: 8px;
+                    }
+                    div::-webkit-scrollbar-track {
+                      background: rgba(24, 24, 27, 0.5);
+                    }
+                    div::-webkit-scrollbar-thumb {
+                      background: rgba(168, 85, 247, 0.5);
+                      border-radius: 4px;
+                    }
+                    div::-webkit-scrollbar-thumb:hover {
+                      background: rgba(168, 85, 247, 0.8);
+                    }
+                  `}</style>
+                </div>
+
+                {/* Footer with Share Buttons */}
+                <div className="border-t border-zinc-700/50 px-4 sm:px-6 md:px-8 py-3 sm:py-4 bg-zinc-900/50 flex items-center gap-2 sm:gap-3 flex-wrap sm:flex-nowrap">
+                  <span className="text-xs sm:text-sm text-zinc-400 font-medium">
+                    Share:
+                  </span>
+                  <button
+                    onClick={() => handleShare("facebook", selectedNews)}
+                    className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/10 hover:bg-[#1877F2] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
+                    aria-label="Share on Facebook"
+                  >
+                    <FaFacebookF className="text-white text-xs sm:text-sm" />
+                  </button>
+                  <button
+                    onClick={() => handleShare("twitter", selectedNews)}
+                    className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/10 hover:bg-[#1DA1F2] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
+                    aria-label="Share on Twitter"
+                  >
+                    <FaTwitter className="text-white text-xs sm:text-sm" />
+                  </button>
+                  <button
+                    onClick={() => handleShare("linkedin", selectedNews)}
+                    className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/10 hover:bg-[#0A66C2] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
+                    aria-label="Share on LinkedIn"
+                  >
+                    <FaLinkedin className="text-white text-xs sm:text-sm" />
+                  </button>
+                  <button
+                    onClick={() => handleShare("whatsapp", selectedNews)}
+                    className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/10 hover:bg-[#25D366] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
+                    aria-label="Share on WhatsApp"
+                  >
+                    <FaWhatsapp className="text-white text-xs sm:text-sm" />
+                  </button>
+                </div>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
+          )}
+        </AnimatePresence>
       </div>
     </section>
-  )
+  );
 }

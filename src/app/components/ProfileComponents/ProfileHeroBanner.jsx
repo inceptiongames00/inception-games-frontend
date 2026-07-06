@@ -2,15 +2,12 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Share2,
-  Edit3,
-  Bell,
-  X,
-} from "lucide-react";
+import { Share2, Edit3, Bell, X } from "lucide-react";
 import { getTokens } from "@/lib/api";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://inception-games.an.r.appspot.com/api/v1';
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  "https://inception-games.an.r.appspot.com/api/v1";
 const NOTIFICATIONS_ENDPOINT = `${API_BASE_URL}/message/SNS-7422`;
 
 export default function ProfileHeroBanner({ user, onEditProfile }) {
@@ -33,17 +30,20 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
       const tokens = getTokens();
       if (!tokens?.accessToken) return false;
 
-      const response = await fetch(`${NOTIFICATIONS_ENDPOINT}/${notificationId}/read`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${tokens.accessToken}`,
+      const response = await fetch(
+        `${NOTIFICATIONS_ENDPOINT}/${notificationId}/read`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tokens.accessToken}`,
+          },
         },
-      });
+      );
 
       return response.ok;
     } catch (err) {
-      console.log('[ProfileHeroBanner] Could not mark as read on backend');
+      console.log("[ProfileHeroBanner] Could not mark as read on backend");
     }
     return false;
   };
@@ -53,16 +53,16 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
     try {
       const tokens = getTokens();
       if (!tokens?.accessToken) {
-        setNotificationsError('Not authenticated');
+        setNotificationsError("Not authenticated");
         setNotificationsLoading(false);
         return;
       }
 
       const response = await fetch(NOTIFICATIONS_ENDPOINT, {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${tokens.accessToken}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${tokens.accessToken}`,
         },
       });
 
@@ -84,7 +84,7 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
         setNotificationsError(null);
       }
     } catch (err) {
-      console.log('[ProfileHeroBanner] Error fetching notifications:', err);
+      console.log("[ProfileHeroBanner] Error fetching notifications:", err);
       setNotificationsError(err.message);
     } finally {
       setNotificationsLoading(false);
@@ -121,11 +121,11 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
   useEffect(() => {
     if (!user) return;
 
-    const playerName = user?.fullName || user?.username || 'Player';
-    const playerTag = user?.username || 'player';
-    const primaryGame = user?.primaryGame || user?.game || 'Gaming';
-    const rank = user?.rank || 'Player';
-    const avatar = user?.avatar || '';
+    const playerName = user?.fullName || user?.username || "Player";
+    const playerTag = user?.username || "player";
+    const primaryGame = user?.primaryGame || user?.game || "Gaming";
+    const rank = user?.rank || "Player";
+    const avatar = user?.avatar || "";
 
     // Build OG image URL with player data
     const ogImageParams = new URLSearchParams({
@@ -139,24 +139,31 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
 
     // Update meta tags
     const updateMetaTag = (name, content) => {
-      let tag = document.querySelector(`meta[property="${name}"]`) || document.querySelector(`meta[name="${name}"]`);
+      let tag =
+        document.querySelector(`meta[property="${name}"]`) ||
+        document.querySelector(`meta[name="${name}"]`);
       if (!tag) {
-        tag = document.createElement('meta');
-        tag.setAttribute(name.startsWith('og:') ? 'property' : 'name', name);
+        tag = document.createElement("meta");
+        tag.setAttribute(name.startsWith("og:") ? "property" : "name", name);
         document.head.appendChild(tag);
       }
       tag.content = content;
     };
 
-    updateMetaTag('og:title', `${playerName} - Inception Games Profile`);
-    updateMetaTag('og:description', `Check out ${playerName}'s esports profile on Inception Games. ${primaryGame} player with ${rank} rank.`);
-    updateMetaTag('og:image', ogImageUrl);
-    updateMetaTag('og:type', 'profile');
-    updateMetaTag('twitter:card', 'summary_large_image');
-    updateMetaTag('twitter:title', `${playerName} - Inception Games`);
-    updateMetaTag('twitter:description', `${playerName}'s esports profile on Inception Games`);
-    updateMetaTag('twitter:image', ogImageUrl);
-
+    updateMetaTag("og:title", `${playerName} - Inception Games Profile`);
+    updateMetaTag(
+      "og:description",
+      `Check out ${playerName}'s esports profile on Inception Games. ${primaryGame} player with ${rank} rank.`,
+    );
+    updateMetaTag("og:image", ogImageUrl);
+    updateMetaTag("og:type", "profile");
+    updateMetaTag("twitter:card", "summary_large_image");
+    updateMetaTag("twitter:title", `${playerName} - Inception Games`);
+    updateMetaTag(
+      "twitter:description",
+      `${playerName}'s esports profile on Inception Games`,
+    );
+    updateMetaTag("twitter:image", ogImageUrl);
   }, [user]);
 
   const initials = (user?.fullName || user?.username || "P")
@@ -185,48 +192,106 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
             initial={{ opacity: 0, scale: 0.9, y: 5 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 5 }}
-            className={isMobile ? "absolute right-8 sm:right-10 bottom-1 z-50 w-40 sm:w-44 rounded-xl bg-[#1a1a24] border border-white/[0.08] shadow-2xl shadow-black/40 overflow-hidden" : "absolute right-10 sm:right-12 bottom-1 z-50 w-44 sm:w-48 rounded-xl bg-[#1a1a24] border border-white/[0.08] shadow-2xl shadow-black/40 overflow-hidden"}
+            className={
+              isMobile
+                ? "absolute right-8 sm:right-10 bottom-1 z-50 w-40 sm:w-44 rounded-xl bg-[#1a1a24] border border-white/[0.08] shadow-2xl shadow-black/40 overflow-hidden"
+                : "absolute right-10 sm:right-12 bottom-1 z-50 w-44 sm:w-48 rounded-xl bg-[#1a1a24] border border-white/[0.08] shadow-2xl shadow-black/40 overflow-hidden"
+            }
           >
             <button
               onClick={() => {
-                navigator.clipboard.writeText(typeof window !== 'undefined' ? window.location.href : '');
+                navigator.clipboard.writeText(
+                  typeof window !== "undefined" ? window.location.href : "",
+                );
                 setShowShareMenu(false);
               }}
-              className={isMobile ? "w-full px-3 py-2 text-left flex items-center gap-2 text-gray-300 hover:bg-white/[0.05] transition border-b border-white/[0.05] text-xs sm:text-sm" : "w-full px-3 sm:px-4 py-2.5 sm:py-3 text-left flex items-center gap-2 sm:gap-3 text-gray-300 hover:bg-white/[0.05] transition border-b border-white/[0.05] text-sm"}
+              className={
+                isMobile
+                  ? "w-full px-3 py-2 text-left flex items-center gap-2 text-gray-300 hover:bg-white/[0.05] transition border-b border-white/[0.05] text-xs sm:text-sm"
+                  : "w-full px-3 sm:px-4 py-2.5 sm:py-3 text-left flex items-center gap-2 sm:gap-3 text-gray-300 hover:bg-white/[0.05] transition border-b border-white/[0.05] text-sm"
+              }
             >
-              <svg className={isMobile ? "w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" : "w-4 sm:w-5 h-4 sm:h-5 flex-shrink-0"} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.658 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+              <svg
+                className={
+                  isMobile
+                    ? "w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0"
+                    : "w-4 sm:w-5 h-4 sm:h-5 flex-shrink-0"
+                }
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.658 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                />
               </svg>
               <span className="font-medium">Copy Link</span>
             </button>
 
             <button
               onClick={() => {
-                const url = typeof window !== 'undefined' ? window.location.href : '';
+                const url =
+                  typeof window !== "undefined" ? window.location.href : "";
                 const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
-                window.open(facebookUrl, 'facebook-share', 'width=600,height=400');
+                window.open(
+                  facebookUrl,
+                  "facebook-share",
+                  "width=600,height=400",
+                );
                 setShowShareMenu(false);
               }}
-              className={isMobile ? "w-full px-3 py-2 text-left flex items-center gap-2 text-gray-300 hover:bg-white/[0.05] transition border-b border-white/[0.05] text-xs sm:text-sm" : "w-full px-3 sm:px-4 py-2.5 sm:py-3 text-left flex items-center gap-2 sm:gap-3 text-gray-300 hover:bg-white/[0.05] transition border-b border-white/[0.05] text-sm"}
+              className={
+                isMobile
+                  ? "w-full px-3 py-2 text-left flex items-center gap-2 text-gray-300 hover:bg-white/[0.05] transition border-b border-white/[0.05] text-xs sm:text-sm"
+                  : "w-full px-3 sm:px-4 py-2.5 sm:py-3 text-left flex items-center gap-2 sm:gap-3 text-gray-300 hover:bg-white/[0.05] transition border-b border-white/[0.05] text-sm"
+              }
             >
-              <svg className={isMobile ? "w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" : "w-4 sm:w-5 h-4 sm:h-5 flex-shrink-0"} fill="currentColor" viewBox="0 0 24 24">
-                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              <svg
+                className={
+                  isMobile
+                    ? "w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0"
+                    : "w-4 sm:w-5 h-4 sm:h-5 flex-shrink-0"
+                }
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
               </svg>
               <span className="font-medium">Facebook</span>
             </button>
 
             <button
               onClick={() => {
-                const url = typeof window !== 'undefined' ? window.location.href : '';
+                const url =
+                  typeof window !== "undefined" ? window.location.href : "";
                 const text = `Check out my profile on Inception Games!`;
                 const twitterUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
-                window.open(twitterUrl, 'twitter-share', 'width=600,height=400');
+                window.open(
+                  twitterUrl,
+                  "twitter-share",
+                  "width=600,height=400",
+                );
                 setShowShareMenu(false);
               }}
-              className={isMobile ? "w-full px-3 py-2 text-left flex items-center gap-2 text-gray-300 hover:bg-white/[0.05] transition text-xs sm:text-sm" : "w-full px-3 sm:px-4 py-2.5 sm:py-3 text-left flex items-center gap-2 sm:gap-3 text-gray-300 hover:bg-white/[0.05] transition text-sm"}
+              className={
+                isMobile
+                  ? "w-full px-3 py-2 text-left flex items-center gap-2 text-gray-300 hover:bg-white/[0.05] transition text-xs sm:text-sm"
+                  : "w-full px-3 sm:px-4 py-2.5 sm:py-3 text-left flex items-center gap-2 sm:gap-3 text-gray-300 hover:bg-white/[0.05] transition text-sm"
+              }
             >
-              <svg className={isMobile ? "w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" : "w-4 sm:w-5 h-4 sm:h-5 flex-shrink-0"} fill="currentColor" viewBox="0 0 24 24">
-                <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2s9 5 20 5a9.5 9.5 0 00-9-5.5c4.75 2.25 7-7 7-7"/>
+              <svg
+                className={
+                  isMobile
+                    ? "w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0"
+                    : "w-4 sm:w-5 h-4 sm:h-5 flex-shrink-0"
+                }
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2s9 5 20 5a9.5 9.5 0 00-9-5.5c4.75 2.25 7-7 7-7" />
               </svg>
               <span className="font-medium">Twitter / X</span>
             </button>
@@ -238,7 +303,11 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
 
   return (
     <motion.div
-      className={isMobile ? "relative w-full rounded-2xl overflow-hidden border border-white/[0.06] min-h-[180px]" : "relative w-full rounded-2xl overflow-hidden border border-white/[0.06] min-h-[320px] sm:min-h-[280px] md:min-h-[240px]"}
+      className={
+        isMobile
+          ? "relative w-full rounded-2xl overflow-hidden border border-white/[0.06] min-h-[180px]"
+          : "relative w-full rounded-2xl overflow-hidden border border-white/[0.06] min-h-[320px] sm:min-h-[280px] md:min-h-[240px]"
+      }
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7 }}
@@ -320,7 +389,10 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
                 <div className="flex flex-col gap-2">
                   <div className="flex items-baseline flex-wrap gap-2">
                     <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white leading-tight">
-                      {user?.fullName || user?.full_name || user?.username || "Player"}
+                      {user?.fullName ||
+                        user?.full_name ||
+                        user?.username ||
+                        "Player"}
                     </h1>
                     {user?.username && (
                       <span className="text-gray-400 text-xs sm:text-sm leading-tight">
@@ -329,7 +401,9 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
                     )}
                   </div>
                   <div className="flex flex-wrap items-center justify-center sm:justify-start gap-1.5 sm:gap-2 text-xs sm:text-sm mt-2">
-                    {(user?.primaryGame || user?.primary_game || user?.game) && (
+                    {(user?.primaryGame ||
+                      user?.primary_game ||
+                      user?.game) && (
                       <div className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-white/[0.05] border border-white/[0.1] text-gray-300 font-medium whitespace-nowrap text-[11px] sm:text-xs">
                         {user?.primaryGame || user?.primary_game || user?.game}
                       </div>
@@ -363,12 +437,12 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
             >
               <ShareButton
                 size={16}
-                buttonClass="p-2 sm:p-2.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-gray-400 hover:text-white hover:bg-white/[0.08] transition"
+                buttonClass="p-2 sm:p-2.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-gray-400 hover:text-white hover:bg-white/[0.08] transition cursor-pointer"
                 iconSize="sm:w-5 sm:h-5"
               />
               {onEditProfile && (
                 <motion.button
-                  className="p-2 sm:p-2.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-gray-400 hover:text-white hover:bg-white/[0.08] transition"
+                  className="p-2 sm:p-2.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-gray-400 hover:text-white hover:bg-white/[0.08] transition cursor-pointer"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={onEditProfile}
@@ -421,7 +495,10 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
               >
                 <div className="flex items-baseline flex-wrap gap-1.5">
                   <h1 className="text-base sm:text-xl md:text-2xl lg:text-3xl font-bold text-white leading-tight truncate">
-                    {user?.fullName || user?.full_name || user?.username || "Player"}
+                    {user?.fullName ||
+                      user?.full_name ||
+                      user?.username ||
+                      "Player"}
                   </h1>
                   {user?.username && (
                     <span className="text-gray-400 text-[10px] sm:text-xs md:text-sm leading-tight">
@@ -498,7 +575,7 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                   >
-                    {unreadCount > 9 ? '9+' : unreadCount}
+                    {unreadCount > 9 ? "9+" : unreadCount}
                   </motion.div>
                 )}
               </motion.button>
@@ -521,14 +598,15 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ type: 'spring', duration: 0.3 }}
+              transition={{ type: "spring", duration: 0.3 }}
               onClick={(e) => e.stopPropagation()}
               className="bg-gradient-to-br from-black via-[#0a0a0f] to-black border border-white/[0.08] rounded-2xl max-w-2xl w-full shadow-2xl shadow-black/50 overflow-hidden max-h-150 flex flex-col"
             >
               {/* Header */}
               <div className="px-6 py-4 border-b border-white/[0.08] bg-white/[0.02] flex items-center justify-between">
                 <h3 className="text-lg font-bold text-white">
-                  Notifications {notifications.length > 0 && `(${notifications.length})`}
+                  Notifications{" "}
+                  {notifications.length > 0 && `(${notifications.length})`}
                 </h3>
                 <button
                   onClick={() => setShowNotificationsList(false)}
@@ -556,7 +634,7 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
                   <div className="divide-y divide-white/[0.05]">
                     {notifications.map((notif, idx) => {
                       const isUnread = !notif.is_read;
-                      
+
                       return (
                         <motion.button
                           key={notif.id}
@@ -569,8 +647,8 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
 
                               setNotifications((prev) =>
                                 prev.map((n) =>
-                                  n.id === notif.id ? { ...n, is_read: 1 } : n
-                                )
+                                  n.id === notif.id ? { ...n, is_read: 1 } : n,
+                                ),
                               );
                               setUnreadCount((prev) => Math.max(0, prev - 1));
 
@@ -585,32 +663,37 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
                           transition={{ delay: idx * 0.05 }}
                           className={`w-full px-6 py-4 text-left hover:bg-white/[0.04] transition flex items-start gap-4 group border-l-4 ${
                             isUnread
-                              ? 'border-l-purple-500/70'
-                              : 'border-l-purple-500/20'
+                              ? "border-l-purple-500/70"
+                              : "border-l-purple-500/20"
                           }`}
                         >
-                          <div className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center text-lg transition-all duration-300 ${
-                            isUnread
-                              ? 'bg-gradient-to-br from-purple-600 to-pink-600 shadow-lg shadow-purple-600/60'
-                              : 'bg-gradient-to-br from-purple-700/50 to-pink-700/50'
-                          }`}>
+                          <div
+                            className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center text-lg transition-all duration-300 ${
+                              isUnread
+                                ? "bg-gradient-to-br from-purple-600 to-pink-600 shadow-lg shadow-purple-600/60"
+                                : "bg-gradient-to-br from-purple-700/50 to-pink-700/50"
+                            }`}
+                          >
                             🎯
                           </div>
-                          
+
                           <div className="flex-1 min-w-0">
                             <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">
-                              {notif.game_name || 'General'}
+                              {notif.game_name || "General"}
                             </p>
                             <p className="text-sm text-white group-hover:text-gray-100 transition">
                               {notif.message}
                             </p>
                             <p className="text-xs text-gray-600 mt-2">
-                              {new Date(notif.created_at).toLocaleDateString('en-US', {
-                                month: 'short',
-                                day: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit',
-                              })}
+                              {new Date(notif.created_at).toLocaleDateString(
+                                "en-US",
+                                {
+                                  month: "short",
+                                  day: "numeric",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                },
+                              )}
                             </p>
                           </div>
 
@@ -642,7 +725,7 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ type: 'spring', duration: 0.3 }}
+              transition={{ type: "spring", duration: 0.3 }}
               onClick={(e) => e.stopPropagation()}
               className="bg-gradient-to-br from-black via-[#0a0a0f] to-black border border-white/[0.08] rounded-2xl max-w-md w-full shadow-2xl shadow-black/50 overflow-hidden"
             >
@@ -663,20 +746,23 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
                   <div className="flex items-center gap-2 mb-3">
                     <div className="w-3 h-3 bg-emerald-400 rounded-full animate-pulse" />
                     <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
-                      {selectedNotif.game_name || 'General'}
+                      {selectedNotif.game_name || "General"}
                     </span>
                   </div>
                   <h3 className="text-xl font-bold text-white">
-                    {selectedNotif.message || 'New Notification'}
+                    {selectedNotif.message || "New Notification"}
                   </h3>
                   <p className="text-xs text-gray-500 mt-2">
-                    {new Date(selectedNotif.created_at).toLocaleDateString('en-US', {
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
+                    {new Date(selectedNotif.created_at).toLocaleDateString(
+                      "en-US",
+                      {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      },
+                    )}
                   </p>
                 </motion.div>
 
@@ -689,14 +775,18 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
                   className="space-y-4"
                 >
                   <div>
-                    <p className="text-xs uppercase tracking-wider text-gray-500 mb-2">Game</p>
+                    <p className="text-xs uppercase tracking-wider text-gray-500 mb-2">
+                      Game
+                    </p>
                     <p className="text-sm text-white font-medium">
-                      {selectedNotif.game_name || 'N/A'}
+                      {selectedNotif.game_name || "N/A"}
                     </p>
                   </div>
 
                   <div>
-                    <p className="text-xs uppercase tracking-wider text-gray-500 mb-2">Details</p>
+                    <p className="text-xs uppercase tracking-wider text-gray-500 mb-2">
+                      Details
+                    </p>
                     <p className="text-sm text-gray-300 leading-relaxed">
                       {selectedNotif.message}
                     </p>
@@ -704,7 +794,9 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
 
                   {selectedNotif.notification_type && (
                     <div>
-                      <p className="text-xs uppercase tracking-wider text-gray-500 mb-2">Type</p>
+                      <p className="text-xs uppercase tracking-wider text-gray-500 mb-2">
+                        Type
+                      </p>
                       <p className="text-sm text-white font-medium">
                         {selectedNotif.notification_type}
                       </p>

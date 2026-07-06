@@ -15,7 +15,6 @@ export default function NewsPoster() {
   return (
     <div className="bg-zinc-950 flex items-center justify-center py-12 sm:py-16 md:py-20 px-4 sm:px-6">
       <div className="relative w-full max-w-4xl bg-zinc-900/50 rounded-2xl overflow-hidden flex flex-col md:flex-row shadow-2xl border border-white/10 backdrop-blur-sm">
-
         {/* Left — Character image panel */}
         <div className="relative w-full md:w-[45%] min-h-[250px] sm:min-h-[300px] md:min-h-[480px] flex-shrink-0 bg-zinc-900">
           {/* Corner accent */}
@@ -98,7 +97,7 @@ export default function NewsPoster() {
               {/* CTA button */}
               <button
                 onClick={handleSubscribe}
-                className="w-full bg-gradient-to-r from-purple-600 to-purple-500 hover:shadow-lg hover:shadow-purple-500/50 active:scale-[0.98] text-white text-xs font-bold tracking-wider uppercase py-3 sm:py-3.5 rounded-lg transition-all duration-150 flex items-center justify-center gap-2"
+                className="w-full bg-gradient-to-r from-purple-600 to-purple-500 hover:shadow-lg hover:shadow-purple-500/50 active:scale-[0.98] text-white text-xs font-bold tracking-wider uppercase py-3 sm:py-3.5 rounded-lg transition-all duration-150 flex items-center justify-center gap-2 cursor-pointer"
               >
                 Subscribe Now
                 <svg
@@ -108,7 +107,11 @@ export default function NewsPoster() {
                   stroke="currentColor"
                   strokeWidth={2.5}
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M17 8l4 4m0 0l-4 4m4-4H3"
+                  />
                 </svg>
               </button>
             </>
@@ -122,8 +125,18 @@ export default function NewsPoster() {
 
           {/* Privacy note */}
           <p className="flex items-center gap-1.5 text-zinc-400 text-[11px] sm:text-xs mt-4">
-            <svg className="w-3 h-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            <svg
+              className="w-3 h-3 flex-shrink-0"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+              />
             </svg>
             We respect your privacy. No spam, ever.
           </p>

@@ -246,7 +246,7 @@ export default function SharePreview({ event }) {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="px-4 py-2 rounded-lg border border-purple-500/30 text-purple-400 hover:border-purple-400 hover:bg-purple-500/5 transition-all flex items-center gap-2"
+        className="px-4 py-2 rounded-lg border border-purple-500/30 text-purple-400 hover:border-purple-400 hover:bg-purple-500/5 transition-all flex items-center gap-2 cursor-pointer"
       >
         <svg
           className="w-4 h-4"

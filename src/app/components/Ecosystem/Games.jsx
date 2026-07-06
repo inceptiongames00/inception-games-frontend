@@ -147,6 +147,7 @@ export function GamesCarousel() {
   const [paused, setPaused] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const intervalRef = useRef(null);
+  const [direction, setDirection] = useState(1);
 
   useEffect(() => {
     const handleResize = () => {
@@ -158,10 +159,12 @@ export function GamesCarousel() {
   }, []);
 
   const next = useCallback(() => {
+    setDirection(1);
     setActiveIndex((prev) => (prev + 1) % total);
   }, [total]);
 
   const prev = useCallback(() => {
+    setDirection(-1);
     setActiveIndex((prev) => (prev - 1 + total) % total);
   }, [total]);
 
@@ -241,14 +244,22 @@ export function GamesCarousel() {
                 <motion.div
                   key={`${card.position}-${card.key}`}
                   className="absolute flex-shrink-0"
-                  initial={{ opacity: 0, scale: 0.7, x: 250 }}
+                  initial={{
+                    opacity: 0,
+                    scale: 0.7,
+                    x: direction === 1 ? 250 : -250,
+                  }}
                   animate={{
                     x,
                     opacity: isCenter ? 1 : isMobile ? 0 : 0.5,
                     scale: isCenter ? 1 : isMobile ? 0 : 0.8,
                     zIndex: isCenter ? 30 : 10,
                   }}
-                  exit={{ opacity: 0, scale: 0.7, x: -250 }}
+                  exit={{
+                    opacity: 0,
+                    scale: 0.7,
+                    x: direction === 1 ? 250 : -250,
+                  }}
                   transition={{ type: "spring", stiffness: 260, damping: 28 }}
                   style={{ width, height }}
                 >
