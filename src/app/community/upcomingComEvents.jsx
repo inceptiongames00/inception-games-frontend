@@ -76,7 +76,6 @@ export default function UpcomingComEvents() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Event Registration Data:", formData, "Event:", selectedEvent);
     setFormData({
       name: "",
       companyName: "",

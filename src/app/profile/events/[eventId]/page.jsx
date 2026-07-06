@@ -1007,11 +1007,6 @@ export default function EventDetailPage() {
                               players: formData.players || [],
                             };
 
-                            console.log(
-                              "[Event Registration] Registration Data:",
-                              submitData,
-                            );
-
                             try {
                               // Make API call to register for the event
                               const response = await fetch(

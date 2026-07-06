@@ -16,7 +16,6 @@ export default function GoogleLoginButton({ onSuccess, onError, className = '' }
     setLoading(true);
     try {
       const response = await loginWithGoogle();
-      console.log('GoogleLoginButton - sign in response:', response);
       onSuccess?.({ user: response.user, isNewUser: response.isNewUser });
     } catch (error) {
       console.error('GoogleLoginButton - sign in error:', error);
