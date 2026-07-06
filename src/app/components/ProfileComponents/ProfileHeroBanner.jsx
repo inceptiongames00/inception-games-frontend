@@ -8,12 +8,12 @@ import { getTokens } from "@/lib/api";
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ||
   "https://inception-games.an.r.appspot.com/api/v1";
-const NOTIFICATIONS_ENDPOINT = `${API_BASE_URL}/message/SNS-7422`;
 
 export default function ProfileHeroBanner({ user, onEditProfile }) {
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const shareRef = useRef(null);
+  const NOTIFICATIONS_ENDPOINT = `${API_BASE_URL}/message/${user?.id}`;
 
   // Notifications state
   const [notifications, setNotifications] = useState([]);

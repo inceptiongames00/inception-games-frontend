@@ -1,63 +1,73 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Check } from 'lucide-react';
-import { getTokens } from '@/lib/api';
-import Swal from 'sweetalert2';
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { X, Check } from "lucide-react";
+import { getTokens } from "@/lib/api";
+import Swal from "sweetalert2";
+import { useAuth } from "@/app/context/AuthContext";
 
-export default function UpgradePlanModal({ isOpen, onClose, plans = [], activePlanName = null, onSubscriptionSuccess }) {
+export default function UpgradePlanModal({
+  isOpen,
+  onClose,
+  plans = [],
+  activePlanName = null,
+  onSubscriptionSuccess,
+}) {
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  const tokens = getTokens();
+
+  console.log("tokens", tokens);
 
   const handleSubscribe = async (planName) => {
-    if (!planName || planName.toLowerCase().includes('free')) return;
+    if (!planName || planName.toLowerCase().includes("free")) return;
 
     setLoading(true);
     setError(null);
     setSuccess(null);
 
     try {
-      const tokens = getTokens();
       if (!tokens?.accessToken) {
         Swal.fire({
-          icon: 'error',
-          title: 'Authentication Error',
-          text: 'Not authenticated',
-          confirmButtonColor: '#a855f7',
+          icon: "error",
+          title: "Authentication Error",
+          text: "Not authenticated",
+          confirmButtonColor: "#a855f7",
         });
         return;
       }
 
       const response = await fetch(
-        'https://inception-games.an.r.appspot.com/api/v1/subscription/subscribe',
+        "https://inception-games.an.r.appspot.com/api/v1/subscription/subscribe",
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${tokens.accessToken}`,
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tokens.accessToken}`,
           },
           body: JSON.stringify({
-            user_id: tokens.userId || 'SNS-1524',
+            user_id: user?.id,
             plan: planName,
           }),
-        }
+        },
       );
 
       const data = await response.json();
-      console.log('[UpgradePlanModal] Subscription Response:', data);
+      console.log("[UpgradePlanModal] Subscription Response:", data);
 
       if (!response.ok) {
-        throw new Error(data.message || 'Subscription failed');
+        throw new Error(data.message || "Subscription failed");
       }
 
       // Show success alert
       Swal.fire({
-        icon: 'success',
-        title: 'Subscription Successful!',
+        icon: "success",
+        title: "Subscription Successful!",
         html: `<p>You have successfully subscribed to <strong>${planName}</strong></p>`,
-        confirmButtonColor: '#a855f7',
+        confirmButtonColor: "#a855f7",
         timer: 2000,
         timerProgressBar: true,
       });
@@ -73,12 +83,12 @@ export default function UpgradePlanModal({ isOpen, onClose, plans = [], activePl
         onClose();
       }, 2000);
     } catch (err) {
-      console.error('[UpgradePlanModal] Subscription error:', err);
+      console.error("[UpgradePlanModal] Subscription error:", err);
       Swal.fire({
-        icon: 'error',
-        title: 'Subscription Failed',
-        text: err.message || 'Failed to complete subscription',
-        confirmButtonColor: '#a855f7',
+        icon: "error",
+        title: "Subscription Failed",
+        text: err.message || "Failed to complete subscription",
+        confirmButtonColor: "#a855f7",
       });
     } finally {
       setLoading(false);
@@ -86,34 +96,39 @@ export default function UpgradePlanModal({ isOpen, onClose, plans = [], activePl
   };
 
   // Transform API plans to display format
-  const transformedPlans = plans.length > 0 
-    ? plans.map((plan, idx) => {
-        const isActive = activePlanName && plan.plan === activePlanName;
-        return {
-          id: plan.id,
-          name: plan.plan,
-          price: `${plan.price} BDT`,
-          period: `month`,
-          badge: isActive ? 'ACTIVE' : (idx === 1 ? 'MOST POPULAR' : null),
-          badgeColor: isActive ? 'bg-emerald-500 text-white' : (idx === 1 ? 'bg-purple-600 text-white' : ''),
-          isCurrentPlan: isActive,
-          duration_days: plan.duration_days,
-          features: [
-            `${plan.duration_days}-day access`,
-            'Premium Features Included',
-            'Priority Support',
-            'Exclusive Tournaments Access',
-          ],
-          buttonText: isActive ? 'CURRENT PLAN' : 'UPGRADE NOW',
-          buttonStyle: isActive
-            ? 'bg-gray-500 cursor-not-allowed opacity-60'
-            : (idx === 1 
-              ? 'bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400'
-              : 'bg-transparent border-2 border-purple-500 text-purple-400 hover:bg-purple-500/10'),
-          highlighted: idx === 1 && !isActive,
-        };
-      })
-    : [];
+  const transformedPlans =
+    plans.length > 0
+      ? plans.map((plan, idx) => {
+          const isActive = activePlanName && plan.plan === activePlanName;
+          return {
+            id: plan.id,
+            name: plan.plan,
+            price: `${plan.price} BDT`,
+            period: `month`,
+            badge: isActive ? "ACTIVE" : idx === 1 ? "MOST POPULAR" : null,
+            badgeColor: isActive
+              ? "bg-emerald-500 text-white"
+              : idx === 1
+                ? "bg-purple-600 text-white"
+                : "",
+            isCurrentPlan: isActive,
+            duration_days: plan.duration_days,
+            features: [
+              `${plan.duration_days}-day access`,
+              "Premium Features Included",
+              "Priority Support",
+              "Exclusive Tournaments Access",
+            ],
+            buttonText: isActive ? "CURRENT PLAN" : "UPGRADE NOW",
+            buttonStyle: isActive
+              ? "bg-gray-500 cursor-not-allowed opacity-60"
+              : idx === 1
+                ? "bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400"
+                : "bg-transparent border-2 border-purple-500 text-purple-400 hover:bg-purple-500/10",
+            highlighted: idx === 1 && !isActive,
+          };
+        })
+      : [];
 
   const displayPlans = transformedPlans;
 
@@ -131,7 +146,7 @@ export default function UpgradePlanModal({ isOpen, onClose, plans = [], activePl
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            transition={{ type: 'spring', duration: 0.4 }}
+            transition={{ type: "spring", duration: 0.4 }}
             onClick={(e) => e.stopPropagation()}
             className="bg-gradient-to-br from-black via-[#0a0a0f] to-black border border-white/[0.08] rounded-3xl max-w-6xl w-full shadow-2xl shadow-black/50 overflow-hidden"
           >
@@ -197,55 +212,71 @@ export default function UpgradePlanModal({ isOpen, onClose, plans = [], activePl
                     transition={{ delay: 0.2 + index * 0.1 }}
                     className={`rounded-2xl border transition-all duration-300 ${
                       plan.highlighted
-                        ? 'border-purple-500/60 bg-gradient-to-br from-purple-950/40 to-purple-900/20 shadow-lg shadow-purple-600/30 scale-105'
-                        : 'border-white/[0.08] bg-white/[0.02] hover:bg-white/[0.04]'
+                        ? "border-purple-500/60 bg-gradient-to-br from-purple-950/40 to-purple-900/20 shadow-lg shadow-purple-600/30 scale-105"
+                        : "border-white/[0.08] bg-white/[0.02] hover:bg-white/[0.04]"
                     }`}
                   >
                     <div className="p-6 pt-8">
                       {/* Badge */}
                       {plan.badge && (
                         <div className="flex justify-center mb-4 -mt-12">
-                          <span className={`text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider ${plan.badgeColor}`}>
+                          <span
+                            className={`text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider ${plan.badgeColor}`}
+                          >
                             {plan.badge}
                           </span>
                         </div>
                       )}
                       {/* Plan Name */}
-                      <h3 className="text-xl font-bold text-white mb-2">{plan.name}</h3>
+                      <h3 className="text-xl font-bold text-white mb-2">
+                        {plan.name}
+                      </h3>
 
                       {/* Price */}
-<div className="flex items-baseline gap-1 mb-6">
-  {parseInt(plan.price) === 0 ? (
-    <span className="text-3xl font-bold text-white">FREE</span>
-  ) : (
-    <>
-      <span className="text-3xl font-bold text-white">{parseInt(plan.price)}</span>
-      <span className="text-sm font-medium text-gray-400">BDT</span>
-    </>
-  )}
-  {plan.period && parseInt(plan.price) !== 0 && (
-    <span className="text-sm text-gray-500">/{plan.period}</span>
-  )}
-</div>
+                      <div className="flex items-baseline gap-1 mb-6">
+                        {parseInt(plan.price) === 0 ? (
+                          <span className="text-3xl font-bold text-white">
+                            FREE
+                          </span>
+                        ) : (
+                          <>
+                            <span className="text-3xl font-bold text-white">
+                              {parseInt(plan.price)}
+                            </span>
+                            <span className="text-sm font-medium text-gray-400">
+                              BDT
+                            </span>
+                          </>
+                        )}
+                        {plan.period && parseInt(plan.price) !== 0 && (
+                          <span className="text-sm text-gray-500">
+                            /{plan.period}
+                          </span>
+                        )}
+                      </div>
                       {/* Features */}
                       <div className="space-y-3 mb-6">
                         {plan.features.map((feature, idx) => {
-                          const isString = typeof feature === 'string';
+                          const isString = typeof feature === "string";
                           const text = isString ? feature : feature.text;
                           const disabled = feature.disabled;
 
                           return (
                             <div
                               key={idx}
-                              className={`flex items-start gap-3 ${disabled ? 'opacity-40' : ''}`}
+                              className={`flex items-start gap-3 ${disabled ? "opacity-40" : ""}`}
                             >
                               <Check
                                 size={18}
                                 className={`flex-shrink-0 mt-0.5 ${
-                                  disabled ? 'text-gray-600' : 'text-emerald-400'
+                                  disabled
+                                    ? "text-gray-600"
+                                    : "text-emerald-400"
                                 }`}
                               />
-                              <span className={`text-sm ${disabled ? 'text-gray-600' : 'text-gray-300'}`}>
+                              <span
+                                className={`text-sm ${disabled ? "text-gray-600" : "text-gray-300"}`}
+                              >
                                 {text}
                               </span>
                             </div>
@@ -257,11 +288,17 @@ export default function UpgradePlanModal({ isOpen, onClose, plans = [], activePl
                       <motion.button
                         onClick={() => handleSubscribe(plan.name)}
                         disabled={plan.isCurrentPlan || loading}
-                        className={`w-full py-3 rounded-lg font-bold text-sm uppercase tracking-wider transition-all duration-300 ${plan.buttonStyle} ${loading && !plan.isCurrentPlan ? 'opacity-50' : ''}`}
-                        whileHover={{ scale: plan.isCurrentPlan || loading ? 1 : 1.02 }}
-                        whileTap={{ scale: plan.isCurrentPlan || loading ? 1 : 0.98 }}
+                        className={`w-full py-3 rounded-lg font-bold text-sm uppercase tracking-wider transition-all duration-300 ${plan.buttonStyle} ${loading && !plan.isCurrentPlan ? "opacity-50" : ""}`}
+                        whileHover={{
+                          scale: plan.isCurrentPlan || loading ? 1 : 1.02,
+                        }}
+                        whileTap={{
+                          scale: plan.isCurrentPlan || loading ? 1 : 0.98,
+                        }}
                       >
-                        {loading && !plan.isCurrentPlan ? 'Processing...' : plan.buttonText}
+                        {loading && !plan.isCurrentPlan
+                          ? "Processing..."
+                          : plan.buttonText}
                       </motion.button>
                     </div>
                   </motion.div>
