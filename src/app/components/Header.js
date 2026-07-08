@@ -308,12 +308,12 @@ export default function Header() {
             {/* <Link href="#career" className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors">
               Career
             </Link> */}
-            <button
+            {/* <button
               onClick={() => setUpgradePlanModalOpen(true)}
               className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors cursor-pointer"
             >
               Pricing
-            </button>
+            </button> */}
           </nav>
 
           {/* Auth Section - Desktop */}
