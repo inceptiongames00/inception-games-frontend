@@ -824,13 +824,13 @@ export default function EventDetailPage() {
                         </a>
 
                         {/* Tournament Registration Button */}
-                        <button
+                        {/* <button
                           onClick={() => setShowRegistrationModal(true)}
                           className="w-full mt-4 px-4 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
                         >
                           <Trophy size={18} />
                           Register for Tournament
-                        </button>
+                        </button> */}
 
                         {/* Registration Fill Section */}
                         <div className="mt-8 pt-8 border-t border-white/[0.06]">

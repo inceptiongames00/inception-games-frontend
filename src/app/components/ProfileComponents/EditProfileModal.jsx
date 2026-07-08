@@ -25,7 +25,7 @@ const GAMES = [
   'CrossFire',
   'Overwatch 2',
   'Warzone',
-  'EA Sports FC',
+  'EA FC 26',
   'Rocket League',
   'Trackmania',
   'Fatal Fury: City of the Wolves',
@@ -318,7 +318,7 @@ export default function EditProfileModal({ isOpen, onClose, user, gamingProfile,
                 <div>
                   <h4 className="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-3">Gaming</h4>
                   <div className="space-y-3">
-                    <div className="relative">
+                    {/* <div className="relative">
                       <Gamepad2 className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-600 w-4 h-4" />
                       <select name="game" value={formData.game} onChange={handleChange} className={selectClass}>
                         <option value="" className="bg-[#1a1a24]">Select game</option>
@@ -344,7 +344,7 @@ export default function EditProfileModal({ isOpen, onClose, user, gamingProfile,
                           {RANKS[formData.game].map(rank => <option key={rank} value={rank} className="bg-[#1a1a24]">{rank}</option>)}
                         </select>
                       </div>
-                    )}
+                    )} */}
                     {/* Continent */}
                     <div className="relative">
                       <Globe className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-600 w-4 h-4" />

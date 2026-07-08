@@ -454,7 +454,7 @@ const ComingSoonCard = React.memo(function ComingSoonCard({
 ComingSoonCard.displayName = "ComingSoonCard";
 
 // Event Card Component - Memoized
-const EventCard = React.memo(function EventCard({ event, onClick }) {
+const EventCard = React.memo(function EventCard({ event, onClick, user }) {
   const [expanded, setExpanded] = useState(false);
   const eventType =
     event.eventType || getEventType(event.title, event.organizer);
@@ -468,6 +468,12 @@ const EventCard = React.memo(function EventCard({ event, onClick }) {
   // Calculate slots percentage if available
   const slotsPercentage =
     event.totalSlots > 0 ? (event.filledSlots / event.totalSlots) * 100 : 50;
+
+  // Check if user is eligible (primaryGame matches event's game_name)
+  const userPrimaryGame = user?.primaryGame || user?.primary_game;
+  const eventGameName = event.game_name || event.game?.name;
+  const isEligible = userPrimaryGame && eventGameName && 
+    userPrimaryGame.toLowerCase().trim() === eventGameName.toLowerCase().trim();
 
   return (
     <motion.div
@@ -607,12 +613,17 @@ const EventCard = React.memo(function EventCard({ event, onClick }) {
 
         {/* Join Event Button */}
         <motion.button
-          onClick={() => onClick(event)}
-          className="w-full mt-2 py-3 cursor-pointer bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white font-bold text-sm rounded-xl transition-all duration-200 uppercase tracking-wider"
-          whileHover={{ scale: 1.01 }}
-          whileTap={{ scale: 0.98 }}
+          onClick={() => isEligible && onClick(event)}
+          disabled={!isEligible}
+          className={`w-full mt-2 py-3 cursor-pointer font-bold text-sm rounded-xl transition-all duration-200 uppercase tracking-wider ${
+            isEligible
+              ? "bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white"
+              : "bg-gradient-to-r from-red-600 to-red-500 text-white opacity-60 cursor-not-allowed"
+          }`}
+          whileHover={isEligible ? { scale: 1.01 } : {}}
+          whileTap={isEligible ? { scale: 0.98 } : {}}
         >
-          Join Event
+          {isEligible ? "Join Event" : "You are not Applicable"}
         </motion.button>
       </div>
     </motion.div>
@@ -883,12 +894,12 @@ export default function EventsSection({
         count: filterCounts.Scrims,
         icon: Swords,
       },
-      {
-        id: "Brand Deal",
-        label: "Brand Deals",
-        count: filterCounts["Brand Deal"],
-        icon: Briefcase,
-      },
+      // {
+      //   id: "Brand Deal",
+      //   label: "Brand Deals",
+      //   count: filterCounts["Brand Deal"],
+      //   icon: Briefcase,
+      // },
     ],
     [filterCounts],
   );
@@ -1079,7 +1090,7 @@ export default function EventsSection({
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.2 }}
               >
-                <EventCard event={event} onClick={handleEventClick} />
+                <EventCard event={event} onClick={handleEventClick} user={user} />
               </motion.div>
             ))}
 
