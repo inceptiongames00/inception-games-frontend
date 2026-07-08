@@ -74,7 +74,7 @@ export default function LatestNews() {
   };
 
   return (
-    <section className="py-20 px-4 sm:px-6 bg-zinc-950">
+    <section id="news" className="py-20 px-4 sm:px-6 bg-zinc-950">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
