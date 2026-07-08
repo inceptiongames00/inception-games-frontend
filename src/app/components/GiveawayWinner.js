@@ -6,7 +6,9 @@ import { FaFacebookF, FaTwitter, FaLinkedin, FaWhatsapp } from "react-icons/fa";
 
 // Initialize Facebook SDK
 const initializeFacebookSDK = () => {
-  if (typeof window !== "undefined" && !window.FB) {
+  if (typeof window === "undefined") return;
+  
+  if (!window.FB) {
     window.fbAsyncInit = function () {
       FB.init({
         appId: process.env.NEXT_PUBLIC_FACEBOOK_APP_ID || "1234567890",
