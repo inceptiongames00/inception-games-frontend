@@ -180,7 +180,7 @@ export default function ProfilePage() {
           <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-6 mb-8 md:mb-10">
             {/* Left Column: My Scrims & Gear Shop (wider on larger screens) */}
           <div className="md:col-span-2 lg:col-span-3 space-y-3 sm:space-y-5 md:space-y-5">
-  <MyScrims email={mergedUser?.email} />
+  <MyScrims userRegistrations={apiUserProfile} />
   
   {/* Hide on mobile, show on md screens and above */}
   <div className="hidden md:block">
