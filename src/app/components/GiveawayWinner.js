@@ -30,9 +30,9 @@ export default function GiveawayWinner() {
 
   const winners = [
     {
-      title: "Team Alliances",
+      title: "GPU Champion",
       description:
-        "Recruit new talent for your organization or find the perfect roster to showcase your skills. Elite scouting starts here.",
+        "Win the latest high-performance graphics card and dominate every game with cutting-edge visuals and speed.",
       category: "ACTIVE RECRUITMENT",
       categoryColor:
         "bg-yellow-500/20 text-yellow-300 border border-yellow-500/30",
@@ -40,9 +40,9 @@ export default function GiveawayWinner() {
         "https://res.cloudinary.com/jvpygp4b/image/upload/v1783243580/jersey_yngoyq.jpg",
     },
     {
-      title: "Team Alliances",
+      title: "Gaming Peripheral Set",
       description:
-        "Recruit new talent for your organization or find the perfect roster to showcase your skills. Elite scouting starts here.",
+        "Get premium gaming peripherals including mouse, keyboard, and headset to elevate your competitive edge.",
       category: "REGIONAL - LIVE NOW",
       categoryColor:
         "bg-green-500/20 text-green-300 border border-green-500/30",
@@ -50,18 +50,18 @@ export default function GiveawayWinner() {
         "https://res.cloudinary.com/jvpygp4b/image/upload/v1783243503/mouse-winner_l9hp4i.jpg",
     },
     {
-      title: "Team Alliances",
+      title: "Team Jersey Collection",
       description:
-        "Recruit new talent for your organization or find the perfect roster to showcase your skills. Elite scouting starts here.",
+        "Claim exclusive team jerseys and merchandise to represent your organization with pride and style.",
       category: "INVITATIONAL",
       categoryColor: "bg-blue-500/20 text-blue-300 border border-blue-500/30",
       image:
         "https://res.cloudinary.com/jvpygp4b/image/upload/v1783243502/gpu-winner_w22div.jpg",
     },
     {
-      title: "Team Alliances",
+      title: "Mousepad Collection",
       description:
-        "Recruit new talent for your organization or find the perfect roster to showcase your skills. Elite scouting starts here.",
+        "Enhance your gaming setup with premium quality mousepads designed for precision and comfort.",
       category: "ACTIVE RECRUITMENT",
       categoryColor:
         "bg-yellow-500/20 text-yellow-300 border border-yellow-500/30",
