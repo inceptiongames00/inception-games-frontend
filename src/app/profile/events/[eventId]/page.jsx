@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import Swal from "sweetalert2";
 import {
   Trophy,
   Calendar,
@@ -1012,9 +1013,7 @@ export default function EventDetailPage() {
                               // Get auth token
                               const tokens = getTokens();
                               
-                              const backendUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://inception-games.an.r.appspot.com/api/v1';
-                              
-                              // Make API call directly to backend
+                              // Make API call through Next.js API route
                               const headers = {
                                 "Content-Type": "application/json",
                               };
@@ -1025,7 +1024,7 @@ export default function EventDetailPage() {
                               }
                               
                               const response = await fetch(
-                                `${backendUrl}/events/${params.eventId}/register`,
+                                `/api/events/${params.eventId}/register`,
                                 {
                                   method: "POST",
                                   headers,
@@ -1033,15 +1032,20 @@ export default function EventDetailPage() {
                                 },
                               );
 
-                              const result = await response.json();
+                              let result = {};
+                              try {
+                                result = await response.json();
+                              } catch (parseError) {
+                                console.warn("[Event Registration] Failed to parse JSON response:", parseError);
+                                result = { success: false, message: "Invalid response from server" };
+                              }
 
                               console.log("[Event Registration] Response Status:", response.status);
                               console.log("[Event Registration] Response OK:", response.ok);
                               console.log("[Event Registration] Response Result:", result);
 
-                              // Check if the response indicates success (has success field or is 200 with data)
-                              const isSuccess = result.success === true || (response.ok && result.data);
-                              const hasError = result.message && !isSuccess;
+                              // Check if the response indicates success
+                              const isSuccess = result.success === true && response.ok;
 
                               if (isSuccess) {
                                 // Show success message and close modal
@@ -1071,28 +1075,28 @@ export default function EventDetailPage() {
                                   slotTime: "",
                                   players: [],
                                 });
-                              } else if (hasError) {
+                              } else if (!response.ok || result.success === false) {
+                                // Handle error responses including 409 conflicts
                                 const errorMessage = result?.message || result?.error || "Registration failed. Please try again.";
-                                console.error(
+                                console.log(
                                   "[Event Registration] API Error:",
                                   {
                                     status: response.status,
                                     statusText: response.statusText,
-                                    result,
+                                    result: result || {},
                                     message: errorMessage,
-                                  },
+                                  }
                                 );
                                 Swal.fire({
-                                  icon: "error",
-                                  title: "Registration Failed",
+                                  icon: "warning",
+                                  title: response.status === 409 ? "Already Registered" : "Registration Failed",
                                   text: errorMessage,
                                   confirmButtonColor: "#a855f7",
                                 });
-                                // Keep modal open on error so user can see the message and fix it
                               } else {
-                                console.error(
+                                console.log(
                                   "[Event Registration] Unexpected Response:",
-                                  result,
+                                  result || {}
                                 );
                                 Swal.fire({
                                   icon: "error",
@@ -1102,14 +1106,14 @@ export default function EventDetailPage() {
                                 });
                               }
                             } catch (error) {
-                              console.error(
+                              console.log(
                                 "[Event Registration] Network Error:",
-                                error,
+                                error?.message || String(error)
                               );
                               Swal.fire({
                                 icon: "error",
                                 title: "Network Error",
-                                text: "Please check your connection and try again.",
+                                text: error?.message || "Please check your connection and try again.",
                                 confirmButtonColor: "#a855f7",
                               });
                             }
