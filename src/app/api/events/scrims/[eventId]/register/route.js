@@ -5,8 +5,8 @@ export async function POST(request, { params }) {
     const { eventId } = params;
     const body = await request.json();
 
-    // Validate required fields
-    const requiredFields = ['user_id', 'slot_date', 'slot_time', 'team_name', 'full_name', 'email', 'phone', 'in_game_name', 'in_game_id'];
+    // Validate required fields for scrims registration
+    const requiredFields = ['user_id', 'slot_date', 'slot_time', 'full_name', 'email', 'phone', 'in_game_name', 'in_game_id'];
     const missingFields = requiredFields.filter(field => !body[field]);
     
     if (missingFields.length > 0) {
@@ -34,7 +34,7 @@ export async function POST(request, { params }) {
       headers['Authorization'] = authHeader;
     }
     
-    const response = await fetch(`${backendUrl}/events/${eventId}/register`, {
+    const response = await fetch(`${backendUrl}/events/scrims/${eventId}/register`, {
       method: 'POST',
       headers,
       body: JSON.stringify(body)

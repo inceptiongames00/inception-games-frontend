@@ -995,23 +995,43 @@ export default function EventDetailPage() {
                           onSubmit={async (e) => {
                             e.preventDefault();
 
-                            // Prepare registration data with the required structure
+                            // Prepare registration data based on event type
                             const submitData = {
                               user_id: user?.id || "USR000123",
-                              slot_date: formData.slotDate,
-                              slot_time: formData.slotTime,
-                              team_name: formData.teamName,
+                              username: user?.username || "",
+                              display_name: user?.displayName || formData.fullName,
                               full_name: formData.fullName,
                               email: formData.email,
                               phone: formData.phone,
                               in_game_name: formData.inGameName,
                               in_game_id: formData.inGameId,
-                              players: formData.players || [],
+                              discord_id: formData.discordId || "",
+                              team_name: formData.teamName,
                             };
+
+                            // For scrims, add slot date/time
+                            if (event?.eventType === "Scrims") {
+                              submitData.slot_date = formData.slotDate;
+                              submitData.slot_time = formData.slotTime;
+                            }
+
+                            // Add players for team registrations
+                            if (formData.players && formData.players.length > 0) {
+                              submitData.players = formData.players.map(player => ({
+                                full_name: player.fullName,
+                                email: player.email,
+                                uid: player.inGameId,
+                                phone: player.phone,
+                              }));
+                            }
 
                             try {
                               // Get auth token
                               const tokens = getTokens();
+                              
+                              // Determine the API endpoint based on event type
+                              const eventTypeEndpoint = event?.eventType === "Scrims" ? "scrims" : "tournaments";
+                              const apiUrl = `/api/events/${eventTypeEndpoint}/${params.eventId}/register`;
                               
                               // Make API call through Next.js API route
                               const headers = {
@@ -1024,7 +1044,7 @@ export default function EventDetailPage() {
                               }
                               
                               const response = await fetch(
-                                `/api/events/${params.eventId}/register`,
+                                apiUrl,
                                 {
                                   method: "POST",
                                   headers,
@@ -1036,13 +1056,8 @@ export default function EventDetailPage() {
                               try {
                                 result = await response.json();
                               } catch (parseError) {
-                                console.warn("[Event Registration] Failed to parse JSON response:", parseError);
                                 result = { success: false, message: "Invalid response from server" };
                               }
-
-                              console.log("[Event Registration] Response Status:", response.status);
-                              console.log("[Event Registration] Response OK:", response.ok);
-                              console.log("[Event Registration] Response Result:", result);
 
                               // Check if the response indicates success
                               const isSuccess = result.success === true && response.ok;
@@ -1078,15 +1093,6 @@ export default function EventDetailPage() {
                               } else if (!response.ok || result.success === false) {
                                 // Handle error responses including 409 conflicts
                                 const errorMessage = result?.message || result?.error || "Registration failed. Please try again.";
-                                console.log(
-                                  "[Event Registration] API Error:",
-                                  {
-                                    status: response.status,
-                                    statusText: response.statusText,
-                                    result: result || {},
-                                    message: errorMessage,
-                                  }
-                                );
                                 Swal.fire({
                                   icon: "warning",
                                   title: response.status === 409 ? "Already Registered" : "Registration Failed",
@@ -1094,10 +1100,6 @@ export default function EventDetailPage() {
                                   confirmButtonColor: "#a855f7",
                                 });
                               } else {
-                                console.log(
-                                  "[Event Registration] Unexpected Response:",
-                                  result || {}
-                                );
                                 Swal.fire({
                                   icon: "error",
                                   title: "Registration Failed",
@@ -1106,10 +1108,6 @@ export default function EventDetailPage() {
                                 });
                               }
                             } catch (error) {
-                              console.log(
-                                "[Event Registration] Network Error:",
-                                error?.message || String(error)
-                              );
                               Swal.fire({
                                 icon: "error",
                                 title: "Network Error",

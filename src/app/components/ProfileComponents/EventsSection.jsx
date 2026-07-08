@@ -454,8 +454,28 @@ const ComingSoonCard = React.memo(function ComingSoonCard({
 ComingSoonCard.displayName = "ComingSoonCard";
 
 // Event Card Component - Memoized
-const EventCard = React.memo(function EventCard({ event, onClick, user }) {
+const EventCard = React.memo(function EventCard({ event, onClick, user, userRegistrations }) {
   const [expanded, setExpanded] = useState(false);
+  
+  // Check if user has already registered for this event
+  const isAlreadyRegistered = React.useMemo(() => {
+    if (!userRegistrations) return false;
+    
+    if (event.eventType === "Scrims" && userRegistrations.scrim_registrations) {
+      return userRegistrations.scrim_registrations.some(
+        reg => reg.scrim_id === event.id
+      );
+    }
+    
+    if (event.eventType === "Tournament" && userRegistrations.tournament_registrations) {
+      return userRegistrations.tournament_registrations.some(
+        reg => reg.tournament_id === event.id
+      );
+    }
+    
+    return false;
+  }, [event, userRegistrations]);
+  
   const eventType =
     event.eventType || getEventType(event.title, event.organizer);
   // Use banner_image from API if available, otherwise fall back to game image
@@ -613,17 +633,19 @@ const EventCard = React.memo(function EventCard({ event, onClick, user }) {
 
         {/* Join Event Button */}
         <motion.button
-          onClick={() => isEligible && onClick(event)}
-          disabled={!isEligible}
+          onClick={() => isEligible && !isAlreadyRegistered && onClick(event)}
+          disabled={!isEligible || isAlreadyRegistered}
           className={`w-full mt-2 py-3 cursor-pointer font-bold text-sm rounded-xl transition-all duration-200 uppercase tracking-wider ${
-            isEligible
+            isAlreadyRegistered
+              ? "bg-gradient-to-r from-green-600 to-green-500 text-white opacity-90"
+              : isEligible
               ? "bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white"
               : "bg-gradient-to-r from-red-600 to-red-500 text-white opacity-60 cursor-not-allowed"
           }`}
-          whileHover={isEligible ? { scale: 1.01 } : {}}
-          whileTap={isEligible ? { scale: 0.98 } : {}}
+          whileHover={isEligible && !isAlreadyRegistered ? { scale: 1.01 } : {}}
+          whileTap={isEligible && !isAlreadyRegistered ? { scale: 0.98 } : {}}
         >
-          {isEligible ? "Join Event" : "You are not Applicable"}
+          {isAlreadyRegistered ? "Already Joined" : isEligible ? "Join Event" : "You are not Applicable"}
         </motion.button>
       </div>
     </motion.div>
@@ -1090,7 +1112,12 @@ export default function EventsSection({
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.2 }}
               >
-                <EventCard event={event} onClick={handleEventClick} user={user} />
+                <EventCard 
+                  event={event} 
+                  onClick={handleEventClick} 
+                  user={user}
+                  userRegistrations={user}
+                />
               </motion.div>
             ))}
 
