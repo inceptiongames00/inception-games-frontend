@@ -33,6 +33,11 @@ import {
 import Image from "next/image";
 import { API } from "@/lib/api";
 
+// Fallback API configuration if API.TOURNAMENT_GET_ALL is undefined
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://inception-games.an.r.appspot.com/api/v1";
+const TOURNAMENT_API_URL = API.TOURNAMENT_GET_ALL || `${API_BASE_URL}/cms/tournaments/all`;
+const SCRIMS_API_URL = API.SCRIMS_GET_ALL || `${API_BASE_URL}/scrims`;
+
 // Games data (for mapping game names to images)
 const games = [
   {
@@ -679,75 +684,161 @@ export default function EventsSection({
     setActiveFilter(initialFilter);
   }, [initialFilter]);
 
-  // Fetch scrims from the updated /scrims API
+  // Fetch events based on active filter (Scrims, Tournaments, or both for "all")
   const fetchEvents = useCallback(async () => {
+    console.log("[EventsSection] fetchEvents() called with activeFilter:", activeFilter);
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(API.SCRIMS_GET_ALL, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await res.json();
+      let allEvents = [];
 
-      if (res.ok) {
-        // New API shape: { total, scrims: [...] }
-        const scrimsData = data.scrims || data.data || [];
-
-        // Transform API scrims to our card format
-        const transformedEvents = scrimsData.map((scrim) => {
-          return {
-            id: scrim.id,
-            title: scrim.title,
-            eventType: "Scrims",
-            game: {
-              name: scrim.game || scrim.title?.split(" ")[0] || "Gaming",
-              image: getGameImage(scrim.title, scrim.game),
+      // Fetch Scrims if "all" or "Scrims" is selected
+      if (activeFilter === "all" || activeFilter === "Scrims") {
+        try {
+          const scrimsRes = await fetch(SCRIMS_API_URL, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
             },
-            game_name: scrim.game,
-            status: scrim.status,
-            start_date: scrim.start_at,
-            event_date: scrim.start_at,
-            end_date: scrim.end_at,
-            location: scrim.region,
-            venue: scrim.region,
-            platform: scrim.platform || "All Platforms",
-            teamType: scrim.game_mode || "Open",
-            prizePool: parseFloat(scrim.prize_pool) || 0,
-            prize_pool: parseFloat(scrim.prize_pool) || 0,
-            currency: scrim.currency || "BDT",
-            entryType: scrim.entry_type,
-            entryFee: parseFloat(scrim.entry_fee) || 0,
-            teamSize: scrim.team_size,
-            totalSlots: scrim.max_teams || 0,
-            total_slots: scrim.max_teams || 0,
-            filledSlots: scrim.filled_teams || 0,
-            filled_slots: scrim.filled_teams || 0,
-            registrationStart: scrim.reg_start_at,
-            registration_start: scrim.reg_start_at,
-            registrationEnd: scrim.reg_end_at,
-            registration_end: scrim.reg_end_at,
-            tournamentStart: scrim.start_at,
-            tournamentEnd: scrim.end_at,
-            rules: scrim.rules,
-            slots: scrim.slots || [],
-            host: scrim.hosted_by || "Inception Games",
-            organizer: scrim.hosted_by || "Inception Games",
-            banner_image: scrim.banner_image,
-          };
-        });
-        setEvents(transformedEvents);
+          });
+          const scrimsData = await scrimsRes.json();
 
-        // Cache the scrims list for detail page to use
-        sessionStorage.setItem("scrims_cache", JSON.stringify(scrimsData));
-        sessionStorage.setItem("scrims_cache_timestamp", Date.now().toString());
-      } else {
-        setEvents([]);
+          if (scrimsRes.ok) {
+            const scrimsArray = scrimsData.scrims || scrimsData.data || [];
+            
+            // Transform API scrims to our card format
+            const transformedScrims = scrimsArray.map((scrim) => {
+              return {
+                id: scrim.id,
+                title: scrim.title,
+                eventType: "Scrims",
+                game: {
+                  name: scrim.game || scrim.title?.split(" ")[0] || "Gaming",
+                  image: getGameImage(scrim.title, scrim.game),
+                },
+                game_name: scrim.game,
+                status: scrim.status,
+                start_date: scrim.start_at,
+                event_date: scrim.start_at,
+                end_date: scrim.end_at,
+                location: scrim.region,
+                venue: scrim.region,
+                platform: scrim.platform || "All Platforms",
+                teamType: scrim.game_mode || "Open",
+                prizePool: parseFloat(scrim.prize_pool) || 0,
+                prize_pool: parseFloat(scrim.prize_pool) || 0,
+                currency: scrim.currency || "BDT",
+                entryType: scrim.entry_type,
+                entryFee: parseFloat(scrim.entry_fee) || 0,
+                teamSize: scrim.team_size,
+                totalSlots: scrim.max_teams || 0,
+                total_slots: scrim.max_teams || 0,
+                filledSlots: scrim.filled_teams || 0,
+                filled_slots: scrim.filled_teams || 0,
+                registrationStart: scrim.reg_start_at,
+                registration_start: scrim.reg_start_at,
+                registrationEnd: scrim.reg_end_at,
+                registration_end: scrim.reg_end_at,
+                tournamentStart: scrim.start_at,
+                tournamentEnd: scrim.end_at,
+                rules: scrim.rules,
+                slots: scrim.slots || [],
+                host: scrim.hosted_by || "Inception Games",
+                organizer: scrim.hosted_by || "Inception Games",
+                banner_image: scrim.banner_image,
+              };
+            });
+            
+            allEvents.push(...transformedScrims);
+            
+            // Cache the scrims list for detail page to use
+            sessionStorage.setItem("scrims_cache", JSON.stringify(scrimsArray));
+            sessionStorage.setItem("scrims_cache_timestamp", Date.now().toString());
+          }
+        } catch (err) {
+          console.error("[EventsSection] Failed to fetch scrims:", err);
+        }
       }
+
+      // Fetch Tournaments if "all" or "Tournament" is selected
+      if (activeFilter === "all" || activeFilter === "Tournament") {
+        try {
+          console.log("[EventsSection] TOURNAMENT_API_URL:", TOURNAMENT_API_URL);
+          const tournamentsRes = await fetch(TOURNAMENT_API_URL, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          const tournamentsData = await tournamentsRes.json();
+
+          console.log("[EventsSection] Tournaments API Response:", tournamentsData);
+          console.log("[EventsSection] Tournaments Response Status:", tournamentsRes.status);
+
+          if (tournamentsRes.ok) {
+            const tournamentsArray = tournamentsData.tournaments || tournamentsData.data || [];
+            console.log("[EventsSection] Transformed Tournaments Array:", tournamentsArray);
+            
+            // Transform API tournaments to our card format
+            const transformedTournaments = tournamentsArray.map((tournament) => {
+              return {
+                id: tournament.id,
+                title: tournament.title,
+                eventType: "Tournament",
+                game: {
+                  name: tournament.game || tournament.title?.split(" ")[0] || "Gaming",
+                  image: getGameImage(tournament.title, tournament.game),
+                },
+                game_name: tournament.game,
+                status: tournament.status,
+                start_date: tournament.start_at || tournament.start_date,
+                event_date: tournament.start_at || tournament.start_date,
+                end_date: tournament.end_at || tournament.end_date,
+                location: tournament.region || tournament.location,
+                venue: tournament.region || tournament.location,
+                platform: tournament.platform || "All Platforms",
+                teamType: tournament.game_mode || tournament.team_type || "Team",
+                prizePool: parseFloat(tournament.prize_pool) || 0,
+                prize_pool: parseFloat(tournament.prize_pool) || 0,
+                currency: tournament.currency || "BDT",
+                entryType: tournament.entry_type,
+                entryFee: parseFloat(tournament.entry_fee) || 0,
+                teamSize: tournament.team_size,
+                totalSlots: tournament.max_teams || tournament.total_slots || 0,
+                total_slots: tournament.max_teams || tournament.total_slots || 0,
+                filledSlots: tournament.filled_teams || tournament.filled_slots || 0,
+                filled_slots: tournament.filled_teams || tournament.filled_slots || 0,
+                registrationStart: tournament.reg_start_at || tournament.registration_start,
+                registration_start: tournament.reg_start_at || tournament.registration_start,
+                registrationEnd: tournament.reg_end_at || tournament.registration_end,
+                registration_end: tournament.reg_end_at || tournament.registration_end,
+                tournamentStart: tournament.start_at || tournament.start_date,
+                tournamentEnd: tournament.end_at || tournament.end_date,
+                rules: tournament.rules,
+                slots: tournament.slots || [],
+                host: tournament.hosted_by || tournament.organizer || "Inception Games",
+                organizer: tournament.hosted_by || tournament.organizer || "Inception Games",
+                banner_image: tournament.banner_image,
+              };
+            });
+            
+            console.log("[EventsSection] Transformed Tournaments (Card Format):", transformedTournaments);
+            allEvents.push(...transformedTournaments);
+            console.log("[EventsSection] All Events After Adding Tournaments:", allEvents);
+            
+            // Cache the tournaments list for detail page to use
+            sessionStorage.setItem("tournaments_cache", JSON.stringify(tournamentsArray));
+            sessionStorage.setItem("tournaments_cache_timestamp", Date.now().toString());
+          }
+        } catch (err) {
+          console.error("[EventsSection] Failed to fetch tournaments:", err);
+        }
+      }
+
+      console.log("[EventsSection] Final All Events Array:", allEvents);
+      setEvents(allEvents);
     } catch (err) {
-      console.error("[v0] Failed to fetch scrims:", err);
+      console.error("[EventsSection] Failed to fetch events:", err);
       setError("Failed to load scrims. Please try again.");
       setEvents([]);
     } finally {
@@ -757,21 +848,25 @@ export default function EventsSection({
 
   useEffect(() => {
     fetchEvents();
-  }, [fetchEvents]);
+  }, [fetchEvents, activeFilter]);
 
   // Calculate filter counts - Tournaments and Brand Deals show as "coming soon" so count is not displayed from API
   const scrimmageEvents = React.useMemo(() => {
     return events.filter((e) => e.eventType === "Scrims");
   }, [events]);
 
+  const tournamentEvents = React.useMemo(() => {
+    return events.filter((e) => e.eventType === "Tournament");
+  }, [events]);
+
   const filterCounts = React.useMemo(() => {
     return {
-      all: events.length + 2, // Add 2 for the coming soon categories
-      Tournament: 0, // Coming soon category
+      all: events.length + 1, // Add 1 for Brand Deals (coming soon)
+      Tournament: tournamentEvents.length,
       Scrims: scrimmageEvents.length,
       "Brand Deal": 0, // Coming soon category
     };
-  }, [events.length, scrimmageEvents.length]);
+  }, [events.length, scrimmageEvents.length, tournamentEvents.length]);
 
   const FILTER_TABS = React.useMemo(
     () => [
@@ -801,11 +896,11 @@ export default function EventsSection({
   // Memoize filtered events to prevent unnecessary recalculations
   const filteredEvents = React.useMemo(() => {
     return events.filter((event) => {
-      // Only show Scrims from API
+      // Show events based on active filter
       const matchesFilter =
-        activeFilter === "all"
-          ? event.eventType === "Scrims"
-          : event.eventType === activeFilter && event.eventType === "Scrims";
+        activeFilter === "all" ||
+        event.eventType === activeFilter;
+      
       const matchesSearch =
         (event.title || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
         (event.game?.name || "")
@@ -814,6 +909,7 @@ export default function EventsSection({
         (event.organizer || "")
           .toLowerCase()
           .includes(searchQuery.toLowerCase());
+      
       return matchesFilter && matchesSearch;
     });
   }, [events, activeFilter, searchQuery]);
@@ -821,7 +917,7 @@ export default function EventsSection({
   // Memoize which coming soon cards to show
   const showComingSoonCards = React.useMemo(
     () => ({
-      Tournament: activeFilter === "all" || activeFilter === "Tournament",
+      Tournament: false, // Don't show coming soon for tournaments since we're fetching them
       "Brand Deal": activeFilter === "all" || activeFilter === "Brand Deal",
     }),
     [activeFilter],
@@ -977,7 +1073,7 @@ export default function EventsSection({
             {/* Scrims from API */}
             {filteredEvents.map((event) => (
               <motion.div
-                key={event.id}
+                key={`${event.eventType}-${event.id}`}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}

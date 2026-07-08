@@ -35,6 +35,7 @@ import { AuthContext } from "@/app/context/AuthContext";
 import { useEventData } from "@/app/hooks/useEventData";
 import { useEventRegistration } from "@/app/hooks/useEventRegistration";
 import { useEventSharing } from "@/app/hooks/useEventSharing";
+import { getTokens } from "@/lib/api";
 import {
   formatDate,
   formatTime,
@@ -1008,27 +1009,48 @@ export default function EventDetailPage() {
                             };
 
                             try {
-                              // Make API call to register for the event
+                              // Get auth token
+                              const tokens = getTokens();
+                              
+                              const backendUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://inception-games.an.r.appspot.com/api/v1';
+                              
+                              // Make API call directly to backend
+                              const headers = {
+                                "Content-Type": "application/json",
+                              };
+                              
+                              // Add authorization header if token exists
+                              if (tokens?.accessToken) {
+                                headers["Authorization"] = `Bearer ${tokens.accessToken}`;
+                              }
+                              
                               const response = await fetch(
-                                "/api/events/register",
+                                `${backendUrl}/events/${params.eventId}/register`,
                                 {
                                   method: "POST",
-                                  headers: {
-                                    "Content-Type": "application/json",
-                                  },
+                                  headers,
                                   body: JSON.stringify(submitData),
                                 },
                               );
 
                               const result = await response.json();
 
-                              if (response.ok && result.success) {
+                              console.log("[Event Registration] Response Status:", response.status);
+                              console.log("[Event Registration] Response OK:", response.ok);
+                              console.log("[Event Registration] Response Result:", result);
+
+                              // Check if the response indicates success (has success field or is 200 with data)
+                              const isSuccess = result.success === true || (response.ok && result.data);
+                              const hasError = result.message && !isSuccess;
+
+                              if (isSuccess) {
                                 // Show success message and close modal
-                                showNotificationMessage(
-                                  "success",
-                                  result.message ||
-                                    "Registration successful! Check your email for confirmation.",
-                                );
+                                Swal.fire({
+                                  icon: "success",
+                                  title: "Registration Successful!",
+                                  text: result.message || "Registration successful! Check your email for confirmation.",
+                                  confirmButtonColor: "#a855f7",
+                                });
                                 setShowRegistrationModal(false);
 
                                 // Reset form data
@@ -1049,26 +1071,47 @@ export default function EventDetailPage() {
                                   slotTime: "",
                                   players: [],
                                 });
-                              } else {
+                              } else if (hasError) {
+                                const errorMessage = result?.message || result?.error || "Registration failed. Please try again.";
                                 console.error(
                                   "[Event Registration] API Error:",
+                                  {
+                                    status: response.status,
+                                    statusText: response.statusText,
+                                    result,
+                                    message: errorMessage,
+                                  },
+                                );
+                                Swal.fire({
+                                  icon: "error",
+                                  title: "Registration Failed",
+                                  text: errorMessage,
+                                  confirmButtonColor: "#a855f7",
+                                });
+                                // Keep modal open on error so user can see the message and fix it
+                              } else {
+                                console.error(
+                                  "[Event Registration] Unexpected Response:",
                                   result,
                                 );
-                                showNotificationMessage(
-                                  "error",
-                                  result.message ||
-                                    "Registration failed. Please try again.",
-                                );
+                                Swal.fire({
+                                  icon: "error",
+                                  title: "Registration Failed",
+                                  text: "An unexpected error occurred. Please try again.",
+                                  confirmButtonColor: "#a855f7",
+                                });
                               }
                             } catch (error) {
                               console.error(
                                 "[Event Registration] Network Error:",
                                 error,
                               );
-                              showNotificationMessage(
-                                "error",
-                                "Network error. Please check your connection and try again.",
-                              );
+                              Swal.fire({
+                                icon: "error",
+                                title: "Network Error",
+                                text: "Please check your connection and try again.",
+                                confirmButtonColor: "#a855f7",
+                              });
                             }
                           }}
                           className="space-y-4"

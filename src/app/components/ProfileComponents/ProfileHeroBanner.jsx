@@ -13,7 +13,7 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const shareRef = useRef(null);
-  const NOTIFICATIONS_ENDPOINT = `${API_BASE_URL}/message/${user?.id}`;
+  const NOTIFICATIONS_ENDPOINT = user?.id ? `${API_BASE_URL}/message/${user.id}` : null;
 
   // Notifications state
   const [notifications, setNotifications] = useState([]);
@@ -28,7 +28,7 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
   const markNotificationAsRead = async (notificationId) => {
     try {
       const tokens = getTokens();
-      if (!tokens?.accessToken) return false;
+      if (!tokens?.accessToken || !NOTIFICATIONS_ENDPOINT) return false;
 
       const response = await fetch(
         `${NOTIFICATIONS_ENDPOINT}/${notificationId}/read`,
@@ -52,8 +52,8 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
   const fetchNotifications = async () => {
     try {
       const tokens = getTokens();
-      if (!tokens?.accessToken) {
-        setNotificationsError("Not authenticated");
+      if (!tokens?.accessToken || !NOTIFICATIONS_ENDPOINT) {
+        setNotificationsError("Not authenticated or user not loaded");
         setNotificationsLoading(false);
         return;
       }

@@ -17,12 +17,12 @@ export default function MinimalNotification() {
   const [selectedNotif, setSelectedNotif] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const NOTIFICATIONS_ENDPOINT = `${API_BASE_URL}/message/${user?.id}`;
+  const NOTIFICATIONS_ENDPOINT = user?.id ? `${API_BASE_URL}/message/${user.id}` : null;
 
   const fetchNotifications = async () => {
     try {
       const tokens = getTokens();
-      if (!tokens?.accessToken) {
+      if (!tokens?.accessToken || !NOTIFICATIONS_ENDPOINT) {
         setLoading(false);
         return;
       }

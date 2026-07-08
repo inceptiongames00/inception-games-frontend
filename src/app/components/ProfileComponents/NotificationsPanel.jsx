@@ -33,12 +33,12 @@ export default function NotificationsPanel() {
   const [localReadStates, setLocalReadStates] = useState({}); // Track locally marked as read
   const [isMobile, setIsMobile] = useState(false);
 
-  const NOTIFICATIONS_ENDPOINT = `${API_BASE_URL}/message/${user?.id}`;
+  const NOTIFICATIONS_ENDPOINT = user?.id ? `${API_BASE_URL}/message/${user.id}` : null;
 
   const markNotificationAsRead = async (notificationId) => {
     try {
       const tokens = getTokens();
-      if (!tokens?.accessToken) return false;
+      if (!tokens?.accessToken || !NOTIFICATIONS_ENDPOINT) return false;
 
       // Try to call the API to mark as read
       const response = await fetch(
@@ -64,8 +64,8 @@ export default function NotificationsPanel() {
   const fetchNotifications = async () => {
     try {
       const tokens = getTokens();
-      if (!tokens?.accessToken) {
-        setError("Not authenticated");
+      if (!tokens?.accessToken || !NOTIFICATIONS_ENDPOINT) {
+        setError("Not authenticated or user not loaded");
         setLoading(false);
         return;
       }
