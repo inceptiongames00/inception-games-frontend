@@ -963,7 +963,7 @@ export default function EventDetailPage() {
                       {/* Modal Header */}
                       <div className="flex items-center justify-between p-6 border-b border-white/10">
                         <h3 className="text-2xl font-bold text-white">
-                          Scrims Registration
+                          {event?.eventType === "Scrims" ? "Scrims Registration" : "Tournament Registration"}
                         </h3>
                         <button
                           onClick={() => setShowRegistrationModal(false)}
@@ -983,7 +983,7 @@ export default function EventDetailPage() {
                             <h4 className="text-xl font-semibold text-white">
                               {event.title}
                             </h4>
-                            <p className="text-gray-400">Scrims</p>
+                            <p className="text-gray-400">{event?.eventType === "Scrims" ? "Scrims" : "Tournament"}</p>
                           </div>
                         </div>
                       </div>
@@ -1116,44 +1116,46 @@ export default function EventDetailPage() {
                           }}
                           className="space-y-4"
                         >
-                          {/* Slot Date & Time */}
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                              <label className="block text-sm font-medium text-gray-300 mb-2">
-                                Slot Date *
-                              </label>
-                              <input
-                                type="date"
-                                required
-                                value={formData.slotDate}
-                                onChange={(e) =>
-                                  setFormData((prev) => ({
-                                    ...prev,
-                                    slotDate: e.target.value,
-                                  }))
-                                }
-                                min={new Date().toISOString().split("T")[0]}
-                                className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
-                              />
+                          {/* Slot Date & Time - Only for Scrims */}
+                          {event?.eventType === "Scrims" && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div>
+                                <label className="block text-sm font-medium text-gray-300 mb-2">
+                                  Slot Date *
+                                </label>
+                                <input
+                                  type="date"
+                                  required
+                                  value={formData.slotDate}
+                                  onChange={(e) =>
+                                    setFormData((prev) => ({
+                                      ...prev,
+                                      slotDate: e.target.value,
+                                    }))
+                                  }
+                                  min={new Date().toISOString().split("T")[0]}
+                                  className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-sm font-medium text-gray-300 mb-2">
+                                  Slot Time *
+                                </label>
+                                <input
+                                  type="time"
+                                  required
+                                  value={formData.slotTime}
+                                  onChange={(e) =>
+                                    setFormData((prev) => ({
+                                      ...prev,
+                                      slotTime: e.target.value,
+                                    }))
+                                  }
+                                  className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
+                                />
+                              </div>
                             </div>
-                            <div>
-                              <label className="block text-sm font-medium text-gray-300 mb-2">
-                                Slot Time *
-                              </label>
-                              <input
-                                type="time"
-                                required
-                                value={formData.slotTime}
-                                onChange={(e) =>
-                                  setFormData((prev) => ({
-                                    ...prev,
-                                    slotTime: e.target.value,
-                                  }))
-                                }
-                                className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
-                              />
-                            </div>
-                          </div>
+                          )}
 
                           {/* Team Name */}
                           <div>
