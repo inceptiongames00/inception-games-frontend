@@ -1,5 +1,5 @@
 "use client";
-
+import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -15,35 +15,37 @@ export default function LatestNews() {
 
   const newsList = [
     {
-      title: "Season 5: Neon Dawn Launch",
+      title: "গেম খেলা হতে পারে কারো পেশা",
       description:
-        "The biggest update yet brings new maps, characters, and a complete overhaul of the ranking system.",
+        "গেম তৈরি ও বাজারজাত করে দেশের অর্থনীতিতেও বড় অবদান রাখতে পারে গেম নির্মাতা প্রতিষ্ঠান। পেশাদার গেমারদের জন্য প্ল্যাটফর্ম তৈরি ও গেম তৈরির কাজ করছেন কাজী হাসিব ও তাঁর দল। তাঁদের দুই প্রতিষ্ঠানের সম্পর্কে লিখেছেন আশিক উল বারাত",
       image:
         "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157039/bignews_jmxxbf.jpg",
       category: "UPDATES",
       categoryColor: "bg-pink-500/20 text-pink-300 border border-pink-500/30",
-      readMoreLink: "#",
+      readMoreLink:
+        "http://facebook.com/slicenshareFB/posts/pfbid02UKgh3GBxwnuJH7VxPbNtQEUkHfSd8naroqFMUeyZ4U3F7bh3fVLvydJvGxnfZCK6l?mibextid=wwXIfr&rdid=PlkdRZwQddmDpaYt&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2Fp%2F16yMhZvtR9%2F%3Fmibextid%3DwwXIfr#",
     },
     {
-      title: "Global Finals 2024 Announced",
+      title:
+        "Digital Entrepreneurship and Innovation Ecosystem Development (DEIED)",
       description:
-        "The road to the championship begins in Tokyo. Check out the full schedule and ticket information.",
+        "Digital Entrepreneurship and Innovation Ecosystem Development (DEIED) Project Office has organized a Dialogue Session to introduce the Startup and Scaleup Program (Accelerating Bangladesh) and the University Innovation Hub Program to senior public-sector leadership. ",
       image:
         "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157043/news3_freort.jpg",
       category: "ESPORTS",
       categoryColor: "bg-cyan-500/20 text-cyan-300 border border-cyan-500/30",
-      readMoreLink: "#",
+      readMoreLink: "",
     },
     {
-      title: "Creator Spotlight: Zen_Gamer",
+      title: "Airtel Buzz Presents Bangladesh Gaming & Esports Summit 2025",
       description:
-        "Meet the visionary behind some of our community's most popular custom maps and game modes.",
+        "Dedicating to my Core Teammates & gamers ❤️. Tournament sign up going on at our website. Don't forget to sign up. Slice N Share at Airtel Buzz Presents Bangladesh Gaming & Esports Summit 2025.",
       image:
         "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157047/news4_u9saum.jpg",
       category: "COMMUNITY",
       categoryColor:
         "bg-purple-500/20 text-purple-300 border border-purple-500/30",
-      readMoreLink: "#",
+      readMoreLink: "",
     },
   ];
 
@@ -151,13 +153,19 @@ export default function LatestNews() {
                   {/* Read More Link */}
                   <div className="mt-4 pt-4 border-t border-zinc-700/50">
                     <div className="flex items-center gap-3">
-                      <button
-                        onClick={() => setSelectedNews(news)}
+                      <Link
+                        href={news.readMoreLink || "#"}
+                        target={news.readMoreLink ? "_blank" : undefined}
+                        onClick={(e) => {
+                          if (!news.readMoreLink) {
+                            e.preventDefault();
+                          }
+                        }}
                         className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-500 rounded-full text-white font-semibold text-xs uppercase tracking-wider transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/50 group/link"
                       >
                         Read More
                         <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform duration-300" />
-                      </button>
+                      </Link>
                       <button
                         onClick={() => handleShare("facebook", news)}
                         className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 hover:bg-[#1877F2] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
@@ -203,7 +211,7 @@ export default function LatestNews() {
           className="flex justify-center mt-12"
         >
           <motion.button
-            onClick={() => router.push('/community#news')}
+            onClick={() => router.push("/community#news")}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="px-8 py-3 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 rounded-full text-white font-semibold hover:shadow-lg hover:shadow-pink-500/50 transition-all duration-300"

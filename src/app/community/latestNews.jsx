@@ -4,38 +4,41 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import Image from "next/image";
 import { FaFacebookF, FaTwitter, FaLinkedin, FaWhatsapp } from "react-icons/fa";
+import Link from "next/link";
 
 const newsItems = [
   {
-    id: 1,
+    title: "গেম খেলা হতে পারে কারো পেশা",
+    description:
+      "গেম তৈরি ও বাজারজাত করে দেশের অর্থনীতিতেও বড় অবদান রাখতে পারে গেম নির্মাতা প্রতিষ্ঠান। পেশাদার গেমারদের জন্য প্ল্যাটফর্ম তৈরি ও গেম তৈরির কাজ করছেন কাজী হাসিব ও তাঁর দল। তাঁদের দুই প্রতিষ্ঠানের সম্পর্কে লিখেছেন আশিক উল বারাত",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157039/bignews_jmxxbf.jpg",
     category: "UPDATES",
     categoryColor: "bg-pink-500/20 text-pink-300 border border-pink-500/30",
-    title: "Season 5: Neon Dawn Launch",
-    description:
-      "The biggest update yet brings new maps, characters, and a complete overhaul of the ranking system.",
-    image:
-      "https://res.cloudinary.com/dpwjt3jxx/image/upload/v1782524556/71RgJZeOr-L._AC_UF894_1000_QL80__koq6v3.jpg",
+    readMoreLink:
+      "http://facebook.com/slicenshareFB/posts/pfbid02UKgh3GBxwnuJH7VxPbNtQEUkHfSd8naroqFMUeyZ4U3F7bh3fVLvydJvGxnfZCK6l?mibextid=wwXIfr&rdid=PlkdRZwQddmDpaYt&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2Fp%2F16yMhZvtR9%2F%3Fmibextid%3DwwXIfr#",
   },
   {
-    id: 2,
+    title:
+      "Digital Entrepreneurship and Innovation Ecosystem Development (DEIED)",
+    description:
+      "Digital Entrepreneurship and Innovation Ecosystem Development (DEIED) Project Office has organized a Dialogue Session to introduce the Startup and Scaleup Program (Accelerating Bangladesh) and the University Innovation Hub Program to senior public-sector leadership. ",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157043/news3_freort.jpg",
     category: "ESPORTS",
     categoryColor: "bg-cyan-500/20 text-cyan-300 border border-cyan-500/30",
-    title: "Global Finals 2024 Announced",
-    description:
-      "The road to the championship begins in Tokyo. Check out the full schedule and ticket information.",
-    image:
-      "https://res.cloudinary.com/dpwjt3jxx/image/upload/v1782524556/71RgJZeOr-L._AC_UF894_1000_QL80__koq6v3.jpg",
+    readMoreLink: "",
   },
   {
-    id: 3,
+    title: "Airtel Buzz Presents Bangladesh Gaming & Esports Summit 2025",
+    description:
+      "Dedicating to my Core Teammates & gamers ❤️. Tournament sign up going on at our website. Don't forget to sign up. Slice N Share at Airtel Buzz Presents Bangladesh Gaming & Esports Summit 2025.",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157047/news4_u9saum.jpg",
     category: "COMMUNITY",
     categoryColor:
       "bg-purple-500/20 text-purple-300 border border-purple-500/30",
-    title: "Creator Spotlight: Zen_Gamer",
-    description:
-      "Meet the visionary behind some of our community's most popular custom maps and game modes.",
-    image:
-      "https://res.cloudinary.com/dpwjt3jxx/image/upload/v1782524556/71RgJZeOr-L._AC_UF894_1000_QL80__koq6v3.jpg",
+    readMoreLink: "",
   },
 ];
 
@@ -108,7 +111,7 @@ export default function LatestNews() {
               transition={{ delay: idx * 0.15, duration: 0.6 }}
               whileHover={{ y: -8 }}
               className="group cursor-pointer"
-              onClick={() => setSelectedNews(news)}
+              // onClick={() => setSelectedNews(news)}
             >
               {/* Card Container */}
               <div className="rounded-2xl overflow-hidden bg-zinc-900/50 border border-zinc-800/50 hover:border-purple-500/30 transition-all duration-300 h-full flex flex-col backdrop-blur-sm">
@@ -146,16 +149,19 @@ export default function LatestNews() {
                   {/* Read More Link */}
                   <div className="mt-4 pt-4 border-t border-zinc-700/50">
                     <div className="flex items-center gap-3">
-                      <button
+                      <Link
+                        href={news.readMoreLink || "#"}
+                        target={news.readMoreLink ? "_blank" : undefined}
                         onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedNews(news);
+                          if (!news.readMoreLink) {
+                            e.preventDefault();
+                          }
                         }}
                         className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-500 rounded-full text-white font-semibold text-xs uppercase tracking-wider transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/50 group/link cursor-pointer"
                       >
                         Read More
                         <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform duration-300" />
-                      </button>
+                      </Link>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();

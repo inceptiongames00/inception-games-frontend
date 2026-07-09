@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 
 export default function CommunityBanner() {
   return (
-    <section className="relative overflow-hidden bg-zinc-950 text-white">
+    <section className="relative overflow-hidden bg-zinc-950 text-white mt-15">
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -left-40 -top-32 h-[500px] w-[500px] rounded-full bg-purple-600/10 blur-[170px]" />
         <div className="absolute right-0 top-0 h-[450px] w-[450px] rounded-full bg-pink-600/10 blur-[180px]" />
