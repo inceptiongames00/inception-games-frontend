@@ -27,9 +27,6 @@ export default function ProfilePage() {
 
 
 
-  // NOTE: Profile data is stored in the user object from AuthContext
-  // No need to fetch separately - data is collected during registration
-
   // Load gaming profile from sessionStorage whenever user changes
   useEffect(() => {
     if (typeof window !== "undefined") {
