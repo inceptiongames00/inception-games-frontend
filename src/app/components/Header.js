@@ -306,7 +306,7 @@ export default function Header() {
             </button>
 
             {/* <Link href="#career" className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors">
-              Career
+              Caree
             </Link> */}
             {/* <button
               onClick={() => setUpgradePlanModalOpen(true)}
