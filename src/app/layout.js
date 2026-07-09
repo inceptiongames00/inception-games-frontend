@@ -1,7 +1,7 @@
-"use client"
 import "./globals.css"
 import Script from "next/script"
 import { AuthProvider } from "@/app/context/AuthContext"
+import RootLayoutClient from "@/app/components/RootLayoutClient"
 
 export default function RootLayout({ children }) {
   return (
@@ -43,7 +43,9 @@ export default function RootLayout({ children }) {
         className="bg-black text-white overflow-x-hidden"
         style={{ fontFamily: "General Sans, sans-serif" }}
       >
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <RootLayoutClient>{children}</RootLayoutClient>
+        </AuthProvider>
       </body>
     </html>
   )
