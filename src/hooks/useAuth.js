@@ -4,8 +4,6 @@ import { useContext } from 'react';
 import { AuthContext } from '../app/context/AuthContext';
 
 /**
- * Custom hook to access authentication context.
- * Re-exports the useAuth from AuthContext for convenience.
  * 
  * Usage: const { user, loginSendOTP, loginVerifyOTP, logout, isAuthenticated } = useAuth();
  */
