@@ -22,7 +22,7 @@ export default function NewsPoster() {
 
           {/* Image */}
           <Image
-            src="https://res.cloudinary.com/dpwjt3jxx/image/upload/v1782524556/71RgJZeOr-L._AC_UF894_1000_QL80__koq6v3.jpg"
+            src="https://res.cloudinary.com/jvpygp4b/image/upload/v1783156807/hero-bg_ssmbni.png"
             alt="Operative"
             fill
             className="object-cover object-center opacity-90"
@@ -31,10 +31,10 @@ export default function NewsPoster() {
 
           {/* Bottom HUD labels */}
           <div className="absolute bottom-4 left-4 z-10 space-y-0.5">
-            <p className="text-[10px] sm:text-[11px] tracking-widest text-purple-300 font-mono uppercase">
+            <p className="text-[10px] sm:text-[11px] tracking-widest text-purple-400 font-mono uppercase">
               Signal: Stable
             </p>
-            <p className="text-[9px] sm:text-[10px] tracking-wider text-white/30 font-mono uppercase">
+            <p className="text-[9px] sm:text-[10px] tracking-wider text-white font-mono uppercase">
               User_ID: NP_9923_Alpha
             </p>
           </div>

@@ -7,7 +7,7 @@ import { FaFacebookF, FaTwitter, FaLinkedin, FaWhatsapp } from "react-icons/fa";
 // Initialize Facebook SDK
 const initializeFacebookSDK = () => {
   if (typeof window === "undefined") return;
-  
+
   if (!window.FB) {
     window.fbAsyncInit = function () {
       FB.init({
@@ -32,39 +32,35 @@ export default function GiveawayWinner() {
 
   const winners = [
     {
-      title: "GPU Champion",
-      description:
-        "Win the latest high-performance graphics card and dominate every game with cutting-edge visuals and speed.",
-      category: "ACTIVE RECRUITMENT",
+      title: "5 Jerseys Giveaway is ON GKEC 🎉",
+      description: "",
+      category: "Giveaway",
       categoryColor:
         "bg-yellow-500/20 text-yellow-300 border border-yellow-500/30",
       image:
         "https://res.cloudinary.com/jvpygp4b/image/upload/v1783243580/jersey_yngoyq.jpg",
     },
     {
-      title: "Gaming Peripheral Set",
-      description:
-        "Get premium gaming peripherals including mouse, keyboard, and headset to elevate your competitive edge.",
-      category: "REGIONAL - LIVE NOW",
+      title: "Gaming Mouse Winner - ANTOR HASAN",
+      description: "",
+      category: "Giveaway",
       categoryColor:
         "bg-green-500/20 text-green-300 border border-green-500/30",
       image:
         "https://res.cloudinary.com/jvpygp4b/image/upload/v1783243503/mouse-winner_l9hp4i.jpg",
     },
     {
-      title: "Team Jersey Collection",
-      description:
-        "Claim exclusive team jerseys and merchandise to represent your organization with pride and style.",
-      category: "INVITATIONAL",
+      title: "GPU Winner - AL MOHAIMIN FARABI",
+      description: "",
+      category: "Giveaway",
       categoryColor: "bg-blue-500/20 text-blue-300 border border-blue-500/30",
       image:
         "https://res.cloudinary.com/jvpygp4b/image/upload/v1783243502/gpu-winner_w22div.jpg",
     },
     {
-      title: "Mousepad Collection",
-      description:
-        "Enhance your gaming setup with premium quality mousepads designed for precision and comfort.",
-      category: "ACTIVE RECRUITMENT",
+      title: "Mousepad Giveaway tonight guys. Don't miss the chance. ",
+      description: "",
+      category: "Giveaway",
       categoryColor:
         "bg-yellow-500/20 text-yellow-300 border border-yellow-500/30",
       image:
@@ -274,9 +270,9 @@ export default function GiveawayWinner() {
                         <h3 className="text-xl sm:text-2xl font-bold text-white mb-3 leading-tight group-hover:text-purple-300 transition-colors duration-300">
                           {winner.title}
                         </h3>
-                        <p className="text-sm sm:text-base text-zinc-400 leading-relaxed">
+                        {/* <p className="text-sm sm:text-base text-zinc-400 leading-relaxed">
                           {winner.description}
-                        </p>
+                        </p> */}
                       </div>
 
                       {/* Bottom section with accent line and share buttons */}

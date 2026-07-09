@@ -8,7 +8,7 @@ export default function EShop() {
       description: "Precision engineering for the competitive edge.",
       buttonText: "Buy",
       image:
-        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157035/showcase_eh4z5f.jpg",
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783578421/the-best-mechanical-keyboards-for-2026_mx8v.1200_g2gojo.png",
     },
     {
       category: "MOUSE",
@@ -16,7 +16,7 @@ export default function EShop() {
       description: "Ultra-lightweight, zero-latency performance.",
       buttonText: "Buy",
       image:
-        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157043/news3_freort.jpg",
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783578420/the-best-wireless-gaming-mice-for-2026_zfnb_dfibbh.jpg",
     },
     {
       category: "DISPLAY",
@@ -24,7 +24,7 @@ export default function EShop() {
       description: "Immersive visuals with 240Hz refresh rate.",
       buttonText: "Buy",
       image:
-        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157047/news4_u9saum.jpg",
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783578422/innocn-49q1s-hero_hxgkun.png",
     },
     {
       category: "BUNDLE",
@@ -32,7 +32,7 @@ export default function EShop() {
       description: "The ultimate setup for professional play.",
       buttonText: "Shop the Bundle",
       image:
-        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157148/summit_rsjhhe.jpg",
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783578420/AaFxEQhuDaoZ5roSScyVXP-998-80_w6ub86.jpg",
     },
   ];
 

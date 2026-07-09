@@ -8,36 +8,40 @@ import { motion, AnimatePresence } from "framer-motion";
 const events = [
   {
     id: 1,
-    title: "Gaming Tournament",
+    title:
+      "Inception Games at Startup Showcase Event - Connecting with aspiring entrepreneurs and gamers",
     image:
       "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157035/showcase_eh4z5f.jpg",
-    date: "Oct 24, 7:00 PM",
+    date: "November 14",
     type: "upcoming",
     badge: "UPCOMING",
   },
   {
     id: 2,
-    title: "University Meetup",
+    title:
+      "Digital Entrepreneurship and Innovation Ecosystem Development (DEIED) Project Office has organized a Dialogue Session to introduce the Startup and Scaleup Program (Accelerating Bangladesh) and the University Innovation Hub Program to senior public-sector leadership. ",
     image:
       "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157043/news3_freort.jpg",
-    date: "Oct 26, 6:30 PM",
+    date: "December 10",
     type: "upcoming",
     badge: "STARTING SOON",
   },
   {
     id: 3,
-    title: "Online Community Feedback",
+    title:
+      "Dedicating to my Core Teammates & gamers ❤️. Tournament sign up going on at our website. Don't forget to sign up. Slice N Share at Airtel Buzz Presents Bangladesh Gaming & Esports Summit 2025 Online Community Feedback",
     image:
       "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157047/news4_u9saum.jpg",
-    date: "Oct 28, 9:00 PM",
+    date: "December 10",
     type: "upcoming",
   },
   {
     id: 4,
-    title: "Winter Scrims 2023",
+    title:
+      "YUNet Bangladesh Gaming & Esports Summit 2025 - Sign Up going on. Follow YUNet Esport Arena",
     image:
       "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157148/summit_rsjhhe.jpg",
-    date: "December 15, 2023",
+    date: "December 07",
     type: "past",
     badge: "COMPLETED",
   },
@@ -186,7 +190,7 @@ export default function UpcomingComEvents() {
 
               {/* Content */}
               <div className="mt-5">
-                <h3 className="text-xl font-semibold text-white">
+                <h3 className="text-xl font-semibold text-white line-clamp-3">
                   {event.title}
                 </h3>
 
