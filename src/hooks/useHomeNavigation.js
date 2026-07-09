@@ -20,7 +20,6 @@ export function useHomeNavigation() {
       // Navigate to home with section hash
       router.push(`/#${sectionId}`)
       
-      // Scroll to section after navigation completes
       setTimeout(() => scrollToSection(sectionId), 300)
     }
   }

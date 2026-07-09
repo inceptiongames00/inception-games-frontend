@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfileNavigation } from "@/hooks/useProfileNavigation";
+import { Suspense } from "react";
 import { motion } from "framer-motion";
 import {
   Trophy,
@@ -483,5 +484,9 @@ function HomeContent() {
 }
 
 export default function Home() {
-  return <HomeContent />;
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-zinc-950" />}>
+      <HomeContent />
+    </Suspense>
+  );
 }

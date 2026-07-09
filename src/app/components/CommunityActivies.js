@@ -51,41 +51,33 @@ export default function CommunityActivies() {
 
   const updates = [
     {
-      title: "Neon Dawn Launch",
-      description:
-        "The biggest update yet brings new maps, characters, and a complete overhaul of the ranking system.",
-      category: "UPDATES",
-      image:
-        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157039/bignews_jmxxbf.jpg",
-    },
-    {
-      title: "Neon Dawn Launch",
-      description:
-        "The biggest update yet brings new maps, characters, and a complete overhaul of the ranking system.",
+      title:
+        "Inception Games at Startup Showcase Event - Connecting with aspiring entrepreneurs and gamers",
+      description: "",
       category: "UPDATES",
       image:
         "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157043/news3_freort.jpg",
     },
     {
-      title: "Neon Dawn Launch",
-      description:
-        "The biggest update yet brings new maps, characters, and a complete overhaul of the ranking system.",
+      title:
+        "Dedicating to my Core Teammates & gamers ❤️. Tournament sign up going on at our website. Don't forget to sign up. Slice N Share at Airtel Buzz Presents Bangladesh Gaming & Esports Summit 2025 ",
+      description: "",
       category: "UPDATES",
       image:
         "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157047/news4_u9saum.jpg",
     },
     {
-      title: "Neon Dawn Launch",
-      description:
-        "The biggest update yet brings new maps, characters, and a complete overhaul of the ranking system.",
+      title:
+        "Inception Games at Startup Showcase Event - Connecting with aspiring entrepreneurs and gamers",
+      description: "",
       category: "UPDATES",
       image:
         "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157035/showcase_eh4z5f.jpg",
     },
     {
-      title: "Neon Dawn Launch",
-      description:
-        "The biggest update yet brings new maps, characters, and a complete overhaul of the ranking system.",
+      title:
+        "YUNet Bangladesh Gaming & Esports Summit 2025 - Sign Up going on. Follow YUNet Esport Arena",
+      description: "",
       category: "UPDATES",
       image:
         "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157148/summit_rsjhhe.jpg",
@@ -306,12 +298,12 @@ export default function CommunityActivies() {
                     {/* Content Section */}
                     <div className="p-4 sm:p-5 flex-grow flex flex-col justify-between">
                       <div>
-                        <h3 className="text-base sm:text-lg font-bold text-white mb-2 leading-tight group-hover:text-purple-300 transition-colors duration-300 line-clamp-2">
+                        <h3 className="text-base sm:text-lg font-bold text-white mb-2 leading-tight group-hover:text-purple-300 transition-colors duration-300 line-clamp-3">
                           {update.title}
                         </h3>
-                        <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed line-clamp-2">
+                        {/* <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed line-clamp-2">
                           {update.description}
-                        </p>
+                        </p> */}
                       </div>
                     </div>
                   </div>
