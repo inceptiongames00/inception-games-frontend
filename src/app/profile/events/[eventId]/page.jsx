@@ -98,6 +98,14 @@ export default function EventDetailPage() {
     if (fetchedEvent) setEvent(fetchedEvent);
   }, [fetchedEvent]);
 
+
+
+  // Calculate eligibility
+  const userPrimaryGame = user?.primaryGame || user?.primary_game;
+  const eventGameName = event?.game_name || event?.game?.name;
+  const isEligible = userPrimaryGame && eventGameName && 
+    userPrimaryGame.toLowerCase().trim() === eventGameName.toLowerCase().trim();
+
   useEffect(() => {
     if ((showSignupForm || showRegistrationModal) && user) {
       setFormData((prev) => ({
@@ -257,6 +265,8 @@ export default function EventDetailPage() {
     { label: "Match Starts", date: new Date("2025-06-15"), time: "12:00" },
     { label: "Match Ends", date: new Date("2025-06-25"), time: "23:59" },
   ];
+
+  console.log(event)
 
   return (
     <div className="min-h-screen bg-[#030305]">
@@ -474,7 +484,7 @@ export default function EventDetailPage() {
                       <div className="flex items-center gap-1 sm:gap-2">
                         <SharePreview event={event} />
 
-                        {event.status !== "Completed" && !showSignupForm && (
+                        {event.status !== "Completed" && !showSignupForm && isEligible && (
                           <motion.button
                             onClick={() => setShowRegistrationModal(true)}
                             className="px-2 sm:px-4 py-2 sm:py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold rounded-lg transition-all duration-300 flex items-center gap-1 sm:gap-2 shadow-lg shadow-purple-500/20 text-xs sm:text-sm cursor-pointer"

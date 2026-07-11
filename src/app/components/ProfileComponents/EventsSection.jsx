@@ -633,15 +633,15 @@ const EventCard = React.memo(function EventCard({ event, onClick, user, userRegi
 
         {/* Join Event Button */}
         <motion.button
-          onClick={() => isEligible && !isAlreadyRegistered && onClick(event)}
-          disabled={!isEligible || isAlreadyRegistered}
-          className={`w-full mt-2 py-3 cursor-pointer font-bold text-sm rounded-xl transition-all duration-200 uppercase tracking-wider ${
-            isAlreadyRegistered
-              ? "bg-gradient-to-r from-green-600 to-green-500 text-white opacity-90"
-              : isEligible
-              ? "bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white"
-              : "bg-gradient-to-r from-red-600 to-red-500 text-white opacity-60 cursor-not-allowed"
-          }`}
+          onClick={() => onClick(event)}
+          // disabled={isAlreadyRegistered}
+         className={`w-full mt-2 py-3 cursor-pointer font-bold text-sm rounded-xl transition-all duration-200 uppercase tracking-wider ${
+  isAlreadyRegistered
+    ? "bg-gradient-to-r from-green-600 to-green-500 text-white opacity-90"
+    : isEligible
+    ? "bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white"
+    : "bg-gradient-to-r from-rose-500 to-red-500 text-white cursor-not-allowed"
+}`}
           whileHover={isEligible && !isAlreadyRegistered ? { scale: 1.01 } : {}}
           whileTap={isEligible && !isAlreadyRegistered ? { scale: 0.98 } : {}}
         >
