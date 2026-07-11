@@ -537,7 +537,7 @@ const EventCard = React.memo(function EventCard({ event, onClick, user, userRegi
           <span
             className={`px-4 py-1.5 text-xs font-bold rounded-full border capitalize inline-block ${getStatusColor(event.status)}`}
           >
-            {event.status || "Upcoming"}
+            {event.status || "Upcoming"}  
           </span>
         </div>
 
@@ -582,7 +582,7 @@ const EventCard = React.memo(function EventCard({ event, onClick, user, userRegi
             className="text-white font-bold text-xl cursor-pointer hover:text-purple-400 transition-colors line-clamp-2 leading-tight"
             onClick={() => onClick(event)}
           >
-            {event.title}
+            {event.title} 
           </h3>
         </div>
 
