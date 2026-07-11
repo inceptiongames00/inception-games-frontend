@@ -633,7 +633,17 @@ const EventCard = React.memo(function EventCard({ event, onClick, user, userRegi
 
         {/* Join Event Button */}
         <motion.button
-          onClick={() => onClick(event)}
+          onClick={() => {
+            let action = 'view';
+            if (isAlreadyRegistered) {
+              action = 'view';
+            } else if (isEligible) {
+              action = 'join';
+            } else {
+              action = 'not-applicable';
+            }
+            onClick(event, action);
+          }}
           // disabled={isAlreadyRegistered}
          className={`w-full mt-2 py-3 cursor-pointer font-bold text-sm rounded-xl transition-all duration-200 uppercase tracking-wider ${
   isAlreadyRegistered
@@ -645,7 +655,7 @@ const EventCard = React.memo(function EventCard({ event, onClick, user, userRegi
           whileHover={isEligible && !isAlreadyRegistered ? { scale: 1.01 } : {}}
           whileTap={isEligible && !isAlreadyRegistered ? { scale: 0.98 } : {}}
         >
-          {isAlreadyRegistered ? "Already Joined" : isEligible ? "Join Event" : "You are not Applicable"}
+          {isAlreadyRegistered ? "View Details" : isEligible ? "Join Event" : "You are not Applicable"}
         </motion.button>
       </div>
     </motion.div>
@@ -956,15 +966,15 @@ export default function EventsSection({
     [activeFilter],
   );
 
-  const handleEventClick = (event) => {
+  const handleEventClick = (event, action = "view") => {
     // Cache the event data for instant load on detail page
     // Store the transformed version for immediate display
     const eventCacheKey = `event_${event.id}`;
     sessionStorage.setItem(eventCacheKey, JSON.stringify(event));
 
-    // Navigate to event detail page with actual event ID
-    // Don't wait for async operations, push immediately for snappy navigation
-    router.push(`${routePrefix}/events/${event.id}`);
+    // Navigate to event detail page with actual event ID and action parameter
+    // action can be: 'view', 'join', or 'not-applicable'
+    router.push(`${routePrefix}/events/${event.id}?action=${action}`);
   };
 
   return (

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useContext } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Swal from "sweetalert2";
 import {
@@ -48,9 +48,11 @@ import { updateMetaTags } from "@/app/utils/metaTags";
 export default function EventDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user } = useContext(AuthContext) || {};
   const { event: fetchedEvent } = useEventData(params.eventId);
   const [event, setEvent] = useState(null);
+  const [actionSource, setActionSource] = useState('view'); // 'view', 'join', 'not-applicable'
   const [activeTab, setActiveTab] = useState("result");
   const [showSignupForm, setShowSignupForm] = useState(false);
   const [showRegistrationModal, setShowRegistrationModal] = useState(false);
@@ -97,6 +99,12 @@ export default function EventDetailPage() {
   useEffect(() => {
     if (fetchedEvent) setEvent(fetchedEvent);
   }, [fetchedEvent]);
+
+  // Get action from URL query parameters
+  useEffect(() => {
+    const action = searchParams?.get('action') || 'view';
+    setActionSource(action);
+  }, [searchParams]);
 
 
 
@@ -266,7 +274,10 @@ export default function EventDetailPage() {
     { label: "Match Ends", date: new Date("2025-06-25"), time: "23:59" },
   ];
 
-  console.log(event)
+  console.log("This is Event",event);
+    console.log("This is Event type",event.eventType);
+      console.log("This is User",user);
+            console.log("This is Params",params);
 
   return (
     <div className="min-h-screen bg-[#030305]">
@@ -484,7 +495,7 @@ export default function EventDetailPage() {
                       <div className="flex items-center gap-1 sm:gap-2">
                         <SharePreview event={event} />
 
-                        {event.status !== "Completed" && !showSignupForm && isEligible && (
+                        {event.status !== "Completed" && !showSignupForm && isEligible && actionSource === 'join' && (
                           <motion.button
                             onClick={() => setShowRegistrationModal(true)}
                             className="px-2 sm:px-4 py-2 sm:py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold rounded-lg transition-all duration-300 flex items-center gap-1 sm:gap-2 shadow-lg shadow-purple-500/20 text-xs sm:text-sm cursor-pointer"

@@ -149,6 +149,9 @@ export default function ProfilePage() {
     discord: apiUserProfile?.discord || user?.discord || gamingProfile?.discord || "",
     avatar: apiUserProfile?.avatar || apiUserProfile?.avatar_url || user?.avatar || "",
     banner: apiUserProfile?.banner || apiUserProfile?.banner_url || user?.banner || "",
+    // Include registration data from API
+    scrim_registrations: apiUserProfile?.scrim_registrations || [],
+    tournament_registrations: apiUserProfile?.tournament_registrations || [],
     // Legacy fields for compatibility
     game: apiUserProfile?.primaryGame || apiUserProfile?.primary_game || user?.primaryGame || gamingProfile?.game || "",
     role: apiUserProfile?.gameRole || apiUserProfile?.game_role || user?.gameRole || gamingProfile?.role || "",
