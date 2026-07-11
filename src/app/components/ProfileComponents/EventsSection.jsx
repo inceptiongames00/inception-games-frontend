@@ -365,11 +365,6 @@ const ComingSoonCard = React.memo(function ComingSoonCard({
   category,
   icon: IconComponent,
 }) {
-  const isComingSoonDate = new Date("2025-05-01");
-  const daysUntil = Math.ceil(
-    (isComingSoonDate - new Date()) / (1000 * 60 * 60 * 24),
-  );
-
   const categoryColors = {
     Tournament: {
       bg: "from-orange-600/20 to-red-600/20",
@@ -456,6 +451,8 @@ ComingSoonCard.displayName = "ComingSoonCard";
 // Event Card Component - Memoized
 const EventCard = React.memo(function EventCard({ event, onClick, user, userRegistrations }) {
   const [expanded, setExpanded] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
   
   // Check if user has already registered for this event
   const isAlreadyRegistered = React.useMemo(() => {
@@ -475,6 +472,13 @@ const EventCard = React.memo(function EventCard({ event, onClick, user, userRegi
     
     return false;
   }, [event, userRegistrations]);
+  
+  const handleCardClick = (event, action) => {
+    setIsLoading(true);
+    // The onClick function will handle navigation
+    // Loading state will persist even after the function returns
+    onClick(event, action);
+  };
   
   const eventType =
     event.eventType || getEventType(event.title, event.organizer);
@@ -520,13 +524,7 @@ const EventCard = React.memo(function EventCard({ event, onClick, user, userRegi
             <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse" />
             <span className="text-white text-xs font-bold uppercase">
               {event.start_date
-                ? new Date(event.start_date)
-                    .toLocaleDateString("en-US", {
-                      day: "numeric",
-                      month: "short",
-                      year: "numeric",
-                    })
-                    .toUpperCase()
+                ? formatDate(event.start_date).toUpperCase()
                 : "TBD"}
             </span>
           </div>
@@ -618,8 +616,7 @@ const EventCard = React.memo(function EventCard({ event, onClick, user, userRegi
           <div className="flex items-center gap-2 text-sm py-2 px-3 bg-amber-500/10 border border-amber-500/20 rounded-lg">
             <DollarSign size={16} className="text-amber-400" />
             <span className="text-white font-semibold">
-              {event.currency || "BDT"} {event.prizePool.toLocaleString()} Prize
-              Pool
+              {event.currency || "BDT"} {Math.floor(event.prizePool)} Prize Pool
             </span>
           </div>
         )}
@@ -642,20 +639,29 @@ const EventCard = React.memo(function EventCard({ event, onClick, user, userRegi
             } else {
               action = 'not-applicable';
             }
-            onClick(event, action);
+            handleCardClick(event, action);
           }}
-          // disabled={isAlreadyRegistered}
-         className={`w-full mt-2 py-3 cursor-pointer font-bold text-sm rounded-xl transition-all duration-200 uppercase tracking-wider ${
+          disabled={isLoading}
+          className={`w-full mt-2 py-3 font-bold text-sm rounded-xl transition-all duration-200 uppercase tracking-wider flex items-center justify-center gap-2 ${
+  isLoading ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'
+} ${
   isAlreadyRegistered
     ? "bg-gradient-to-r from-green-600 to-green-500 text-white opacity-90"
     : isEligible
     ? "bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white"
     : "bg-gradient-to-r from-rose-500 to-red-500 text-white cursor-not-allowed"
 }`}
-          whileHover={isEligible && !isAlreadyRegistered ? { scale: 1.01 } : {}}
-          whileTap={isEligible && !isAlreadyRegistered ? { scale: 0.98 } : {}}
+          whileHover={isEligible && !isAlreadyRegistered && !isLoading ? { scale: 1.01 } : {}}
+          whileTap={isEligible && !isAlreadyRegistered && !isLoading ? { scale: 0.98 } : {}}
         >
-          {isAlreadyRegistered ? "View Details" : isEligible ? "Join Event" : "You are not Applicable"}
+          {isLoading ? (
+            <>
+              <Loader2 size={16} className="animate-spin" />
+              <span>Loading...</span>
+            </>
+          ) : (
+            isAlreadyRegistered ? "View Details" : isEligible ? "Join Event" : "You are not Applicable"
+          )}
         </motion.button>
       </div>
     </motion.div>

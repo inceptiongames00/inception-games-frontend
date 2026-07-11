@@ -19,7 +19,9 @@ const getRelativeTime = (dateString) => {
   if (seconds < 60) return "Just now";
   if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
   if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
-  return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  return `${months[date.getMonth()]} ${date.getDate()}`;
 };
 
 export default function NotificationsPanel() {
@@ -113,7 +115,9 @@ export default function NotificationsPanel() {
     if (seconds < 60) return "Just now";
     if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
     if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
-    return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    return `${months[date.getMonth()]} ${date.getDate()}`;
   };
 
   useEffect(() => {
@@ -319,15 +323,13 @@ export default function NotificationsPanel() {
                               {notif.message}
                             </p>
                             <p className="text-xs text-gray-600 mt-2">
-                              {new Date(notif.created_at).toLocaleDateString(
-                                "en-US",
-                                {
-                                  month: "short",
-                                  day: "numeric",
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                },
-                              )}
+                              {(() => {
+                                const date = new Date(notif.created_at);
+                                const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                                const hours = String(date.getHours()).padStart(2, "0");
+                                const minutes = String(date.getMinutes()).padStart(2, "0");
+                                return `${months[date.getMonth()]} ${date.getDate()} ${hours}:${minutes}`;
+                              })()}
                             </p>
                           </div>
 
@@ -391,16 +393,13 @@ export default function NotificationsPanel() {
                     {selectedNotif.message || "New Notification"}
                   </h3>
                   <p className="text-xs text-gray-500 mt-2">
-                    {new Date(selectedNotif.created_at).toLocaleDateString(
-                      "en-US",
-                      {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      },
-                    )}
+                    {(() => {
+                      const date = new Date(selectedNotif.created_at);
+                      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                      const hours = String(date.getHours()).padStart(2, "0");
+                      const minutes = String(date.getMinutes()).padStart(2, "0");
+                      return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} ${hours}:${minutes}`;
+                    })()}
                   </p>
                 </motion.div>
 
