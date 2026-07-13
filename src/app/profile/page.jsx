@@ -22,6 +22,7 @@ export default function ProfilePage() {
   const router = useRouter();
   const [gamingProfile, setGamingProfile] = useState(null);
   const [editProfileOpen, setEditProfileOpen] = useState(false);
+  const [editProfileMode, setEditProfileMode] = useState('edit');
   const [apiUserProfile, setApiUserProfile] = useState(null);
   const [loadingProfile, setLoadingProfile] = useState(true);
 
@@ -200,6 +201,20 @@ export default function ProfilePage() {
                   fetchUserProfile(user.id, tokens.accessToken);
                 }
               }} />
+
+                {/* Game change button */}
+  <div className="p-4 bg-white/[0.02] rounded-xl border border-white/[0.06]">
+  <button
+    type="button"
+    onClick={() => {
+      setEditProfileMode('changeGame');
+      setEditProfileOpen(true);
+    }}
+    className="w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500 hover:from-emerald-400 hover:via-green-400 hover:to-teal-400 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+  >
+    Change Game
+  </button>
+</div>
             </div>
           </div>
 
@@ -215,9 +230,13 @@ export default function ProfilePage() {
       {/* Edit Profile Modal */}
       <EditProfileModal
         isOpen={editProfileOpen}
-        onClose={() => setEditProfileOpen(false)}
+        onClose={() => {
+          setEditProfileOpen(false);
+          setEditProfileMode('edit');
+        }}
         user={mergedUser}
         gamingProfile={gamingProfile}
+        mode={editProfileMode}
         onProfileUpdate={(updated) => {
           setGamingProfile(updated);
           if (typeof window !== "undefined") {

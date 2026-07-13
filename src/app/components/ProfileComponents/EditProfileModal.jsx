@@ -93,7 +93,7 @@ const RANKS = {
 
 
 
-export default function EditProfileModal({ isOpen, onClose, user, gamingProfile, onProfileUpdate }) {
+export default function EditProfileModal({ isOpen, onClose, user, gamingProfile, onProfileUpdate, mode = 'edit' }) {
   const { updateProfile, user: contextUser } = useAuth()
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
@@ -251,8 +251,8 @@ export default function EditProfileModal({ isOpen, onClose, user, gamingProfile,
               {/* Header */}
               <div className="flex items-center justify-between p-6 border-b border-white/[0.06]">
                 <div>
-                  <h2 className="text-xl font-bold text-white">Edit Profile</h2>
-                  <p className="text-gray-500 text-xs mt-1">Update your personal and gaming information</p>
+                  <h2 className="text-xl font-bold text-white">{mode === 'changeGame' ? 'Change Game' : 'Edit Profile'}</h2>
+                  <p className="text-gray-500 text-xs mt-1">{mode === 'changeGame' ? 'Update your gaming profile and preferences' : 'Update your personal and gaming information'}</p>
                 </div>
                 <motion.button onClick={onClose} className="text-gray-500 hover:text-white transition p-2 hover:bg-white/5 rounded-lg" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
                   <X size={20} />
@@ -277,6 +277,7 @@ export default function EditProfileModal({ isOpen, onClose, user, gamingProfile,
                 </AnimatePresence>
 
                 {/* Images Section */}
+                {mode !== 'changeGame' && (
                 <div>
                   <h4 className="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-3">Images</h4>
                   {/* Banner */}
@@ -301,8 +302,10 @@ export default function EditProfileModal({ isOpen, onClose, user, gamingProfile,
                     <div><p className="text-xs text-gray-400">Profile picture</p><p className="text-[10px] text-gray-600 mt-0.5">Square, max 5MB</p></div>
                   </div>
                 </div>
+                )}
 
                 {/* Personal Section */}
+                {mode !== 'changeGame' && (
                 <div>
                   <h4 className="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-3">Personal</h4>
                   <div className="space-y-3">
@@ -313,29 +316,34 @@ export default function EditProfileModal({ isOpen, onClose, user, gamingProfile,
                     <div className="relative"><FileText className="absolute left-3.5 top-3 text-gray-600 w-4 h-4" /><textarea name="bio" value={formData.bio} onChange={handleChange} placeholder="Bio" rows={2} className={`${inputClass} resize-none`} /></div>
                   </div>
                 </div>
+                )}
 
                 {/* Gaming Section */}
+                {mode === 'changeGame' || mode === 'edit' ? (
                 <div>
                   <h4 className="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-3">Gaming</h4>
                   <div className="space-y-3">
-                    {/* <div className="relative">
+                    {/* Game */}
+                    <div className="relative">
                       <Gamepad2 className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-600 w-4 h-4" />
                       <select name="game" value={formData.game} onChange={handleChange} className={selectClass}>
                         <option value="" className="bg-[#1a1a24]">Select game</option>
-                        {GAMES.map(g => <option key={g} value={g} className="bg-[#1a1a24]">{g}</option>)}
+                        {GAMES.map(game => <option key={game} value={game} className="bg-[#1a1a24]">{game}</option>)}
                       </select>
+                      <ChevronRight className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-600 w-4 h-4 rotate-90 pointer-events-none" />
                     </div>
+                    {/* Role */}
                     {formData.game && ROLES[formData.game] && (
-                      <div>
-                        <p className="text-xs text-gray-500 mb-2">Role</p>
-                        <div className="flex flex-wrap gap-1.5">
-                          {ROLES[formData.game].map(r => (
-                            <button key={r} type="button" onClick={() => setFormData(prev => ({ ...prev, role: r }))}
-                              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${formData.role === r ? 'bg-purple-500/20 text-purple-300 border border-purple-500/40' : 'bg-white/[0.03] text-gray-500 border border-white/[0.06] hover:text-gray-300'}`}>{r}</button>
-                          ))}
-                        </div>
+                      <div className="relative">
+                        <Award className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-600 w-4 h-4" />
+                        <select name="role" value={formData.role} onChange={handleChange} className={selectClass}>
+                          <option value="" className="bg-[#1a1a24]">Select role</option>
+                          {ROLES[formData.game].map(role => <option key={role} value={role} className="bg-[#1a1a24]">{role}</option>)}
+                        </select>
+                        <ChevronRight className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-600 w-4 h-4 rotate-90 pointer-events-none" />
                       </div>
                     )}
+                    {/* Rank */}
                     {formData.game && RANKS[formData.game] && (
                       <div className="relative">
                         <Award className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-600 w-4 h-4" />
@@ -343,12 +351,14 @@ export default function EditProfileModal({ isOpen, onClose, user, gamingProfile,
                           <option value="" className="bg-[#1a1a24]">Select rank</option>
                           {RANKS[formData.game].map(rank => <option key={rank} value={rank} className="bg-[#1a1a24]">{rank}</option>)}
                         </select>
+                        <ChevronRight className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-600 w-4 h-4 rotate-90 pointer-events-none" />
                       </div>
-                    )} */}
+                    )}
+                 
                     {/* Continent */}
                     <div className="relative">
                       <Globe className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-600 w-4 h-4" />
-                      <select value={selectedContinent} onChange={(e) => { setSelectedContinent(e.target.value); setSelectedCountry(''); setSelectedCity('') }} className={selectClass}>
+                      <select value={selectedContinent} onChange={(e) => { setSelectedContinent(e.target.value); setSelectedCountry(''); setSelectedCity('') }} disabled={mode === 'changeGame'} className={`${selectClass} ${mode === 'changeGame' ? 'opacity-50 cursor-not-allowed' : ''}`}>
                         <option value="" className="bg-[#1a1a24]">Select continent</option>
                         {CONTINENTS.map(c => <option key={c} value={c} className="bg-[#1a1a24]">{c}</option>)}
                       </select>
@@ -358,7 +368,7 @@ export default function EditProfileModal({ isOpen, onClose, user, gamingProfile,
                     {selectedContinent && (
                       <div className="relative">
                         <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-600 w-4 h-4" />
-                        <select value={selectedCountry} onChange={(e) => { setSelectedCountry(e.target.value); setSelectedCity('') }} className={selectClass}>
+                        <select value={selectedCountry} onChange={(e) => { setSelectedCountry(e.target.value); setSelectedCity('') }} disabled={mode === 'changeGame'} className={`${selectClass} ${mode === 'changeGame' ? 'opacity-50 cursor-not-allowed' : ''}`}>
                           <option value="" className="bg-[#1a1a24]">Select country</option>
                           {Object.keys(REGION_DATA[selectedContinent] || {}).map(country => (
                             <option key={country} value={country} className="bg-[#1a1a24]">{country}</option>
@@ -371,7 +381,7 @@ export default function EditProfileModal({ isOpen, onClose, user, gamingProfile,
                     {selectedCountry && REGION_DATA[selectedContinent]?.[selectedCountry]?.length > 0 && (
                       <div className="relative">
                         <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-600 w-4 h-4" />
-                        <select value={selectedCity} onChange={(e) => setSelectedCity(e.target.value)} className={selectClass}>
+                        <select value={selectedCity} onChange={(e) => setSelectedCity(e.target.value)} disabled={mode === 'changeGame'} className={`${selectClass} ${mode === 'changeGame' ? 'opacity-50 cursor-not-allowed' : ''}`}>
                           <option value="" className="bg-[#1a1a24]">Select city / state</option>
                           {REGION_DATA[selectedContinent][selectedCountry].map(city => (
                             <option key={city} value={city} className="bg-[#1a1a24]">{city}</option>
@@ -382,6 +392,7 @@ export default function EditProfileModal({ isOpen, onClose, user, gamingProfile,
                     )}
                   </div>
                 </div>
+                ) : null}
 
                 {/* Submit */}
                 <div className="flex gap-3 pt-2">
