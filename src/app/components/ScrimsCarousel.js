@@ -4,45 +4,53 @@ import { useAuth } from "@/hooks/useAuth";
 import { useProfileNavigation } from "@/hooks/useProfileNavigation";
 import { useState, useEffect } from "react";
 
-const GAMES_DATA = [
-  {
-    title: "Free Fire",
-    label: "FREE ENTRY",
-    date: "30TH JUNE",
-    image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=500&h=600&fit=crop",
-    bgGradient: "from-pink-600 to-pink-500",
-  },
-  {
-    title: "PUBG Mobile",
-    label: "FREE ENTRY",
-    date: "30TH JUNE",
-    image: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=500&h=600&fit=crop",
-    bgGradient: "from-purple-600 to-purple-500",
-  },
-  {
-    title: "eFootball 2025",
-    label: "FREE ENTRY",
-    date: "30TH JUNE",
-    image: "https://images.unsplash.com/photo-1511882150382-421056c89033?w=500&h=600&fit=crop",
-    bgGradient: "from-yellow-600 to-yellow-500",
-  },
-  {
-    title: "FC 25",
-    label: "FREE ENTRY",
-    date: "30TH JUNE",
-    image: "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=500&h=600&fit=crop",
-    bgGradient: "from-blue-600 to-blue-500",
-  },
-];
-
 export default function ScrimsCarousel({ onLoginClick }) {
   const { user } = useAuth();
   const { navigateToTab } = useProfileNavigation();
   const [isHydrated, setIsHydrated] = useState(false);
+  const [tournaments, setTournaments] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setIsHydrated(true);
   }, []);
+
+  useEffect(() => {
+    if (!isHydrated) return;
+
+    const fetchTournaments = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(
+          "https://inception-games.an.r.appspot.com/api/v1/cms/tournaments/all"
+        );
+        if (!response.ok) throw new Error("Failed to fetch tournaments");
+        const data = await response.json();
+        
+        // Handle different response formats
+        let tournamentsArray = [];
+        if (Array.isArray(data)) {
+          tournamentsArray = data;
+        } else if (data && Array.isArray(data.data)) {
+          tournamentsArray = data.data;
+        } else if (data && Array.isArray(data.tournaments)) {
+          tournamentsArray = data.tournaments;
+        } else if (data && typeof data === 'object') {
+          // Single tournament object - wrap in array
+          tournamentsArray = [data];
+        }
+        
+        setTournaments(tournamentsArray);
+      } catch (error) {
+        console.error("Error fetching tournaments:", error);
+        setTournaments([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTournaments();
+  }, [isHydrated]);
 
   const handleCardClick = () => {
     if (isHydrated && user) {
@@ -51,6 +59,10 @@ export default function ScrimsCarousel({ onLoginClick }) {
       onLoginClick();
     }
   };
+
+  if (!isHydrated) {
+    return null;
+  }
 
   return (
     <div className="relative overflow-hidden">
@@ -61,10 +73,10 @@ export default function ScrimsCarousel({ onLoginClick }) {
       {/* Scrolling container */}
       <div className="flex animate-scrims-scroll">
         {/* First set */}
-        {GAMES_DATA.map((game, index) => (
+        {tournaments.map((tournament, index) => (
           <GameCard
-            key={`game-1-${index}`}
-            game={game}
+            key={`tournament-1-${index}`}
+            tournament={tournament}
             onClick={handleCardClick}
             isHydrated={isHydrated}
             user={user}
@@ -72,10 +84,10 @@ export default function ScrimsCarousel({ onLoginClick }) {
         ))}
 
         {/* Duplicate set for seamless loop */}
-        {GAMES_DATA.map((game, index) => (
+        {tournaments.map((tournament, index) => (
           <GameCard
-            key={`game-2-${index}`}
-            game={game}
+            key={`tournament-2-${index}`}
+            tournament={tournament}
             onClick={handleCardClick}
             isHydrated={isHydrated}
             user={user}
@@ -105,7 +117,32 @@ export default function ScrimsCarousel({ onLoginClick }) {
   );
 }
 
-function GameCard({ game, onClick, isHydrated, user }) {
+function GameCard({ tournament, onClick, isHydrated, user }) {
+  // Determine the game image and label from tournament
+  const getGameImage = () => {
+    if (tournament.banner_image) return tournament.banner_image;
+    return "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=500&h=600&fit=crop";
+  };
+
+  const getGameLabel = () => {
+    if (tournament.entry_type === "Free" || tournament.entry_fee === "0.00") {
+      return "FREE ENTRY";
+    }
+    return `${tournament.entry_fee} ENTRY`;
+  };
+
+  const getStartDate = () => {
+    if (tournament.start_at) {
+      const date = new Date(tournament.start_at);
+      return date.toLocaleDateString("en-US", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      }).toUpperCase();
+    }
+    return "COMING SOON";
+  };
+
   return (
     <div
       className="px-2 sm:px-3 md:px-4"
@@ -125,12 +162,12 @@ function GameCard({ game, onClick, isHydrated, user }) {
         >
           <div className="relative w-full h-full flex flex-col overflow-hidden rounded-lg">
             {/* Image Section */}
-            <div className="relative flex-1 overflow-hidden">
+            <div className="relative flex-1 overflow-hidden bg-gray-900">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={game.image}
-                alt={game.title}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                src={getGameImage()}
+                alt={tournament.title || "Tournament"}
+                className="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-500"
               />
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/80" />
               <div className="absolute top-0 left-1/4 w-1/2 h-0.5 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -155,10 +192,10 @@ function GameCard({ game, onClick, isHydrated, user }) {
                 className="text-xs font-bold mb-1 uppercase tracking-wider line-clamp-1 group-hover:text-white transition-colors duration-300"
                 style={{ color: '#FFFA5B' }}
               >
-                {game.label}
+                {getGameLabel()}
               </h3>
-              <p className="text-[9px] font-bold text-yellow-300 mb-1 uppercase group-hover:text-yellow-100 transition-colors duration-300">
-                <span style={{ color: '#FFFFFF' }}>STARTING</span> {game.date}
+              <p className="text-[9px] font-bold text-yellow-300 uppercase group-hover:text-yellow-100 transition-colors duration-300">
+                <span style={{ color: '#FFFFFF' }}>STARTING</span> {getStartDate()}
               </p>
             </div>
           </div>
