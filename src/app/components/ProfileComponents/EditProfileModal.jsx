@@ -323,17 +323,19 @@ export default function EditProfileModal({ isOpen, onClose, user, gamingProfile,
                 <div>
                   <h4 className="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-3">Gaming</h4>
                   <div className="space-y-3">
-                    {/* Game */}
-                    <div className="relative">
-                      <Gamepad2 className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-600 w-4 h-4" />
-                      <select name="game" value={formData.game} onChange={handleChange} className={selectClass}>
-                        <option value="" className="bg-[#1a1a24]">Select game</option>
-                        {GAMES.map(game => <option key={game} value={game} className="bg-[#1a1a24]">{game}</option>)}
-                      </select>
-                      <ChevronRight className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-600 w-4 h-4 rotate-90 pointer-events-none" />
-                    </div>
-                    {/* Role */}
-                    {formData.game && ROLES[formData.game] && (
+                    {/* Game - Hidden in edit mode */}
+                    {mode !== 'edit' && (
+                      <div className="relative">
+                        <Gamepad2 className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-600 w-4 h-4" />
+                        <select name="game" value={formData.game} onChange={handleChange} className={selectClass}>
+                          <option value="" className="bg-[#1a1a24]">Select game</option>
+                          {GAMES.map(game => <option key={game} value={game} className="bg-[#1a1a24]">{game}</option>)}
+                        </select>
+                        <ChevronRight className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-600 w-4 h-4 rotate-90 pointer-events-none" />
+                      </div>
+                    )}
+                    {/* Role - Hidden in edit mode */}
+                    {mode !== 'edit' && formData.game && ROLES[formData.game] && (
                       <div className="relative">
                         <Award className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-600 w-4 h-4" />
                         <select name="role" value={formData.role} onChange={handleChange} className={selectClass}>
@@ -343,8 +345,8 @@ export default function EditProfileModal({ isOpen, onClose, user, gamingProfile,
                         <ChevronRight className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-600 w-4 h-4 rotate-90 pointer-events-none" />
                       </div>
                     )}
-                    {/* Rank */}
-                    {formData.game && RANKS[formData.game] && (
+                    {/* Rank - Hidden in edit mode */}
+                    {mode !== 'edit' && formData.game && RANKS[formData.game] && (
                       <div className="relative">
                         <Award className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-600 w-4 h-4" />
                         <select name="rank" value={formData.rank} onChange={handleChange} className={selectClass}>
