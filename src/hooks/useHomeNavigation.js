@@ -14,7 +14,6 @@ export function useHomeNavigation() {
 
   const navigateToSection = (sectionId) => {
     if (isHome) {
-      // Already on home, just scroll
       setTimeout(() => scrollToSection(sectionId), 100)
     } else {
       // Navigate to home with section hash
