@@ -742,6 +742,8 @@ export default function EventsSection({
       let allEvents = [];
 
       // Fetch Scrims if "all" or "Scrims" is selected
+      // TEMPORARILY DISABLED - Scrims feature coming soon
+      /*
       if (activeFilter === "all" || activeFilter === "Scrims") {
         try {
           const scrimsRes = await fetch(SCRIMS_API_URL, {
@@ -808,16 +810,26 @@ export default function EventsSection({
           console.error("[EventsSection] Failed to fetch scrims:", err);
         }
       }
+      */
 
       // Fetch Tournaments if "all" or "Tournament" is selected
       if (activeFilter === "all" || activeFilter === "Tournament") {
         try {
-          console.log("[EventsSection] TOURNAMENT_API_URL:", TOURNAMENT_API_URL);
-          const tournamentsRes = await fetch(TOURNAMENT_API_URL, {
-            method: "GET",
+          // Use the new authenticated endpoint with userId
+          const userId = user?.id || user?.userId || "SNS-5556"; // Use correct user id from context
+          const newTournamentURL = `https://inception-games.an.r.appspot.com/api/v1/auth/tournaments/list`;
+          
+          console.log("[EventsSection] Fetching tournaments with userId:", userId);
+          console.log("[EventsSection] New Tournament URL:", newTournamentURL);
+          
+          const tournamentsRes = await fetch(newTournamentURL, {
+            method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
+            body: JSON.stringify({
+              userId: userId,
+            }),
           });
           const tournamentsData = await tournamentsRes.json();
 
@@ -926,12 +938,13 @@ export default function EventsSection({
         count: filterCounts.Tournament,
         icon: Trophy,
       },
-      {
-        id: "Scrims",
-        label: "Scrims",
-        count: filterCounts.Scrims,
-        icon: Swords,
-      },
+      // Temporarily hidden - Scrims feature coming soon
+      // {
+      //   id: "Scrims",
+      //   label: "Scrims",
+      //   count: filterCounts.Scrims,
+      //   icon: Swords,
+      // },
       // {
       //   id: "Brand Deal",
       //   label: "Brand Deals",
