@@ -225,7 +225,7 @@ function HomeContent() {
             { icon: "🏆", text: "Play Scrims" },
             { icon: "🏆", text: "Play Tournaments" },
             { icon: "💎", text: "Brand Deals" },
-            { icon: "🎁", text: "Free Entry @ 500 Fans" },
+          { icon: "🎁", text: "Free Entry @ 500 Fans" },
           ].map((item, i) => (
             <motion.button
               key={i}
@@ -257,7 +257,7 @@ function HomeContent() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
             <div className="text-center mb-8 sm:mb-12">
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold italic text-white">
-                SCRIMS WEEK
+                TOURNAMENTS WEEK
               </h2>
               <p className="text-sm sm:text-base text-zinc-400 tracking-widest">
                 REGISTRATION GOING ON

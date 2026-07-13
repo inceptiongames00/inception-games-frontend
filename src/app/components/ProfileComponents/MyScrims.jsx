@@ -184,7 +184,7 @@ export default function MyScrims({ userRegistrations }) {
             </div>
             <div className="min-w-0">
               <h2 className="text-base xs:text-lg font-semibold text-white truncate">
-                {activeTab === "scrims" ? "My Scrims" : "My Tournaments"}
+                {activeTab !== "scrims" ? "My Scrims" : "My Tournaments"}
               </h2>
               <p className="text-xs text-gray-500 truncate">
                 {displayRegistrations.length > 0
@@ -199,7 +199,7 @@ export default function MyScrims({ userRegistrations }) {
 
         {/* Toggle Buttons */}
         <div className="flex gap-2 mb-6">
-          <button
+          {/* <button
             onClick={() => setActiveTab("scrims")}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition ${
               activeTab === "scrims"
@@ -212,7 +212,7 @@ export default function MyScrims({ userRegistrations }) {
             <span className="text-xs bg-black/30 px-2 py-0.5 rounded">
               {scrimRegistrations.length}
             </span>
-          </button>
+          </button> */}
           <button
             onClick={() => setActiveTab("tournaments")}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition ${
