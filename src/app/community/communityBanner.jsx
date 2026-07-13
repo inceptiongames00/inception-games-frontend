@@ -57,17 +57,17 @@ export default function CommunityBanner() {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="mt-12 flex flex-col gap-3 sm:gap-4 md:flex-row md:flex-wrap md:justify-center"
         >
-          <button className="w-full sm:w-auto rounded-xl border border-white/10 bg-white/5 px-6 sm:px-8 py-3 sm:py-4 font-semibold text-sm sm:text-base backdrop-blur-md transition hover:border-purple-400/40 hover:bg-white/10 cursor-pointer">
+          <p className="w-full sm:w-auto rounded-xl border border-white/10 bg-white/5 px-6 sm:px-8 py-3 sm:py-4 font-semibold text-sm sm:text-base backdrop-blur-md transition">
             Explore Zones
-          </button>
+          </p>
 
-          <button className="w-full sm:w-auto rounded-xl border border-white/10 bg-white/5 px-6 sm:px-8 py-3 sm:py-4 font-semibold text-sm sm:text-base backdrop-blur-md transition hover:border-purple-400/40 hover:bg-white/10 cursor-pointer">
+          <p className="w-full sm:w-auto rounded-xl border border-white/10 bg-white/5 px-6 sm:px-8 py-3 sm:py-4 font-semibold text-sm sm:text-base backdrop-blur-md transition">
             Community Works
-          </button>
+          </p>
 
-          <button className="w-full sm:w-auto rounded-xl border border-white/10 bg-white/5 px-6 sm:px-8 py-3 sm:py-4 font-semibold text-sm sm:text-base backdrop-blur-md transition hover:border-purple-400/40 hover:bg-white/10 cursor-pointer">
+          <p className="w-full sm:w-auto rounded-xl border border-white/10 bg-white/5 px-6 sm:px-8 py-3 sm:py-4 font-semibold text-sm sm:text-base backdrop-blur-md transition">
             Latest News
-          </button>
+          </p>
 
           <a
             href="https://discord.gg/StTgqPMERz"
