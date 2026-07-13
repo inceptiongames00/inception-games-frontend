@@ -161,7 +161,7 @@ export default function UpcomingComEvents() {
   };
 
   return (
-    <section className="relative overflow-hidden bg-zinc-950 py-20 px-4 sm:px-6">
+    <section id="upcoming-events" className="relative overflow-hidden bg-zinc-950 py-20 px-4 sm:px-6">
       {/* Background Glow */}
       <div className="absolute left-0 top-0 h-[400px] w-[400px] rounded-full bg-purple-600/10 blur-[170px]" />
       <div className="absolute right-0 bottom-0 h-[400px] w-[400px] rounded-full bg-pink-600/10 blur-[180px]" />

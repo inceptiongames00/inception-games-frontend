@@ -37,7 +37,7 @@ export default function EShop() {
   ];
 
   return (
-    <section className="py-20 px-4 sm:px-6 bg-zinc-950">
+    <section id="explore-merchandise" className="py-20 px-4 sm:px-6 bg-zinc-950">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12 sm:mb-16">

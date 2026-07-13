@@ -3,6 +3,8 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import Swal from "sweetalert2";
+import UpgradePlanModal from "./UpgradePlanModal";
 import {
   Trophy,
   Swords,
@@ -449,7 +451,7 @@ const ComingSoonCard = React.memo(function ComingSoonCard({
 ComingSoonCard.displayName = "ComingSoonCard";
 
 // Event Card Component - Memoized
-const EventCard = React.memo(function EventCard({ event, onClick, user, userRegistrations }) {
+const EventCard = React.memo(function EventCard({ event, onClick, user, userRegistrations, onUpgradePlanClick }) {
   const [expanded, setExpanded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -631,6 +633,31 @@ const EventCard = React.memo(function EventCard({ event, onClick, user, userRegi
         {/* Join Event Button */}
         <motion.button
           onClick={() => {
+            // Check if tournament is locked
+            if (event.is_lock) {
+              Swal.fire({
+                icon: "warning",
+                title: "Upgrade Your Plan",
+                html: event.applicability_reason || "You need to upgrade your plan to join this tournament.",
+                confirmButtonText: "Upgrade Plan",
+                confirmButtonColor: "#ec4899",
+                background: "#1a1a2e",
+                color: "#fff",
+                allowOutsideClick: true,
+                didOpen: (modal) => {
+                  const confirmButton = modal.querySelector(".swal2-confirm");
+                  if (confirmButton) {
+                    confirmButton.style.backgroundColor = "#ec4899";
+                  }
+                },
+              }).then((result) => {
+                if (result.isConfirmed && onUpgradePlanClick) {
+                  onUpgradePlanClick();
+                }
+              });
+              return;
+            }
+            
             let action = 'view';
             if (isAlreadyRegistered) {
               action = 'view';
@@ -681,6 +708,8 @@ export default function EventsSection({
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isUpgradePlanModalOpen, setIsUpgradePlanModalOpen] = useState(false);
+  const [apiPlans, setApiPlans] = useState([]);
 
   // Initialize activeFilter from URL params, fallback to initialFilter
   const [activeFilter, setActiveFilter] = useState(() => {
@@ -706,6 +735,27 @@ export default function EventsSection({
       }, 100);
     }
   }, [searchParams]);
+
+  // Fetch subscription plans
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/cms/subscription/plans`);
+        const data = await response.json();
+
+        if (data.plans && Array.isArray(data.plans)) {
+          setApiPlans(data.plans);
+        }
+      } catch (error) {
+        console.error(
+          "[EventsSection] Error fetching subscription plans:",
+          error,
+        );
+      }
+    };
+
+    fetchPlans();
+  }, []);
 
   // Listen for custom event to switch tabs
   useEffect(() => {
@@ -880,6 +930,8 @@ export default function EventsSection({
                 host: tournament.hosted_by || tournament.organizer || "Inception Games",
                 organizer: tournament.hosted_by || tournament.organizer || "Inception Games",
                 banner_image: tournament.banner_image,
+                is_lock: tournament.is_lock || false,
+                applicability_reason: tournament.applicability_reason || "",
               };
             });
             
@@ -1146,6 +1198,7 @@ export default function EventsSection({
                   onClick={handleEventClick} 
                   user={user}
                   userRegistrations={user}
+                  onUpgradePlanClick={() => setIsUpgradePlanModalOpen(true)}
                 />
               </motion.div>
             ))}
@@ -1186,6 +1239,14 @@ export default function EventsSection({
             )}
         </motion.div>
       )}
+
+      {/* Upgrade Plan Modal */}
+      <UpgradePlanModal 
+        isOpen={isUpgradePlanModalOpen}
+        onClose={() => setIsUpgradePlanModalOpen(false)}
+        plans={apiPlans}
+        activePlanName={user?.plan_name || null}
+      />
     </motion.div>
   );
 }

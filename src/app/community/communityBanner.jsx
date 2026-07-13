@@ -4,8 +4,15 @@ import { MessageSquare } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function CommunityBanner() {
+  const scrollToSection = (id) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   return (
-    <section className="relative overflow-hidden bg-zinc-950 text-white mt-15">
+    <section className="relative overflow-hidden bg-zinc-950 text-white">
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -left-40 -top-32 h-[500px] w-[500px] rounded-full bg-purple-600/10 blur-[170px]" />
         <div className="absolute right-0 top-0 h-[450px] w-[450px] rounded-full bg-pink-600/10 blur-[180px]" />
@@ -57,17 +64,26 @@ export default function CommunityBanner() {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="mt-12 flex flex-col gap-3 sm:gap-4 md:flex-row md:flex-wrap md:justify-center"
         >
-          <p className="w-full sm:w-auto rounded-xl border border-white/10 bg-white/5 px-6 sm:px-8 py-3 sm:py-4 font-semibold text-sm sm:text-base backdrop-blur-md transition">
-            Explore Zones
-          </p>
+          <button 
+            onClick={() => scrollToSection("upcoming-events")}
+            className="w-full sm:w-auto rounded-xl border border-white/10 bg-white/5 px-6 sm:px-8 py-3 sm:py-4 font-semibold text-sm sm:text-base backdrop-blur-md transition hover:bg-white/10 cursor-pointer"
+          >
+            Community Events
+          </button>
 
-          <p className="w-full sm:w-auto rounded-xl border border-white/10 bg-white/5 px-6 sm:px-8 py-3 sm:py-4 font-semibold text-sm sm:text-base backdrop-blur-md transition">
-            Community Works
-          </p>
+          <button 
+            onClick={() => scrollToSection("explore-merchandise")}
+            className="w-full sm:w-auto rounded-xl border border-white/10 bg-white/5 px-6 sm:px-8 py-3 sm:py-4 font-semibold text-sm sm:text-base backdrop-blur-md transition hover:bg-white/10 cursor-pointer"
+          >
+            Explore Merchhandise
+          </button>
 
-          <p className="w-full sm:w-auto rounded-xl border border-white/10 bg-white/5 px-6 sm:px-8 py-3 sm:py-4 font-semibold text-sm sm:text-base backdrop-blur-md transition">
+          <button 
+            onClick={() => scrollToSection("latest-news")}
+            className="w-full sm:w-auto rounded-xl border border-white/10 bg-white/5 px-6 sm:px-8 py-3 sm:py-4 font-semibold text-sm sm:text-base backdrop-blur-md transition hover:bg-white/10 cursor-pointer"
+          >
             Latest News
-          </p>
+          </button>
 
           <a
             href="https://discord.gg/StTgqPMERz"
