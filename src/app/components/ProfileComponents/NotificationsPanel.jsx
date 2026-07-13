@@ -122,9 +122,16 @@ export default function NotificationsPanel() {
 
   useEffect(() => {
     fetchNotifications();
-    const interval = setInterval(fetchNotifications, 10000);
+    const interval = setInterval(fetchNotifications, 10000); // Fetch every 10 seconds
     return () => clearInterval(interval);
-  }, []);
+  }, [NOTIFICATIONS_ENDPOINT]);
+
+  // Also set up a listener for new notifications if using WebSocket or Server-Sent Events
+  useEffect(() => {
+    // This effect re-calculates unread count whenever notifications change
+    const unread = notifications.filter(n => !n.is_read).length;
+    setUnreadCount(unread);
+  }, [notifications]);
 
   // Detect screen size
   useEffect(() => {
@@ -179,7 +186,23 @@ export default function NotificationsPanel() {
 
             {/* Bell Button */}
             <motion.button
-              onClick={() => setShowList(true)}
+              onClick={async () => {
+                setShowList(true);
+                // Mark all unread notifications as read when opening the panel
+                const unreadNotifs = notifications.filter(n => !n.is_read);
+                for (const notif of unreadNotifs) {
+                  setLocalReadStates((prev) => ({
+                    ...prev,
+                    [notif.id]: true,
+                  }));
+                  await markNotificationAsRead(notif.id);
+                }
+                // Update local state to mark all as read
+                setNotifications((prev) =>
+                  prev.map((n) => ({ ...n, is_read: 1 }))
+                );
+                setUnreadCount(0);
+              }}
               className="relative p-2 rounded-lg bg-white/[0.05] border border-white/[0.1] text-gray-400 hover:text-white hover:bg-white/[0.08] transition cursor-pointer"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -272,25 +295,6 @@ export default function NotificationsPanel() {
                         <motion.button
                           key={notif.id}
                           onClick={() => {
-                            // Mark as read locally immediately for instant feedback
-                            if (isUnread) {
-                              setLocalReadStates((prev) => ({
-                                ...prev,
-                                [notif.id]: true,
-                              }));
-
-                              // Update local state immediately
-                              setNotifications((prev) =>
-                                prev.map((n) =>
-                                  n.id === notif.id ? { ...n, is_read: 1 } : n,
-                                ),
-                              );
-                              setUnreadCount((prev) => Math.max(0, prev - 1));
-
-                              // Try to persist to backend
-                              markNotificationAsRead(notif.id);
-                            }
-
                             setSelectedNotif(notif);
                             setShowList(false);
                           }}
@@ -401,46 +405,6 @@ export default function NotificationsPanel() {
                       return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} ${hours}:${minutes}`;
                     })()}
                   </p>
-                </motion.div>
-
-                {/* Divider */}
-                <div className="h-px bg-gradient-to-r from-white/[0.08] to-transparent mb-6" />
-
-                {/* Details */}
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                  className="space-y-4"
-                >
-                  <div>
-                    <p className="text-xs uppercase tracking-wider text-gray-500 mb-2">
-                      Game
-                    </p>
-                    <p className="text-sm text-white font-medium">
-                      {selectedNotif.game_name || "N/A"}
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-xs uppercase tracking-wider text-gray-500 mb-2">
-                      Details
-                    </p>
-                    <p className="text-sm text-gray-300 leading-relaxed">
-                      {selectedNotif.message}
-                    </p>
-                  </div>
-
-                  {selectedNotif.notification_type && (
-                    <div>
-                      <p className="text-xs uppercase tracking-wider text-gray-500 mb-2">
-                        Type
-                      </p>
-                      <p className="text-sm text-white font-medium">
-                        {selectedNotif.notification_type}
-                      </p>
-                    </div>
-                  )}
                 </motion.div>
 
                 {/* Close button */}
