@@ -10,21 +10,12 @@ import {
   Swords,
   Briefcase,
   Search,
-  ChevronDown,
-  ChevronUp,
-  MapPin,
   Monitor,
   Users,
   User,
-  Calendar,
   DollarSign,
-  Clock,
   Flag,
-  Bell,
-  Heart,
-  Share2,
   ExternalLink,
-  CheckCircle2,
   Loader2,
   RefreshCw,
   Lock,
@@ -36,8 +27,11 @@ import Image from "next/image";
 import { API } from "@/lib/api";
 
 // Fallback API configuration if API.TOURNAMENT_GET_ALL is undefined
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://inception-games.an.r.appspot.com/api/v1";
-const TOURNAMENT_API_URL = API.TOURNAMENT_GET_ALL || `${API_BASE_URL}/cms/tournaments/all`;
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  "https://inception-games.an.r.appspot.com/api/v1";
+const TOURNAMENT_API_URL =
+  API.TOURNAMENT_GET_ALL || `${API_BASE_URL}/cms/tournaments/all`;
 const SCRIMS_API_URL = API.SCRIMS_GET_ALL || `${API_BASE_URL}/scrims`;
 
 // Games data (for mapping game names to images)
@@ -451,37 +445,46 @@ const ComingSoonCard = React.memo(function ComingSoonCard({
 ComingSoonCard.displayName = "ComingSoonCard";
 
 // Event Card Component - Memoized
-const EventCard = React.memo(function EventCard({ event, onClick, user, userRegistrations, onUpgradePlanClick }) {
+const EventCard = React.memo(function EventCard({
+  event,
+  onClick,
+  user,
+  userRegistrations,
+  onUpgradePlanClick,
+}) {
   const [expanded, setExpanded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  
+
   // Check if user has already registered for this event
   const isAlreadyRegistered = React.useMemo(() => {
     if (!userRegistrations) return false;
-    
+
     if (event.eventType === "Scrims" && userRegistrations.scrim_registrations) {
       return userRegistrations.scrim_registrations.some(
-        reg => reg.scrim_id === event.id
+        (reg) => reg.scrim_id === event.id,
       );
     }
-    
-    if (event.eventType === "Tournament" && userRegistrations.tournament_registrations) {
+
+    if (
+      event.eventType === "Tournament" &&
+      userRegistrations.tournament_registrations
+    ) {
       return userRegistrations.tournament_registrations.some(
-        reg => reg.tournament_id === event.id
+        (reg) => reg.tournament_id === event.id,
       );
     }
-    
+
     return false;
   }, [event, userRegistrations]);
-  
+
   const handleCardClick = (event, action) => {
     setIsLoading(true);
     // The onClick function will handle navigation
     // Loading state will persist even after the function returns
     onClick(event, action);
   };
-  
+
   const eventType =
     event.eventType || getEventType(event.title, event.organizer);
   // Use banner_image from API if available, otherwise fall back to game image
@@ -498,7 +501,9 @@ const EventCard = React.memo(function EventCard({ event, onClick, user, userRegi
   // Check if user is eligible (primaryGame matches event's game_name)
   const userPrimaryGame = user?.primaryGame || user?.primary_game;
   const eventGameName = event.game_name || event.game?.name;
-  const isEligible = userPrimaryGame && eventGameName && 
+  const isEligible =
+    userPrimaryGame &&
+    eventGameName &&
     userPrimaryGame.toLowerCase().trim() === eventGameName.toLowerCase().trim();
 
   return (
@@ -537,7 +542,7 @@ const EventCard = React.memo(function EventCard({ event, onClick, user, userRegi
           <span
             className={`px-4 py-1.5 text-xs font-bold rounded-full border capitalize inline-block ${getStatusColor(event.status)}`}
           >
-            {event.status || "Upcoming"}  
+            {event.status || "Upcoming"}
           </span>
         </div>
 
@@ -582,7 +587,7 @@ const EventCard = React.memo(function EventCard({ event, onClick, user, userRegi
             className="text-white font-bold text-xl cursor-pointer hover:text-purple-400 transition-colors line-clamp-2 leading-tight"
             onClick={() => onClick(event)}
           >
-            {event.title} 
+            {event.title}
           </h3>
         </div>
 
@@ -616,7 +621,7 @@ const EventCard = React.memo(function EventCard({ event, onClick, user, userRegi
         {/* Prize Pool - if exists */}
         {event.prizePool > 0 && (
           <div className="flex items-center gap-2 text-sm py-2 px-3 bg-amber-500/10 border border-amber-500/20 rounded-lg">
-            <DollarSign size={16} className="text-amber-400" />
+            ৳
             <span className="text-white font-semibold">
               {event.currency || "BDT"} {Math.floor(event.prizePool)} Prize Pool
             </span>
@@ -638,7 +643,9 @@ const EventCard = React.memo(function EventCard({ event, onClick, user, userRegi
               Swal.fire({
                 icon: "warning",
                 title: "Upgrade Your Plan",
-                html: event.applicability_reason || "You need to upgrade your plan to join this tournament.",
+                html:
+                  event.applicability_reason ||
+                  "You need to upgrade your plan to join this tournament.",
                 confirmButtonText: "Upgrade Plan",
                 confirmButtonColor: "#ec4899",
                 background: "#1a1a2e",
@@ -657,37 +664,49 @@ const EventCard = React.memo(function EventCard({ event, onClick, user, userRegi
               });
               return;
             }
-            
-            let action = 'view';
+
+            let action = "view";
             if (isAlreadyRegistered) {
-              action = 'view';
+              action = "view";
             } else if (isEligible) {
-              action = 'join';
+              action = "join";
             } else {
-              action = 'not-applicable';
+              action = "not-applicable";
             }
             handleCardClick(event, action);
           }}
           disabled={isLoading}
           className={`w-full mt-2 py-3 font-bold text-sm rounded-xl transition-all duration-200 uppercase tracking-wider flex items-center justify-center gap-2 ${
-  isLoading ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'
-} ${
-  isAlreadyRegistered
-    ? "bg-gradient-to-r from-green-600 to-green-500 text-white opacity-90"
-    : isEligible
-    ? "bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white"
-    : "bg-gradient-to-r from-rose-500 to-red-500 text-white cursor-not-allowed"
-}`}
-          whileHover={isEligible && !isAlreadyRegistered && !isLoading ? { scale: 1.01 } : {}}
-          whileTap={isEligible && !isAlreadyRegistered && !isLoading ? { scale: 0.98 } : {}}
+            isLoading ? "cursor-not-allowed opacity-60" : "cursor-pointer"
+          } ${
+            isAlreadyRegistered
+              ? "bg-gradient-to-r from-green-600 to-green-500 text-white opacity-90"
+              : isEligible
+                ? "bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white"
+                : "bg-gradient-to-r from-rose-500 to-red-500 text-white cursor-not-allowed"
+          }`}
+          whileHover={
+            isEligible && !isAlreadyRegistered && !isLoading
+              ? { scale: 1.01 }
+              : {}
+          }
+          whileTap={
+            isEligible && !isAlreadyRegistered && !isLoading
+              ? { scale: 0.98 }
+              : {}
+          }
         >
           {isLoading ? (
             <>
               <Loader2 size={16} className="animate-spin" />
               <span>Loading...</span>
             </>
+          ) : isAlreadyRegistered ? (
+            "View Details"
+          ) : isEligible ? (
+            "Join Event"
           ) : (
-            isAlreadyRegistered ? "View Details" : isEligible ? "Join Event" : "You are not Applicable"
+            "You are not Applicable"
           )}
         </motion.button>
       </div>
@@ -785,7 +804,10 @@ export default function EventsSection({
 
   // Fetch events based on active filter (Scrims, Tournaments, or both for "all")
   const fetchEvents = useCallback(async () => {
-    console.log("[EventsSection] fetchEvents() called with activeFilter:", activeFilter);
+    console.log(
+      "[EventsSection] fetchEvents() called with activeFilter:",
+      activeFilter,
+    );
     setLoading(true);
     setError(null);
     try {
@@ -868,10 +890,13 @@ export default function EventsSection({
           // Use the new authenticated endpoint with userId
           const userId = user?.id || user?.userId || "SNS-5556"; // Use correct user id from context
           const newTournamentURL = `https://inception-games.an.r.appspot.com/api/v1/auth/tournaments/list`;
-          
-          console.log("[EventsSection] Fetching tournaments with userId:", userId);
+
+          console.log(
+            "[EventsSection] Fetching tournaments with userId:",
+            userId,
+          );
           console.log("[EventsSection] New Tournament URL:", newTournamentURL);
-          
+
           const tournamentsRes = await fetch(newTournamentURL, {
             method: "POST",
             headers: {
@@ -883,65 +908,107 @@ export default function EventsSection({
           });
           const tournamentsData = await tournamentsRes.json();
 
-          console.log("[EventsSection] Tournaments API Response:", tournamentsData);
-          console.log("[EventsSection] Tournaments Response Status:", tournamentsRes.status);
+          console.log(
+            "[EventsSection] Tournaments API Response:",
+            tournamentsData,
+          );
+          console.log(
+            "[EventsSection] Tournaments Response Status:",
+            tournamentsRes.status,
+          );
 
           if (tournamentsRes.ok) {
-            const tournamentsArray = tournamentsData.tournaments || tournamentsData.data || [];
-            console.log("[EventsSection] Transformed Tournaments Array:", tournamentsArray);
-            
+            const tournamentsArray =
+              tournamentsData.tournaments || tournamentsData.data || [];
+            console.log(
+              "[EventsSection] Transformed Tournaments Array:",
+              tournamentsArray,
+            );
+
             // Transform API tournaments to our card format
-            const transformedTournaments = tournamentsArray.map((tournament) => {
-              return {
-                id: tournament.id,
-                title: tournament.title,
-                eventType: "Tournament",
-                game: {
-                  name: tournament.game || tournament.title?.split(" ")[0] || "Gaming",
-                  image: getGameImage(tournament.title, tournament.game),
-                },
-                game_name: tournament.game,
-                status: tournament.status,
-                start_date: tournament.start_at || tournament.start_date,
-                event_date: tournament.start_at || tournament.start_date,
-                end_date: tournament.end_at || tournament.end_date,
-                location: tournament.region || tournament.location,
-                venue: tournament.region || tournament.location,
-                platform: tournament.platform || "All Platforms",
-                teamType: tournament.game_mode || tournament.team_type || "Team",
-                prizePool: parseFloat(tournament.prize_pool) || 0,
-                prize_pool: parseFloat(tournament.prize_pool) || 0,
-                currency: tournament.currency || "BDT",
-                entryType: tournament.entry_type,
-                entryFee: parseFloat(tournament.entry_fee) || 0,
-                teamSize: tournament.team_size,
-                totalSlots: tournament.max_teams || tournament.total_slots || 0,
-                total_slots: tournament.max_teams || tournament.total_slots || 0,
-                filledSlots: tournament.filled_teams || tournament.filled_slots || 0,
-                filled_slots: tournament.filled_teams || tournament.filled_slots || 0,
-                registrationStart: tournament.reg_start_at || tournament.registration_start,
-                registration_start: tournament.reg_start_at || tournament.registration_start,
-                registrationEnd: tournament.reg_end_at || tournament.registration_end,
-                registration_end: tournament.reg_end_at || tournament.registration_end,
-                tournamentStart: tournament.start_at || tournament.start_date,
-                tournamentEnd: tournament.end_at || tournament.end_date,
-                rules: tournament.rules,
-                slots: tournament.slots || [],
-                host: tournament.hosted_by || tournament.organizer || "Inception Games",
-                organizer: tournament.hosted_by || tournament.organizer || "Inception Games",
-                banner_image: tournament.banner_image,
-                is_lock: tournament.is_lock || false,
-                applicability_reason: tournament.applicability_reason || "",
-              };
-            });
-            
-            console.log("[EventsSection] Transformed Tournaments (Card Format):", transformedTournaments);
+            const transformedTournaments = tournamentsArray.map(
+              (tournament) => {
+                return {
+                  id: tournament.id,
+                  title: tournament.title,
+                  eventType: "Tournament",
+                  game: {
+                    name:
+                      tournament.game ||
+                      tournament.title?.split(" ")[0] ||
+                      "Gaming",
+                    image: getGameImage(tournament.title, tournament.game),
+                  },
+                  game_name: tournament.game,
+                  status: tournament.status,
+                  start_date: tournament.start_at || tournament.start_date,
+                  event_date: tournament.start_at || tournament.start_date,
+                  end_date: tournament.end_at || tournament.end_date,
+                  location: tournament.region || tournament.location,
+                  venue: tournament.region || tournament.location,
+                  platform: tournament.platform || "All Platforms",
+                  teamType:
+                    tournament.game_mode || tournament.team_type || "Team",
+                  prizePool: parseFloat(tournament.prize_pool) || 0,
+                  prize_pool: parseFloat(tournament.prize_pool) || 0,
+                  currency: tournament.currency || "BDT",
+                  entryType: tournament.entry_type,
+                  entryFee: parseFloat(tournament.entry_fee) || 0,
+                  teamSize: tournament.team_size,
+                  totalSlots:
+                    tournament.max_teams || tournament.total_slots || 0,
+                  total_slots:
+                    tournament.max_teams || tournament.total_slots || 0,
+                  filledSlots:
+                    tournament.filled_teams || tournament.filled_slots || 0,
+                  filled_slots:
+                    tournament.filled_teams || tournament.filled_slots || 0,
+                  registrationStart:
+                    tournament.reg_start_at || tournament.registration_start,
+                  registration_start:
+                    tournament.reg_start_at || tournament.registration_start,
+                  registrationEnd:
+                    tournament.reg_end_at || tournament.registration_end,
+                  registration_end:
+                    tournament.reg_end_at || tournament.registration_end,
+                  tournamentStart: tournament.start_at || tournament.start_date,
+                  tournamentEnd: tournament.end_at || tournament.end_date,
+                  rules: tournament.rules,
+                  slots: tournament.slots || [],
+                  host:
+                    tournament.hosted_by ||
+                    tournament.organizer ||
+                    "Inception Games",
+                  organizer:
+                    tournament.hosted_by ||
+                    tournament.organizer ||
+                    "Inception Games",
+                  banner_image: tournament.banner_image,
+                  is_lock: tournament.is_lock || false,
+                  applicability_reason: tournament.applicability_reason || "",
+                };
+              },
+            );
+
+            console.log(
+              "[EventsSection] Transformed Tournaments (Card Format):",
+              transformedTournaments,
+            );
             allEvents.push(...transformedTournaments);
-            console.log("[EventsSection] All Events After Adding Tournaments:", allEvents);
-            
+            console.log(
+              "[EventsSection] All Events After Adding Tournaments:",
+              allEvents,
+            );
+
             // Cache the tournaments list for detail page to use
-            sessionStorage.setItem("tournaments_cache", JSON.stringify(tournamentsArray));
-            sessionStorage.setItem("tournaments_cache_timestamp", Date.now().toString());
+            sessionStorage.setItem(
+              "tournaments_cache",
+              JSON.stringify(tournamentsArray),
+            );
+            sessionStorage.setItem(
+              "tournaments_cache_timestamp",
+              Date.now().toString(),
+            );
           }
         } catch (err) {
           console.error("[EventsSection] Failed to fetch tournaments:", err);
@@ -985,24 +1052,23 @@ export default function EventsSection({
     () => [
       { id: "all", label: "All", count: filterCounts.all },
       {
+        id: "Scrims",
+        label: "Scrims",
+        count: filterCounts.Scrims,
+        icon: Swords,
+      },
+      {
         id: "Tournament",
         label: "Tournaments",
         count: filterCounts.Tournament,
         icon: Trophy,
       },
-      // Temporarily hidden - Scrims feature coming soon
-      // {
-      //   id: "Scrims",
-      //   label: "Scrims",
-      //   count: filterCounts.Scrims,
-      //   icon: Swords,
-      // },
-      // {
-      //   id: "Brand Deal",
-      //   label: "Brand Deals",
-      //   count: filterCounts["Brand Deal"],
-      //   icon: Briefcase,
-      // },
+      {
+        id: "Brand Deal",
+        label: "Brand Deals",
+        count: filterCounts["Brand Deal"],
+        icon: Briefcase,
+      },
     ],
     [filterCounts],
   );
@@ -1012,9 +1078,8 @@ export default function EventsSection({
     return events.filter((event) => {
       // Show events based on active filter
       const matchesFilter =
-        activeFilter === "all" ||
-        event.eventType === activeFilter;
-      
+        activeFilter === "all" || event.eventType === activeFilter;
+
       const matchesSearch =
         (event.title || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
         (event.game?.name || "")
@@ -1023,7 +1088,7 @@ export default function EventsSection({
         (event.organizer || "")
           .toLowerCase()
           .includes(searchQuery.toLowerCase());
-      
+
       return matchesFilter && matchesSearch;
     });
   }, [events, activeFilter, searchQuery]);
@@ -1193,9 +1258,9 @@ export default function EventsSection({
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.2 }}
               >
-                <EventCard 
-                  event={event} 
-                  onClick={handleEventClick} 
+                <EventCard
+                  event={event}
+                  onClick={handleEventClick}
                   user={user}
                   userRegistrations={user}
                   onUpgradePlanClick={() => setIsUpgradePlanModalOpen(true)}
@@ -1204,7 +1269,7 @@ export default function EventsSection({
             ))}
 
             {/* Coming Soon Cards - Brand Deals */}
-            {showComingSoonCards["Brand Deal"] && (
+            {/* {showComingSoonCards["Brand Deal"] && (
               <motion.div
                 key="brand-deal-card"
                 initial={{ opacity: 0, y: 20 }}
@@ -1214,7 +1279,7 @@ export default function EventsSection({
               >
                 <ComingSoonCard category="Brand Deal" icon={Briefcase} />
               </motion.div>
-            )}
+            )} */}
           </AnimatePresence>
 
           {/* Empty State for Scrims with no data */}
@@ -1241,7 +1306,7 @@ export default function EventsSection({
       )}
 
       {/* Upgrade Plan Modal */}
-      <UpgradePlanModal 
+      <UpgradePlanModal
         isOpen={isUpgradePlanModalOpen}
         onClose={() => setIsUpgradePlanModalOpen(false)}
         plans={apiPlans}
