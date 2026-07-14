@@ -676,6 +676,48 @@ const EventCard = React.memo(function EventCard({
               return;
             }
 
+            // Check tournament quota based on event category
+            if (event.event_category && userRegistrations?.event_quota_status) {
+              const quotaStatus = userRegistrations.event_quota_status;
+              let remainingQuota = 0;
+              let tournamentType = "";
+
+              if (event.event_category === "Mini Tournament") {
+                remainingQuota = quotaStatus.mini_tournaments?.remaining || 0;
+                tournamentType = "Mini Tournament";
+              } else if (event.event_category === "Large Tournament") {
+                remainingQuota = quotaStatus.large_tournaments?.remaining || 0;
+                tournamentType = "Large Tournament";
+              }
+
+              // If remaining quota is 0, show error message
+              if (remainingQuota === 0 && !isAlreadyRegistered) {
+                Swal.fire({
+                  icon: "warning",
+                  title: "No Quota Remaining",
+                  html: `You have no ${tournamentType.toLowerCase()} remaining in your current subscription. Please upgrade your plan to join more tournaments.`,
+                  confirmButtonText: "Upgrade Plan",
+                  cancelButtonText: "Close",
+                  confirmButtonColor: "#ec4899",
+                  background: "#1a1a2e",
+                  color: "#fff",
+                  showCancelButton: true,
+                  allowOutsideClick: true,
+                  didOpen: (modal) => {
+                    const confirmButton = modal.querySelector(".swal2-confirm");
+                    if (confirmButton) {
+                      confirmButton.style.backgroundColor = "#ec4899";
+                    }
+                  },
+                }).then((result) => {
+                  if (result.isConfirmed && onUpgradePlanClick) {
+                    onUpgradePlanClick();
+                  }
+                });
+                return;
+              }
+            }
+
             let action = "view";
             if (isAlreadyRegistered) {
               action = "view";
@@ -741,11 +783,8 @@ export default function EventsSection({
   const [isUpgradePlanModalOpen, setIsUpgradePlanModalOpen] = useState(false);
   const [apiPlans, setApiPlans] = useState([]);
 
-  // Initialize activeFilter from URL params, fallback to initialFilter
-  const [activeFilter, setActiveFilter] = useState(() => {
-    const tabParam = searchParams?.get("tab");
-    return tabParam || initialFilter;
-  });
+  // Initialize activeFilter from initialFilter prop, URL sync happens in useEffect
+  const [activeFilter, setActiveFilter] = useState(initialFilter);
 
   const [searchQuery, setSearchQuery] = useState("");
 

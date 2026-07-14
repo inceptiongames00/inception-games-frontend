@@ -191,7 +191,7 @@ export default function MyScrims({ userRegistrations }) {
           </div>
           
           {/* Tournament Quota Button - More Prominent Design */}
-        
+          {userRegistrations?.event_quota_status && (
             <div className="flex items-center gap-2">
               <div className="px-3 py-1.5 rounded-lg bg-purple-900/40 border border-purple-500/30 text-xs text-white font-medium">
                 <span className="text-purple-300">Mini: </span>
@@ -202,7 +202,7 @@ export default function MyScrims({ userRegistrations }) {
                 <span className="font-bold">{userRegistrations.event_quota_status.large_tournaments.remaining}/{userRegistrations.event_quota_status.large_tournaments.allowed}</span>
               </div>
             </div>
-          
+          )}
         </div>
 
         {/* Toggle Buttons */}
