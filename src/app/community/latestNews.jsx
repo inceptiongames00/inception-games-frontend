@@ -2,15 +2,15 @@
 import { ArrowRight, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import Image from "next/image";
 import { FaFacebookF, FaTwitter, FaLinkedin, FaWhatsapp } from "react-icons/fa";
-import Link from "next/link";
 
 const newsItems = [
   {
     title: "গেম খেলা হতে পারে কারো পেশা",
     description:
       "গেম তৈরি ও বাজারজাত করে দেশের অর্থনীতিতেও বড় অবদান রাখতে পারে গেম নির্মাতা প্রতিষ্ঠান। পেশাদার গেমারদের জন্য প্ল্যাটফর্ম তৈরি ও গেম তৈরির কাজ করছেন কাজী হাসিব ও তাঁর দল। তাঁদের দুই প্রতিষ্ঠানের সম্পর্কে লিখেছেন আশিক উল বারাত",
+    details:
+      "গেম খেলা হতে পারে কারো পেশা। গেম তৈরি ও বাজারজাত করে দেশের অর্থনীতিতেও বড় অবদান রাখতে পারে গেম নির্মাতা প্রতিষ্ঠান। পেশাদার গেমারদের জন্য প্ল্যাটফর্ম তৈরি ও গেম তৈরির কাজ করছেন কাজী হাসিব ও তাঁর দল। তাঁদের দুই প্রতিষ্ঠানের সম্পর্কে লিখেছেন আশিক উল বারাত. Thanks Ashiq Ul BaRat  হাসিবের @Slice N Share স্লাইস এন শেয়ার সহপ্রতিষ্ঠাতা কাজী হাসিব অবসরে গেম খেলা কিশোর-তরুণদের মধ্যে অত্যন্ত জনপ্রিয়। তবে এখনো গেম তৈরিতে কাজ করছে খুব কম দেশি প্রতিষ্ঠান। গত ১৩ জুলাই ই-স্পোর্টসকে ক্রীড়া হিসেবে মর্যাদা দিয়েছে বাংলাদেশ সরকার। অথচ এখনো পেশাদার গেমার হতে চাইলে প্রয়োজনীয় প্ল্যাটফর্মের অভাব বোধ করেন প্রত্যেক গেমার, দেশ-বিদেশে টুর্নামেন্ট আয়োজন অথবা অংশগ্রহণে নানাবিধ সমস্যার মুখোমুখি হন। গেম নির্মাতা প্রতিষ্ঠানের সংখ্যাও দেশে একেবারেই হাতে গোনা। ভিডিও গেম বাজারের এই ঘাটতিগুলো পূরণের লক্ষ্যে কাজ করছেন একদল তরুণ গেম নির্মাতা ও সফটওয়্যার ইঞ্জিনিয়ারের তৈরি স্টার্টআপ ‘স্লাইস এন শেয়ার’ ও এর গেম নির্মাতা শাখা ইনসেপশন স্টুডিও। যেভাবে শুরু স্লাইস এন শেয়ার ও Inception  ইনসেপশন স্টুডিও—এ দুটি স্টার্টআপের সহপ্রতিষ্ঠাতা কাজী হাসিব এবং রামিসা রিফা। নর্থ সাউথ বিশ্ববিদ্যালয়ে অধ্যয়নের সময় তাঁদের পরিচয়।২০২২ সালের শেষ ভাগে যাত্রা শুরু করে স্লাইস এন শেয়ার। এখন স্লাইস এন শেয়ার টিমে রয়েছেন মোট ৯ সদস্য। টিম গঠনের শুরুটা সহজ ছিল না। হাসিব বলেন, ‘গত আড়াই বছরে আমরা অনেক ধরনের সমস্যার মুখোমুখি হয়েছি। হয়তো অভিজ্ঞতা কম ছিল বলেই হতোদ্যম হয়ে যাইনি, নিজেদের প্রমাণ করার স্পৃহা কাজ করেছে। এখন শুরু করলে হয়তো সে রকম সাহস পেতাম না। যত বাধা আসুক, আমাদের টিম কখনো কাজ বন্ধ করে দেয়নি। দলের একজনকে হতাশা গ্রাস করলে অন্যরা তাকে টেনে তুলেছে। আমাদের টিমের অদম্য স্পৃহা নিয়ে আমি গর্ব করি। ই-স্পোর্টস প্ল্যাটফর্ম গেম খেলা হতে পারে কারো ক্যারিয়ার, রোজগারের প্রধান অবলম্বন—এটা এখনো সমাজে একেবারেই প্রতিষ্ঠিত নয়। ‘প্রফেশনাল গেমার’ পদটি যাতে ফাঁকা বুলি পর্যন্ত আটকে না থাকে, সেই লক্ষ্যে কাজ শুরু করেছেন হাসিব। ই-স্পোর্টসে ক্যারিয়ার গড়ে লাখ টাকা আয় করছেন বিদেশি খেলোয়াড়রা, বাংলাদেশের গেমাররা যাতে মাসে অন্তত ২০ হাজার টাকা আয় করতে পারেন, সে জন্য তৈরি হয়েছে স্লাইস এন শেয়ার। প্রতিষ্ঠানটির সঙ্গে পার্টনারশিপ করেছে শেয়ারট্রিপ, বেশ কয়েকটি ই-স্পোর্টস টুর্নামেন্ট আয়োজন করেছে তারা। এফসি২৪ গেমটি নিয়ে আয়োজিত ক্যাম্পাস ই-স্পোর্টস স্ক্রিমসে মোট ২৫ হাজার টাকা মূল্যের পুরস্কার বিতরণ করা হয়েছে। স্টার্টআপটি এরই মধ্যে Accelerating Bangladesh - অ্যাকসেলারেটিং বাংলাদেশ স্টার্টআপ প্রোগ্রাম’-এর অংশ হিসেবে যুক্ত হয়েছে। পাশাপাশি পেয়েছে ওয়ার্ল্ড ব্যাংকের ট্রেনিং সাপোর্ট। ফলে ফান্ড রেইজিং ও নেটওয়ার্কিংয়ে আটকাতে হয়নি এই প্রতিষ্ঠানের। শিগগিরই বড় টুর্নামেন্ট আয়োজনের পরিকল্পনা করছে তারা। Thanks to একজন শাহরিয়ার  Monjur Shahriar Mohammad Shahriar Sir for your mentor and Support ❤ ঢাকায় জম্বি অ্যাটাক ই-স্পোর্টস প্ল্যাটফর্ম তৈরির পাশাপাশি গেম তৈরিতেও কাজ করছেন হাসিব ও তাঁর দল। গেমিং স্টুডিওর নাম দেওয়া হয়েছে ইনসেপশন স্টুডিও। ঢাকার এলাকার ওপর ভিত্তি করে তৈরি গেম ওয়ার্ল্ডের পটভূমিতে তৈরি করা হয়েছে ফার্স্ট পারসন জম্বি শ্যুটার গেম ‘জেড ইনসেপশন’। এটি বিনামূল্যে ইনসেপশন স্টুডিওর ওয়েবসাইট Inception Studio website থেকে ডাইনলোড করে পিসিতে খেলা যাবে। মানিক মিয়া এভিনিউ, নর্থ সাউথ বিশ্ববিদ্যালয়ের আশপাশের এলাকা ও চিরচেনা ঢাকার অন্যান্য এলাকার মডেল ইউনিটি ইঞ্জিনে বসিয়ে গেমটি তৈরি করা হয়েছে। হাসিব বলেন, ‘ছোটবেলায় অনেক গেমার জিটিএ ভাইস সিটি খেলেছে, এর মাধ্যমে যুক্তরাষ্ট্রের মায়ামির অনেকটাই চেনা হয়ে গেছে। বাংলাদেশের মূল শহরগুলো কাজে লাগিয়ে গেম তৈরি করা হলে বিশ্ববাসী আমাদের দেশকেও চিনবে। এ ভাবনা থেকেই একসময় জন্ম নেয় ‘Z Inception’। বিশ্বের অনেক শহরের কর্তৃপক্ষ চায় সেটি গেমের পটভূমি হিসেবে ব্যবহূত হোক। এতে বিশ্ব দরবারে শহরের পরিচিতি বাড়ে, পর্যটকরা ভিড় জমায়। গেমের কল্যাণে এ সুফল ঢাকাও পাবে, আশা করছেন হাসিব ও তাঁর দল। ইনসেপশন স্টুডিওর সাইটে আপাতত গেমটির পরীক্ষামূলক সংস্করণ প্রকাশ করা হয়েছে, ২০২৬ সালের মধ্যে জনপ্রিয় গেমিং প্ল্যাটফর্ম ‘স্টিম’-এ গেমটি পূর্ণাঙ্গ প্রকাশের প্রস্তুতি চলছে। ভবিষ্যৎ আগামী তিন বছরে দেশে কমপক্ষে ১০ হাজার পেশাদার গেমার এবং আন্তর্জাতিক মানের বেশ কয়েকটি গেম তৈরি করতে চায় স্লাইস এন শেয়ার এবং ইনসেপশন স্টুডিও। আগামী বছর (২০২৬) থেকে দেশের বাইরেও কাজ শুরুর পরিকল্পনা রয়েছে তাদের। এ বিষয়ে হাসিব বলেন, ‘বিশ্বে গেমিং ইন্ডাস্ট্রির বাজার প্রায় ট্রিলিয়ন ডলার ছাড়িয়েছে। যদি এর ১ শতাংশও বাংলাদেশে আনা যায়, তাহলেও দেশের অর্থনীতির চাকায় বড় পরিবর্তন আসবে। এর অংশ হতে চাই আমরা, সেটাই আপাতত ভবিষ্যতের চ্যালেঞ্জ।’",
     image:
       "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157039/bignews_jmxxbf.jpg",
     category: "UPDATES",
@@ -33,6 +33,8 @@ const newsItems = [
     title: "Airtel Buzz Presents Bangladesh Gaming & Esports Summit 2025",
     description:
       "Dedicating to my Core Teammates & gamers ❤️. Tournament sign up going on at our website. Don't forget to sign up. Slice N Share at Airtel Buzz Presents Bangladesh Gaming & Esports Summit 2025.",
+    details:
+      "Congratulations to our early startup days ex intern Imtiaz. We love to see your Growth over the years. It gives us good hope that you will shine more . Best Wishes. 🔥❤️ He shared that he has honored to receive the Bronze Award at the Airtel Buzz Presents YUNet Bangladesh Gaming & Esports Summit 2025 Powered by XQUBE Studio for game MotoShooter. This recognition from the @IGDA Bangladesh means a lot, especially being evaluated alongside many strong projects based on design, execution, and technical quality.",
     image:
       "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157047/news4_u9saum.jpg",
     category: "COMMUNITY",
@@ -41,9 +43,6 @@ const newsItems = [
     readMoreLink: "",
   },
 ];
-
-const loremText =
-  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
 
 export default function LatestNews() {
   const [selectedNews, setSelectedNews] = useState(null);
@@ -149,19 +148,13 @@ export default function LatestNews() {
                   {/* Read More Link */}
                   <div className="mt-4 pt-4 border-t border-zinc-700/50">
                     <div className="flex items-center gap-3">
-                      <Link
-                        href={news.readMoreLink || "#"}
-                        target={news.readMoreLink ? "_blank" : undefined}
-                        onClick={(e) => {
-                          if (!news.readMoreLink) {
-                            e.preventDefault();
-                          }
-                        }}
+                      <button
+                        onClick={() => setSelectedNews(news)}
                         className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-500 rounded-full text-white font-semibold text-xs uppercase tracking-wider transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/50 group/link cursor-pointer"
                       >
                         Read More
                         <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform duration-300" />
-                      </Link>
+                      </button>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -234,7 +227,7 @@ export default function LatestNews() {
                     style={{
                       backgroundImage: `url('${selectedNews.image}')`,
                       backgroundSize: "cover",
-                      backgroundPosition: "center",
+                      backgroundPosition: "top",
                       backgroundRepeat: "no-repeat",
                     }}
                   >
@@ -266,10 +259,6 @@ export default function LatestNews() {
                 {/* Scrollable Content */}
                 <div className="flex-1 overflow-y-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6">
                   <div className="space-y-4 sm:space-y-6">
-                    <p className="text-sm sm:text-base md:text-lg text-zinc-300 leading-relaxed">
-                      {selectedNews.description}
-                    </p>
-
                     <div className="h-1 bg-gradient-to-r from-purple-500/0 via-purple-500/50 to-purple-500/0 rounded-full" />
 
                     <div className="space-y-3 sm:space-y-4">
@@ -277,10 +266,7 @@ export default function LatestNews() {
                         Full Story
                       </h3>
                       <p className="text-xs sm:text-sm md:text-base text-zinc-400 leading-relaxed">
-                        {loremText}
-                      </p>
-                      <p className="text-xs sm:text-sm md:text-base text-zinc-400 leading-relaxed">
-                        {loremText}
+                        {selectedNews.details ?? selectedNews.description}
                       </p>
                     </div>
                   </div>
