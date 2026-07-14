@@ -1050,11 +1050,12 @@ export default function EventDetailPage() {
                               // Get auth token
                               const tokens = getTokens();
                               
-                              // Determine the API endpoint based on event type
+                              // Use production API directly
+                              const API_BASE_URL = "https://inception-games.an.r.appspot.com/api/v1";
                               const eventTypeEndpoint = event?.eventType === "Scrims" ? "scrims" : "tournaments";
-                              const apiUrl = `/api/events/${eventTypeEndpoint}/${params.eventId}/register`;
+                              const apiUrl = `${API_BASE_URL}/events/${eventTypeEndpoint}/${params.eventId}/register`;
                               
-                              // Make API call through Next.js API route
+                              // Make API call
                               const headers = {
                                 "Content-Type": "application/json",
                               };
@@ -1282,7 +1283,7 @@ export default function EventDetailPage() {
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                               <label className="block text-sm font-medium text-gray-300 mb-2">
-                                Steam ID / PSN ID *
+                                Steam ID / PSN ID / EA ID *
                               </label>
                               <input
                                 type="text"
@@ -1295,7 +1296,7 @@ export default function EventDetailPage() {
                                   }))
                                 }
                                 className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
-                                placeholder="Steam ID / PSN ID"
+                                placeholder="Steam ID / PSN ID / EA ID"
                               />
                             </div>
                             <div>
