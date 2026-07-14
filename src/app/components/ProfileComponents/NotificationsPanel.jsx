@@ -40,17 +40,18 @@ export default function NotificationsPanel() {
   const markNotificationAsRead = async (notificationId) => {
     try {
       const tokens = getTokens();
-      if (!tokens?.accessToken || !NOTIFICATIONS_ENDPOINT) return false;
+      if (!tokens?.accessToken) return false;
 
       // Try to call the API to mark as read
       const response = await fetch(
-        `${NOTIFICATIONS_ENDPOINT}/${notificationId}/read`,
+        `${API_BASE_URL}/message/${notificationId}/read`,
         {
-          method: "PUT",
+          method: "PATCH",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${tokens.accessToken}`,
           },
+          body: JSON.stringify({ id: notificationId }),
         },
       );
 
@@ -106,29 +107,14 @@ export default function NotificationsPanel() {
     }
   };
 
-  // Format relative time
-  const getRelativeTime = (dateString) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const seconds = Math.floor((now - date) / 1000);
-
-    if (seconds < 60) return "Just now";
-    if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
-    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
-    
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    return `${months[date.getMonth()]} ${date.getDate()}`;
-  };
-
   useEffect(() => {
     fetchNotifications();
     const interval = setInterval(fetchNotifications, 10000); // Fetch every 10 seconds
     return () => clearInterval(interval);
   }, [NOTIFICATIONS_ENDPOINT]);
 
-  // Also set up a listener for new notifications if using WebSocket or Server-Sent Events
+  // Recalculate unread count whenever notifications change
   useEffect(() => {
-    // This effect re-calculates unread count whenever notifications change
     const unread = notifications.filter(n => !n.is_read).length;
     setUnreadCount(unread);
   }, [notifications]);
@@ -186,22 +172,8 @@ export default function NotificationsPanel() {
 
             {/* Bell Button */}
             <motion.button
-              onClick={async () => {
+              onClick={() => {
                 setShowList(true);
-                // Mark all unread notifications as read when opening the panel
-                const unreadNotifs = notifications.filter(n => !n.is_read);
-                for (const notif of unreadNotifs) {
-                  setLocalReadStates((prev) => ({
-                    ...prev,
-                    [notif.id]: true,
-                  }));
-                  await markNotificationAsRead(notif.id);
-                }
-                // Update local state to mark all as read
-                setNotifications((prev) =>
-                  prev.map((n) => ({ ...n, is_read: 1 }))
-                );
-                setUnreadCount(0);
               }}
               className="relative p-2 rounded-lg bg-white/[0.05] border border-white/[0.1] text-gray-400 hover:text-white hover:bg-white/[0.08] transition cursor-pointer"
               whileHover={{ scale: 1.05 }}
@@ -294,7 +266,21 @@ export default function NotificationsPanel() {
                       return (
                         <motion.button
                           key={notif.id}
-                          onClick={() => {
+                          onClick={async () => {
+                            // Mark as read when clicking
+                            if (isUnread) {
+                              await markNotificationAsRead(notif.id);
+                              setLocalReadStates((prev) => ({
+                                ...prev,
+                                [notif.id]: true,
+                              }));
+                              // Update notifications list to reflect read status
+                              setNotifications((prev) =>
+                                prev.map((n) =>
+                                  n.id === notif.id ? { ...n, is_read: 1 } : n
+                                )
+                              );
+                            }
                             setSelectedNotif(notif);
                             setShowList(false);
                           }}
