@@ -31,7 +31,7 @@ export default function GiveawayWinner() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedNews, setSelectedNews] = useState(null);
 
-  const winners = [
+  const winnersData = [
     {
       title: "5 Jerseys Giveaway is ON GKEC 🎉",
       description: "",
@@ -44,7 +44,7 @@ export default function GiveawayWinner() {
     {
       title: "Gaming Mouse Winner - ANTOR HASAN",
       description:
-        "বিশাল অভিনন্দন ময়মনসিংহের অন্তর হাসানকে, আমাদের গেমিং মাউস গিভঅ্যাওয়ের ভাগ্যবান বিজয়ী! 🎉 আজ ঢাকায় আমাদের ফাউন্ডার অত্যন্ত আনন্দের সাথে হার্ডওয়্যারটি তার বন্ধু ইমরানের হাতে আনুষ্ঠানিকভাবে তুলে দিয়েছেন। নতুন মাউস দিয়ে গেমিং হোক আরও নিখুঁত, অন্তর!",
+        "বিশাল অভিনন্দন ময়মনসিংহের অন্তর হাসানকে, আমাদের গেমিং মাউস গিভঅ্যাওয়ের ভাগ্যবান বিজয়ী! 🎉 আজ ঢাকায় আমাদের ফাউন্ডার অত্যন্ত আনন্দের সাথে হার্ডওয়্যারটি তার বন্ধু ইমরানের হাতে আনুষ্ঠানিকভাবে তুলে দিয়েছেন। নতুন মাউস দিয়ে গেমিং হোক আরও নিখুঁত, অন্তর!",
       category: "Giveaway",
       categoryColor:
         "bg-green-500/20 text-green-300 border border-green-500/30",
@@ -54,7 +54,7 @@ export default function GiveawayWinner() {
     {
       title: "GPU Winner - AL MOHAIMIN FARABI",
       description:
-        "আনন্দের সাথে জানাচ্ছি যে, আমাদের জিপিইউ (GPU) গিভঅ্যাওয়ে বিজয়ী আল মোহাইমিন ফারাবী আজ তার পুরস্কারটি বুঝে নিতে চট্টগ্রাম থেকে ঢাকায় এসেছেন! এবং জিপিইউ বুঝে পেয়েছেন। ব্র্যান্ড নিউ ARC A580 8GB. যারা এই আয়োজনে অংশ নিয়েছেন এবং আমাদের সাপোর্ট করেছেন, তাদের সবাইকে ধন্যবাদ। জিপিইউটি নিজ হাতে বিজয়ীর হাতে তুলে দেওয়ার জন্য আমাদের ফাউন্ডারকে বিশেষ ধন্যবাদ। তিনি আরোও জানান, নতুন আরও কিছু চমক ঈদের পর আসছে।",
+        "আনন্দের সাথে জানাচ্ছি যে, আমাদের জিপিইউ (GPU) গিভঅ্যাওয়ে বিজয়ী আল মোহাইমিন ফারাবী আজ তার পুরস্কারটি বুঝে নিতে চট্টগ্রাম থেকে ঢাকায় এসেছেন! এবং জিপিইউ বুঝে পেয়েছেন। ব্র্যান্ড নিউ ARC A580 8GB. যারা এই আয়োজনে অংশ নিয়েছেন এবং আমাদের সাপোর্ট করেছেন, তাদের সবাইকে ধন্যবাদ। জিপিইউটি নিজ হাতে বিজয়ীর হাতে তুলে দেওয়ার জন্য আমাদের ফাউন্ডারকে বিশেষ ধন্যবাদ। তিনি আরোও জানান, নতুন আরও কিছু চমক ঈদের পর আসছে।",
       category: "Giveaway",
       categoryColor: "bg-blue-500/20 text-blue-300 border border-blue-500/30",
       image:
@@ -63,7 +63,7 @@ export default function GiveawayWinner() {
     {
       title: "Mousepad Giveaway tonight guys. Don't miss the chance. ",
       description:
-        "🎁 গিভঅ্যাওয়ে অ্যালার্ট: জিতে নিন প্রিমিয়াম গেমিং মাউস প্যাড! 🎁 Slice N Share কমিউনিটির জন্য আমরা নিয়ে এসেছি আরও একটি দুর্দান্ত গিভঅ্যাওয়ে! এবার আপনার গেমিং সেটআপকে আরও নিখুঁত করতে জিতে নিন একটি গেমিং মাউস প্যাড। ✨ অংশগ্রহণের নিয়মাবলি: - এই পোস্টটি আপনার টাইমলাইনে শেয়ার করুন (পোস্ট পাবলিক রাখতে হবে)। - কমেন্ট সেকশনে আপনার ৫ জন গেমার বন্ধুকে মেনশন করুন। - আমাদের পেজ ফলো করার জন্য ১০ জন বন্ধুকে ইনভাইট করুন। - সবগুলো কাজ শেষ করে এই পোস্টে 'MP2' লিখে কমেন্ট করুন",
+        "🎁 গিভঅ্যাওয়ে অ্যালার্ট: জিতে নিন প্রিমিয়াম গেমিং মাউস প্যাড! 🎁 Slice N Share কমিউনিটির জন্য আমরা নিয়ে এসেছি আরও একটি দুর্দান্ত গিভঅ্যাওয়ে! এবার আপনার গেমিং সেটআপকে আরও নিখুঁত করতে জিতে নিন একটি গেমিং মাউস প্যাড। ✨ অংশগ্রহণের নিয়মাবলি: - এই পোস্টটি আপনার টাইমলাইনে শেয়ার করুন (পোস্ট পাবলিক রাখতে হবে)। - কমেন্ট সেকশনে আপনার ৫ জন গেমার বন্ধুকে মেনশন করুন। - আমাদের পেজ ফলো করার জন্য ১০ জন বন্ধুকে ইনভাইট করুন। - সবগুলো কাজ শেষ করে এই পোস্টে 'MP2' লিখে কমেন্ট করুন",
       category: "Giveaway",
       categoryColor:
         "bg-yellow-500/20 text-yellow-300 border border-yellow-500/30",
@@ -72,18 +72,21 @@ export default function GiveawayWinner() {
     },
   ];
 
+  // Duplicate for seamless infinite loop
+  const winners = [...winnersData, ...winnersData];
+
   // Auto-rotate carousel
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prev) => {
         const nextIndex = prev + 1;
-        // When reaching the end of the duplicated set, jump back to the beginning
-        return nextIndex >= winners.length * 2 ? 0 : nextIndex;
+        // Loop back when reaching the end of duplicated set
+        return nextIndex >= winnersData.length * 2 ? 0 : nextIndex;
       });
     }, 5000); // Change slide every 5 seconds
 
     return () => clearInterval(interval);
-  }, [winners.length]);
+  }, [winnersData.length]);
 
   const handleShare = (platform, winner) => {
     const shareUrl = typeof window !== "undefined" ? window.location.href : "";
@@ -228,12 +231,13 @@ export default function GiveawayWinner() {
           {/* Carousel Container - Show 3 cards */}
           <div
             className="flex gap-3 sm:gap-4 lg:gap-5 transition-transform duration-500 ease-out px-4 sm:px-6"
-            style={{ transform: `translateX(-${currentIndex * (100 / 3)}%)` }}
+            style={{
+              transform: `translateX(calc(-${currentIndex} * (calc(100% / 3))))`,
+            }}
           >
-            {/* First set */}
             {winners.map((winner, idx) => (
               <div
-                key={`set1-${idx}`}
+                key={`winner-${idx}`}
                 className="w-full lg:w-1/3 flex-shrink-0 px-2 sm:px-3"
               >
                 <motion.div
@@ -274,9 +278,6 @@ export default function GiveawayWinner() {
                         <h3 className="text-sm md:text-lg text-center font-bold text-white mb-3 leading-tight group-hover:text-purple-300 transition-colors duration-300">
                           {winner.title}
                         </h3>
-                        {/* <p className="text-sm sm:text-base text-zinc-400 leading-relaxed">
-                          {winner.description}
-                        </p> */}
                       </div>
 
                       {/* Bottom section with accent line and share buttons */}
@@ -330,12 +331,12 @@ export default function GiveawayWinner() {
 
         {/* Slide Indicators */}
         <div className="flex justify-center gap-2 mt-8">
-          {winners.map((_, idx) => (
+          {winnersData.map((_, idx) => (
             <button
               key={idx}
               onClick={() => setCurrentIndex(idx)}
               className={`transition-all duration-300 rounded-full ${
-                idx === currentIndex
+                idx === currentIndex % winnersData.length
                   ? "w-8 h-2 bg-gradient-to-r from-pink-500 to-purple-500"
                   : "w-2 h-2 bg-zinc-600 hover:bg-zinc-500"
               }`}
