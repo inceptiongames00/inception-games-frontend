@@ -22,11 +22,11 @@ export default function ScrimsCarousel({ onLoginClick }) {
       try {
         setLoading(true);
         const response = await fetch(
-          "https://inception-games.an.r.appspot.com/api/v1/cms/tournaments/all"
+          "https://inception-games.an.r.appspot.com/api/v1/cms/tournaments/all",
         );
         if (!response.ok) throw new Error("Failed to fetch tournaments");
         const data = await response.json();
-        
+
         // Handle different response formats
         let tournamentsArray = [];
         if (Array.isArray(data)) {
@@ -35,11 +35,11 @@ export default function ScrimsCarousel({ onLoginClick }) {
           tournamentsArray = data.data;
         } else if (data && Array.isArray(data.tournaments)) {
           tournamentsArray = data.tournaments;
-        } else if (data && typeof data === 'object') {
+        } else if (data && typeof data === "object") {
           // Single tournament object - wrap in array
           tournamentsArray = [data];
         }
-        
+
         setTournaments(tournamentsArray);
       } catch (error) {
         console.error("Error fetching tournaments:", error);
@@ -54,7 +54,7 @@ export default function ScrimsCarousel({ onLoginClick }) {
 
   const handleCardClick = () => {
     if (isHydrated && user) {
-      navigateToTab("Scrims");
+      navigateToTab("Tournament");
     } else {
       onLoginClick();
     }
@@ -124,21 +124,23 @@ function GameCard({ tournament, onClick, isHydrated, user }) {
     return "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=500&h=600&fit=crop";
   };
 
-  const getGameLabel = () => {
-    if (tournament.entry_type === "Free" || tournament.entry_fee === "0.00") {
-      return "FREE ENTRY";
-    }
-    return `${tournament.entry_fee} ENTRY`;
-  };
+  // const getGameLabel = () => {
+  //   if (tournament.entry_type === "Free" || tournament.entry_fee === "0.00") {
+  //     return "FREE ENTRY";
+  //   }
+  //   return `${tournament.entry_fee} ENTRY`;
+  // };
 
   const getStartDate = () => {
     if (tournament.start_at) {
       const date = new Date(tournament.start_at);
-      return date.toLocaleDateString("en-US", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      }).toUpperCase();
+      return date
+        .toLocaleDateString("en-US", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        })
+        .toUpperCase();
     }
     return "COMING SOON";
   };
@@ -152,11 +154,12 @@ function GameCard({ tournament, onClick, isHydrated, user }) {
         <div
           className="relative transition-all duration-300 hover:scale-105 h-full"
           style={{
-            backgroundImage: 'url(https://res.cloudinary.com/jvpygp4b/image/upload/v1783241169/frame_qqaibz.png)',
-            backgroundSize: '100% 100%',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            padding: '12px',
+            backgroundImage:
+              "url(https://res.cloudinary.com/jvpygp4b/image/upload/v1783241169/frame_qqaibz.png)",
+            backgroundSize: "100% 100%",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            padding: "12px",
             boxShadow: "0 0 30px rgba(255, 0, 255, 0.2)",
           }}
         >
@@ -181,7 +184,7 @@ function GameCard({ tournament, onClick, isHydrated, user }) {
                 className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               >
                 <span className="px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 rounded-full text-white font-semibold text-sm transition-all duration-300">
-                  {isHydrated && user ? "Go To Scrim" : "Sign In"}
+                  {isHydrated && user ? "Go To Tournament" : "Sign In"}
                 </span>
               </button>
             </div>
@@ -190,12 +193,13 @@ function GameCard({ tournament, onClick, isHydrated, user }) {
             <div className="relative bg-gradient-to-r px-3 py-3.5 text-center flex flex-col items-center">
               <h3
                 className="text-xs font-bold mb-1 uppercase tracking-wider line-clamp-1 group-hover:text-white transition-colors duration-300"
-                style={{ color: '#FFFA5B' }}
+                style={{ color: "#FFFA5B" }}
               >
-                {getGameLabel()}
+                {tournament.game}
               </h3>
               <p className="text-[9px] font-bold text-yellow-300 uppercase group-hover:text-yellow-100 transition-colors duration-300">
-                <span style={{ color: '#FFFFFF' }}>STARTING</span> {getStartDate()}
+                <span style={{ color: "#FFFFFF" }}>STARTING</span>{" "}
+                {getStartDate()}
               </p>
             </div>
           </div>

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import ProfileHeroBanner from "../components/ProfileComponents/ProfileHeroBanner";
@@ -15,56 +15,62 @@ import SubscriptionSection from "../components/ProfileComponents/SubscriptionSec
 import ProGearShop from "../components/ProfileComponents/ProGearShop";
 import { getTokens } from "@/lib/api";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://inception-games.an.r.appspot.com/api/v1';
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  "https://inception-games.an.r.appspot.com/api/v1";
 
 export default function ProfilePage() {
   const { user, isAuthenticated, loading } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const tab = searchParams.get("tab");
   const [gamingProfile, setGamingProfile] = useState(null);
   const [editProfileOpen, setEditProfileOpen] = useState(false);
-  const [editProfileMode, setEditProfileMode] = useState('edit');
+  const [editProfileMode, setEditProfileMode] = useState("edit");
   const [apiUserProfile, setApiUserProfile] = useState(null);
   const [loadingProfile, setLoadingProfile] = useState(true);
-
-  console.log('User Profile',user)
 
   // Fetch user profile from API
   const fetchUserProfile = async (userId, accessToken) => {
     try {
-      console.log('[ProfilePage] fetchUserProfile called with userId:', userId);
-      
+      console.log("[ProfilePage] fetchUserProfile called with userId:", userId);
+
       if (!userId || !accessToken) {
-        console.log('[ProfilePage] Missing userId or accessToken');
+        console.log("[ProfilePage] Missing userId or accessToken");
         setLoadingProfile(false);
         return;
       }
 
       const apiUrl = `${API_BASE_URL}/auth/user-profile/${userId}`;
-      console.log('[ProfilePage] Fetching from URL:', apiUrl);
+      console.log("[ProfilePage] Fetching from URL:", apiUrl);
 
       const response = await fetch(apiUrl, {
         headers: {
-          'Authorization': `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
         },
       });
 
-      console.log('[ProfilePage] Response Status:', response.status, response.statusText);
+      console.log(
+        "[ProfilePage] Response Status:",
+        response.status,
+        response.statusText,
+      );
 
       if (response.ok) {
         const data = await response.json();
-        console.log('[ProfilePage] Full API Response:', data);
+        console.log("[ProfilePage] Full API Response:", data);
         const profileData = data.data || data;
-        console.log('[ProfilePage] Response Data:', profileData);
-        console.log('[ProfilePage] Subscriptions:', profileData?.subscriptions);
+        console.log("[ProfilePage] Response Data:", profileData);
+        console.log("[ProfilePage] Subscriptions:", profileData?.subscriptions);
         setApiUserProfile(profileData);
       } else {
         const errorData = await response.json();
-        console.log('[ProfilePage] Error Response:', errorData);
+        console.log("[ProfilePage] Error Response:", errorData);
       }
     } catch (error) {
-      console.log('[ProfilePage] Error fetching user profile:', error);
-      console.error('[ProfilePage] Error Details:', error);
+      console.log("[ProfilePage] Error fetching user profile:", error);
+      console.error("[ProfilePage] Error Details:", error);
     } finally {
       setLoadingProfile(false);
     }
@@ -73,14 +79,14 @@ export default function ProfilePage() {
   // Fetch profile whenever user or authentication changes
   useEffect(() => {
     if (!user?.id) {
-      console.log('[ProfilePage] No user ID available');
+      console.log("[ProfilePage] No user ID available");
       setLoadingProfile(false);
       return;
     }
 
     const tokens = getTokens();
     if (!tokens?.accessToken) {
-      console.log('[ProfilePage] No access token found');
+      console.log("[ProfilePage] No access token found");
       setLoadingProfile(false);
       return;
     }
@@ -143,22 +149,50 @@ export default function ProfilePage() {
       user?.email?.split("@")[0] ||
       "Player",
     bio: apiUserProfile?.bio || user?.bio || gamingProfile?.bio || "",
-    primaryGame: apiUserProfile?.primaryGame || apiUserProfile?.primary_game || user?.primaryGame || gamingProfile?.game || "",
-    gameRole: apiUserProfile?.gameRole || apiUserProfile?.game_role || user?.gameRole || gamingProfile?.role || "",
-    region: apiUserProfile?.region || user?.region || gamingProfile?.region || "",
+    primaryGame:
+      apiUserProfile?.primaryGame ||
+      apiUserProfile?.primary_game ||
+      user?.primaryGame ||
+      gamingProfile?.game ||
+      "",
+    gameRole:
+      apiUserProfile?.gameRole ||
+      apiUserProfile?.game_role ||
+      user?.gameRole ||
+      gamingProfile?.role ||
+      "",
+    region:
+      apiUserProfile?.region || user?.region || gamingProfile?.region || "",
     rank: apiUserProfile?.rank || user?.rank || gamingProfile?.rank || "",
-    discord: apiUserProfile?.discord || user?.discord || gamingProfile?.discord || "",
-    avatar: apiUserProfile?.avatar || apiUserProfile?.avatar_url || user?.avatar || "",
-    banner: apiUserProfile?.banner || apiUserProfile?.banner_url || user?.banner || "",
+    discord:
+      apiUserProfile?.discord || user?.discord || gamingProfile?.discord || "",
+    avatar:
+      apiUserProfile?.avatar ||
+      apiUserProfile?.avatar_url ||
+      user?.avatar ||
+      "",
+    banner:
+      apiUserProfile?.banner ||
+      apiUserProfile?.banner_url ||
+      user?.banner ||
+      "",
     // Include registration data from API
     scrim_registrations: apiUserProfile?.scrim_registrations || [],
     tournament_registrations: apiUserProfile?.tournament_registrations || [],
     // Legacy fields for compatibility
-    game: apiUserProfile?.primaryGame || apiUserProfile?.primary_game || user?.primaryGame || gamingProfile?.game || "",
-    role: apiUserProfile?.gameRole || apiUserProfile?.game_role || user?.gameRole || gamingProfile?.role || "",
+    game:
+      apiUserProfile?.primaryGame ||
+      apiUserProfile?.primary_game ||
+      user?.primaryGame ||
+      gamingProfile?.game ||
+      "",
+    role:
+      apiUserProfile?.gameRole ||
+      apiUserProfile?.game_role ||
+      user?.gameRole ||
+      gamingProfile?.role ||
+      "",
   };
-
-
 
   return (
     <div className="min-h-screen bg-[#060608] flex flex-col">
@@ -183,44 +217,48 @@ export default function ProfilePage() {
           {/* My Scrims + Notifications + Subscriptions Grid - Responsive */}
           <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-6 mb-8 md:mb-10">
             {/* Left Column: My Scrims & Gear Shop (wider on larger screens) */}
-          <div className="md:col-span-2 lg:col-span-3 space-y-3 sm:space-y-5 md:space-y-5">
-  <MyScrims userRegistrations={apiUserProfile} />
-  
-  {/* Hide on mobile, show on md screens and above */}
-  <div className="hidden md:block">
-    <ProGearShop />
-  </div>
-</div>
+            <div className="md:col-span-2 lg:col-span-3 space-y-3 sm:space-y-5 md:space-y-5">
+              <MyScrims userRegistrations={apiUserProfile} />
+
+              {/* Hide on mobile, show on md screens and above */}
+              <div className="hidden md:block">
+                <ProGearShop />
+              </div>
+            </div>
 
             {/* Right Column: Notifications & Subscriptions (sidebar on md+) */}
             <div className="md:col-span-1 space-y-4 sm:space-y-6 md:space-y-6">
               <NotificationsPanel />
-              <SubscriptionSection userProfile={apiUserProfile} userId={user?.id} onSubscriptionSuccess={() => {
-                const tokens = getTokens();
-                if (user?.id && tokens?.accessToken) {
-                  fetchUserProfile(user.id, tokens.accessToken);
-                }
-              }} />
+              <SubscriptionSection
+                userProfile={apiUserProfile}
+                userId={user?.id}
+                onSubscriptionSuccess={() => {
+                  const tokens = getTokens();
+                  if (user?.id && tokens?.accessToken) {
+                    fetchUserProfile(user.id, tokens.accessToken);
+                  }
+                }}
+              />
 
-                {/* Game change button */}
-  <div className="p-4 bg-white/[0.02] rounded-xl border border-white/[0.06]">
-  <button
-    type="button"
-    onClick={() => {
-      setEditProfileMode('changeGame');
-      setEditProfileOpen(true);
-    }}
-    className="w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500 hover:from-emerald-400 hover:via-green-400 hover:to-teal-400 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-  >
-    Change Game
-  </button>
-</div>
+              {/* Game change button */}
+              <div className="p-4 bg-white/[0.02] rounded-xl border border-white/[0.06]">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEditProfileMode("changeGame");
+                    setEditProfileOpen(true);
+                  }}
+                  className="w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500 hover:from-emerald-400 hover:via-green-400 hover:to-teal-400 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+                >
+                  Change Game
+                </button>
+              </div>
             </div>
           </div>
 
           {/* Events Section - Full Width */}
           <div className="space-y-6 md:space-y-8">
-            <EventsSection user={mergedUser} />
+            <EventsSection initialFilter={tab || "all"} user={mergedUser} />
           </div>
         </div>
       </main>
@@ -232,7 +270,7 @@ export default function ProfilePage() {
         isOpen={editProfileOpen}
         onClose={() => {
           setEditProfileOpen(false);
-          setEditProfileMode('edit');
+          setEditProfileMode("edit");
         }}
         user={mergedUser}
         gamingProfile={gamingProfile}
