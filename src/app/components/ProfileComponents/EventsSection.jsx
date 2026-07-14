@@ -538,12 +538,23 @@ const EventCard = React.memo(function EventCard({
         </div>
 
         {/* Status Badge - Top Right */}
-        <div className="absolute top-4 right-4">
+        <div className="absolute top-4 right-4 flex flex-col items-end gap-2">
           <span
             className={`px-4 py-1.5 text-xs font-bold rounded-full border capitalize inline-block ${getStatusColor(event.status)}`}
           >
             {event.status || "Upcoming"}
           </span>
+          
+          {/* Tournament Category Badge - Mini/Large */}
+          {event.event_category && (
+            <span className={`px-3 py-1 text-xs font-bold rounded-full border ${
+              event.event_category === "Large Tournament" 
+                ? "text-pink-100 bg-pink-600/70 border-pink-500" 
+                : "text-emerald-100 bg-emerald-600/70 border-emerald-500"
+            }`}>
+              {event.event_category === "Large Tournament" ? "Large" : "Mini"}
+            </span>
+          )}
         </div>
 
         {/* Event Type Label - Bottom Left */}
@@ -986,6 +997,7 @@ export default function EventsSection({
                   banner_image: tournament.banner_image,
                   is_lock: tournament.is_lock || false,
                   applicability_reason: tournament.applicability_reason || "",
+                  event_category: tournament.event_category || "Tournament",
                 };
               },
             );

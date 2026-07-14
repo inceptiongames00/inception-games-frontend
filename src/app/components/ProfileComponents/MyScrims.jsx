@@ -6,16 +6,10 @@ import {
   Trophy,
   Calendar,
   Clock,
-  MapPin,
   Users,
-  Crown,
-  Hash,
-  CheckCircle2,
-  AlertCircle,
   CreditCard,
   Gamepad2,
   Ticket,
-  RefreshCw,
   X,
   Swords,
 } from "lucide-react";
@@ -195,6 +189,20 @@ export default function MyScrims({ userRegistrations }) {
               </p>
             </div>
           </div>
+          
+          {/* Tournament Quota Button - More Prominent Design */}
+        
+            <div className="flex items-center gap-2">
+              <div className="px-3 py-1.5 rounded-lg bg-purple-900/40 border border-purple-500/30 text-xs text-white font-medium">
+                <span className="text-purple-300">Mini: </span>
+                <span className="font-bold">{userRegistrations.event_quota_status.mini_tournaments.remaining}/{userRegistrations.event_quota_status.mini_tournaments.allowed}</span>
+              </div>
+              <div className="px-3 py-1.5 rounded-lg bg-pink-900/40 border border-pink-500/30 text-xs text-white font-medium">
+                <span className="text-pink-300">Large: </span>
+                <span className="font-bold">{userRegistrations.event_quota_status.large_tournaments.remaining}/{userRegistrations.event_quota_status.large_tournaments.allowed}</span>
+              </div>
+            </div>
+          
         </div>
 
         {/* Toggle Buttons */}
@@ -223,12 +231,10 @@ export default function MyScrims({ userRegistrations }) {
           >
             <Trophy className="w-4 h-4" />
             <span className="text-sm">My Tournaments</span>
-            <span className="text-xs bg-black/30 px-2 py-0.5 rounded">
-              {tournamentRegistrations.length}
-            </span>
           </button>
         </div>
 
+       
         {/* Empty State */}
         {isEmpty && (
           <div className="flex flex-col items-center justify-center py-12 text-center">
