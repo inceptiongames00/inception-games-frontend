@@ -514,8 +514,8 @@ const EventCard = React.memo(function EventCard({
     >
       {/* Banner - Game Image with decorative elements */}
       <div
-        className="relative h-56 cursor-pointer overflow-hidden bg-gradient-to-br from-purple-900/20 to-black"
-        onClick={() => onClick(event)}
+        className="relative h-56 overflow-hidden bg-gradient-to-br from-purple-900/20 to-black"
+        // onClick={() => onClick(event)}
       >
         <Image
           src={gameImage}
