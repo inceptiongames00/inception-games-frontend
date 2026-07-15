@@ -294,12 +294,56 @@ export default function EventDetailPage() {
   const progressionSteps = [
     {
       label: "Reg Starting",
-      date: new Date("2025-05-01 12:00:00"),
-      time: "12:00",
+      date: event?.registration_start
+        ? new Date(event.registration_start)
+        : new Date(),
+      time: event?.registration_start
+        ? new Date(event.registration_start).toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+          })
+        : "TBA",
     },
-    { label: "Reg Ending", date: new Date("2025-06-14"), time: "23:59" },
-    { label: "Match Starts", date: new Date("2025-06-15"), time: "12:00" },
-    { label: "Match Ends", date: new Date("2025-06-25"), time: "23:59" },
+    {
+      label: "Reg Ending",
+      date: event?.registration_end
+        ? new Date(event.registration_end)
+        : new Date(),
+      time: event?.registration_end
+        ? new Date(event.registration_end).toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+          })
+        : "TBA",
+    },
+    {
+      label: "Match Starts",
+      date: event?.tournamentStart
+        ? new Date(event.tournamentStart)
+        : new Date(),
+      time: event?.tournamentStart
+        ? new Date(event.tournamentStart).toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+          })
+        : "TBA",
+    },
+    {
+      label: "Match Ends",
+      date: event?.tournamentEnd
+        ? new Date(event.tournamentEnd)
+        : new Date(),
+      time: event?.tournamentEnd
+        ? new Date(event.tournamentEnd).toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+          })
+        : "TBA",
+    },
   ];
 
   console.log("This is Event", event);
@@ -392,10 +436,6 @@ export default function EventDetailPage() {
                   <div className="flex flex-col justify-end gap-3 sm:gap-4">
                     {/* Date and Status Line */}
                     <div className="flex items-center gap-2 text-sm sm:text-base text-gray-300">
-                      <span className="font-semibold">
-                        {formatDate(event.date)}
-                      </span>
-                      <span className="text-gray-400">·</span>
                       <span
                         className={`font-semibold ${
                           event.status === "Upcoming"
@@ -620,7 +660,18 @@ export default function EventDetailPage() {
                         </p>
                         <div className="flex items-center justify-center gap-1 text-xs text-gray-300 font-medium">
                           <Calendar size={10} className="sm:w-3 sm:h-3" />
-                          <span className="text-xs">TBA</span>
+                          <span className="text-xs">
+                            {step.date
+                              ? new Date(step.date).toLocaleDateString("en-GB", {
+                                  day: "2-digit",
+                                  month: "short",
+                                })
+                              : "TBA"}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-center gap-1 text-xs text-gray-400 mt-1">
+                          <Clock size={10} className="sm:w-3 sm:h-3" />
+                          <span className="text-xs">{step.time || "TBA"}</span>
                         </div>
                       </div>
                     );
