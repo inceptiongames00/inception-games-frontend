@@ -350,8 +350,8 @@ function PlatformDisplay({ platform }) {
 
   return (
     <div className="flex items-center gap-1.5">
-      <Icon size={16} className={`${brandColor} font-bold`} strokeWidth={2.5} />
-      <span className={`${brandColor} font-bold text-sm`}>{label}</span>
+      <Icon size={16} className={`${brandColor}`} strokeWidth={2.5} />
+      <span className={`${brandColor} text-xs`}>{label}</span>
     </div>
   );
 }
@@ -565,17 +565,6 @@ const EventCard = React.memo(function EventCard({
           >
             {event.status || "Upcoming"}
           </span>
-          
-          {/* Tournament Category Badge - Mini/Large */}
-          {event.event_category && (
-            <span className={`px-3 py-1 text-xs font-bold rounded-full border ${
-              event.event_category === "Large Tournament" 
-                ? "text-pink-100 bg-pink-600/70 border-pink-500" 
-                : "text-emerald-100 bg-emerald-600/70 border-emerald-500"
-            }`}>
-              {event.event_category === "Large Tournament" ? "Large" : "Mini"}
-            </span>
-          )}
         </div>
 
         {/* Event Type Label - Bottom Left */}
@@ -625,16 +614,19 @@ const EventCard = React.memo(function EventCard({
 
         {/* Date & Status Text */}
         <div className="flex items-center gap-3 text-sm">
-          <span className="text-red-400 font-semibold">
-            {formatDate(event.start_date)}
-          </span>
-          <span className="text-green-400 font-semibold">
+          <p className="text-green-400 font-semibold">
             {getStatusText(event.status)}
-          </span>
+          </p>
+          <p className="font-semibold">
+            Starts From:{" "}
+            <span className="text-red-400 font-semibold">
+              {formatDate(event.start_date)}
+            </span>
+          </p>
         </div>
 
         {/* Meta Info - Location, Platform, Team Type */}
-        <div className="flex flex-wrap items-center gap-3 text-xs text-gray-300">
+        <div className="flex flex-wrap items-center gap-2.5 text-xs text-gray-300">
           <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/[0.03] border border-white/[0.06]">
             <Flag size={13} className="text-gray-500" />
             <span>{event.venue || event.location || "Online"}</span>
@@ -648,6 +640,18 @@ const EventCard = React.memo(function EventCard({
             )}
             <span>{event.teamType || "Team"}</span>
           </div>
+          {/* Tournament Category Badge - Mini/Large */}
+          {event.event_category && (
+            <span
+              className={`px-3 py-1 text-xs rounded-full bg-white/[0.03] border border-white/[0.06] ${
+                event.event_category === "Large Tournament"
+                  ? "text-sky-400"
+                  : "text-green-400"
+              }`}
+            >
+              {event.event_category === "Large Tournament" ? "Large" : "Mini"}
+            </span>
+          )}
         </div>
 
         {/* Prize Pool - if exists */}
