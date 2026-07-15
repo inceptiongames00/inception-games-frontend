@@ -217,14 +217,14 @@ export default function Header() {
               onClick={() => navigateToSection("eshop")}
               className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors cursor-pointer"
             >
-              Eshop
+              eShop
             </button>
 
             <button
               onClick={() => navigateToSection("ecosystem-games")}
               className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors cursor-pointer"
             >
-              Game
+              Games
             </button>
 
             {/* <button
@@ -499,7 +499,7 @@ export default function Header() {
                 onClick={() => setEsportsDropdownOpen(!esportsDropdownOpen)}
                 className="text-white text-base font-medium py-3 border-b border-purple-500/10 hover:text-purple-400 transition-colors flex items-center justify-between w-full"
               >
-                E-Sports
+                Esports
                 <ChevronDown
                   size={16}
                   className={`transition-transform duration-200 ${esportsDropdownOpen ? "rotate-180" : ""}`}
