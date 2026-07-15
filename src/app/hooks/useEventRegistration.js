@@ -1,5 +1,6 @@
 import { useState, useContext } from "react";
 import { useRouter, useParams } from "next/navigation";
+import Swal from "sweetalert2";
 import { API } from "@/lib/api";
 
 export const useEventRegistration = (event) => {
@@ -157,9 +158,19 @@ export const useEventRegistration = (event) => {
 
         setShowSuccessModal(true);
         setIsSubmitting(false);
-        setTimeout(() => {
-          router.push("/profile");
-        }, 2000);
+        
+        // Show sweet alert
+        await Swal.fire({
+          icon: "success",
+          title: "Registration Successful!",
+          text: "You have successfully registered for this scrim.",
+          confirmButtonText: "Go to Profile",
+          confirmButtonColor: "#a855f7",
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+        });
+        
+        router.push("/profile");
         return;
       }
 
@@ -200,6 +211,19 @@ export const useEventRegistration = (event) => {
 
       setShowSuccessModal(true);
       setIsSubmitting(false);
+      
+      // Show sweet alert
+      await Swal.fire({
+        icon: "success",
+        title: "Registration Successful!",
+        text: "You have successfully registered for this event.",
+        confirmButtonText: "Go to Profile",
+        confirmButtonColor: "#a855f7",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+      });
+      
+      router.push("/profile");
     } catch (error) {
       showNotificationMessage(
         "error",
