@@ -953,12 +953,6 @@ export default function EventDetailPage() {
                               }}
                             />
                           </div>
-
-                          {/* Info Text */}
-                          <p className="text-xs text-gray-400 text-center">
-                            {(event.totalSlots || 0) - (event.filledSlots || 0)}{" "}
-                            spots remaining - Closes in 4 days
-                          </p>
                         </div>
                       </div>
                     </div>
