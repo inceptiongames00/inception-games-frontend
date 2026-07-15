@@ -29,7 +29,7 @@ const GAMES = [
   // "eFootball PC & Console",
   "Freefire Mobile",
   "Pubg Mobile",
-  "Street Fighter 6",
+  // "Street Fighter 6",
 
   // 'Valorant',
   // 'League of Legends',

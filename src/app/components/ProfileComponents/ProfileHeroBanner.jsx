@@ -13,7 +13,9 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const shareRef = useRef(null);
-  const NOTIFICATIONS_ENDPOINT = user?.id ? `${API_BASE_URL}/message/${user.id}` : null;
+  const NOTIFICATIONS_ENDPOINT = user?.id
+    ? `${API_BASE_URL}/message/${user.id}`
+    : null;
 
   // Notifications state
   const [notifications, setNotifications] = useState([]);
