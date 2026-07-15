@@ -282,6 +282,26 @@ export default function EventDetailPage() {
     "/images/default-game.jpg";
   const gameName = event.game?.name || event.gameName || "Unknown Game";
 
+  // Helper function to calculate days between two dates
+  const calculateDaysBetween = (startDate, endDate) => {
+    if (!startDate || !endDate) return 0;
+    try {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      const diffTime = end - start;
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      return Math.max(0, diffDays);
+    } catch {
+      return 0;
+    }
+  };
+
+  // Calculate registration window days
+  const registrationDays = calculateDaysBetween(
+    event?.registration_start,
+    event?.registration_end
+  );
+
   const tabs = [
     { id: "rules", label: "Rules" },
     { id: "brackets", label: "Brackets" },
@@ -953,6 +973,11 @@ export default function EventDetailPage() {
                               }}
                             />
                           </div>
+
+                          {/* Info Text */}
+                          <p className="text-sm text-gray-400 text-center">
+                            Closes in {registrationDays} day{registrationDays !== 1 ? 's' : ''}
+                          </p>
                         </div>
                       </div>
                     </div>
