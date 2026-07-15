@@ -29,7 +29,6 @@ import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 import EventShareCard from "@/app/components/EventShareCard";
 import SharePreview from "@/app/components/SharePreview";
-import NotificationsPanel from "@/app/components/ProfileComponents/NotificationsPanel";
 import PlatformDisplay from "@/app/components/EventComponents/PlatformDisplay";
 import AnimatedInput from "@/app/components/EventComponents/AnimatedInput";
 import { AuthContext } from "@/app/context/AuthContext";
