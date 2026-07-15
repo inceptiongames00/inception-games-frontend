@@ -470,8 +470,9 @@ const EventCard = React.memo(function EventCard({
       event.eventType === "Tournament" &&
       userRegistrations.tournament_registrations
     ) {
+      // Handle both string and number comparisons for tournament_id
       return userRegistrations.tournament_registrations.some(
-        (reg) => reg.tournament_id === event.id,
+        (reg) => String(reg.tournament_id) === String(event.id),
       );
     }
 
@@ -505,27 +506,6 @@ const EventCard = React.memo(function EventCard({
     userPrimaryGame &&
     eventGameName &&
     userPrimaryGame.toLowerCase().trim() === eventGameName.toLowerCase().trim();
-
-  // Get quota status based on event category
-  const getQuotaStatus = () => {
-    if (!user?.event_quota_status) return { remaining: 0, isQuotaFilled: false };
-
-    const quotaStatus = user.event_quota_status;
-    let remaining = 0;
-
-    if (event.event_category === "Mini Tournament") {
-      remaining = quotaStatus.mini_tournaments?.remaining || 0;
-    } else if (event.event_category === "Large Tournament") {
-      remaining = quotaStatus.large_tournaments?.remaining || 0;
-    }
-
-    return {
-      remaining,
-      isQuotaFilled: remaining === 0,
-    };
-  };
-
-  const quotaInfo = getQuotaStatus();
 
   return (
     <motion.div
@@ -701,66 +681,15 @@ const EventCard = React.memo(function EventCard({
               return;
             }
 
-            // Check tournament quota based on event category
-            if (event.event_category && userRegistrations?.event_quota_status) {
-              const quotaStatus = userRegistrations.event_quota_status;
-              let remainingQuota = 0;
-              let tournamentType = "";
-
-              if (event.event_category === "Mini Tournament") {
-                remainingQuota = quotaStatus.mini_tournaments?.remaining || 0;
-                tournamentType = "Mini Tournament";
-              } else if (event.event_category === "Large Tournament") {
-                remainingQuota = quotaStatus.large_tournaments?.remaining || 0;
-                tournamentType = "Large Tournament";
-              }
-
-              // If remaining quota is 0 and user is NOT already registered, show error message
-              if (remainingQuota === 0 && !isAlreadyRegistered) {
-                Swal.fire({
-                  icon: "warning",
-                  title: "No Quota Remaining",
-                  html: `You have no ${tournamentType.toLowerCase()} remaining in your current subscription. Please upgrade your plan to join more tournaments.`,
-                  confirmButtonText: "Upgrade Plan",
-                  cancelButtonText: "Close",
-                  confirmButtonColor: "#ec4899",
-                  background: "#1a1a2e",
-                  color: "#fff",
-                  showCancelButton: true,
-                  allowOutsideClick: true,
-                  didOpen: (modal) => {
-                    const confirmButton = modal.querySelector(".swal2-confirm");
-                    if (confirmButton) {
-                      confirmButton.style.backgroundColor = "#ec4899";
-                    }
-                  },
-                }).then((result) => {
-                  if (result.isConfirmed && onUpgradePlanClick) {
-                    onUpgradePlanClick();
-                  }
-                });
-                return;
-              }
-            }
-
             // Determine button action based on conditions
             let action = "view";
-            let canJoin = false;
 
             if (isAlreadyRegistered) {
-              // User is registered - check if quota is filled
-              if (quotaInfo.isQuotaFilled) {
-                // Quota is filled - show VIEW DETAILS only
-                action = "view";
-              } else {
-                // Quota still has slots - show JOIN EVENT (can join more)
-                action = "join";
-                canJoin = true;
-              }
-            } else if (isEligible && !quotaInfo.isQuotaFilled) {
-              // User not registered, eligible, and quota available - show JOIN EVENT
+              // User is already registered for this tournament - show VIEW DETAILS only
+              action = "view";
+            } else if (isEligible) {
+              // User not registered, eligible - show JOIN EVENT
               action = "join";
-              canJoin = true;
             } else if (!isEligible) {
               // User not eligible
               action = "not-applicable";
@@ -774,21 +703,17 @@ const EventCard = React.memo(function EventCard({
           } ${
             !isEligible && !isAlreadyRegistered
               ? "bg-gradient-to-r from-rose-500 to-red-500 text-white cursor-not-allowed"
-              : isAlreadyRegistered && quotaInfo.isQuotaFilled
+              : isAlreadyRegistered
                 ? "bg-gradient-to-r from-blue-600 to-blue-500 text-white opacity-90"
                 : "bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white"
           }`}
           whileHover={
-            ((isEligible && !isAlreadyRegistered && !quotaInfo.isQuotaFilled) ||
-              (isAlreadyRegistered && !quotaInfo.isQuotaFilled)) &&
-            !isLoading
+            (isEligible && !isAlreadyRegistered) && !isLoading
               ? { scale: 1.01 }
               : {}
           }
           whileTap={
-            ((isEligible && !isAlreadyRegistered && !quotaInfo.isQuotaFilled) ||
-              (isAlreadyRegistered && !quotaInfo.isQuotaFilled)) &&
-            !isLoading
+            (isEligible && !isAlreadyRegistered) && !isLoading
               ? { scale: 0.98 }
               : {}
           }
@@ -800,11 +725,9 @@ const EventCard = React.memo(function EventCard({
             </>
           ) : !isEligible && !isAlreadyRegistered ? (
             "You are not Applicable"
-          ) : isAlreadyRegistered && quotaInfo.isQuotaFilled ? (
+          ) : isAlreadyRegistered ? (
             "View Details"
-          ) : isAlreadyRegistered && !quotaInfo.isQuotaFilled ? (
-            "Join Event"
-          ) : isEligible && !quotaInfo.isQuotaFilled ? (
+          ) : isEligible ? (
             "Join Event"
           ) : (
             "View Details"
