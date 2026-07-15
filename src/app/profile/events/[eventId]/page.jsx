@@ -51,7 +51,7 @@ export default function EventDetailPage() {
   const { user } = useContext(AuthContext) || {};
   const { event: fetchedEvent } = useEventData(params.eventId);
   const [event, setEvent] = useState(null);
-  const [actionSource, setActionSource] = useState('view'); // 'view', 'join', 'not-applicable'
+  const [actionSource, setActionSource] = useState("view"); // 'view', 'join', 'not-applicable'
   const [activeTab, setActiveTab] = useState("result");
   const [showSignupForm, setShowSignupForm] = useState(false);
   const [showRegistrationModal, setShowRegistrationModal] = useState(false);
@@ -101,16 +101,16 @@ export default function EventDetailPage() {
 
   // Get action from URL query parameters
   useEffect(() => {
-    const action = searchParams?.get('action') || 'view';
+    const action = searchParams?.get("action") || "view";
     setActionSource(action);
   }, [searchParams]);
-
-
 
   // Calculate eligibility
   const userPrimaryGame = user?.primaryGame || user?.primary_game;
   const eventGameName = event?.game_name || event?.game?.name;
-  const isEligible = userPrimaryGame && eventGameName && 
+  const isEligible =
+    userPrimaryGame &&
+    eventGameName &&
     userPrimaryGame.toLowerCase().trim() === eventGameName.toLowerCase().trim();
 
   useEffect(() => {
@@ -128,8 +128,7 @@ export default function EventDetailPage() {
         fullName: "",
         email: "",
         phone: "",
-        inGameName: "",
-        inGameId: "",
+        uid: "",
         discordId: "",
       }));
 
@@ -292,10 +291,10 @@ export default function EventDetailPage() {
     { label: "Match Ends", date: new Date("2025-06-25"), time: "23:59" },
   ];
 
-  console.log("This is Event",event);
-    console.log("This is Event type",event.eventType);
-      console.log("This is User",user);
-            console.log("This is Params",params);
+  console.log("This is Event", event);
+  console.log("This is Event type", event.eventType);
+  console.log("This is User", user);
+  console.log("This is Params", params);
 
   return (
     <div className="min-h-screen bg-[#030305]">
@@ -513,18 +512,21 @@ export default function EventDetailPage() {
                       <div className="flex items-center gap-1 sm:gap-2">
                         <SharePreview event={event} />
 
-                        {event.status !== "Completed" && !showSignupForm && isEligible && actionSource === 'join' && (
-                          <motion.button
-                            onClick={() => setShowRegistrationModal(true)}
-                            className="px-2 sm:px-4 py-2 sm:py-2.5 font-bold rounded-lg transition-all duration-300 flex items-center gap-1 sm:gap-2 shadow-lg text-xs sm:text-sm cursor-pointer bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white shadow-purple-500/20"
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                          >
-                            <Users size={14} className="hidden sm:inline" />
-                            <Users size={12} className="sm:hidden" />
-                            <span>Join Event</span>
-                          </motion.button>
-                        )}
+                        {event.status !== "Completed" &&
+                          !showSignupForm &&
+                          isEligible &&
+                          actionSource === "join" && (
+                            <motion.button
+                              onClick={() => setShowRegistrationModal(true)}
+                              className="px-2 sm:px-4 py-2 sm:py-2.5 font-bold rounded-lg transition-all duration-300 flex items-center gap-1 sm:gap-2 shadow-lg text-xs sm:text-sm cursor-pointer bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white shadow-purple-500/20"
+                              whileHover={{ scale: 1.02 }}
+                              whileTap={{ scale: 0.98 }}
+                            >
+                              <Users size={14} className="hidden sm:inline" />
+                              <Users size={12} className="sm:hidden" />
+                              <span>Join Event</span>
+                            </motion.button>
+                          )}
                       </div>
                     </div>
                   </div>
@@ -586,34 +588,34 @@ export default function EventDetailPage() {
               </div> */}
 
               <div className="mb-6 sm:mb-8">
-  <h3 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6">
-    Tournament Progression
-  </h3>
-  <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
-    {progressionSteps.map((step, index) => {
-      return (
-        <div
-          key={index}
-          className="p-2 sm:p-4 rounded-lg sm:rounded-xl border bg-gray-800/30 border-gray-700/30"
-        >
-          <div className="flex justify-center mb-2 sm:mb-3">
-            <CheckCircle2
-              size={20}
-              className="sm:w-6 sm:h-6 text-gray-600"
-            />
-          </div>
-          <p className="text-xs sm:text-sm font-semibold text-white text-center mb-1 sm:mb-2 leading-tight">
-            {step.label}
-          </p>
-          <div className="flex items-center justify-center gap-1 text-xs text-gray-300 font-medium">
-            <Calendar size={10} className="sm:w-3 sm:h-3" />
-            <span className="text-xs">TBA</span>
-          </div>
-        </div>
-      );
-    })}
-  </div>
-</div>
+                <h3 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6">
+                  Tournament Progression
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
+                  {progressionSteps.map((step, index) => {
+                    return (
+                      <div
+                        key={index}
+                        className="p-2 sm:p-4 rounded-lg sm:rounded-xl border bg-gray-800/30 border-gray-700/30"
+                      >
+                        <div className="flex justify-center mb-2 sm:mb-3">
+                          <CheckCircle2
+                            size={20}
+                            className="sm:w-6 sm:h-6 text-gray-600"
+                          />
+                        </div>
+                        <p className="text-xs sm:text-sm font-semibold text-white text-center mb-1 sm:mb-2 leading-tight">
+                          {step.label}
+                        </p>
+                        <div className="flex items-center justify-center gap-1 text-xs text-gray-300 font-medium">
+                          <Calendar size={10} className="sm:w-3 sm:h-3" />
+                          <span className="text-xs">TBA</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
 
               {/* Description and Sidebar Section - 2 columns + 1 column layout */}
               <div className="lg:col-span-3">
@@ -1003,7 +1005,9 @@ export default function EventDetailPage() {
                       {/* Modal Header */}
                       <div className="flex items-center justify-between p-6 border-b border-white/10">
                         <h3 className="text-2xl font-bold text-white">
-                          {event?.eventType === "Scrims" ? "Scrims Registration" : "Tournament Registration"}
+                          {event?.eventType === "Scrims"
+                            ? "Scrims Registration"
+                            : "Tournament Registration"}
                         </h3>
                         <button
                           onClick={() => setShowRegistrationModal(false)}
@@ -1023,7 +1027,11 @@ export default function EventDetailPage() {
                             <h4 className="text-xl font-semibold text-white">
                               {event.title}
                             </h4>
-                            <p className="text-gray-400">{event?.eventType === "Scrims" ? "Scrims" : "Tournament"}</p>
+                            <p className="text-gray-400">
+                              {event?.eventType === "Scrims"
+                                ? "Scrims"
+                                : "Tournament"}
+                            </p>
                           </div>
                         </div>
                       </div>
@@ -1038,7 +1046,8 @@ export default function EventDetailPage() {
                             const submitData = {
                               user_id: user?.id || "USR000123",
                               username: user?.username || "",
-                              display_name: user?.displayName || formData.fullName,
+                              display_name:
+                                user?.displayName || formData.fullName,
                               full_name: formData.fullName,
                               email: formData.email,
                               phone: formData.phone,
@@ -1055,61 +1064,74 @@ export default function EventDetailPage() {
                             }
 
                             // Add players for team registrations
-                            if (formData.players && formData.players.length > 0) {
-                              submitData.players = formData.players.map(player => ({
-                                full_name: player.fullName,
-                                email: player.email,
-                                phone: player.phone,
-                                in_game_name: player.inGameName,
-                                in_game_id: player.inGameId,
-                                discord_id: player.discordId || "",
-                              }));
+                            if (
+                              formData.players &&
+                              formData.players.length > 0
+                            ) {
+                              submitData.players = formData.players.map(
+                                (player) => ({
+                                  full_name: player.fullName,
+                                  email: player.email,
+                                  phone: player.phone,
+                                  in_game_name: player.inGameName,
+                                  uid: player.uid,
+                                  discord_id: player.discordId || "",
+                                }),
+                              );
                             }
 
                             try {
                               // Get auth token
                               const tokens = getTokens();
-                              
+
                               // Use production API directly
-                              const API_BASE_URL = "https://inception-games.an.r.appspot.com/api/v1";
-                              const eventTypeEndpoint = event?.eventType === "Scrims" ? "scrims" : "tournaments";
+                              const API_BASE_URL =
+                                "https://inception-games.an.r.appspot.com/api/v1";
+                              const eventTypeEndpoint =
+                                event?.eventType === "Scrims"
+                                  ? "scrims"
+                                  : "tournaments";
                               const apiUrl = `${API_BASE_URL}/events/${eventTypeEndpoint}/${params.eventId}/register`;
-                              
+
                               // Make API call
                               const headers = {
                                 "Content-Type": "application/json",
                               };
-                              
+
                               // Add authorization header if token exists
                               if (tokens?.accessToken) {
-                                headers["Authorization"] = `Bearer ${tokens.accessToken}`;
+                                headers["Authorization"] =
+                                  `Bearer ${tokens.accessToken}`;
                               }
-                              
-                              const response = await fetch(
-                                apiUrl,
-                                {
-                                  method: "POST",
-                                  headers,
-                                  body: JSON.stringify(submitData),
-                                },
-                              );
+
+                              const response = await fetch(apiUrl, {
+                                method: "POST",
+                                headers,
+                                body: JSON.stringify(submitData),
+                              });
 
                               let result = {};
                               try {
                                 result = await response.json();
                               } catch (parseError) {
-                                result = { success: false, message: "Invalid response from server" };
+                                result = {
+                                  success: false,
+                                  message: "Invalid response from server",
+                                };
                               }
 
                               // Check if the response indicates success
-                              const isSuccess = result.success === true && response.ok;
+                              const isSuccess =
+                                result.success === true && response.ok;
 
                               if (isSuccess) {
                                 // Show success message and close modal
                                 Swal.fire({
                                   icon: "success",
                                   title: "Registration Successful!",
-                                  text: result.message || "Registration successful! Check your email for confirmation.",
+                                  text:
+                                    result.message ||
+                                    "Registration successful! Check your email for confirmation.",
                                   confirmButtonColor: "#a855f7",
                                 });
                                 setShowRegistrationModal(false);
@@ -1132,12 +1154,21 @@ export default function EventDetailPage() {
                                   slotTime: "",
                                   players: [],
                                 });
-                              } else if (!response.ok || result.success === false) {
+                              } else if (
+                                !response.ok ||
+                                result.success === false
+                              ) {
                                 // Handle error responses including 409 conflicts
-                                const errorMessage = result?.message || result?.error || "Registration failed. Please try again.";
+                                const errorMessage =
+                                  result?.message ||
+                                  result?.error ||
+                                  "Registration failed. Please try again.";
                                 Swal.fire({
                                   icon: "warning",
-                                  title: response.status === 409 ? "Already Registered" : "Registration Failed",
+                                  title:
+                                    response.status === 409
+                                      ? "Already Registered"
+                                      : "Registration Failed",
                                   text: errorMessage,
                                   confirmButtonColor: "#a855f7",
                                 });
@@ -1153,7 +1184,9 @@ export default function EventDetailPage() {
                               Swal.fire({
                                 icon: "error",
                                 title: "Network Error",
-                                text: error?.message || "Please check your connection and try again.",
+                                text:
+                                  error?.message ||
+                                  "Please check your connection and try again.",
                                 confirmButtonColor: "#a855f7",
                               });
                             }
@@ -1218,7 +1251,9 @@ export default function EventDetailPage() {
                             />
                             <label
                               className={`absolute left-4 transition-all pointer-events-none ${
-                                formData.teamName ? "top-2 text-xs text-purple-400" : "top-4 text-gray-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-purple-400"
+                                formData.teamName
+                                  ? "top-2 text-xs text-purple-400"
+                                  : "top-4 text-gray-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-purple-400"
                               }`}
                             >
                               Team Name *
@@ -1242,7 +1277,9 @@ export default function EventDetailPage() {
                             />
                             <label
                               className={`absolute left-4 transition-all pointer-events-none ${
-                                formData.fullName ? "top-2 text-xs text-purple-400" : "top-4 text-gray-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-purple-400"
+                                formData.fullName
+                                  ? "top-2 text-xs text-purple-400"
+                                  : "top-4 text-gray-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-purple-400"
                               }`}
                             >
                               Full Name *
@@ -1265,7 +1302,9 @@ export default function EventDetailPage() {
                             />
                             <label
                               className={`absolute left-4 transition-all pointer-events-none ${
-                                formData.email ? "top-2 text-xs text-purple-400" : "top-4 text-gray-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-purple-400"
+                                formData.email
+                                  ? "top-2 text-xs text-purple-400"
+                                  : "top-4 text-gray-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-purple-400"
                               }`}
                             >
                               IGL Email Address *
@@ -1288,7 +1327,9 @@ export default function EventDetailPage() {
                             />
                             <label
                               className={`absolute left-4 transition-all pointer-events-none ${
-                                formData.phone ? "top-2 text-xs text-purple-400" : "top-4 text-gray-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-purple-400"
+                                formData.phone
+                                  ? "top-2 text-xs text-purple-400"
+                                  : "top-4 text-gray-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-purple-400"
                               }`}
                             >
                               Phone Number *
@@ -1311,7 +1352,9 @@ export default function EventDetailPage() {
                             />
                             <label
                               className={`absolute left-4 transition-all pointer-events-none ${
-                                formData.inGameName ? "top-2 text-xs text-purple-400" : "top-4 text-gray-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-purple-400"
+                                formData.inGameName
+                                  ? "top-2 text-xs text-purple-400"
+                                  : "top-4 text-gray-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-purple-400"
                               }`}
                             >
                               IGL Name *
@@ -1334,7 +1377,9 @@ export default function EventDetailPage() {
                             />
                             <label
                               className={`absolute left-4 transition-all pointer-events-none ${
-                                formData.inGameId ? "top-2 text-xs text-purple-400" : "top-4 text-gray-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-purple-400"
+                                formData.inGameId
+                                  ? "top-2 text-xs text-purple-400"
+                                  : "top-4 text-gray-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-purple-400"
                               }`}
                             >
                               IGL UID *
@@ -1356,7 +1401,9 @@ export default function EventDetailPage() {
                             />
                             <label
                               className={`absolute left-4 transition-all pointer-events-none ${
-                                formData.discordId ? "top-2 text-xs text-purple-400" : "top-4 text-gray-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-purple-400"
+                                formData.discordId
+                                  ? "top-2 text-xs text-purple-400"
+                                  : "top-4 text-gray-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-purple-400"
                               }`}
                             >
                               IGL Discord ID (optional)
@@ -1392,14 +1439,17 @@ export default function EventDetailPage() {
                                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                       <label className="block text-sm font-medium text-gray-300 mb-2">
-                                        Full Name
+                                        Full Name *
                                       </label>
                                       <input
                                         type="text"
                                         value={player.fullName || ""}
                                         onChange={(e) => {
-                                          const newPlayers = [...formData.players];
-                                          newPlayers[index].fullName = e.target.value;
+                                          const newPlayers = [
+                                            ...formData.players,
+                                          ];
+                                          newPlayers[index].fullName =
+                                            e.target.value;
                                           setFormData((prev) => ({
                                             ...prev,
                                             players: newPlayers,
@@ -1411,14 +1461,17 @@ export default function EventDetailPage() {
                                     </div>
                                     <div>
                                       <label className="block text-sm font-medium text-gray-300 mb-2">
-                                        Email Address
+                                        Email Address *
                                       </label>
                                       <input
                                         type="email"
                                         value={player.email || ""}
                                         onChange={(e) => {
-                                          const newPlayers = [...formData.players];
-                                          newPlayers[index].email = e.target.value;
+                                          const newPlayers = [
+                                            ...formData.players,
+                                          ];
+                                          newPlayers[index].email =
+                                            e.target.value;
                                           setFormData((prev) => ({
                                             ...prev,
                                             players: newPlayers,
@@ -1433,14 +1486,17 @@ export default function EventDetailPage() {
                                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                       <label className="block text-sm font-medium text-gray-300 mb-2">
-                                        Phone Number
+                                        Phone Number *
                                       </label>
                                       <input
                                         type="tel"
                                         value={player.phone || ""}
                                         onChange={(e) => {
-                                          const newPlayers = [...formData.players];
-                                          newPlayers[index].phone = e.target.value;
+                                          const newPlayers = [
+                                            ...formData.players,
+                                          ];
+                                          newPlayers[index].phone =
+                                            e.target.value;
                                           setFormData((prev) => ({
                                             ...prev,
                                             players: newPlayers,
@@ -1451,6 +1507,29 @@ export default function EventDetailPage() {
                                       />
                                     </div>
                                     <div>
+                                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                                        In-Game ID / UID *
+                                      </label>
+                                      <input
+                                        type="text"
+                                        value={player.uid || ""}
+                                        onChange={(e) => {
+                                          const newPlayers = [
+                                            ...formData.players,
+                                          ];
+                                          newPlayers[index].uid =
+                                            e.target.value;
+                                          setFormData((prev) => ({
+                                            ...prev,
+                                            players: newPlayers,
+                                          }));
+                                        }}
+                                        className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
+                                        placeholder="In-Game ID / UID"
+                                      />
+                                    </div>
+
+                                    {/* <div>
                                       <label className="block text-sm font-medium text-gray-300 mb-2">
                                         In-Game Name
                                       </label>
@@ -1468,29 +1547,10 @@ export default function EventDetailPage() {
                                         className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
                                         placeholder="In-Game Name"
                                       />
-                                    </div>
+                                    </div> */}
                                   </div>
 
                                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                      <label className="block text-sm font-medium text-gray-300 mb-2">
-                                        In-Game ID / UID
-                                      </label>
-                                      <input
-                                        type="text"
-                                        value={player.inGameId || ""}
-                                        onChange={(e) => {
-                                          const newPlayers = [...formData.players];
-                                          newPlayers[index].inGameId = e.target.value;
-                                          setFormData((prev) => ({
-                                            ...prev,
-                                            players: newPlayers,
-                                          }));
-                                        }}
-                                        className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
-                                        placeholder="In-Game ID / UID"
-                                      />
-                                    </div>
                                     <div>
                                       <label className="block text-sm font-medium text-gray-300 mb-2">
                                         Discord ID (optional)
@@ -1499,8 +1559,11 @@ export default function EventDetailPage() {
                                         type="text"
                                         value={player.discordId || ""}
                                         onChange={(e) => {
-                                          const newPlayers = [...formData.players];
-                                          newPlayers[index].discordId = e.target.value;
+                                          const newPlayers = [
+                                            ...formData.players,
+                                          ];
+                                          newPlayers[index].discordId =
+                                            e.target.value;
                                           setFormData((prev) => ({
                                             ...prev,
                                             players: newPlayers,
