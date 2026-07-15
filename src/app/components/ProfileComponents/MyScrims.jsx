@@ -43,7 +43,20 @@ function formatDate(value) {
   try {
     const date = new Date(value);
     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
     const dayName = days[date.getDay()];
     const day = String(date.getDate()).padStart(2, "0");
     const month = months[date.getMonth()];
@@ -65,7 +78,8 @@ function formatTime(value) {
 }
 
 function RegistrationCard({ registration, type, index, onViewDetails }) {
-  const payStyle = paymentStyles[registration.payment_status] || paymentStyles.Pending;
+  const payStyle =
+    paymentStyles[registration.payment_status] || paymentStyles.Pending;
   const statusStyle = statusStyles[registration.status] || statusStyles.Pending;
 
   return (
@@ -86,7 +100,9 @@ function RegistrationCard({ registration, type, index, onViewDetails }) {
             <Gamepad2 className="w-3.5 h-3.5 text-purple-400" />
             {registration.game || "Game"}
           </span>
-          <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${statusStyle.text} ${statusStyle.bg} ${statusStyle.border}`}>
+          <span
+            className={`px-3 py-1 rounded-full text-xs font-semibold border ${statusStyle.text} ${statusStyle.bg} ${statusStyle.border}`}
+          >
             {registration.status}
           </span>
         </div>
@@ -101,17 +117,16 @@ function RegistrationCard({ registration, type, index, onViewDetails }) {
               <Users className="w-3.5 h-3.5 text-purple-400" />
               {registration.team_name}
             </div>
-             <span className="text-xs text-gray-400 inline-flex items-center gap-1">
-            <Ticket className="w-3 h-3" />
-            {registration.payment_reference || "—"}
-          </span>
+            <span className="text-xs text-gray-400 inline-flex items-center gap-1">
+              <Ticket className="w-3 h-3" />
+              {registration.payment_reference || "—"}
+            </span>
 
-        <span
-  className={`inline-flex items-center justify-center px-2 py-0.5 rounded-md text-[10px] font-semibold text-center ${payStyle.text} ${payStyle.bg}`}
->
-  {registration.payment_status}
-</span>
-            
+            <span
+              className={`inline-flex items-center justify-center px-2 py-0.5 rounded-md text-[10px] font-semibold text-center ${payStyle.text} ${payStyle.bg}`}
+            >
+              {registration.payment_status}
+            </span>
           </div>
         </div>
       </div>
@@ -124,13 +139,17 @@ function RegistrationCard({ registration, type, index, onViewDetails }) {
             {registration.slot_date && (
               <div className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.05] text-xs text-gray-300 flex-1">
                 <Calendar className="w-3 h-3 text-purple-400 flex-shrink-0" />
-                <span className="truncate">{formatDate(registration.slot_date)}</span>
+                <span className="truncate">
+                  {formatDate(registration.slot_date)}
+                </span>
               </div>
             )}
             {registration.slot_time && (
               <div className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.05] text-xs text-gray-300 flex-1">
                 <Clock className="w-3 h-3 text-pink-400 flex-shrink-0" />
-                <span className="truncate">{formatTime(registration.slot_time)}</span>
+                <span className="truncate">
+                  {formatTime(registration.slot_time)}
+                </span>
               </div>
             )}
           </div>
@@ -141,19 +160,34 @@ function RegistrationCard({ registration, type, index, onViewDetails }) {
 }
 
 export default function MyScrims({ userRegistrations }) {
-  const [activeTab, setActiveTab] = useState("scrims");
+  const [activeTab, setActiveTab] = useState("tournaments");
   const [selectedRegistration, setSelectedRegistration] = useState(null);
 
   // Get unique registrations - remove duplicates by scrim_id and tournament_id
-  const scrimRegistrations = userRegistrations?.scrim_registrations 
-    ? Array.from(new Map(userRegistrations.scrim_registrations.map(item => [item.scrim_id, item])).values())
+  const scrimRegistrations = userRegistrations?.scrim_registrations
+    ? Array.from(
+        new Map(
+          userRegistrations.scrim_registrations.map((item) => [
+            item.scrim_id,
+            item,
+          ]),
+        ).values(),
+      )
     : [];
 
-  const tournamentRegistrations = userRegistrations?.tournament_registrations 
-    ? Array.from(new Map(userRegistrations.tournament_registrations.map(item => [item.tournament_id, item])).values())
+  const tournamentRegistrations = userRegistrations?.tournament_registrations
+    ? Array.from(
+        new Map(
+          userRegistrations.tournament_registrations.map((item) => [
+            item.tournament_id,
+            item,
+          ]),
+        ).values(),
+      )
     : [];
 
-  const displayRegistrations = activeTab === "scrims" ? scrimRegistrations : tournamentRegistrations;
+  const displayRegistrations =
+    activeTab === "scrims" ? scrimRegistrations : tournamentRegistrations;
   const isEmpty = displayRegistrations.length === 0;
 
   return (
@@ -178,7 +212,7 @@ export default function MyScrims({ userRegistrations }) {
             </div>
             <div className="min-w-0">
               <h2 className="text-base xs:text-lg font-semibold text-white truncate">
-                {activeTab !== "scrims" ? "My Scrims" : "My Tournaments"}
+                {activeTab === "scrims" ? "My Scrims" : "My Tournaments"}
               </h2>
               <p className="text-xs text-gray-500 truncate">
                 {displayRegistrations.length > 0
@@ -189,17 +223,37 @@ export default function MyScrims({ userRegistrations }) {
               </p>
             </div>
           </div>
-          
+
           {/* Tournament Quota Button - More Prominent Design */}
           {userRegistrations?.event_quota_status && (
             <div className="flex items-center gap-2">
               <div className="px-3 py-1.5 rounded-lg bg-purple-900/40 border border-purple-500/30 text-xs text-white font-medium">
                 <span className="text-purple-300">Mini: </span>
-                <span className="font-bold">{userRegistrations.event_quota_status.mini_tournaments.remaining}/{userRegistrations.event_quota_status.mini_tournaments.allowed}</span>
+                <span className="font-bold">
+                  {
+                    userRegistrations.event_quota_status.mini_tournaments
+                      .remaining
+                  }
+                  /
+                  {
+                    userRegistrations.event_quota_status.mini_tournaments
+                      .allowed
+                  }
+                </span>
               </div>
               <div className="px-3 py-1.5 rounded-lg bg-pink-900/40 border border-pink-500/30 text-xs text-white font-medium">
                 <span className="text-pink-300">Large: </span>
-                <span className="font-bold">{userRegistrations.event_quota_status.large_tournaments.remaining}/{userRegistrations.event_quota_status.large_tournaments.allowed}</span>
+                <span className="font-bold">
+                  {
+                    userRegistrations.event_quota_status.large_tournaments
+                      .remaining
+                  }
+                  /
+                  {
+                    userRegistrations.event_quota_status.large_tournaments
+                      .allowed
+                  }
+                </span>
               </div>
             </div>
           )}
@@ -234,7 +288,6 @@ export default function MyScrims({ userRegistrations }) {
           </button>
         </div>
 
-       
         {/* Empty State */}
         {isEmpty && (
           <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -245,8 +298,8 @@ export default function MyScrims({ userRegistrations }) {
               {activeTab === "scrims" ? "No scrims yet" : "No tournaments yet"}
             </p>
             <p className="text-sm text-gray-500">
-              {activeTab === "scrims" 
-                ? "Join scrims to see them here" 
+              {activeTab === "scrims"
+                ? "Join scrims to see them here"
                 : "Register for tournaments to see them here"}
             </p>
           </div>
@@ -309,7 +362,8 @@ export default function MyScrims({ userRegistrations }) {
 function RegistrationDetailsModal({ registration, type, onClose }) {
   if (!registration) return null;
 
-  const payStyle = paymentStyles[registration.payment_status] || paymentStyles.Pending;
+  const payStyle =
+    paymentStyles[registration.payment_status] || paymentStyles.Pending;
   const statusStyle = statusStyles[registration.status] || statusStyles.Pending;
   const isScrims = type === "scrims";
 
@@ -343,7 +397,9 @@ function RegistrationDetailsModal({ registration, type, onClose }) {
                   <Gamepad2 className="w-3.5 h-3.5 text-purple-400" />
                   {registration.game}
                 </span>
-                <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${statusStyle.text} ${statusStyle.bg} ${statusStyle.border}`}>
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-semibold border ${statusStyle.text} ${statusStyle.bg} ${statusStyle.border}`}
+                >
                   {registration.status}
                 </span>
               </div>
@@ -409,7 +465,9 @@ function RegistrationDetailsModal({ registration, type, onClose }) {
                     ? `${registration.currency || "BDT"} ${registration.entry_fee}`
                     : "Free"}
                 </span>
-                <span className={`px-2 py-0.5 rounded-md text-[11px] font-semibold ${payStyle.text} ${payStyle.bg}`}>
+                <span
+                  className={`px-2 py-0.5 rounded-md text-[11px] font-semibold ${payStyle.text} ${payStyle.bg}`}
+                >
                   {registration.payment_status}
                 </span>
               </div>
