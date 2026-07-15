@@ -115,12 +115,23 @@ export default function EventDetailPage() {
 
   useEffect(() => {
     if ((showSignupForm || showRegistrationModal) && user) {
-      // Calculate the number of team members based on game and teamSize
+      // Calculate the number of team members based on game
       let teamMembersCount = 0;
       if (event?.teamType !== "Solo") {
-        const gameName = event?.game?.name || event?.game_name || "";
-        const teamSize = event?.team_size || event?.teamSize || 1;
-        teamMembersCount = Math.max(0, teamSize - 1);
+        const gameName = (event?.game?.name || event?.game_name || "").toLowerCase();
+        
+        // Define team sizes based on game
+        let gameTeamSize = 1;
+        if (gameName.includes("pubg")) {
+          gameTeamSize = 5; // PUBG: 5 players
+        } else if (gameName.includes("freefire") || gameName.includes("free fire")) {
+          gameTeamSize = 4; // Free Fire: 4 players
+        } else {
+          // Use API team_size or default to 1
+          gameTeamSize = event?.team_size || event?.teamSize || 1;
+        }
+        
+        teamMembersCount = Math.max(0, gameTeamSize - 1);
       }
 
       // Initialize players array
