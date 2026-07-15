@@ -76,7 +76,7 @@ export default function ProfilePage() {
     }
   };
 
-  // Fetch profile whenever user or authentication changes
+  // Fetch profile whenever user or authentication change
   useEffect(() => {
     if (!user?.id) {
       console.log("[ProfilePage] No user ID available");
