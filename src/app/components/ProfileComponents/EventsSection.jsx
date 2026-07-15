@@ -637,9 +637,8 @@ const EventCard = React.memo(function EventCard({
         {/* Prize Pool - if exists */}
         {event.prizePool > 0 && (
           <div className="flex items-center gap-2 text-sm py-2 px-3 bg-amber-500/10 border border-amber-500/20 rounded-lg">
-            ৳
             <span className="text-white font-semibold">
-              {event.currency || "BDT"} {Math.floor(event.prizePool)} Prize Pool
+              Prize Pool {Math.floor(event.prizePool)} {event.currency || "BDT"}
             </span>
           </div>
         )}
@@ -704,16 +703,16 @@ const EventCard = React.memo(function EventCard({
             !isEligible && !isAlreadyRegistered
               ? "bg-gradient-to-r from-rose-500 to-red-500 text-white cursor-not-allowed"
               : isAlreadyRegistered
-                ? "bg-gradient-to-r from-blue-600 to-blue-500 text-white opacity-90"
+                ? "bg-gradient-to-r from-green-600 to-green-500 text-white opacity-90"
                 : "bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white"
           }`}
           whileHover={
-            (isEligible && !isAlreadyRegistered) && !isLoading
+            isEligible && !isAlreadyRegistered && !isLoading
               ? { scale: 1.01 }
               : {}
           }
           whileTap={
-            (isEligible && !isAlreadyRegistered) && !isLoading
+            isEligible && !isAlreadyRegistered && !isLoading
               ? { scale: 0.98 }
               : {}
           }
