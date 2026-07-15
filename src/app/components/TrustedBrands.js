@@ -89,7 +89,7 @@ export default function TrustedBrands() {
         }
 
         .animate-infinite-scroll {
-          animation: infinite-scroll 30s linear infinite;
+          animation: infinite-scroll 20s linear infinite;
         }
 
         .animate-infinite-scroll:hover {
