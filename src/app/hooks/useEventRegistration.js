@@ -200,6 +200,9 @@ export const useEventRegistration = (event) => {
 
       setShowSuccessModal(true);
       setIsSubmitting(false);
+      setTimeout(() => {
+        router.push("/profile");
+      }, 2000);
     } catch (error) {
       showNotificationMessage(
         "error",
