@@ -514,42 +514,16 @@ export default function EventDetailPage() {
                         <SharePreview event={event} />
 
                         {event.status !== "Completed" && !showSignupForm && isEligible && actionSource === 'join' && (
-                          (() => {
-                            // Determine event category
-                            const eventCategory = event.event_category?.toLowerCase() || "";
-                            const isMiniTournament = eventCategory.includes("mini");
-                            const isLargeTournament = eventCategory.includes("large");
-                            
-                            // Get remaining quota from user data
-                            const quotaStatus = user?.event_quota_status;
-                            const miniRemaining = quotaStatus?.mini_tournaments?.remaining || 0;
-                            const largeRemaining = quotaStatus?.large_tournaments?.remaining || 0;
-                            
-                            // Check if user has remaining quota for this event category
-                            const hasRemainingQuota = isMiniTournament 
-                              ? miniRemaining > 0 
-                              : isLargeTournament 
-                                ? largeRemaining > 0 
-                                : false;
-                            
-                            return (
-                              <motion.button
-                                onClick={() => hasRemainingQuota && setShowRegistrationModal(true)}
-                                className={`px-2 sm:px-4 py-2 sm:py-2.5 font-bold rounded-lg transition-all duration-300 flex items-center gap-1 sm:gap-2 shadow-lg text-xs sm:text-sm cursor-pointer ${
-                                  hasRemainingQuota
-                                    ? "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white shadow-purple-500/20"
-                                    : "bg-gradient-to-r from-gray-600 to-gray-500 hover:from-gray-600 hover:to-gray-500 text-gray-300 shadow-gray-500/20"
-                                }`}
-                                whileHover={{ scale: hasRemainingQuota ? 1.02 : 1 }}
-                                whileTap={{ scale: hasRemainingQuota ? 0.98 : 1 }}
-                                disabled={!hasRemainingQuota}
-                              >
-                                <Users size={14} className="hidden sm:inline" />
-                                <Users size={12} className="sm:hidden" />
-                                <span>{hasRemainingQuota ? "Join Event" : "View Details"}</span>
-                              </motion.button>
-                            );
-                          })()
+                          <motion.button
+                            onClick={() => setShowRegistrationModal(true)}
+                            className="px-2 sm:px-4 py-2 sm:py-2.5 font-bold rounded-lg transition-all duration-300 flex items-center gap-1 sm:gap-2 shadow-lg text-xs sm:text-sm cursor-pointer bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white shadow-purple-500/20"
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                          >
+                            <Users size={14} className="hidden sm:inline" />
+                            <Users size={12} className="sm:hidden" />
+                            <span>Join Event</span>
+                          </motion.button>
                         )}
                       </div>
                     </div>
