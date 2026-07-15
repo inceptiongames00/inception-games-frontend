@@ -506,6 +506,27 @@ const EventCard = React.memo(function EventCard({
     eventGameName &&
     userPrimaryGame.toLowerCase().trim() === eventGameName.toLowerCase().trim();
 
+  // Get quota status based on event category
+  const getQuotaStatus = () => {
+    if (!user?.event_quota_status) return { remaining: 0, isQuotaFilled: false };
+
+    const quotaStatus = user.event_quota_status;
+    let remaining = 0;
+
+    if (event.event_category === "Mini Tournament") {
+      remaining = quotaStatus.mini_tournaments?.remaining || 0;
+    } else if (event.event_category === "Large Tournament") {
+      remaining = quotaStatus.large_tournaments?.remaining || 0;
+    }
+
+    return {
+      remaining,
+      isQuotaFilled: remaining === 0,
+    };
+  };
+
+  const quotaInfo = getQuotaStatus();
+
   return (
     <motion.div
       className="bg-gradient-to-b from-gray-900/40 via-[#111115] to-black/60 border border-white/[0.08] rounded-2xl overflow-hidden hover:border-white/[0.15] transition-all duration-300 group"
@@ -690,7 +711,7 @@ const EventCard = React.memo(function EventCard({
                 tournamentType = "Large Tournament";
               }
 
-              // If remaining quota is 0, show error message
+              // If remaining quota is 0 and user is NOT already registered, show error message
               if (remainingQuota === 0 && !isAlreadyRegistered) {
                 Swal.fire({
                   icon: "warning",
@@ -718,33 +739,52 @@ const EventCard = React.memo(function EventCard({
               }
             }
 
+            // Determine button action based on conditions
             let action = "view";
+            let canJoin = false;
+
             if (isAlreadyRegistered) {
-              action = "view";
-            } else if (isEligible) {
+              // User is registered - check if quota is filled
+              if (quotaInfo.isQuotaFilled) {
+                // Quota is filled - show VIEW DETAILS only
+                action = "view";
+              } else {
+                // Quota still has slots - show JOIN EVENT (can join more)
+                action = "join";
+                canJoin = true;
+              }
+            } else if (isEligible && !quotaInfo.isQuotaFilled) {
+              // User not registered, eligible, and quota available - show JOIN EVENT
               action = "join";
-            } else {
+              canJoin = true;
+            } else if (!isEligible) {
+              // User not eligible
               action = "not-applicable";
             }
+
             handleCardClick(event, action);
           }}
           disabled={isLoading}
           className={`w-full mt-2 py-3 font-bold text-sm rounded-xl transition-all duration-200 uppercase tracking-wider flex items-center justify-center gap-2 ${
             isLoading ? "cursor-not-allowed opacity-60" : "cursor-pointer"
           } ${
-            isAlreadyRegistered
-              ? "bg-gradient-to-r from-green-600 to-green-500 text-white opacity-90"
-              : isEligible
-                ? "bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white"
-                : "bg-gradient-to-r from-rose-500 to-red-500 text-white cursor-not-allowed"
+            !isEligible && !isAlreadyRegistered
+              ? "bg-gradient-to-r from-rose-500 to-red-500 text-white cursor-not-allowed"
+              : isAlreadyRegistered && quotaInfo.isQuotaFilled
+                ? "bg-gradient-to-r from-blue-600 to-blue-500 text-white opacity-90"
+                : "bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white"
           }`}
           whileHover={
-            isEligible && !isAlreadyRegistered && !isLoading
+            ((isEligible && !isAlreadyRegistered && !quotaInfo.isQuotaFilled) ||
+              (isAlreadyRegistered && !quotaInfo.isQuotaFilled)) &&
+            !isLoading
               ? { scale: 1.01 }
               : {}
           }
           whileTap={
-            isEligible && !isAlreadyRegistered && !isLoading
+            ((isEligible && !isAlreadyRegistered && !quotaInfo.isQuotaFilled) ||
+              (isAlreadyRegistered && !quotaInfo.isQuotaFilled)) &&
+            !isLoading
               ? { scale: 0.98 }
               : {}
           }
@@ -754,12 +794,16 @@ const EventCard = React.memo(function EventCard({
               <Loader2 size={16} className="animate-spin" />
               <span>Loading...</span>
             </>
-          ) : isAlreadyRegistered ? (
+          ) : !isEligible && !isAlreadyRegistered ? (
+            "You are not Applicable"
+          ) : isAlreadyRegistered && quotaInfo.isQuotaFilled ? (
             "View Details"
-          ) : isEligible ? (
+          ) : isAlreadyRegistered && !quotaInfo.isQuotaFilled ? (
+            "Join Event"
+          ) : isEligible && !quotaInfo.isQuotaFilled ? (
             "Join Event"
           ) : (
-            "You are not Applicable"
+            "View Details"
           )}
         </motion.button>
       </div>
