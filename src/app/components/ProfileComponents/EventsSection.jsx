@@ -585,8 +585,7 @@ const EventCard = React.memo(function EventCard({
         {/* Title */}
         <div>
           <h3
-            className="text-white font-bold text-xl cursor-pointer hover:text-purple-400 transition-colors line-clamp-2 leading-tight"
-            onClick={() => onClick(event)}
+            className="text-white font-bold text-xl line-clamp-2 leading-tight"
           >
             {event.title}
           </h3>
