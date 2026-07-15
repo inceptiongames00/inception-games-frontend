@@ -33,7 +33,7 @@ import PlatformDisplay from "@/app/components/EventComponents/PlatformDisplay";
 import AnimatedInput from "@/app/components/EventComponents/AnimatedInput";
 import { AuthContext } from "@/app/context/AuthContext";
 import { useEventData } from "@/app/hooks/useEventData";
-import { useEventRegistration } from "@/app/hooks/useEventRegistration";
+import { useEventRegistration } from "@/app/hooks/useEventRegistration.js";
 import { useEventSharing } from "@/app/hooks/useEventSharing";
 import { getTokens } from "@/lib/api";
 import {
