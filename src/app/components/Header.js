@@ -150,7 +150,7 @@ export default function Header() {
                 onClick={() => setEsportsDropdownOpen(!esportsDropdownOpen)}
                 className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors flex items-center gap-1"
               >
-                E-Sports
+                Esports
                 <ChevronDown
                   size={16}
                   className={`transition-transform duration-200 ${esportsDropdownOpen ? "rotate-180" : ""}`}
