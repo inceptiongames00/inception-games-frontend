@@ -508,7 +508,8 @@ const EventCard = React.memo(function EventCard({
 
   // Get quota status based on event category
   const getQuotaStatus = () => {
-    if (!user?.event_quota_status) return { remaining: 0, isQuotaFilled: false };
+    if (!user?.event_quota_status)
+      return { remaining: 0, isQuotaFilled: false };
 
     const quotaStatus = user.event_quota_status;
     let remaining = 0;
@@ -775,7 +776,7 @@ const EventCard = React.memo(function EventCard({
             !isEligible && !isAlreadyRegistered
               ? "bg-gradient-to-r from-rose-500 to-red-500 text-white cursor-not-allowed"
               : isAlreadyRegistered && quotaInfo.isQuotaFilled
-                ? "bg-gradient-to-r from-blue-600 to-blue-500 text-white opacity-90"
+                ? "bg-gradient-to-r from-green-600 to-green-500 text-white opacity-90"
                 : "bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white"
           }`}
           whileHover={

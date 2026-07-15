@@ -1135,6 +1135,7 @@ export default function EventDetailPage() {
                                   confirmButtonColor: "#a855f7",
                                 });
                                 setShowRegistrationModal(false);
+                                router.push("/profile");
 
                                 // Reset form data
                                 setFormData({
