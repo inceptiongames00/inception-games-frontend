@@ -5,10 +5,34 @@ import { motion } from "framer-motion";
 import { Check, Crown } from "lucide-react";
 import UpgradePlanModal from "./UpgradePlanModal";
 import ActivateSubscriptionModal from "./ActivateSubscriptionModal";
+import Swal from "sweetalert2";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ||
   "https://inception-games.an.r.appspot.com/api/v1";
+
+// Helper function to check if user can upgrade (15-day restriction from approval date)
+const canUpgradeSubscription = (activeSubscription) => {
+  if (!activeSubscription?.approved_at) return true;
+  
+  const approvalDate = new Date(activeSubscription.approved_at);
+  const fifteenDaysLater = new Date(approvalDate.getTime() + 15 * 24 * 60 * 60 * 1000);
+  const now = new Date();
+  
+  return now >= fifteenDaysLater;
+};
+
+// Helper function to get days remaining until upgrade is allowed
+const getDaysRemainingForUpgrade = (activeSubscription) => {
+  if (!activeSubscription?.approved_at) return 0;
+  
+  const approvalDate = new Date(activeSubscription.approved_at);
+  const fifteenDaysLater = new Date(approvalDate.getTime() + 15 * 24 * 60 * 60 * 1000);
+  const now = new Date();
+  
+  const daysRemaining = Math.ceil((fifteenDaysLater - now) / (1000 * 60 * 60 * 24));
+  return Math.max(0, daysRemaining);
+};
 
 export default function SubscriptionSection({
   userProfile,
@@ -227,6 +251,23 @@ export default function SubscriptionSection({
                   if (!tier.isDisabled) {
                     if (tier.badge === "PENDING") {
                       setIsActivateModalOpen(true);
+                    } else if (tier.badge === "ACTIVE") {
+                      // Check 15-day restriction for active subscriptions
+                      if (!canUpgradeSubscription(activeSubscription)) {
+                        const daysRemaining = getDaysRemainingForUpgrade(activeSubscription);
+                        Swal.fire({
+                          icon: "info",
+                          title: "Upgrade Not Available",
+                          html: `You cannot upgrade your subscription within 15 days of activation.<br/><br/>Please try again in <strong>${daysRemaining} day${daysRemaining !== 1 ? 's' : ''}</strong>.`,
+                          confirmButtonText: "Got It",
+                          confirmButtonColor: "#9333ea",
+                          background: "#1a1a2e",
+                          color: "#fff",
+                          allowOutsideClick: true,
+                        });
+                        return;
+                      }
+                      setIsUpgradeModalOpen(true);
                     } else {
                       setIsUpgradeModalOpen(true);
                     }
