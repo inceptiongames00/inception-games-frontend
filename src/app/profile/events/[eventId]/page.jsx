@@ -116,14 +116,33 @@ export default function EventDetailPage() {
 
   useEffect(() => {
     if ((showSignupForm || showRegistrationModal) && user) {
+      // Calculate the number of team members based on game and teamSize
+      let teamMembersCount = 0;
+      if (event?.teamType !== "Solo") {
+        const gameName = event?.game?.name || event?.game_name || "";
+        const teamSize = event?.team_size || event?.teamSize || 1;
+        teamMembersCount = Math.max(0, teamSize - 1);
+      }
+
+      // Initialize players array
+      const players = Array.from({ length: teamMembersCount }, () => ({
+        fullName: "",
+        email: "",
+        phone: "",
+        inGameName: "",
+        inGameId: "",
+        discordId: "",
+      }));
+
       setFormData((prev) => ({
         ...prev,
         fullName: user.fullName || user.name || "",
         email: user.email || "",
         phone: user.phone || "",
+        players: players,
       }));
     }
-  }, [showSignupForm, showRegistrationModal, user]);
+  }, [showSignupForm, showRegistrationModal, user, event]);
 
   useEffect(() => {
     const facebookAppId = process.env.NEXT_PUBLIC_FACEBOOK_APP_ID;
@@ -1041,8 +1060,10 @@ export default function EventDetailPage() {
                               submitData.players = formData.players.map(player => ({
                                 full_name: player.fullName,
                                 email: player.email,
-                                uid: player.inGameId,
                                 phone: player.phone,
+                                in_game_name: player.inGameName,
+                                in_game_id: player.inGameId,
+                                discord_id: player.discordId || "",
                               }));
                             }
 
@@ -1182,10 +1203,7 @@ export default function EventDetailPage() {
                           )}
 
                           {/* Team Name */}
-                          <div>
-                            <label className="block text-sm font-medium text-gray-300 mb-2">
-                              Club Name *
-                            </label>
+                          <div className="relative">
                             <input
                               type="text"
                               required
@@ -1196,127 +1214,308 @@ export default function EventDetailPage() {
                                   teamName: e.target.value,
                                 }))
                               }
-                              className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
-                              placeholder="Enter your team name"
+                              placeholder=" "
+                              className="w-full p-4 pt-6 bg-gray-800 border border-gray-700 rounded-xl text-white focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition-all peer"
                             />
+                            <label
+                              className={`absolute left-4 transition-all pointer-events-none ${
+                                formData.teamName ? "top-2 text-xs text-purple-400" : "top-4 text-gray-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-purple-400"
+                              }`}
+                            >
+                              Team Name *
+                            </label>
                           </div>
 
                           {/* Basic Info */}
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                              <label className="block text-sm font-medium text-gray-300 mb-2">
-                                Full Name *
-                              </label>
-                              <input
-                                type="text"
-                                required
-                                value={formData.fullName}
-                                onChange={(e) =>
-                                  setFormData((prev) => ({
-                                    ...prev,
-                                    fullName: e.target.value,
-                                  }))
-                                }
-                                className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
-                                placeholder="Tonmoy"
-                              />
-                            </div>
-                            <div>
-                              <label className="block text-sm font-medium text-gray-300 mb-2">
-                                Email Address *
-                              </label>
-                              <input
-                                type="email"
-                                required
-                                value={formData.email}
-                                onChange={(e) =>
-                                  setFormData((prev) => ({
-                                    ...prev,
-                                    email: e.target.value,
-                                  }))
-                                }
-                                className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
-                                placeholder="tonmoyzohani@gmail.com"
-                              />
-                            </div>
+                          <div className="relative">
+                            <input
+                              type="text"
+                              required
+                              value={formData.fullName}
+                              onChange={(e) =>
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  fullName: e.target.value,
+                                }))
+                              }
+                              placeholder=" "
+                              className="w-full p-4 pt-6 bg-gray-800 border border-gray-700 rounded-xl text-white focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition-all peer"
+                            />
+                            <label
+                              className={`absolute left-4 transition-all pointer-events-none ${
+                                formData.fullName ? "top-2 text-xs text-purple-400" : "top-4 text-gray-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-purple-400"
+                              }`}
+                            >
+                              Full Name *
+                            </label>
                           </div>
 
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                              <label className="block text-sm font-medium text-gray-300 mb-2">
-                                WhatsApp Phone Number *
-                              </label>
-                              <input
-                                type="tel"
-                                required
-                                value={formData.phone}
-                                onChange={(e) =>
-                                  setFormData((prev) => ({
-                                    ...prev,
-                                    phone: e.target.value,
-                                  }))
-                                }
-                                className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
-                                placeholder="+880 1XXXXXXXXX"
-                              />
-                            </div>
-                            <div>
-                              <label className="block text-sm font-medium text-gray-300 mb-2">
-                                In-Game Name *
-                              </label>
-                              <input
-                                type="text"
-                                required
-                                value={formData.inGameName}
-                                onChange={(e) =>
-                                  setFormData((prev) => ({
-                                    ...prev,
-                                    inGameName: e.target.value,
-                                  }))
-                                }
-                                className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
-                                placeholder="In-Game Name"
-                              />
-                            </div>
+                          <div className="relative">
+                            <input
+                              type="email"
+                              required
+                              value={formData.email}
+                              onChange={(e) =>
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  email: e.target.value,
+                                }))
+                              }
+                              placeholder=" "
+                              className="w-full p-4 pt-6 bg-gray-800 border border-gray-700 rounded-xl text-white focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition-all peer"
+                            />
+                            <label
+                              className={`absolute left-4 transition-all pointer-events-none ${
+                                formData.email ? "top-2 text-xs text-purple-400" : "top-4 text-gray-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-purple-400"
+                              }`}
+                            >
+                              IGL Email Address *
+                            </label>
                           </div>
 
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                              <label className="block text-sm font-medium text-gray-300 mb-2">
-                                Steam ID / PSN ID / EA ID *
-                              </label>
-                              <input
-                                type="text"
-                                required
-                                value={formData.inGameId}
-                                onChange={(e) =>
-                                  setFormData((prev) => ({
-                                    ...prev,
-                                    inGameId: e.target.value,
-                                  }))
-                                }
-                                className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
-                                placeholder="Steam ID / PSN ID / EA ID"
-                              />
-                            </div>
-                            <div>
-                              <label className="block text-sm font-medium text-gray-300 mb-2">
-                                Discord ID (optional)
-                              </label>
-                              <input
-                                type="text"
-                                value={formData.discordId}
-                                onChange={(e) =>
-                                  setFormData((prev) => ({
-                                    ...prev,
-                                    discordId: e.target.value,
-                                  }))
-                                }
-                                className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
-                                placeholder="Discord ID (optional)"
-                              />
-                            </div>
+                          <div className="relative">
+                            <input
+                              type="tel"
+                              required
+                              value={formData.phone}
+                              onChange={(e) =>
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  phone: e.target.value,
+                                }))
+                              }
+                              placeholder=" "
+                              className="w-full p-4 pt-6 bg-gray-800 border border-gray-700 rounded-xl text-white focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition-all peer"
+                            />
+                            <label
+                              className={`absolute left-4 transition-all pointer-events-none ${
+                                formData.phone ? "top-2 text-xs text-purple-400" : "top-4 text-gray-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-purple-400"
+                              }`}
+                            >
+                              Phone Number *
+                            </label>
                           </div>
+
+                          <div className="relative">
+                            <input
+                              type="text"
+                              required
+                              value={formData.inGameName}
+                              onChange={(e) =>
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  inGameName: e.target.value,
+                                }))
+                              }
+                              placeholder=" "
+                              className="w-full p-4 pt-6 bg-gray-800 border border-gray-700 rounded-xl text-white focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition-all peer"
+                            />
+                            <label
+                              className={`absolute left-4 transition-all pointer-events-none ${
+                                formData.inGameName ? "top-2 text-xs text-purple-400" : "top-4 text-gray-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-purple-400"
+                              }`}
+                            >
+                              IGL Name *
+                            </label>
+                          </div>
+
+                          <div className="relative">
+                            <input
+                              type="text"
+                              required
+                              value={formData.inGameId}
+                              onChange={(e) =>
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  inGameId: e.target.value,
+                                }))
+                              }
+                              placeholder=" "
+                              className="w-full p-4 pt-6 bg-gray-800 border border-gray-700 rounded-xl text-white focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition-all peer"
+                            />
+                            <label
+                              className={`absolute left-4 transition-all pointer-events-none ${
+                                formData.inGameId ? "top-2 text-xs text-purple-400" : "top-4 text-gray-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-purple-400"
+                              }`}
+                            >
+                              IGL UID *
+                            </label>
+                          </div>
+
+                          <div className="relative">
+                            <input
+                              type="text"
+                              value={formData.discordId}
+                              onChange={(e) =>
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  discordId: e.target.value,
+                                }))
+                              }
+                              placeholder=" "
+                              className="w-full p-4 pt-6 bg-gray-800 border border-gray-700 rounded-xl text-white focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition-all peer"
+                            />
+                            <label
+                              className={`absolute left-4 transition-all pointer-events-none ${
+                                formData.discordId ? "top-2 text-xs text-purple-400" : "top-4 text-gray-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-purple-400"
+                              }`}
+                            >
+                              IGL Discord ID (optional)
+                            </label>
+                          </div>
+
+                          {/* Team Members */}
+                          {event?.teamType !== "Solo" && (
+                            <>
+                              <div className="pt-4 border-t border-gray-700">
+                                <h4 className="text-lg font-semibold text-white mb-4">
+                                  Team Members
+                                </h4>
+                                <p className="text-sm text-gray-400 mb-4">
+                                  {gameName === "Pubg Mobile"
+                                    ? "Add 4 team members (5 players total including you as leader)"
+                                    : gameName === "Free Fire"
+                                      ? "Add 3 team members (4 players total including you as leader)"
+                                      : `Add team members for your ${event?.teamType} team`}
+                                </p>
+                              </div>
+
+                              {/* Player Input Fields */}
+                              {formData.players.map((player, index) => (
+                                <div
+                                  key={index}
+                                  className="p-4 rounded-lg border border-gray-700 bg-gray-800/30 space-y-3"
+                                >
+                                  <h5 className="text-sm font-semibold text-purple-400">
+                                    Player {index + 2}
+                                  </h5>
+
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                                        Full Name
+                                      </label>
+                                      <input
+                                        type="text"
+                                        value={player.fullName || ""}
+                                        onChange={(e) => {
+                                          const newPlayers = [...formData.players];
+                                          newPlayers[index].fullName = e.target.value;
+                                          setFormData((prev) => ({
+                                            ...prev,
+                                            players: newPlayers,
+                                          }));
+                                        }}
+                                        className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
+                                        placeholder="Full Name"
+                                      />
+                                    </div>
+                                    <div>
+                                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                                        Email Address
+                                      </label>
+                                      <input
+                                        type="email"
+                                        value={player.email || ""}
+                                        onChange={(e) => {
+                                          const newPlayers = [...formData.players];
+                                          newPlayers[index].email = e.target.value;
+                                          setFormData((prev) => ({
+                                            ...prev,
+                                            players: newPlayers,
+                                          }));
+                                        }}
+                                        className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
+                                        placeholder="Email Address"
+                                      />
+                                    </div>
+                                  </div>
+
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                                        Phone Number
+                                      </label>
+                                      <input
+                                        type="tel"
+                                        value={player.phone || ""}
+                                        onChange={(e) => {
+                                          const newPlayers = [...formData.players];
+                                          newPlayers[index].phone = e.target.value;
+                                          setFormData((prev) => ({
+                                            ...prev,
+                                            players: newPlayers,
+                                          }));
+                                        }}
+                                        className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
+                                        placeholder="Phone Number"
+                                      />
+                                    </div>
+                                    <div>
+                                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                                        In-Game Name
+                                      </label>
+                                      <input
+                                        type="text"
+                                        value={player.inGameName || ""}
+                                        onChange={(e) => {
+                                          const newPlayers = [...formData.players];
+                                          newPlayers[index].inGameName = e.target.value;
+                                          setFormData((prev) => ({
+                                            ...prev,
+                                            players: newPlayers,
+                                          }));
+                                        }}
+                                        className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
+                                        placeholder="In-Game Name"
+                                      />
+                                    </div>
+                                  </div>
+
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                                        In-Game ID / UID
+                                      </label>
+                                      <input
+                                        type="text"
+                                        value={player.inGameId || ""}
+                                        onChange={(e) => {
+                                          const newPlayers = [...formData.players];
+                                          newPlayers[index].inGameId = e.target.value;
+                                          setFormData((prev) => ({
+                                            ...prev,
+                                            players: newPlayers,
+                                          }));
+                                        }}
+                                        className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
+                                        placeholder="In-Game ID / UID"
+                                      />
+                                    </div>
+                                    <div>
+                                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                                        Discord ID (optional)
+                                      </label>
+                                      <input
+                                        type="text"
+                                        value={player.discordId || ""}
+                                        onChange={(e) => {
+                                          const newPlayers = [...formData.players];
+                                          newPlayers[index].discordId = e.target.value;
+                                          setFormData((prev) => ({
+                                            ...prev,
+                                            players: newPlayers,
+                                          }));
+                                        }}
+                                        className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
+                                        placeholder="Discord ID (optional)"
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                            </>
+                          )}
 
                           {/* Action Buttons */}
                           <div className="pt-6 flex gap-3">
