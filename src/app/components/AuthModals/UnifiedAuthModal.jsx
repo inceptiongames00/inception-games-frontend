@@ -22,7 +22,7 @@ import { useAuth } from "@/app/context/AuthContext";
 const GAMES = [
   "EA FC 26",
   "Efootball Mobile",
-  "eFootball PC & Console",
+  // "eFootball PC & Console",
   "Freefire Mobile",
   "Pubg Mobile",
   "Street Fighter 6",

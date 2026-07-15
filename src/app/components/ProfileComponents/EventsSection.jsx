@@ -637,9 +637,8 @@ const EventCard = React.memo(function EventCard({
         {/* Prize Pool - if exists */}
         {event.prizePool > 0 && (
           <div className="flex items-center gap-2 text-sm py-2 px-3 bg-amber-500/10 border border-amber-500/20 rounded-lg">
-            ৳
             <span className="text-white font-semibold">
-              {event.currency || "BDT"} {Math.floor(event.prizePool)} Prize Pool
+              Prize Pool {Math.floor(event.prizePool)} {event.currency || "BDT"}
             </span>
           </div>
         )}
