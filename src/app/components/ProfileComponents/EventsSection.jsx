@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Swal from "sweetalert2";
 import UpgradePlanModal from "./UpgradePlanModal";
+import ActivateSubscriptionModal from "./ActivateSubscriptionModal";
 import {
   Trophy,
   Swords,
@@ -451,6 +452,7 @@ const EventCard = React.memo(function EventCard({
   user,
   userRegistrations,
   onUpgradePlanClick,
+  onActivateClick,
 }) {
   const [expanded, setExpanded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -654,6 +656,45 @@ const EventCard = React.memo(function EventCard({
           onClick={() => {
             // Check if tournament is locked
             if (event.is_lock) {
+              // Check user's subscription status
+              const activeSubscription = user?.subscriptions?.[0];
+              const subscriptionStatus = activeSubscription?.status?.toLowerCase();
+
+              // If subscription is pending, open ActivateSubscriptionModal
+              if (subscriptionStatus === "pending") {
+                Swal.fire({
+                  icon: "info",
+                  title: "Activate Your Plan",
+                  html: "Unavailable: Your subscription tier is pending approval or inactive.",
+                  confirmButtonText: "Activate",
+                  confirmButtonColor: "#9333ea",
+                  background: "#1a1a2e",
+                  color: "#fff",
+                  allowOutsideClick: true,
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    onActivateClick();
+                  }
+                });
+                return;
+              }
+
+              // If waiting for approval, just close (Got It button)
+              if (subscriptionStatus === "waiting for approval") {
+                Swal.fire({
+                  icon: "info",
+                  title: "Waiting For Approval",
+                  html: "Unavailable: Your subscription tier is pending approval or inactive.",
+                  confirmButtonText: "Got It",
+                  confirmButtonColor: "#9333ea",
+                  background: "#1a1a2e",
+                  color: "#fff",
+                  allowOutsideClick: true,
+                });
+                return;
+              }
+
+              // Otherwise show the upgrade plan dialog
               Swal.fire({
                 icon: "warning",
                 title: "Upgrade Your Plan",
@@ -672,8 +713,8 @@ const EventCard = React.memo(function EventCard({
                   }
                 },
               }).then((result) => {
-                if (result.isConfirmed && onUpgradePlanClick) {
-                  onUpgradePlanClick();
+                if (result.isConfirmed) {
+                  setIsUpgradePlanModalOpen(true);
                 }
               });
               return;
@@ -750,12 +791,19 @@ export default function EventsSection({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isUpgradePlanModalOpen, setIsUpgradePlanModalOpen] = useState(false);
+  const [isActivateModalOpen, setIsActivateModalOpen] = useState(false);
   const [apiPlans, setApiPlans] = useState([]);
+  const [hasMounted, setHasMounted] = useState(false);
 
   // Initialize activeFilter from initialFilter prop, URL sync happens in useEffect
   const [activeFilter, setActiveFilter] = useState(initialFilter);
 
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Handle client-side mounting to prevent hydration mismatches
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   // Update activeFilter whenever URL searchParams change
   useEffect(() => {
@@ -1133,6 +1181,11 @@ export default function EventsSection({
     router.push(`${routePrefix}/events/${event.id}?action=${action}`);
   };
 
+  // Don't render until client is mounted to prevent hydration mismatch
+  if (!hasMounted) {
+    return null;
+  }
+
   return (
     <motion.div
       ref={sectionRef}
@@ -1284,6 +1337,7 @@ export default function EventsSection({
                   user={user}
                   userRegistrations={user}
                   onUpgradePlanClick={() => setIsUpgradePlanModalOpen(true)}
+                  onActivateClick={() => setIsActivateModalOpen(true)}
                 />
               </motion.div>
             ))}
@@ -1331,6 +1385,14 @@ export default function EventsSection({
         onClose={() => setIsUpgradePlanModalOpen(false)}
         plans={apiPlans}
         activePlanName={user?.plan_name || null}
+      />
+
+      {/* Activate Subscription Modal */}
+      <ActivateSubscriptionModal
+        isOpen={isActivateModalOpen}
+        onClose={() => setIsActivateModalOpen(false)}
+        subscription={user?.subscriptions?.[0]}
+        userId={user?.id || user?.userId}
       />
     </motion.div>
   );
