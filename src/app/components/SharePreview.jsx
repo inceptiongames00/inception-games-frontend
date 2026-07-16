@@ -201,7 +201,7 @@ export default function SharePreview({ event }) {
                         type="button"
                         className={`bg-gradient-to-br ${option.color} ${option.hoverColor} text-white font-semibold py-3 px-4 rounded-xl transition-all flex flex-col items-center justify-center gap-2 cursor-pointer shadow-lg hover:shadow-xl relative overflow-hidden group`}
                       >
-                        {/* Animated background glow */}
+                        {/* Animate background glow */}
                         <div className={`absolute inset-0 ${option.bgColor} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
                         
                         {/* Content */}
