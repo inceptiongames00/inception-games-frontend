@@ -152,6 +152,7 @@ export default function EventDetailPage() {
 
       setFormData((prev) => ({
         ...prev,
+        fullName: user.fullName || user.name || "",
         inGameName: user.fullName || user.name || "",
         email: user.email || "",
         phone: user.phone || "",
@@ -1371,6 +1372,7 @@ export default function EventDetailPage() {
                             <input
                               type="email"
                               required
+                              readOnly
                               value={formData.email}
                               onChange={(e) =>
                                 setFormData((prev) => ({
