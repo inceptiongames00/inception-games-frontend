@@ -57,99 +57,28 @@ export default function EShop() {
           </p>
         </div>
 
-        {/* Carousel Container */}
-        <div className="relative overflow-hidden">
-          {/* Gradient overlays for smooth fade effect */}
-          <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-r from-zinc-950 to-transparent z-10"></div>
-          <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-l from-zinc-950 to-transparent z-10"></div>
-
-          {/* Auto-scrolling container */}
-          <div className="flex animate-eshop-scroll gap-4 sm:gap-6">
-            {/* First set of products */}
-            {products.map((product, index) => (
-              <div
-                key={`product-1-${index}`}
-                className="flex-shrink-0 w-64 sm:w-72 md:w-80 group cursor-pointer"
-              >
-                {/* Card */}
-                <div className="rounded-3xl overflow-hidden bg-zinc-900/50 backdrop-blur-sm border border-zinc-800/50 shadow-2xl h-full flex flex-col transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/20 hover:scale-105 hover:border-zinc-700/50">
-                  {/* Image Section */}
-                  <div
-                    className="relative h-56 sm:h-64 md:h-72 overflow-hidden bg-gradient-to-br from-slate-700 to-slate-900 bg-cover bg-center group-hover:scale-110 transition-transform duration-500"
-                    style={{
-                      backgroundImage: `url('${product.image}')`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                    }}
-                  >
-                    {/* Category Badge */}
-                    <div className="absolute top-4 left-4 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-pink-500/30 text-pink-300 border border-pink-500/50 backdrop-blur-sm">
-                      {product.category}
-                    </div>
-                  </div>
-
-                  {/* Content Section */}
-                  <div className="p-6 sm:p-7 flex-grow flex flex-col justify-between">
-                    <div>
-                      <h3 className="text-lg sm:text-xl font-bold text-white mb-2 leading-tight">
-                        {product.title}
-                      </h3>
-                      <p className="text-sm sm:text-base text-zinc-400 leading-relaxed">
-                        {product.description}
-                      </p>
-                    </div>
-
-                    {/* Buy Button */}
-                    <button className="mt-6 px-6 py-2.5 bg-gradient-to-r from-purple-600 to-purple-500 rounded-full text-white font-bold text-sm uppercase tracking-wider hover:shadow-lg hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105">
-                      {product.buttonText}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-
-            {/* Duplicate set for seamless loop */}
-            {products.map((product, index) => (
-              <div
-                key={`product-2-${index}`}
-                className="flex-shrink-0 w-64 sm:w-72 md:w-80 group cursor-pointer"
-              >
-                {/* Card */}
-                <div className="rounded-3xl overflow-hidden bg-zinc-900/50 backdrop-blur-sm border border-zinc-800/50 shadow-2xl h-full flex flex-col transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/20 hover:scale-105 hover:border-zinc-700/50">
-                  {/* Image Section */}
-                  <div
-                    className="relative h-56 sm:h-64 md:h-72 overflow-hidden bg-gradient-to-br from-slate-700 to-slate-900 bg-cover bg-center group-hover:scale-110 transition-transform duration-500"
-                    style={{
-                      backgroundImage: `url('${product.image}')`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                    }}
-                  >
-                    {/* Category Badge */}
-                    <div className="absolute top-4 left-4 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-pink-500/30 text-pink-300 border border-pink-500/50 backdrop-blur-sm">
-                      {product.category}
-                    </div>
-                  </div>
-
-                  {/* Content Section */}
-                  <div className="p-6 sm:p-7 flex-grow flex flex-col justify-between">
-                    <div>
-                      <h3 className="text-lg sm:text-xl font-bold text-white mb-2 leading-tight">
-                        {product.title}
-                      </h3>
-                      <p className="text-sm sm:text-base text-zinc-400 leading-relaxed">
-                        {product.description}
-                      </p>
-                    </div>
-
-                    {/* Buy Button */}
-                    <button className="mt-6 px-6 py-2.5 bg-gradient-to-r from-purple-600 to-purple-500 rounded-full text-white font-bold text-sm uppercase tracking-wider hover:shadow-lg hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105">
-                      {product.buttonText}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
+        {/* Coming Soon Banner */}
+        <div className="relative mx-auto max-w-7xl rounded-lg overflow-hidden">
+          {/* Background with gradient and backdrop blur effect */}
+          <div className="absolute inset-0 bg-gradient-to-r from-pink-500/20 via-purple-500/20 to-blue-500/20 backdrop-blur-sm" />
+          
+          {/* Content */}
+          <div className="relative z-10 px-6 sm:px-12 py-16 sm:py-24 text-center flex flex-col items-center justify-center">
+            {/* Coming Soon Badge */}
+            <div className="inline-block mb-6 px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full">
+              <span className="text-sm font-bold text-white uppercase tracking-widest">Coming Soon</span>
+            </div>
+            
+            {/* Main Text */}
+            <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
+              Gear Shop Coming Soon
+              </span>
+            </h3>
+            
+            <p className="text-zinc-400 text-base sm:text-lg max-w-md mb-8">
+             Get ready for premium gaming gear, apparel, accessories, and exclusive collections.
+            </p>
           </div>
         </div>
       </div>
