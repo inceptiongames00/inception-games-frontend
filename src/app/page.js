@@ -6,14 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useProfileNavigation } from "@/hooks/useProfileNavigation";
 import { Suspense } from "react";
 import { motion } from "framer-motion";
-import {
-  Trophy,
-  Users,
-  Gamepad2,
-  DollarSign,
-  ArrowRight,
-  Flame,
-} from "lucide-react";
+import { ArrowRight, Flame } from "lucide-react";
 import Header from "./components/Header";
 import TrustedBrands from "./components/TrustedBrands";
 import GiveawayWinner from "./components/GiveawayWinner";
@@ -47,12 +40,14 @@ function HomeContent() {
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [countdownModalOpen, setCountdownModalOpen] = useState(false);
 
+  const arrow =
+    "https://res.cloudinary.com/jvpygp4b/image/upload/v1784196312/arrow_zq2dq8.png";
   const howToEarn = [
     {
       step: "01",
       title: "Sign Up Free",
       desc: "Create your account in 60 seconds.",
-      icon: Gamepad2,
+      icon: "https://res.cloudinary.com/jvpygp4b/image/upload/v1784191814/step1_qiswho.png",
       color: "text-purple-400",
       bg: "bg-purple-500/10 border-purple-500/30",
     },
@@ -60,7 +55,7 @@ function HomeContent() {
       step: "02",
       title: "Join Tournaments",
       desc: "Play and compete.",
-      icon: Trophy,
+      icon: "https://res.cloudinary.com/jvpygp4b/image/upload/v1784191814/step2_wqlih6.png",
       color: "text-yellow-400",
       bg: "bg-yellow-500/10 border-yellow-500/30",
     },
@@ -68,7 +63,7 @@ function HomeContent() {
       step: "03",
       title: "Build Fanbase",
       desc: "Grow followers.",
-      icon: Users,
+      icon: "https://res.cloudinary.com/jvpygp4b/image/upload/v1784191814/step3_haxpyf.png",
       color: "text-cyan-400",
       bg: "bg-cyan-500/10 border-cyan-500/30",
     },
@@ -76,7 +71,7 @@ function HomeContent() {
       step: "04",
       title: "Earn Money",
       desc: "Get paid.",
-      icon: DollarSign,
+      icon: "https://res.cloudinary.com/jvpygp4b/image/upload/v1784191814/step4_rwa0vz.png",
       color: "text-emerald-400",
       bg: "bg-emerald-500/10 border-emerald-500/30",
     },
@@ -153,124 +148,125 @@ function HomeContent() {
       <Header />
 
       {/* ── HERO + SCRIMS WEEK ── */}
-   <section className="relative bg-zinc-950 overflow-hidden">
-  {/* Hero Section */}
-  <div className="relative min-h-screen flex items-start justify-center overflow-hidden">
-    <div className="absolute inset-0">
-      <Image
-        src="https://res.cloudinary.com/jvpygp4b/image/upload/v1783144123/bg_pbzann.jpg"
-        alt="Esports Arena"
-        fill
-        className="object-cover"
-        priority
-      />
-      <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/80 to-zinc-950/60" />
-      <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-zinc-950/30" />
-    </div>
-
-    <div className="relative max-w-7xl mx-auto px-4 sm:px-6 w-full pt-30">
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="flex flex-col items-center gap-6"
-      >
-        {/* Live badge */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.1 }}
-          className="inline-flex items-center gap-2 bg-zinc-900/60 border border-purple-500/50 rounded-full px-4 sm:px-5 py-1.5 sm:py-2"
-        >
-          <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 bg-green-400 rounded-full animate-pulse" />
-          <span className="text-xs sm:text-sm text-zinc-300 whitespace-nowrap">
-            500 Gamers Earning,{" "}
-            <span className="text-purple-400 font-semibold">Right Now</span>
-          </span>
-        </motion.div>
-
-        {/* Main Headline */}
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.8 }}
-          className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight leading-tight text-center"
-        >
-          PLAY GAMES.{" "}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
-            GET PAID.
-          </span>
-        </motion.h1>
-
-        {/* Description */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className="text-base sm:text-lg text-zinc-300 max-w-2xl text-center leading-relaxed px-4"
-        >
-          From casual solo to esports grinder - turn your skills into real
-          earnings through Scrims, tournaments, and creator brand deals, all
-          in one place.
-        </motion.p>
-
-        {/* CTA Pills - Responsive flex wrap */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4 pt-3 sm:pt-4 md:pt-6 px-2"
-        >
-          {[
-            { icon: "🏆", text: "Play Scrims" },
-            { icon: "🏆", text: "Play Tournaments" },
-            { icon: "💎", text: "Brand Deals" },
-          { icon: "🎁", text: "Free Entry @ 500 Fans" },
-          ].map((item, i) => (
-            <motion.button
-              key={i}
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              className="relative px-4 sm:px-6 md:px-8 py-2 sm:py-3 rounded-full text-white font-semibold transition-all duration-300 group whitespace-nowrap overflow-hidden border border-white/20 text-xs sm:text-sm"
-              style={{
-                background: "rgba(20, 20, 30, 0.3)",
-                backdropFilter: "blur(10px)",
-              }}
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-white/10 via-white/5 to-transparent opacity-60 rounded-full" />
-              <span className="flex items-center gap-1.5 sm:gap-2 relative z-10">
-                <span className="text-base sm:text-lg">{item.icon}</span>
-                {item.text}
-              </span>
-            </motion.button>
-          ))}
-        </motion.div>
-
-
-        {/* Scrims Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7 }}
-          className="max-w-full w-full mt-8"
-        >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6">
-            <div className="text-center mb-8 sm:mb-12">
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold italic text-white">
-                TOURNAMENTS WEEK
-              </h2>
-              <p className="text-sm sm:text-base text-zinc-400 tracking-widest">
-                REGISTRATION GOING ON
-              </p>
-            </div>
+      <section className="relative bg-zinc-950 overflow-hidden">
+        {/* Hero Section */}
+        <div className="relative min-h-screen flex items-start justify-center overflow-hidden">
+          <div className="absolute inset-0">
+            <Image
+              src="https://res.cloudinary.com/jvpygp4b/image/upload/v1783144123/bg_pbzann.jpg"
+              alt="Esports Arena"
+              fill
+              className="object-cover"
+              priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/80 to-zinc-950/60" />
+            <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-zinc-950/30" />
           </div>
 
-          <ScrimsCarousel onLoginClick={() => setLoginModalOpen(true)} />
-        </motion.div>
-      </motion.div>
-    </div>
-  </div>
-  </section>
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 w-full pt-30">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="flex flex-col items-center gap-6"
+            >
+              {/* Live badge */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.1 }}
+                className="inline-flex items-center gap-2 bg-zinc-900/60 border border-purple-500/50 rounded-full px-4 sm:px-5 py-1.5 sm:py-2"
+              >
+                <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 bg-green-400 rounded-full animate-pulse" />
+                <span className="text-xs sm:text-sm text-zinc-300 whitespace-nowrap">
+                  500 Gamers Earning,{" "}
+                  <span className="text-purple-400 font-semibold">
+                    Right Now
+                  </span>
+                </span>
+              </motion.div>
+
+              {/* Main Headline */}
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.8 }}
+                className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight leading-tight text-center"
+              >
+                PLAY GAMES.{" "}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
+                  GET PAID.
+                </span>
+              </motion.h1>
+
+              {/* Description */}
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4 }}
+                className="text-base sm:text-lg text-zinc-300 max-w-2xl text-center leading-relaxed px-4"
+              >
+                From casual solo to esports grinder - turn your skills into real
+                earnings through Scrims, tournaments, and creator brand deals,
+                all in one place.
+              </motion.p>
+
+              {/* CTA Pills - Responsive flex wrap */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4 pt-3 sm:pt-4 md:pt-6 px-2"
+              >
+                {[
+                  { icon: "🏆", text: "Play Scrims" },
+                  { icon: "🏆", text: "Play Tournaments" },
+                  { icon: "💎", text: "Brand Deals" },
+                  { icon: "🎁", text: "Free Entry @ 500 Fans" },
+                ].map((item, i) => (
+                  <motion.button
+                    key={i}
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="relative px-4 sm:px-6 md:px-8 py-2 sm:py-3 rounded-full text-white font-semibold transition-all duration-300 group whitespace-nowrap overflow-hidden border border-white/20 text-xs sm:text-sm"
+                    style={{
+                      background: "rgba(20, 20, 30, 0.3)",
+                      backdropFilter: "blur(10px)",
+                    }}
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-white/10 via-white/5 to-transparent opacity-60 rounded-full" />
+                    <span className="flex items-center gap-1.5 sm:gap-2 relative z-10">
+                      <span className="text-base sm:text-lg">{item.icon}</span>
+                      {item.text}
+                    </span>
+                  </motion.button>
+                ))}
+              </motion.div>
+
+              {/* Scrims Section */}
+              <motion.div
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7 }}
+                className="max-w-full w-full mt-8"
+              >
+                <div className="max-w-7xl mx-auto px-4 sm:px-6">
+                  <div className="text-center mb-8 sm:mb-12">
+                    <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold italic text-white">
+                      TOURNAMENTS WEEK
+                    </h2>
+                    <p className="text-sm sm:text-base text-zinc-400 tracking-widest">
+                      REGISTRATION GOING ON
+                    </p>
+                  </div>
+                </div>
+
+                <ScrimsCarousel onLoginClick={() => setLoginModalOpen(true)} />
+              </motion.div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
 
       {/* ── HOW TO EARN ── */}
       <section
@@ -293,7 +289,7 @@ function HomeContent() {
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4">
               HOW YOU{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
-               EARN MONEY
+                EARN MONEY
               </span>
             </h2>
             <p className="text-zinc-400 text-lg max-w-2xl mx-auto">
@@ -302,14 +298,14 @@ function HomeContent() {
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-4 gap-8 relative py-16">
-            <div className="hidden md:block absolute top-36 left-[5%] right-[5%] h-1 pointer-events-none">
+          <div className="flex flex-col md:flex-row items-center md:items-start justify-center gap-4 md:gap-0 relative py-6">
+            {/* <div className="hidden md:block absolute top-36 left-[5%] right-[5%] h-1 pointer-events-none">
               <div className="processing-line w-full h-full" />
-            </div>
+            </div> */}
 
             {howToEarn.map((item, i) => (
+              <div key={i} className="flex flex-col md:flex-row items-center w-full md:w-auto">
               <motion.div
-                key={i}
                 initial={{ opacity: 0, y: 40, scale: 0.9 }}
                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 whileHover={{ y: -16 }}
@@ -328,25 +324,30 @@ function HomeContent() {
                     scale: 1.2,
                     y: -4,
                   }}
-                  transition={{ type: "spring", stiffness: 400, damping: 20 }}
-                  className={`icon-animate-reveal icon-animate-reveal-${i} w-24 h-24 bg-gray-900 rounded-full border-1 border-gray-500 rounded-3xl flex items-center justify-center mb-8 relative z-10 transition-all duration-300`}
+                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                  className={`icon-animate-reveal icon-animate-reveal-${i} bg-gray-900 w-32 h-35 rounded-full flex items-center justify-center relative z-10 transition-all duration-300`}
                   style={{
                     boxShadow: `0 20px 40px rgba(100, 100, 100, 0.1)`,
                   }}
                 >
                   <motion.div
-                    animate={{ rotate: [0, 360] }}
                     transition={{
                       duration: 25,
                       repeat: Infinity,
                       ease: "linear",
                     }}
-                    className="absolute inset-1 rounded-full border-2 border-dashed opacity-50 group-hover:opacity-40 transition-opacity duration-300"
+                    className="absolute inset-1 rounded-full opacity-50 group-hover:opacity-40 transition-opacity duration-300"
                     style={{
                       borderColor: "rgb(129, 23, 241)",
                     }}
                   />
-                  <item.icon className="w-10 h-10 relative z-20 icon-color" />
+                  <Image
+                    src={item.icon}
+                    alt={item.title}
+                    width={100}
+                    height={100}
+                    className="w-32 h-38 relative z-20 object-cover"
+                  />
                 </motion.div>
 
                 <motion.div
@@ -354,7 +355,7 @@ function HomeContent() {
                   whileInView={{ opacity: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 + 0.2 }}
-                  className="step-label text-xs font-extrabold mb-3 tracking-widest"
+                  className="step-label text-xs font-extrabold mb-2 tracking-widest mt-4"
                   style={{
                     color: "rgb(120, 120, 120)",
                   }}
@@ -367,38 +368,28 @@ function HomeContent() {
                   whileInView={{ opacity: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 + 0.1 }}
-                  className="step-title text-2xl font-bold mb-3 leading-tight transition-all duration-300"
+                  className="step-title text-lg font-bold leading-tight transition-all duration-300"
                   style={{
                     color: "rgb(130, 130, 130)",
                   }}
                 >
                   {item.title}
                 </motion.h3>
-
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 + 0.15 }}
-                  className="step-description text-base leading-relaxed transition-colors duration-300"
-                  style={{
-                    color: "rgb(100, 100, 100)",
-                  }}
-                >
-                  {item.desc}
-                </motion.p>
-
-                <motion.div
-                  initial={{ scaleX: 0 }}
-                  whileInView={{ scaleX: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 + 0.3, duration: 0.8 }}
-                  className="h-1 mt-6 w-12 rounded-full origin-left"
-                  style={{
-                    background: `linear-gradient(90deg, ${["#a855f7", "#facc15", "#06b6d4", "#10b981"][i]}, ${["#ec4899", "#f97316", "#0ea5e9", "#34d399"][i]})`,
-                  }}
-                />
               </motion.div>
+
+              {/* Arrow between steps */}
+              {i < howToEarn.length - 1 && (
+                <div className="flex items-start justify-center md:my-8 md:mx-2 rotate-90 md:rotate-0 flex-shrink-0 md:self-start">
+                  <Image
+                    src={arrow}
+                    alt="next step"
+                    width={48}
+                    height={48}
+                    className="w-42 h-12 opacity-60"
+                  />
+                </div>
+              )}
+              </div>
             ))}
           </div>
 
@@ -407,7 +398,7 @@ function HomeContent() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="text-center mt-14"
+            className="text-center mt-10"
           >
             <motion.button
               whileHover={{ scale: 1.05 }}

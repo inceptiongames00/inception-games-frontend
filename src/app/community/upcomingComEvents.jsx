@@ -161,7 +161,10 @@ export default function UpcomingComEvents() {
   };
 
   return (
-    <section id="upcoming-events" className="relative overflow-hidden bg-zinc-950 py-20 px-4 sm:px-6">
+    <section
+      id="upcoming-events"
+      className="relative overflow-hidden bg-zinc-950 py-20 px-4 sm:px-6"
+    >
       {/* Background Glow */}
       <div className="absolute left-0 top-0 h-[400px] w-[400px] rounded-full bg-purple-600/10 blur-[170px]" />
       <div className="absolute right-0 bottom-0 h-[400px] w-[400px] rounded-full bg-pink-600/10 blur-[180px]" />
@@ -273,25 +276,6 @@ export default function UpcomingComEvents() {
             </motion.div>
           ))}
         </div>
-
-        {/* Discord Button */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mt-20 flex justify-center"
-        >
-          <a
-            href="https://discord.gg/StTgqPMERz"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 px-8 py-4 font-semibold text-white shadow-[0_0_30px_rgba(79,70,229,0.45)] transition hover:opacity-90"
-          >
-            Join Discord
-            <MessageSquare size={18} />
-          </a>
-        </motion.div>
       </div>
 
       {/* Event Registration Modal */}
