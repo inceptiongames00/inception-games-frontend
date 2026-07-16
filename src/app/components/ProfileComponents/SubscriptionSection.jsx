@@ -45,6 +45,7 @@ export default function SubscriptionSection({
   const [apiPlans, setApiPlans] = useState([]);
   const [activeSubscription, setActiveSubscription] = useState(null);
   const [hasMounted, setHasMounted] = useState(false);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   // Handle client-side mounting to prevent hydration mismatches
   useEffect(() => {
@@ -125,7 +126,7 @@ export default function SubscriptionSection({
 
       setSubscriptionTiers([displaySub]);
     }
-  }, [userProfile, hasMounted]);
+  }, [userProfile, hasMounted, refreshTrigger]);
 
   // Fetch available plans
   useEffect(() => {
@@ -154,6 +155,15 @@ export default function SubscriptionSection({
   if (!hasMounted) {
     return null;
   }
+
+  const handleSubscriptionSuccess = () => {
+    // Trigger refetch by incrementing trigger state
+    setRefreshTrigger(prev => prev + 1);
+    // Also call parent callback if provided
+    if (onSubscriptionSuccess) {
+      onSubscriptionSuccess();
+    }
+  };
 
   return (
     <motion.div
@@ -293,6 +303,7 @@ export default function SubscriptionSection({
         onClose={() => setIsActivateModalOpen(false)}
         subscription={activeSubscription}
         userId={userId}
+        onSuccess={handleSubscriptionSuccess}
       />
 
       {/* Upgrade Plan Modal */}

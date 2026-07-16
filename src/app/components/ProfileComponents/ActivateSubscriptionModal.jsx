@@ -6,7 +6,7 @@ import { X, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://inception-games.an.r.appspot.com/api/v1';
 
-export default function ActivateSubscriptionModal({ isOpen, onClose, subscription, userId }) {
+export default function ActivateSubscriptionModal({ isOpen, onClose, subscription, userId, onSuccess }) {
   const [trxId, setTrxId] = useState('');
   const [reference, setReference] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -59,6 +59,11 @@ export default function ActivateSubscriptionModal({ isOpen, onClose, subscriptio
         // Reset form
         setTrxId('');
         setReference('');
+        
+        // Call onSuccess callback to refetch data
+        if (onSuccess) {
+          onSuccess();
+        }
         
         // Close modal after 2 seconds
         setTimeout(() => {
