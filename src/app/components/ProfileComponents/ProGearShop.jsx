@@ -1,22 +1,24 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
-import { ShoppingBag, ArrowRight } from 'lucide-react';
-import Image from 'next/image';
+import { motion } from "framer-motion";
+import { ShoppingBag, ArrowRight } from "lucide-react";
+import Image from "next/image";
 
 export default function ProGearShop() {
   const gearItems = [
     {
       id: 1,
-      name: 'Elite Controller',
-      icon: '🎮',
-      image: 'https://images.unsplash.com/photo-1531492746076-161ca9bcad58?w=500&h=400&fit=crop',
+      name: "Elite Controller",
+      icon: "🎮",
+      image:
+        "https://images.unsplash.com/photo-1531492746076-161ca9bcad58?w=500&h=400&fit=crop",
     },
     {
       id: 2,
-      name: 'Pro Headset',
-      icon: '🎧',
-      image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&h=400&fit=crop',
+      name: "Pro Headset",
+      icon: "🎧",
+      image:
+        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&h=400&fit=crop",
     },
   ];
 
@@ -39,7 +41,7 @@ export default function ProGearShop() {
             <h2 className="text-lg font-semibold text-white">Pro Gear Shop</h2>
           </div>
           <button className="px-3 py-1 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-300 text-xs font-bold uppercase tracking-wider hover:bg-purple-500/30 transition">
-             Visit Store
+            Visit Store
           </button>
         </div>
 
@@ -47,9 +49,9 @@ export default function ProGearShop() {
         <div className="grid grid-cols-1 gap-4">
           {/* Coming Soon Banner */}
           <div className="relative rounded-xl overflow-hidden bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-500/20 p-8 flex items-center justify-center min-h-36">
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-transparent to-blue-500/5" />
-            <h3 className="relative text-center text-2xl sm:text-3xl font-bold text-white">
-              Pro Gear Shop Is Coming Soon
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/30 via-transparent to-blue-500/30" />
+            <h3 className="relative text-center text-4xl sm:text-3xl font-bold text-white">
+              Coming Soon
             </h3>
           </div>
         </div>
