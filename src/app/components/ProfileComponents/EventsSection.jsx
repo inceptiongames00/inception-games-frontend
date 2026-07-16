@@ -584,9 +584,7 @@ const EventCard = React.memo(function EventCard({
 
         {/* Title */}
         <div>
-          <h3
-            className="text-white font-bold text-xl line-clamp-2 leading-tight"
-          >
+          <h3 className="text-white font-bold text-xl line-clamp-2 leading-tight">
             {event.title}
           </h3>
         </div>
@@ -1289,7 +1287,7 @@ export default function EventsSection({
             ))}
 
             {/* Coming Soon Cards - Brand Deals */}
-            {/* {showComingSoonCards["Brand Deal"] && (
+            {showComingSoonCards["Brand Deal"] && (
               <motion.div
                 key="brand-deal-card"
                 initial={{ opacity: 0, y: 20 }}
@@ -1299,7 +1297,7 @@ export default function EventsSection({
               >
                 <ComingSoonCard category="Brand Deal" icon={Briefcase} />
               </motion.div>
-            )} */}
+            )}
           </AnimatePresence>
 
           {/* Empty State for Scrims with no data */}
