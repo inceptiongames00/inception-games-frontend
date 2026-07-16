@@ -118,19 +118,26 @@ export default function EventDetailPage() {
       // Calculate the number of team members based on game
       let teamMembersCount = 0;
       if (event?.teamType !== "Solo") {
-        const gameName = (event?.game?.name || event?.game_name || "").toLowerCase();
-        
+        const gameName = (
+          event?.game?.name ||
+          event?.game_name ||
+          ""
+        ).toLowerCase();
+
         // Define team sizes based on game
         let gameTeamSize = 1;
         if (gameName.includes("pubg")) {
           gameTeamSize = 5; // PUBG: 5 players
-        } else if (gameName.includes("freefire") || gameName.includes("free fire")) {
+        } else if (
+          gameName.includes("freefire") ||
+          gameName.includes("free fire")
+        ) {
           gameTeamSize = 4; // Free Fire: 4 players
         } else {
           // Use API team_size or default to 1
           gameTeamSize = event?.team_size || event?.teamSize || 1;
         }
-        
+
         teamMembersCount = Math.max(0, gameTeamSize - 1);
       }
 
@@ -145,7 +152,7 @@ export default function EventDetailPage() {
 
       setFormData((prev) => ({
         ...prev,
-        fullName: user.fullName || user.name || "",
+        inGameName: user.fullName || user.name || "",
         email: user.email || "",
         phone: user.phone || "",
         players: players,
@@ -299,7 +306,7 @@ export default function EventDetailPage() {
   // Calculate registration window days
   const registrationDays = calculateDaysBetween(
     event?.registration_start,
-    event?.registration_end
+    event?.registration_end,
   );
 
   const tabs = [
@@ -353,9 +360,7 @@ export default function EventDetailPage() {
     },
     {
       label: "Match Ends",
-      date: event?.tournamentEnd
-        ? new Date(event.tournamentEnd)
-        : new Date(),
+      date: event?.tournamentEnd ? new Date(event.tournamentEnd) : new Date(),
       time: event?.tournamentEnd
         ? new Date(event.tournamentEnd).toLocaleTimeString("en-US", {
             hour: "2-digit",
@@ -515,8 +520,6 @@ export default function EventDetailPage() {
                           {event.teamType || "Team"}
                         </span>
                       </div>
-
-                  
                     </div>
 
                     {/* Game + Actions Row - Moved Inside Banner Overlay */}
@@ -674,10 +677,13 @@ export default function EventDetailPage() {
                           <Calendar size={10} className="sm:w-3 sm:h-3" />
                           <span className="text-xs">
                             {step.date
-                              ? new Date(step.date).toLocaleDateString("en-GB", {
-                                  day: "2-digit",
-                                  month: "short",
-                                })
+                              ? new Date(step.date).toLocaleDateString(
+                                  "en-GB",
+                                  {
+                                    day: "2-digit",
+                                    month: "short",
+                                  },
+                                )
                               : "TBA"}
                           </span>
                         </div>
@@ -976,7 +982,8 @@ export default function EventDetailPage() {
 
                           {/* Info Text */}
                           <p className="text-sm text-gray-400 text-center">
-                            Closes in {registrationDays} day{registrationDays !== 1 ? 's' : ''}
+                            Closes in {registrationDays} day
+                            {registrationDays !== 1 ? "s" : ""}
                           </p>
                         </div>
                       </div>
@@ -1335,7 +1342,7 @@ export default function EventDetailPage() {
                           </div>
 
                           {/* Basic Info */}
-                          <div className="relative">
+                          {/* <div className="relative">
                             <input
                               type="text"
                               required
@@ -1358,7 +1365,7 @@ export default function EventDetailPage() {
                             >
                               Full Name *
                             </label>
-                          </div>
+                          </div> */}
 
                           <div className="relative">
                             <input
@@ -1388,7 +1395,6 @@ export default function EventDetailPage() {
                           <div className="relative">
                             <input
                               type="tel"
-                              required
                               value={formData.phone}
                               onChange={(e) =>
                                 setFormData((prev) => ({
@@ -1406,7 +1412,7 @@ export default function EventDetailPage() {
                                   : "top-4 text-gray-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-purple-400"
                               }`}
                             >
-                              Phone Number *
+                              Phone Number
                             </label>
                           </div>
 
@@ -1560,7 +1566,7 @@ export default function EventDetailPage() {
                                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                       <label className="block text-sm font-medium text-gray-300 mb-2">
-                                        Phone Number *
+                                        Phone Number
                                       </label>
                                       <input
                                         type="tel"
@@ -1582,7 +1588,7 @@ export default function EventDetailPage() {
                                     </div>
                                     <div>
                                       <label className="block text-sm font-medium text-gray-300 mb-2">
-                                        In-Game ID / UID *
+                                        UID *
                                       </label>
                                       <input
                                         type="text"
@@ -1599,7 +1605,7 @@ export default function EventDetailPage() {
                                           }));
                                         }}
                                         className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-colors"
-                                        placeholder="In-Game ID / UID"
+                                        placeholder="UID"
                                       />
                                     </div>
 
