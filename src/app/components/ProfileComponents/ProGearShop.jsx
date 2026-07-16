@@ -44,35 +44,14 @@ export default function ProGearShop() {
         </div>
 
         {/* Gear Grid */}
-        <div className="grid grid-cols-2 gap-3 mb-4">
-          {gearItems.map((item, idx) => (
-            <motion.div
-              key={item.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 + idx * 0.05 }}
-              className="rounded-xl border border-white/[0.08] bg-white/[0.02] overflow-hidden hover:border-white/[0.12] transition"
-            >
-              {/* Placeholder Image */}
-              <div className="h-28 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center relative overflow-hidden">
-                {item.image ? (
-                  <Image
-                    src={item.image}
-                    alt={item.name}
-                    fill
-                    className="object-cover"
-                  />
-                ) : (
-                  <span className="text-3xl">{item.icon}</span>
-                )}
-              </div>
-
-              {/* Item Name */}
-              <div className="p-3">
-                <p className="text-sm font-semibold text-white">{item.name}</p>
-              </div>
-            </motion.div>
-          ))}
+        <div className="grid grid-cols-1 gap-4">
+          {/* Coming Soon Banner */}
+          <div className="relative rounded-xl overflow-hidden bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-500/20 p-8 flex items-center justify-center min-h-36">
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-transparent to-blue-500/5" />
+            <h3 className="relative text-center text-2xl sm:text-3xl font-bold text-white">
+              Pro Gear Shop Is Coming Soon
+            </h3>
+          </div>
         </div>
       </div>
     </motion.section>
