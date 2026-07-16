@@ -502,7 +502,7 @@ export default function CommunityActivies() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-semibold text-zinc-300 mb-2">
-                        WhatsApp Number <span className="text-pink-500">*</span>
+                        WhatsApp Number
                       </label>
                       <input
                         type="tel"
@@ -510,7 +510,6 @@ export default function CommunityActivies() {
                         value={formData.whatsapp}
                         onChange={handleInputChange}
                         placeholder="+1234567890"
-                        required
                         className="w-full px-4 py-2.5 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
                       />
                     </div>
