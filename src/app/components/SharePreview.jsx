@@ -1,18 +1,13 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import html2canvas from 'html2canvas';
 import { IoClose } from 'react-icons/io5';
-import { BiDownload } from 'react-icons/bi';
-import { MdContentCopy } from 'react-icons/md';
+import { FaFacebookF, FaTwitter, FaWhatsapp, FaDiscord } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 
 export default function SharePreview({ event }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [copySuccess, setCopySuccess] = useState(false);
-  const previewRef = useRef(null);
 
   // Safely extract values from event object, handling nested objects
   const getEventTitle = () => event?.title || 'Event';
@@ -22,155 +17,12 @@ export default function SharePreview({ event }) {
     if (event?.gameName) return event.gameName;
     return 'Gaming';
   };
-  const getEventRegion = () => event?.region || event?.location || 'Online';
-  const getEventType = () => event?.eventType || 'Event';
-
-  const handleDownloadImage = async () => {
-    if (!previewRef.current) return;
-    setIsGenerating(true);
-
-    try {
-      // Capture the actual visual share card with all styling, images, and gradients
-      const canvas = await html2canvas(previewRef.current, {
-        backgroundColor: null, // Preserve transparency and background images
-        scale: 3, // Higher quality image (3x scale for sharp result)
-        useCORS: true,
-        allowTaint: true,
-        logging: false,
-        imageTimeout: 10000,
-        canvasWidth: 1200,
-        canvasHeight: 1000,
-      });
-
-      // Convert canvas to PNG blob
-      canvas.toBlob((blob) => {
-        if (blob) {
-          const url = URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = `${event?.title || 'event'}-share.png`;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          URL.revokeObjectURL(url);
-
-          Swal.fire({
-            icon: 'success',
-            title: 'Downloaded!',
-            text: 'Beautiful share image saved as PNG',
-            background: '#0c0c12',
-            color: '#fff',
-            confirmButtonColor: '#d946ef',
-          });
-        }
-      }, 'image/png', 0.95);
-    } catch (error) {
-      console.error('[v0] Canvas capture failed, trying fallback SVG:', error);
-      // Fallback to SVG if canvas fails
-      try {
-        const width = 1200;
-        const height = 1000;
-        
-        const svg = `
-          <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1" />
-                <stop offset="50%" style="stop-color:#0c0c12;stop-opacity:1" />
-                <stop offset="100%" style="stop-color:#16213e;stop-opacity:1" />
-              </linearGradient>
-              <linearGradient id="btnGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" style="stop-color:#d946ef;stop-opacity:1" />
-                <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
-              </linearGradient>
-            </defs>
-            
-            <rect width="${width}" height="${height}" fill="url(#bgGrad)"/>
-            <text x="60" y="80" font-size="24" font-weight="bold" fill="#9333ea" font-family="Arial">
-              INCEPTION GAMES
-            </text>
-            <text x="60" y="160" font-size="54" font-weight="900" fill="#ffffff" font-family="Arial">
-              <tspan x="60" dy="0">${getEventTitle().substring(0, 40)}</tspan>
-            </text>
-            <rect x="${width - 200}" y="60" width="140" height="100" rx="12" fill="#d946ef" opacity="0.2" stroke="#d946ef" stroke-width="2"/>
-            <text x="${width - 130}" y="125" font-size="20" font-weight="bold" fill="#d946ef" font-family="Arial" text-anchor="middle">
-              ${getEventGame()}
-            </text>
-            <text x="60" y="280" font-size="18" fill="#a78bfa" font-family="Arial">
-              📅 ${eventDate}
-            </text>
-            <text x="60" y="330" font-size="18" fill="#a78bfa" font-family="Arial">
-              📍 ${getEventRegion()}
-            </text>
-            <text x="60" y="380" font-size="18" fill="#a78bfa" font-family="Arial">
-              🎮 ${getEventType()}
-            </text>
-            <rect x="60" y="450" width="${width - 120}" height="100" rx="12" fill="url(#btnGrad)"/>
-            <text x="${width / 2}" y="510" font-size="36" font-weight="bold" fill="#ffffff" font-family="Arial" text-anchor="middle">
-              Register Now
-            </text>
-            <text x="${width / 2}" y="545" font-size="16" fill="#ffffff" font-family="Arial" text-anchor="middle">
-              inception-games.com
-            </text>
-            <text x="60" y="${height - 40}" font-size="14" fill="#6b7280" font-family="Arial">
-              Share this amazing esports event • Follow Inception Games
-            </text>
-          </svg>
-        `;
-
-        const blob = new Blob([svg], { type: 'image/svg+xml' });
-        const url = URL.createObjectURL(blob);
-        
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `${event?.title || 'event'}-share.svg`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-
-        Swal.fire({
-          icon: 'success',
-          title: 'Downloaded!',
-          text: 'Share card saved as SVG',
-          background: '#0c0c12',
-          color: '#fff',
-          confirmButtonColor: '#d946ef',
-        });
-      } catch (fallbackError) {
-        console.error('[v0] Fallback also failed:', fallbackError);
-        Swal.fire({
-          icon: 'error',
-          title: 'Download Error',
-          text: 'Could not generate share image. Try copying the link instead.',
-          background: '#0c0c12',
-          color: '#fff',
-          confirmButtonColor: '#d946ef',
-        });
-      }
-    } finally {
-      setIsGenerating(false);
-    }
-  };
-
-  const handleCopyLink = () => {
-    try {
-      const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}${window.location.pathname}` : '';
-      navigator.clipboard.writeText(shareUrl);
-      setCopySuccess(true);
-      setTimeout(() => setCopySuccess(false), 2000);
-    } catch (error) {
-      console.error('[v0] Copy link failed:', error);
-    }
-  };
 
   const handleFacebookShare = () => {
     if (typeof window !== 'undefined') {
-      // Ensure OG tags are in place before opening Facebook
       const title = event?.title || 'Check out this event!';
       const description = `Join ${title} on Inception Games. Register now for this amazing esports event!`;
       
-      // Update OG tags one more time to ensure they're fresh
       const updateOGTag = (property, content) => {
         let tag = document.querySelector(`meta[property="${property}"]`);
         if (!tag) {
@@ -185,7 +37,6 @@ export default function SharePreview({ event }) {
       updateOGTag('og:description', description);
       updateOGTag('og:url', window.location.href);
       
-      // Open Facebook share dialog
       const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent(title)}`;
       window.open(url, '_blank', 'width=600,height=400');
     }
@@ -222,31 +73,54 @@ export default function SharePreview({ event }) {
         confirmButtonColor: '#d946ef',
       });
     } catch (error) {
-      console.error('[v0] Discord share failed:', error);
+      console.error('[SharePreview] Discord share failed:', error);
     }
   };
 
-  const eventDate = event?.start_at
-    ? new Date(event.start_at).toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-      })
-    : 'TBD';
-
-  const eventTime = event?.start_at
-    ? new Date(event.start_at).toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true,
-      })
-    : 'TBD';
+  const shareOptions = [
+    {
+      id: 'facebook',
+      name: 'Facebook',
+      icon: FaFacebookF,
+      color: 'from-blue-600 to-blue-700',
+      hoverColor: 'hover:from-blue-500 hover:to-blue-600',
+      bgColor: 'bg-blue-500/10',
+      onClick: handleFacebookShare,
+    },
+    {
+      id: 'twitter',
+      name: 'Twitter',
+      icon: FaTwitter,
+      color: 'from-black to-gray-900',
+      hoverColor: 'hover:from-gray-800 hover:to-gray-950',
+      bgColor: 'bg-gray-500/10',
+      onClick: handleTwitterShare,
+    },
+    {
+      id: 'whatsapp',
+      name: 'WhatsApp',
+      icon: FaWhatsapp,
+      color: 'from-green-500 to-green-600',
+      hoverColor: 'hover:from-green-400 hover:to-green-500',
+      bgColor: 'bg-green-500/10',
+      onClick: handleWhatsAppShare,
+    },
+    {
+      id: 'discord',
+      name: 'Discord',
+      icon: FaDiscord,
+      color: 'from-indigo-500 to-purple-600',
+      hoverColor: 'hover:from-indigo-400 hover:to-purple-500',
+      bgColor: 'bg-purple-500/10',
+      onClick: handleDiscordShare,
+    },
+  ];
 
   return (
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="px-4 py-2 rounded-lg border border-purple-500/30 text-purple-400 hover:border-purple-400 hover:bg-purple-500/5 transition-all flex items-center gap-2 cursor-pointer"
+        className="px-4 py-2 rounded-lg border border-purple-500/30 text-purple-400 hover:border-purple-400 hover:bg-purple-500/5 transition-all flex items-center gap-2 cursor-pointer font-medium"
       >
         <svg
           className="w-4 h-4"
@@ -270,199 +144,84 @@ export default function SharePreview({ event }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-center justify-center p-4"
             onClick={() => setIsOpen(false)}
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
+              initial={{ scale: 0.85, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.85, opacity: 0, y: 20 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-gradient-to-b from-gray-900 to-[#0c0c12] rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-purple-500/20"
+              className="bg-gradient-to-br from-slate-900/80 via-[#0a0e27] to-slate-950/90 rounded-3xl p-8 max-w-md w-full border border-purple-500/20 shadow-2xl backdrop-blur-xl"
             >
               {/* Header */}
-              <div className="flex items-center justify-between mb-6 relative z-50">
-                <h3 className="text-2xl font-bold text-white">Share Event</h3>
-                <button
+              <div className="flex items-center justify-between mb-8">
+                <div>
+                  <h3 className="text-3xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
+                    Share Event
+                  </h3>
+                  <p className="text-sm text-gray-400 mt-1">Spread the word about this amazing event</p>
+                </div>
+                <motion.button
                   onClick={() => setIsOpen(false)}
+                  whileHover={{ rotate: 90 }}
+                  whileTap={{ scale: 0.9 }}
                   type="button"
-                  className="text-gray-400 hover:text-white transition-colors cursor-pointer p-1"
+                  className="text-gray-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer p-2 rounded-lg"
                 >
                   <IoClose size={24} />
-                </button>
+                </motion.button>
               </div>
 
-              {/* Share Preview Card */}
-              <div className="mb-6 rounded-xl overflow-hidden pointer-events-none">
-                <div
-                  ref={previewRef}
-                  className="w-full bg-gradient-to-br from-purple-900/30 via-[#0c0c12] to-pink-900/30 p-8"
-                  style={{ aspectRatio: '1.2 / 1' }}
-                >
-                  {/* Banner Image Background */}
-                  {event?.banner_image && (
-                    <div
-                      className="absolute inset-0 opacity-20"
-                      style={{
-                        backgroundImage: `url(${event.banner_image})`,
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                      }}
-                    />
-                  )}
-
-                  <div className="relative h-full flex flex-col justify-between z-10">
-                    {/* Top Section - Logo & Game */}
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <p className="text-sm font-semibold text-purple-300 uppercase tracking-wider mb-1">
-                          Inception Games
-                        </p>
-                        <h2 className="text-3xl font-black text-white max-w-xs leading-tight">
-                          {getEventTitle()}
-                        </h2>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-xs text-gray-400 uppercase tracking-widest mb-1">
-                          {getEventGame()}
-                        </p>
-                        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
-                          <span className="text-xl font-bold text-white">⚡</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Middle Section - Event Details */}
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-3 text-gray-300">
-                        <svg
-                          className="w-5 h-5 text-purple-400"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.3A4.5 4.5 0 1113.5 13H11V9.413l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13H5.5z" />
-                        </svg>
-                        <span className="text-sm font-medium">
-                          {eventDate} at {eventTime}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center gap-3 text-gray-300">
-                        <svg
-                          className="w-5 h-5 text-pink-400"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                        </svg>
-                        <span className="text-sm font-medium">
-                          {getEventRegion()}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center gap-3 text-gray-300">
-                        <svg
-                          className="w-5 h-5 text-green-400"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M8.16 5.314l4.897-1.596A1 1 0 0115 4.757v6.115a4.5 4.5 0 01-1.577 3.39l-5.126 4.073a1 1 0 01-1.297-.13l-.654-.81a1 1 0 01.25-1.558l5.07-3.652a2.5 2.5 0 00.875-1.884V5.414a1 1 0 00-1.25-.988l-1.52.496A1 1 0 008 6.25v3.5a1 1 0 11-2 0v-3.5a3 3 0 013.16-2.936z" />
-                        </svg>
-                        <span className="text-sm font-medium">
-                          {getEventType()}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Bottom Section - CTA */}
-                    <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg p-3 text-center">
-                      <p className="text-white font-bold text-lg">
-                        Register Now
-                      </p>
-                      <p className="text-purple-100 text-xs mt-1">
-                        inception-games.com
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Actions */}
-              <div className="grid grid-cols-2 gap-3 mb-4 relative z-50 pointer-events-auto">
-                <button
-                  onClick={handleDownloadImage}
-                  disabled={isGenerating}
-                  className="flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 disabled:opacity-50 text-white font-semibold py-3 px-4 rounded-lg transition-all cursor-pointer"
-                >
-                  <BiDownload size={20} />
-                  {isGenerating ? 'Generating...' : 'Download Image'}
-                </button>
-
-                <button
-                  onClick={handleCopyLink}
-                  className={`flex items-center justify-center gap-2 font-semibold py-3 px-4 rounded-lg transition-all cursor-pointer ${
-                    copySuccess
-                      ? 'bg-green-600/50 text-green-300'
-                      : 'bg-gray-700/50 hover:bg-gray-600/50 text-gray-300'
-                  }`}
-                >
-                  <MdContentCopy size={20} />
-                  {copySuccess ? 'Copied!' : 'Copy Link'}
-                </button>
+              {/* Event Title */}
+              <div className="mb-7 pb-7 border-b border-purple-500/10">
+                <p className="text-xs uppercase tracking-widest text-gray-500 mb-2">Event</p>
+                <p className="text-lg font-semibold text-white truncate">{getEventTitle()}</p>
               </div>
 
               {/* Social Share Options */}
-              <div className="bg-gray-800/30 rounded-lg p-4 border border-gray-700/30 relative z-50 pointer-events-auto">
-                <p className="text-sm text-gray-400 mb-2 font-semibold uppercase tracking-wider">
-                  Or share to
+              <div className="space-y-3">
+                <p className="text-xs uppercase tracking-widest text-gray-500 font-semibold px-1 mb-4">
+                  Share to social media
                 </p>
-                <p className="text-xs text-gray-500 mb-4">
-                  Share this event with your friends. The beautiful event preview will appear on social platforms
-                </p>
-                <div className="grid grid-cols-2 gap-3 mb-4">
-                  <button
-                    onClick={handleFacebookShare}
-                    type="button"
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-3 rounded-lg transition-all flex items-center justify-center gap-2 text-sm cursor-pointer"
-                    title="Share on Facebook with event preview"
-                  >
-                    <span>f</span>
-                    Facebook
-                  </button>
-
-                  <button
-                    onClick={handleTwitterShare}
-                    type="button"
-                    className="bg-black hover:bg-gray-900 text-white font-semibold py-2 px-3 rounded-lg transition-all flex items-center justify-center gap-2 text-sm cursor-pointer"
-                    title="Share on Twitter/X with event details"
-                  >
-                    <span>𝗫</span>
-                    Twitter
-                  </button>
-
-                  <button
-                    onClick={handleWhatsAppShare}
-                    type="button"
-                    className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-3 rounded-lg transition-all flex items-center justify-center gap-2 text-sm cursor-pointer"
-                    title="Share on WhatsApp"
-                  >
-                    <span>💬</span>
-                    WhatsApp
-                  </button>
-
-                  <button
-                    onClick={handleDiscordShare}
-                    type="button"
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-3 rounded-lg transition-all flex items-center justify-center gap-2 text-sm cursor-pointer"
-                    title="Copy link for Discord"
-                  >
-                    <span>🎮</span>
-                    Discord
-                  </button>
+                
+                <div className="grid grid-cols-2 gap-3">
+                  {shareOptions.map((option, idx) => {
+                    const Icon = option.icon;
+                    return (
+                      <motion.button
+                        key={option.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: idx * 0.08 }}
+                        whileHover={{ scale: 1.05, y: -2 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={option.onClick}
+                        type="button"
+                        className={`bg-gradient-to-br ${option.color} ${option.hoverColor} text-white font-semibold py-3 px-4 rounded-xl transition-all flex flex-col items-center justify-center gap-2 cursor-pointer shadow-lg hover:shadow-xl relative overflow-hidden group`}
+                      >
+                        {/* Animated background glow */}
+                        <div className={`absolute inset-0 ${option.bgColor} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+                        
+                        {/* Content */}
+                        <div className="relative z-10 flex flex-col items-center gap-1">
+                          <Icon size={24} />
+                          <span className="text-xs sm:text-sm font-semibold">{option.name}</span>
+                        </div>
+                      </motion.button>
+                    );
+                  })}
                 </div>
-                <div className="bg-purple-500/10 border border-purple-500/20 rounded p-3 text-xs text-purple-300">
-                  <p className="font-semibold mb-1">💡 Pro Tip:</p>
-                  <p>When you share on Facebook or Twitter, the event will display with a beautiful preview showing the title, date, location, and game details!</p>
+              </div>
+
+              {/* Footer Tip */}
+              <div className="mt-7 pt-6 border-t border-purple-500/10">
+                <div className="flex items-start gap-3 bg-purple-500/5 rounded-lg p-3 border border-purple-500/10">
+                  <span className="text-lg mt-0.5">💡</span>
+                  <p className="text-xs text-gray-400">
+                    <span className="text-purple-300 font-semibold">Pro Tip:</span> Each platform will show your friends an attractive preview of this event!
+                  </p>
                 </div>
               </div>
             </motion.div>

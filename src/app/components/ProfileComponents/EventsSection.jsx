@@ -1179,6 +1179,41 @@ export default function EventsSection({
     router.push(`${routePrefix}/events/${event.id}?action=${action}`);
   };
 
+  const handleSubscriptionActivated = async () => {
+    // Refetch user data after successful activation
+    try {
+      const userId = user?.id || user?.userId || "SNS-5556";
+      const response = await fetch(
+        "https://inception-games.an.r.appspot.com/api/v1/auth/user/profile",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: userId,
+          }),
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        // Update user profile with new subscription status
+        if (data.user) {
+          // Call parent's refetch or update mechanism
+          // For now, just close the modal and refetch events
+          setIsActivateModalOpen(false);
+          // Re-fetch events to update button states
+          fetchEvents();
+        }
+      }
+    } catch (error) {
+      console.error("Error refetching user profile:", error);
+      setIsActivateModalOpen(false);
+      fetchEvents();
+    }
+  };
+
   // Don't render until client is mounted to prevent hydration mismatch
   if (!hasMounted) {
     return null;
@@ -1391,6 +1426,7 @@ export default function EventsSection({
         onClose={() => setIsActivateModalOpen(false)}
         subscription={user?.subscriptions?.[0]}
         userId={user?.id || user?.userId}
+        onSuccess={handleSubscriptionActivated}
       />
     </motion.div>
   );
