@@ -377,6 +377,13 @@ const ComingSoonCard = React.memo(function ComingSoonCard({
       accent: "bg-pink-500/10 border-pink-500/30",
       text: "text-pink-300",
     },
+    "Free Tournament": {
+      bg: "from-emerald-600/20 to-green-600/20",
+      border: "border-emerald-500/30",
+      icon: "text-emerald-400",
+      accent: "bg-emerald-500/10 border-emerald-500/30",
+      text: "text-emerald-300",
+    },
   };
 
   const colors = categoryColors[category] || categoryColors.Tournament;
@@ -797,6 +804,9 @@ export default function EventsSection({
   const [activeFilter, setActiveFilter] = useState(initialFilter);
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [sizeFilter, setSizeFilter] = useState(null); // null means no filter applied
+  const [showFreeTourn, setShowFreeTourn] = useState(false); // Toggle to show Free Tournament card
+  const [showSizeFilterDropdown, setShowSizeFilterDropdown] = useState(false); // Control dropdown visibility
 
   // Handle client-side mounting to prevent hydration mismatches
   useEffect(() => {
@@ -808,6 +818,10 @@ export default function EventsSection({
     const tabParam = searchParams.get("tab");
     if (tabParam) {
       setActiveFilter(tabParam);
+      // Reset size filter when switching tabs away from Tournament
+      if (tabParam !== "Tournament") {
+        setSizeFilter(null);
+      }
       // Scroll to Events section after a small delay to allow state update
       setTimeout(() => {
         if (sectionRef.current) {
@@ -845,6 +859,10 @@ export default function EventsSection({
   useEffect(() => {
     const handleTabSwitch = (event) => {
       setActiveFilter(event.detail.tab);
+      // Reset size filter when switching tabs away from Tournament
+      if (event.detail.tab !== "Tournament") {
+        setSizeFilter(null);
+      }
       // Scroll to Events section after a small delay
       setTimeout(() => {
         if (sectionRef.current) {
@@ -866,6 +884,13 @@ export default function EventsSection({
   useEffect(() => {
     setActiveFilter(initialFilter);
   }, [initialFilter]);
+
+  // Auto-switch to Tournament tab when size filter is selected
+  useEffect(() => {
+    if (sizeFilter !== null && activeFilter !== "Tournament") {
+      setActiveFilter("Tournament");
+    }
+  }, [sizeFilter]);
 
   // Fetch events based on active filter (Scrims, Tournaments, or both for "all")
   const fetchEvents = useCallback(async () => {
@@ -1142,6 +1167,11 @@ export default function EventsSection({
   // Memoize filtered events to prevent unnecessary recalculations
   const filteredEvents = React.useMemo(() => {
     return events.filter((event) => {
+      // If Free Tournament filter is active, hide all regular tournament cards
+      if (showFreeTourn) {
+        return false; // Don't show any cards when Free Tournament is selected
+      }
+
       // Show events based on active filter
       const matchesFilter =
         activeFilter === "all" || event.eventType === activeFilter;
@@ -1155,17 +1185,29 @@ export default function EventsSection({
           .toLowerCase()
           .includes(searchQuery.toLowerCase());
 
-      return matchesFilter && matchesSearch;
+      // Filter by tournament size using event_category
+      let matchesSize = true;
+      if (sizeFilter !== "all") {
+        const eventCategory = (event.event_category || "").toLowerCase();
+        if (sizeFilter === "mini") {
+          matchesSize = eventCategory.includes("mini");
+        } else if (sizeFilter === "large") {
+          matchesSize = eventCategory.includes("large");
+        }
+      }
+
+      return matchesFilter && matchesSearch && matchesSize;
     });
-  }, [events, activeFilter, searchQuery]);
+  }, [events, activeFilter, searchQuery, sizeFilter, showFreeTourn]);
 
   // Memoize which coming soon cards to show
   const showComingSoonCards = React.useMemo(
     () => ({
       Tournament: false, // Don't show coming soon for tournaments since we're fetching them
       "Brand Deal": activeFilter === "all" || activeFilter === "Brand Deal",
+      "Free Tournament": showFreeTourn === true, // Only show when explicitly selected
     }),
-    [activeFilter],
+    [activeFilter, showFreeTourn],
   );
 
   const handleEventClick = (event, action = "view") => {
@@ -1237,7 +1279,14 @@ export default function EventsSection({
               return (
                 <button
                   key={tab.id}
-                  onClick={() => setActiveFilter(tab.id)}
+                  onClick={() => {
+                    setActiveFilter(tab.id);
+                    // Reset size filter when clicking on "all" or "Brand Deal" tabs
+                    if (tab.id !== "Tournament") {
+                      setSizeFilter(null);
+                      setShowFreeTourn(false);
+                    }
+                  }}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 cursor-pointer ${
                     activeFilter === tab.id
                       ? "bg-purple-600 text-white"
@@ -1254,6 +1303,86 @@ export default function EventsSection({
                 </button>
               );
             })}
+          </div>
+        </div>
+
+        {/* Size Filter Button */}
+        <div className="flex items-center gap-2">
+          <div className="relative">
+            <button
+              onClick={() => setShowSizeFilterDropdown(!showSizeFilterDropdown)}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 cursor-pointer border ${
+                showFreeTourn
+                  ? "bg-emerald-600 border-emerald-500 text-white"
+                  : sizeFilter
+                    ? "bg-purple-600 border-purple-500 text-white"
+                    : "bg-[#111115] border-white/[0.06] text-gray-400 hover:text-white hover:bg-white/[0.05]"
+              }`}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+              </svg>
+              {showFreeTourn
+                ? "Free Tournament"
+                : sizeFilter === "mini"
+                  ? "Mini Tournament"
+                  : sizeFilter === "large"
+                    ? "Large Tournament"
+                    : "Filter By"}
+            </button>
+            {/* Dropdown */}
+            {showSizeFilterDropdown && (
+              <div className="absolute right-0 mt-2 w-48 bg-[#111115] border border-white/[0.06] rounded-lg shadow-lg z-10">
+                {[
+                  { value: "mini", label: "Mini Tournament" },
+                  { value: "large", label: "Large Tournament" },
+                  { value: "free", label: "Free Tournament" },
+                ].map((option) => (
+                  <button
+                    key={option.value}
+                    onClick={() => {
+                      if (option.value === "free") {
+                        setShowFreeTourn(!showFreeTourn);
+                        // Don't change sizeFilter for free tournament
+                      } else {
+                        setSizeFilter(option.value);
+                        // Reset Free Tournament filter when selecting Mini or Large
+                        setShowFreeTourn(false);
+                      }
+                      setShowSizeFilterDropdown(false); // Close dropdown after selection
+                    }}
+                    className={`w-full text-left px-4 py-2.5 text-sm transition-all duration-200 flex items-center gap-2 ${
+                      option.value === "free"
+                        ? showFreeTourn
+                          ? "bg-emerald-600 text-white"
+                          : "text-gray-400 hover:text-white hover:bg-white/[0.05]"
+                        : sizeFilter === option.value
+                          ? "bg-purple-600 text-white"
+                          : "text-gray-400 hover:text-white hover:bg-white/[0.05]"
+                    }`}
+                  >
+                    {option.value === "free" ? showFreeTourn : sizeFilter === option.value ? (
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    ) : null}
+                    {option.label}
+                  </button>
+                ))}
+                {(sizeFilter || showFreeTourn) && (
+                  <button
+                    onClick={() => {
+                      setSizeFilter(null);
+                      setShowFreeTourn(false);
+                      setShowSizeFilterDropdown(false); // Close dropdown after reset
+                    }}
+                    className="w-full text-left px-4 py-2.5 text-sm transition-all duration-200 text-gray-400 hover:text-white hover:bg-white/[0.05] border-t border-white/[0.06]"
+                  >
+                    Reset
+                  </button>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
@@ -1385,6 +1514,19 @@ export default function EventsSection({
                 transition={{ duration: 0.2 }}
               >
                 <ComingSoonCard category="Brand Deal" icon={Briefcase} />
+              </motion.div>
+            )}
+
+            {/* Coming Soon Cards - Free Tournament */}
+            {showComingSoonCards["Free Tournament"] && (
+              <motion.div
+                key="free-tournament-card"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.2 }}
+              >
+                <ComingSoonCard category="Free Tournament" icon={Trophy} />
               </motion.div>
             )}
           </AnimatePresence>
