@@ -1312,11 +1312,9 @@ export default function EventsSection({
             <button
               onClick={() => setShowSizeFilterDropdown(!showSizeFilterDropdown)}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 cursor-pointer border ${
-                showFreeTourn
-                  ? "bg-emerald-600 border-emerald-500 text-white"
-                  : sizeFilter
-                    ? "bg-purple-600 border-purple-500 text-white"
-                    : "bg-[#111115] border-white/[0.06] text-gray-400 hover:text-white hover:bg-white/[0.05]"
+                sizeFilter || showFreeTourn
+                  ? "bg-purple-600 border-purple-500 text-white"
+                  : "bg-[#111115] border-white/[0.06] text-gray-400 hover:text-white hover:bg-white/[0.05]"
               }`}
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1343,25 +1341,36 @@ export default function EventsSection({
                     onClick={() => {
                       if (option.value === "free") {
                         setShowFreeTourn(!showFreeTourn);
-                        // Don't change sizeFilter for free tournament
+                        // Reset size filter when selecting Free Tournament
+                        setSizeFilter(null);
+                        // Auto-switch to Tournament tab when Free Tournament is selected
+                        if (!showFreeTourn) {
+                          setActiveFilter("Tournament");
+                        }
                       } else {
                         setSizeFilter(option.value);
                         // Reset Free Tournament filter when selecting Mini or Large
                         setShowFreeTourn(false);
+                        // Auto-switch to Tournament tab
+                        setActiveFilter("Tournament");
                       }
                       setShowSizeFilterDropdown(false); // Close dropdown after selection
                     }}
                     className={`w-full text-left px-4 py-2.5 text-sm transition-all duration-200 flex items-center gap-2 ${
                       option.value === "free"
                         ? showFreeTourn
-                          ? "bg-emerald-600 text-white"
+                          ? "bg-purple-600 text-white"
                           : "text-gray-400 hover:text-white hover:bg-white/[0.05]"
                         : sizeFilter === option.value
                           ? "bg-purple-600 text-white"
                           : "text-gray-400 hover:text-white hover:bg-white/[0.05]"
                     }`}
                   >
-                    {option.value === "free" ? showFreeTourn : sizeFilter === option.value ? (
+                    {option.value === "free" && showFreeTourn ? (
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    ) : option.value !== "free" && sizeFilter === option.value ? (
                       <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
