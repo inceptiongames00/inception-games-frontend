@@ -7,7 +7,7 @@ export function useProfileNavigation() {
   const pathname = usePathname()
 
   const navigateToTab = (tab) => {
-    // Check if we're already on the profile page (including subroutes)
+    // Check if we're already on the profile page
     if (pathname?.startsWith('/profile')) {
       window.dispatchEvent(
         new CustomEvent('switchProfileTab', { detail: { tab } })
