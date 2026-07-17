@@ -1117,12 +1117,12 @@ export default function EventsSection({
   const FILTER_TABS = React.useMemo(
     () => [
       { id: "all", label: "All", count: filterCounts.all },
-      {
-        id: "Scrims",
-        label: "Scrims",
-        count: filterCounts.Scrims,
-        icon: Swords,
-      },
+      // {
+      //   id: "Scrims",
+      //   label: "Scrims",
+      //   count: filterCounts.Scrims,
+      //   icon: Swords,
+      // },
       {
         id: "Tournament",
         label: "Tournaments",

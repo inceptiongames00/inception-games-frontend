@@ -179,7 +179,7 @@ export default function Header() {
                     >
                       <span>Tournaments</span>
                     </button>
-                    <button
+                    {/* <button
                       onClick={() => {
                         setEsportsDropdownOpen(false);
                         if (isAuthenticated) {
@@ -191,7 +191,7 @@ export default function Header() {
                       className="w-full flex items-center gap-3 px-4 py-3 text-white/80 hover:text-white hover:bg-white/5 transition-colors border-b border-white/10 cursor-pointer"
                     >
                       <span>Scrims</span>
-                    </button>
+                    </button> */}
                     <button
                       onClick={() => {
                         setEsportsDropdownOpen(false);
