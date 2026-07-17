@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Calendar, MessageSquare, ArrowRight, X } from "lucide-react";
+import { Calendar, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Swal from "sweetalert2";
 
@@ -20,7 +20,7 @@ const events = [
   {
     id: 2,
     title:
-      "Digital Entrepreneurship and Innovation Ecosystem Development (DEIED) Project Office has organized a Dialogue Session to introduce the Startup and Scaleup Program (Accelerating Bangladesh) and the University Innovation Hub Program to senior public-sector leadership. ",
+      "Digital Entrepreneurship and Innovation Ecosystem Development (DEIED) Project Office has organized a Dialogue Session to introduce the Startup and Scaleup Program (Accelerating Bangladesh) and the University Innovation Hub Program to senior public-sector leadership.",
     image:
       "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157043/news3_freort.jpg",
     date: "December 10",
@@ -35,6 +35,7 @@ const events = [
       "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157047/news4_u9saum.jpg",
     date: "December 10",
     type: "upcoming",
+    badge: "UPCOMING",
   },
   {
     id: 4,
@@ -63,6 +64,7 @@ export default function UpcomingComEvents() {
     fb_page_link: "",
     youtube_link: "",
     website_url: "",
+    message: "",
   });
 
   const filteredEvents =
@@ -71,7 +73,7 @@ export default function UpcomingComEvents() {
       : events.filter((event) =>
           activeTab === "Upcoming Events"
             ? event.type === "upcoming"
-            : event.type === "past",
+            : event.type === "past"
         );
 
   const handleInputChange = (e) => {
@@ -114,11 +116,11 @@ export default function UpcomingComEvents() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(formData),
-        },
+        }
       );
 
       if (!response.ok) {
-        throw new Error();
+        throw new Error("Failed to submit application");
       }
 
       Swal.fire({
@@ -129,18 +131,8 @@ export default function UpcomingComEvents() {
         color: "#fff",
         confirmButtonColor: "#ec4899",
       });
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Submission Failed",
-        text:
-          error.message ||
-          "An error occurred while submitting your application.",
-        background: "#1a1a2e",
-        color: "#fff",
-        confirmButtonColor: "#ec4899",
-      });
-    } finally {
+      
+      // Reset form and close modal
       setFormData({
         full_name: "",
         email: "",
@@ -149,8 +141,19 @@ export default function UpcomingComEvents() {
         fb_page_link: "",
         youtube_link: "",
         website_url: "",
+        message: "",
       });
       setIsModalOpen(false);
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Submission Failed",
+        text: error.message || "An error occurred while submitting your application.",
+        background: "#1a1a2e",
+        color: "#fff",
+        confirmButtonColor: "#ec4899",
+      });
+    } finally {
       setIsLoading(false);
     }
   };
@@ -179,7 +182,6 @@ export default function UpcomingComEvents() {
           className="mx-auto max-w-2xl text-center mb-16"
         >
           <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white tracking-tight">
-            {/* Upcoming{" "} */}
             COMMUNITY{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
               EVENTS
@@ -198,7 +200,7 @@ export default function UpcomingComEvents() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="mt-10 flex justify-center gap-8 mb-14"
+          className="mt-10 flex justify-center gap-8 mb-14 flex-wrap"
         >
           {tabs.map((tab) => (
             <button
@@ -246,8 +248,8 @@ export default function UpcomingComEvents() {
                       event.badge === "UPCOMING"
                         ? "bg-purple-600"
                         : event.badge === "STARTING SOON"
-                          ? "bg-pink-500"
-                          : "bg-zinc-600"
+                        ? "bg-pink-500"
+                        : "bg-zinc-600"
                     }`}
                   >
                     {event.badge}
@@ -268,7 +270,7 @@ export default function UpcomingComEvents() {
 
                 <button
                   onClick={() => openEventModal(event)}
-                  className="mt-6 inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-500 rounded-full text-white font-semibold text-xs uppercase tracking-wider transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/50 group/link cursor-pointer"
+                  className="mt-6 inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-500 rounded-full text-white font-semibold text-xs uppercase tracking-wider transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/50 cursor-pointer"
                 >
                   Join Event
                 </button>
@@ -285,7 +287,12 @@ export default function UpcomingComEvents() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => setIsModalOpen(false)}
+            onClick={(e) => {
+              // Only close if clicking the backdrop
+              if (e.target === e.currentTarget) {
+                setIsModalOpen(false);
+              }
+            }}
             className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
           >
             <motion.div
@@ -293,13 +300,13 @@ export default function UpcomingComEvents() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-gradient-to-br from-zinc-900 via-zinc-900 to-black border border-purple-500/30 rounded-3xl shadow-2xl shadow-purple-500/20 max-w-md w-full max-h-[95vh] overflow-hidden flex flex-col"
+              className="bg-gradient-to-br from-zinc-900 via-zinc-900 to-black border border-purple-500/30 rounded-3xl shadow-2xl shadow-purple-500/20 max-w-2xl w-full overflow-hidden max-h-[90vh] flex flex-col"
             >
               {/* Header */}
-              <div className="relative bg-gradient-to-r from-purple-600/20 to-pink-600/20 px-4 sm:px-6 md:px-8 py-5 sm:py-6 border-b border-purple-500/20">
-                <div className="flex items-start justify-between gap-4">
+              <div className="relative bg-gradient-to-r from-purple-600/20 to-pink-600/20 px-6 sm:px-8 py-6 border-b border-purple-500/20 flex-shrink-0">
+                <div className="flex items-center justify-between">
                   <div className="flex-1">
-                    <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400 leading-tight">
+                    <h2 className="text-2xl sm:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
                       Join Event
                     </h2>
                     {selectedEvent && (
@@ -312,13 +319,13 @@ export default function UpcomingComEvents() {
                     onClick={() => setIsModalOpen(false)}
                     className="p-1 hover:bg-white/10 rounded-lg transition-colors flex-shrink-0"
                   >
-                    <X className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                    <X className="w-6 h-6 text-white" />
                   </button>
                 </div>
               </div>
 
               {/* Form */}
-              <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-4">
+              <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-4 overflow-y-auto flex-1">
                 {/* Row 1: Full Name & Email */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
@@ -355,7 +362,7 @@ export default function UpcomingComEvents() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-semibold text-zinc-300 mb-2">
-                      WhatsApp Number
+                      WhatsApp Number <span className="text-pink-500">*</span>
                     </label>
                     <input
                       type="tel"
@@ -363,6 +370,7 @@ export default function UpcomingComEvents() {
                       value={formData.whatsapp}
                       onChange={handleInputChange}
                       placeholder="+1234567890"
+                      required
                       className="w-full px-4 py-2.5 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
                     />
                   </div>
@@ -427,26 +435,42 @@ export default function UpcomingComEvents() {
                   />
                 </div>
 
-                {/* Submit Button */}
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  type="submit"
-                  disabled={isLoading}
-                  className="w-full mt-4 px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold uppercase tracking-wider rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-pink-500/50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isLoading ? "Submitting..." : "Submit Application"}
-                </motion.button>
+                {/* Row 5: Message (Full Width) */}
+                <div>
+                  <label className="block text-sm font-semibold text-zinc-300 mb-2">
+                    Message
+                  </label>
+                  <textarea
+                    name="message"
+                    value={formData.message}
+                    onChange={handleInputChange}
+                    placeholder="Tell us why you're interested in this event..."
+                    rows="4"
+                    className="w-full px-4 py-2.5 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all resize-none"
+                  />
+                </div>
 
-                {/* Cancel Button */}
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  disabled={isLoading}
-                  className="w-full px-6 py-2.5 bg-zinc-800/50 border border-zinc-700 text-zinc-300 font-semibold rounded-lg hover:bg-zinc-800 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Cancel
-                </button>
+                {/* Buttons */}
+                <div className="space-y-3 pt-2">
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold uppercase tracking-wider rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-pink-500/50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isLoading ? "Submitting..." : "Submit Application"}
+                  </motion.button>
+
+                  <button
+                    type="button"
+                    onClick={() => setIsModalOpen(false)}
+                    disabled={isLoading}
+                    className="w-full px-6 py-2.5 bg-zinc-800/50 border border-zinc-700 text-zinc-300 font-semibold rounded-lg hover:bg-zinc-800 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Cancel
+                  </button>
+                </div>
               </form>
             </motion.div>
           </motion.div>

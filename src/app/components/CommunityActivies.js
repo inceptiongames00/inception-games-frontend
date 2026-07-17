@@ -18,6 +18,7 @@ export default function CommunityActivies() {
     fb_page_link: "",
     youtube_link: "",
     website_url: "",
+    message: "",
   });
 
   const partners = [
@@ -172,6 +173,7 @@ export default function CommunityActivies() {
         fb_page_link: "",
         youtube_link: "",
         website_url: "",
+        message: "",
       });
       setIsModalOpen(false);
     } catch (error) {
@@ -571,6 +573,21 @@ export default function CommunityActivies() {
                       onChange={handleInputChange}
                       placeholder="https://example.com"
                       className="w-full px-4 py-2.5 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                    />
+                  </div>
+
+                  {/* Row 5: Message (Full Width) */}
+                  <div>
+                    <label className="block text-sm font-semibold text-zinc-300 mb-2">
+                      Message
+                    </label>
+                    <textarea
+                      name="message"
+                      value={formData.message}
+                      onChange={handleInputChange}
+                      placeholder="Tell us about your community or any additional details..."
+                      rows="4"
+                      className="w-full px-4 py-2.5 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all resize-none"
                     />
                   </div>
 
