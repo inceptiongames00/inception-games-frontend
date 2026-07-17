@@ -153,6 +153,7 @@ export default function EventDetailPage() {
       setFormData((prev) => ({
         ...prev,
         inGameName: user.fullName || user.name || "",
+        full_name: user.fullName || user.name || "",
         email: user.email || "",
         phone: user.phone || "",
         players: players,
