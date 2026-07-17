@@ -225,38 +225,25 @@ export default function MyScrims({ userRegistrations }) {
           </div>
 
           {/* Tournament Quota Button - More Prominent Design */}
-          {userRegistrations?.event_quota_status && (
-            <div className="flex items-center gap-2">
-              <div className="px-3 py-1.5 rounded-lg bg-purple-900/40 border border-purple-500/30 text-xs text-white font-medium">
-                <span className="text-purple-300">Mini: </span>
-                <span className="font-bold">
-                  {
-                    userRegistrations.event_quota_status.mini_tournaments
-                      .remaining
-                  }
-                  /
-                  {
-                    userRegistrations.event_quota_status.mini_tournaments
-                      .allowed
-                  }
-                </span>
-              </div>
-              <div className="px-3 py-1.5 rounded-lg bg-pink-900/40 border border-pink-500/30 text-xs text-white font-medium">
-                <span className="text-pink-300">Large: </span>
-                <span className="font-bold">
-                  {
-                    userRegistrations.event_quota_status.large_tournaments
-                      .remaining
-                  }
-                  /
-                  {
-                    userRegistrations.event_quota_status.large_tournaments
-                      .allowed
-                  }
-                </span>
-              </div>
-            </div>
-          )}
+{userRegistrations?.event_quota_status && (
+  <div className="flex items-center gap-3">
+    <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-900/30 border border-purple-500/30 hover:bg-purple-900/50 transition-all duration-300">
+      <span className="text-xs text-zinc-400">Mini Tournament:</span>
+      <span className="text-sm font-bold text-purple-400">
+        {userRegistrations.event_quota_status.mini_tournaments.remaining}
+      </span>
+      <span className="text-xs text-zinc-500">remain</span>
+    </button>
+    
+    <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-pink-900/30 border border-pink-500/30 hover:bg-pink-900/50 transition-all duration-300">
+      <span className="text-xs text-zinc-400">Large Tournament:</span>
+      <span className="text-sm font-bold text-pink-400">
+        {userRegistrations.event_quota_status.large_tournaments.remaining}
+      </span>
+      <span className="text-xs text-zinc-500">remain</span>
+    </button>
+  </div>
+)}
         </div>
 
         {/* Toggle Buttons */}
