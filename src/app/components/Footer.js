@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { FaFacebookF, FaLinkedin } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 export default function Footer() {
   const [ecosystemDropdownOpen, setEcosystemDropdownOpen] = useState(false);
@@ -29,16 +30,59 @@ export default function Footer() {
     setError("");
 
     try {
-      setSuccess(true);
-      setTimeout(() => {
+      const response = await fetch("https://inception-games.an.r.appspot.com/api/v1/contact/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: "", // Optional field
+          message: formData.message,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        
+        // Show success alert
+        await Swal.fire({
+          icon: "success",
+          title: "Message Sent!",
+          text: "Thank you for contacting us. We'll get back to you soon.",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#ec4899",
+          background: "#1a1a2e",
+          color: "#fff",
+        });
+
+        // Clear form
         setFormData({
           name: "",
           email: "",
           message: "",
         });
-        setSuccess(false);
-      }, 3000);
+        setSuccess(true);
+        setTimeout(() => setSuccess(false), 3000);
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to send message");
+      }
     } catch (err) {
+      console.error("Contact form error:", err);
+      
+      // Show error alert
+      await Swal.fire({
+        icon: "error",
+        title: "Oops!",
+        text: err.message || "Failed to send your message. Please try again.",
+        confirmButtonText: "OK",
+        confirmButtonColor: "#ec4899",
+        background: "#1a1a2e",
+        color: "#fff",
+      });
+
       setError(err.message);
     } finally {
       setLoading(false);
