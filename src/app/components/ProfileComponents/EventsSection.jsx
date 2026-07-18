@@ -663,7 +663,8 @@ const EventCard = React.memo(function EventCard({
             if (event.is_lock) {
               // Check user's subscription status
               const activeSubscription = user?.subscriptions?.[0];
-              const subscriptionStatus = activeSubscription?.status?.toLowerCase();
+              const subscriptionStatus =
+                activeSubscription?.status?.toLowerCase();
 
               // If subscription is pending, open ActivateSubscriptionModal
               if (subscriptionStatus === "pending") {
@@ -719,7 +720,7 @@ const EventCard = React.memo(function EventCard({
                 },
               }).then((result) => {
                 if (result.isConfirmed) {
-                  setIsUpgradePlanModalOpen(true);
+                  onUpgradePlanClick(true);
                 }
               });
               return;
@@ -1235,7 +1236,7 @@ export default function EventsSection({
           body: JSON.stringify({
             userId: userId,
           }),
-        }
+        },
       );
 
       if (response.ok) {
@@ -1317,8 +1318,18 @@ export default function EventsSection({
                   : "bg-[#111115] border-white/[0.06] text-gray-400 hover:text-white hover:bg-white/[0.05]"
               }`}
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
+                />
               </svg>
               {showFreeTourn
                 ? "Free Tournament"
@@ -1367,12 +1378,29 @@ export default function EventsSection({
                     }`}
                   >
                     {option.value === "free" && showFreeTourn ? (
-                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      <svg
+                        className="w-4 h-4"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clipRule="evenodd"
+                        />
                       </svg>
-                    ) : option.value !== "free" && sizeFilter === option.value ? (
-                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    ) : option.value !== "free" &&
+                      sizeFilter === option.value ? (
+                      <svg
+                        className="w-4 h-4"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clipRule="evenodd"
+                        />
                       </svg>
                     ) : null}
                     {option.label}
