@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import TournamentsSection from "./components/TournamentsSection";
 import BrandDealsSection from "./components/BrandDealsSection";
+import Swal from "sweetalert2";
 
 const tabs = [
   { id: "tournaments", label: "Tournaments" },
@@ -12,6 +13,19 @@ const tabs = [
 
 export default function EsportsArena() {
   const [activeTab, setActiveTab] = useState("tournaments");
+
+  const handleLoginClick = () => {
+    Swal.fire({
+      icon: "info",
+      title: "Sign In Required",
+      html: "Please sign in to join tournaments.",
+      confirmButtonText: "Go to Sign In",
+      confirmButtonColor: "#9333ea",
+      background: "#1a1a2e",
+      color: "#fff",
+      allowOutsideClick: true,
+    });
+  };
 
   return (
     <div className="min-h-screen bg-zinc-950">
@@ -86,7 +100,7 @@ export default function EsportsArena() {
           </motion.div>
 
           {/* Tab Content */}
-          {activeTab === "tournaments" && <TournamentsSection />}
+          {activeTab === "tournaments" && <TournamentsSection onLoginClick={handleLoginClick} />}
           {activeTab === "brand-deals" && <BrandDealsSection />}
         </div>
       </section>

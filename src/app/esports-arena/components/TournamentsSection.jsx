@@ -4,12 +4,23 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
+import { useAuth } from "@/hooks/useAuth";
+import { useProfileNavigation } from "@/hooks/useProfileNavigation";
 
-export default function TournamentsSection() {
+export default function TournamentsSection({ onLoginClick }) {
+  const { user } = useAuth();
+  const { navigateToTab } = useProfileNavigation();
   const [tournaments, setTournaments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isHydrated) return;
+
     const fetchTournaments = async () => {
       try {
         setLoading(true);
@@ -43,7 +54,19 @@ export default function TournamentsSection() {
     };
 
     fetchTournaments();
-  }, []);
+  }, [isHydrated]);
+
+  const handleCardClick = () => {
+    if (isHydrated && user) {
+      navigateToTab("Tournament");
+    } else {
+      onLoginClick?.();
+    }
+  };
+
+  if (!isHydrated) {
+    return null;
+  }
 
   if (loading) {
     return (
@@ -74,6 +97,9 @@ export default function TournamentsSection() {
           <TournamentCard
             key={`tournament-1-${index}`}
             tournament={tournament}
+            onClick={handleCardClick}
+            isHydrated={isHydrated}
+            user={user}
           />
         ))}
 
@@ -82,6 +108,9 @@ export default function TournamentsSection() {
           <TournamentCard
             key={`tournament-2-${index}`}
             tournament={tournament}
+            onClick={handleCardClick}
+            isHydrated={isHydrated}
+            user={user}
           />
         ))}
       </div>
@@ -108,12 +137,12 @@ export default function TournamentsSection() {
   );
 }
 
-function TournamentCard({ tournament }) {
+function TournamentCard({ tournament, onClick, isHydrated, user }) {
   return (
     <div className="px-2 sm:px-3 md:px-4" style={{ width: "300px", flexShrink: 0 }}>
       <motion.div
         whileHover={{ y: -4 }}
-        className="group rounded-2xl border border-white/10 bg-zinc-900/50 overflow-hidden transition-all duration-300 hover:border-purple-500/30 hover:shadow-[0_0_35px_rgba(168,85,247,.2)] backdrop-blur-sm h-full"
+        className="group cursor-pointer rounded-2xl border border-white/10 bg-zinc-900/50 overflow-hidden transition-all duration-300 hover:border-purple-500/30 hover:shadow-[0_0_35px_rgba(168,85,247,.2)] backdrop-blur-sm h-full relative"
       >
         {/* Image */}
         <div className="relative h-48 overflow-hidden bg-gradient-to-br from-slate-700 to-slate-900">
@@ -127,6 +156,19 @@ function TournamentCard({ tournament }) {
             className="object-cover group-hover:scale-110 transition-transform duration-300"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+
+          {/* Dark Overlay */}
+          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center rounded-lg" />
+
+          {/* CTA Button */}
+          <button
+            onClick={onClick}
+            className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          >
+            <span className="px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 rounded-full text-white font-semibold text-sm transition-all duration-300">
+              {isHydrated && user ? "Go To Tournament" : "Sign In"}
+            </span>
+          </button>
 
           {tournament.status && (
             <div className="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold text-white bg-purple-600">
