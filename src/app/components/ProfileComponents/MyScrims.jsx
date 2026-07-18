@@ -13,6 +13,7 @@ import {
   X,
   Swords,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const statusStyles = {
   Confirmed: {
@@ -77,7 +78,13 @@ function formatTime(value) {
   return `${display}:${m ?? "00"} ${ampm}`;
 }
 
-function RegistrationCard({ registration, type, index, onViewDetails }) {
+function RegistrationCard({
+  registration,
+  type,
+  index,
+  onViewDetails,
+  handleNavigation,
+}) {
   const payStyle =
     paymentStyles[registration.payment_status] || paymentStyles.Pending;
   const statusStyle = statusStyles[registration.status] || statusStyles.Pending;
@@ -132,9 +139,9 @@ function RegistrationCard({ registration, type, index, onViewDetails }) {
       </div>
 
       {/* Content */}
-      <div className="p-4 flex-1 flex flex-col">
-        {/* Date & Time - Only for Scrims, displayed side by side */}
-        {type === "scrims" && (
+      {type === "scrims" && (
+        // {/* Date & Time - Only for Scrims, displayed side by side */}
+        <div className="p-4 flex-1 flex flex-col">
           <div className="flex gap-2">
             {registration.slot_date && (
               <div className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.05] text-xs text-gray-300 flex-1">
@@ -153,15 +160,26 @@ function RegistrationCard({ registration, type, index, onViewDetails }) {
               </div>
             )}
           </div>
-        )}
-      </div>
+        </div>
+      )}
+
+      <button
+        onClick={() => handleNavigation(registration.tournament_id)}
+        className="w-full py-2 font-bold text-sm rounded-xl uppercase tracking-wider bg-gradient-to-r from-green-600 to-green-500 text-white opacity-90 cursor-pointer"
+      >
+        View Details
+      </button>
     </motion.div>
   );
 }
 
 export default function MyScrims({ userRegistrations }) {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState("tournaments");
   const [selectedRegistration, setSelectedRegistration] = useState(null);
+
+  const handleNavigation = (id) =>
+    router.push(`/profile/events/${id}?action=view`);
 
   // Get unique registrations - remove duplicates by scrim_id and tournament_id
   const scrimRegistrations = userRegistrations?.scrim_registrations
@@ -225,25 +243,31 @@ export default function MyScrims({ userRegistrations }) {
           </div>
 
           {/* Tournament Quota Button - More Prominent Design */}
-{userRegistrations?.event_quota_status && (
-  <div className="flex items-center gap-3">
-    <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-900/30 border border-purple-500/30 hover:bg-purple-900/50 transition-all duration-300">
-      <span className="text-xs text-zinc-400">Mini Tournament:</span>
-      <span className="text-sm font-bold text-purple-400">
-        {userRegistrations.event_quota_status.mini_tournaments.remaining}
-      </span>
-      <span className="text-xs text-zinc-500">remain</span>
-    </button>
-    
-    <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-pink-900/30 border border-pink-500/30 hover:bg-pink-900/50 transition-all duration-300">
-      <span className="text-xs text-zinc-400">Large Tournament:</span>
-      <span className="text-sm font-bold text-pink-400">
-        {userRegistrations.event_quota_status.large_tournaments.remaining}
-      </span>
-      <span className="text-xs text-zinc-500">remain</span>
-    </button>
-  </div>
-)}
+          {userRegistrations?.event_quota_status && (
+            <div className="flex items-center gap-3">
+              <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-900/30 border border-purple-500/30 hover:bg-purple-900/50 transition-all duration-300">
+                <span className="text-xs text-zinc-400">Mini Tournament:</span>
+                <span className="text-sm font-bold text-purple-400">
+                  {
+                    userRegistrations.event_quota_status.mini_tournaments
+                      .remaining
+                  }
+                </span>
+                <span className="text-xs text-zinc-500">remain</span>
+              </button>
+
+              <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-pink-900/30 border border-pink-500/30 hover:bg-pink-900/50 transition-all duration-300">
+                <span className="text-xs text-zinc-400">Large Tournament:</span>
+                <span className="text-sm font-bold text-pink-400">
+                  {
+                    userRegistrations.event_quota_status.large_tournaments
+                      .remaining
+                  }
+                </span>
+                <span className="text-xs text-zinc-500">remain</span>
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Toggle Buttons */}
@@ -313,6 +337,7 @@ export default function MyScrims({ userRegistrations }) {
                       registration={reg}
                       type={activeTab}
                       index={i}
+                      handleNavigation={handleNavigation}
                       onViewDetails={setSelectedRegistration}
                     />
                   </div>
@@ -328,6 +353,7 @@ export default function MyScrims({ userRegistrations }) {
                   registration={reg}
                   type={activeTab}
                   index={i}
+                  handleNavigation={handleNavigation}
                   onViewDetails={setSelectedRegistration}
                 />
               ))}
