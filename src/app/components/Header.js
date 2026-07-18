@@ -169,11 +169,7 @@ export default function Header() {
                     <button
                       onClick={() => {
                         setEsportsDropdownOpen(false);
-                        if (isAuthenticated) {
-                          navigateToTab("Tournament");
-                        } else {
-                          setLoginModalOpen(true);
-                        }
+                        router.push("/esports-arena?tab=tournaments");
                       }}
                       className="w-full flex items-center gap-3 px-4 py-3 text-white/80 hover:text-white hover:bg-white/5 transition-colors border-b border-white/10 cursor-pointer"
                     >
@@ -195,11 +191,7 @@ export default function Header() {
                     <button
                       onClick={() => {
                         setEsportsDropdownOpen(false);
-                        if (isAuthenticated) {
-                          navigateToTab("Brand Deal");
-                        } else {
-                          setLoginModalOpen(true);
-                        }
+                        router.push("/esports-arena?tab=brand-deals");
                       }}
                       className="w-full flex items-center gap-3 px-4 py-3 text-white/80 hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
                     >
@@ -517,11 +509,7 @@ export default function Header() {
                     <button
                       onClick={() => {
                         handleLinkClick();
-                        if (isAuthenticated) {
-                          navigateToTab("Tournament");
-                        } else {
-                          setLoginModalOpen(true);
-                        }
+                        router.push("/esports-arena?tab=tournaments");
                       }}
                       className="w-full block text-white/80 text-sm py-2 pl-4 hover:text-purple-400 transition-colors text-left cursor-pointer"
                     >
@@ -543,11 +531,7 @@ export default function Header() {
                     <button
                       onClick={() => {
                         handleLinkClick();
-                        if (isAuthenticated) {
-                          navigateToTab("Brand Deal");
-                        } else {
-                          setLoginModalOpen(true);
-                        }
+                        router.push("/esports-arena?tab=brand-deals");
                       }}
                       className="w-full block text-white/80 text-sm py-2 pl-4 hover:text-purple-400 transition-colors text-left cursor-pointer"
                     >
