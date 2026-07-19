@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import TournamentsSection from "./components/TournamentsSection";
 import BrandDealsSection from "./components/BrandDealsSection";
-import Swal from "sweetalert2";
+import UnifiedAuthModal from "@/app/components/AuthModals/UnifiedAuthModal";
 
 const tabs = [
   { id: "tournaments", label: "Tournaments" },
@@ -15,6 +15,7 @@ const tabs = [
 export default function EsportsArena() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [loginModalOpen, setLoginModalOpen] = useState(false);
 
   const [activeTab, setActiveTab] = useState(
     searchParams.get("tab") || "tournaments",
@@ -30,19 +31,6 @@ export default function EsportsArena() {
   useEffect(() => {
     setActiveTab(searchParams.get("tab") || "tournaments");
   }, [searchParams]);
-
-  const handleLoginClick = () => {
-    Swal.fire({
-      icon: "info",
-      title: "Sign In Required",
-      html: "Please sign in to join tournaments.",
-      confirmButtonText: "Go to Sign In",
-      confirmButtonColor: "#9333ea",
-      background: "#1a1a2e",
-      color: "#fff",
-      allowOutsideClick: true,
-    });
-  };
 
   return (
     <div className="min-h-screen bg-zinc-950">
@@ -118,11 +106,17 @@ export default function EsportsArena() {
 
           {/* Tab Content */}
           {activeTab === "tournaments" && (
-            <TournamentsSection onLoginClick={handleLoginClick} />
+            <TournamentsSection onLoginClick={() => setLoginModalOpen(true)} />
           )}
           {activeTab === "brand-deals" && <BrandDealsSection />}
         </div>
       </section>
+
+      {/* Login Modal */}
+      <UnifiedAuthModal
+        isOpen={loginModalOpen}
+        onClose={() => setLoginModalOpen(false)}
+      />
     </div>
   );
 }
