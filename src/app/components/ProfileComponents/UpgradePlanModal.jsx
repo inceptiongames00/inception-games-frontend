@@ -55,89 +55,69 @@ export default function UpgradePlanModal({
     setError(null);
     setSuccess(null);
 
-    // try {
-    //   if (!tokens?.accessToken) {
-    //     Swal.fire({
-    //       icon: "error",
-    //       title: "Authentication Error",
-    //       text: "Not authenticated",
-    //       confirmButtonColor: "#a855f7",
-    //     });
-    //     return;
-    //   }
+    try {
+      if (!tokens?.accessToken) {
+        Swal.fire({
+          icon: "error",
+          title: "Authentication Error",
+          text: "Not authenticated",
+          confirmButtonColor: "#a855f7",
+        });
+        return;
+      }
 
-    //   const response = await fetch(
-    //     "https://inception-games.an.r.appspot.com/api/v1/subscription/subscribe",
-    //     {
-    //       method: "POST",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //         Authorization: `Bearer ${tokens.accessToken}`,
-    //       },
-    //       body: JSON.stringify({
-    //         user_id: user?.id,
-    //         plan: planName,
-    //       }),
-    //     },
-    //   );
+      const response = await fetch(
+        "https://inception-games.an.r.appspot.com/api/v1/subscription/subscribe",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tokens.accessToken}`,
+          },
+          body: JSON.stringify({
+            user_id: user?.id,
+            plan: planName,
+          }),
+        },
+      );
 
-    //   const data = await response.json();
+      const data = await response.json();
 
-    //   if (!response.ok) {
-    //     throw new Error(data.message || "Subscription failed");
-    //   }
+      if (!response.ok) {
+        throw new Error(data.message || "Subscription failed");
+      }
 
-    //   // Show success alert
-    //   Swal.fire({
-    //     icon: "success",
-    //     title: "Subscription Successful!",
-    //     html: `<p>You have successfully subscribed to <strong>${planName}</strong></p>`,
-    //     confirmButtonColor: "#a855f7",
-    //     timer: 2000,
-    //     timerProgressBar: true,
-    //   });
+      // Show success alert
+      Swal.fire({
+        icon: "success",
+        title: "Subscription Successful!",
+        html: `<p>You have successfully subscribed to <strong>${planName}</strong></p>`,
+        confirmButtonColor: "#a855f7",
+        timer: 2000,
+        timerProgressBar: true,
+      });
 
-    //   // Call callback to refresh profile
-    //   if (onSubscriptionSuccess) {
-    //     setTimeout(() => {
-    //       onSubscriptionSuccess();
-    //     }, 500);
-    //   }
+      // Call callback to refresh profile
+      if (onSubscriptionSuccess) {
+        setTimeout(() => {
+          onSubscriptionSuccess();
+        }, 500);
+      }
 
-    //   setTimeout(() => {
-    //     onClose();
-    //   }, 2000);
-    // } catch (err) {
-    //   console.error("[UpgradePlanModal] Subscription error:", err);
-    //   Swal.fire({
-    //     icon: "error",
-    //     title: "Subscription Failed",
-    //     text: err.message || "Failed to complete subscription",
-    //     confirmButtonColor: "#a855f7",
-    //   });
-    // } finally {
-    //   setLoading(false);
-    // }
-
-    Swal.fire({
-      icon: "success",
-      title: "Subscription Successful!",
-      html: `<p>You have successfully subscribed to <strong>${planName}</strong></p>`,
-      confirmButtonColor: "#a855f7",
-      timer: 2000,
-      timerProgressBar: true,
-    });
-
-    // Call callback to refresh profile
-    if (onSubscriptionSuccess) {
       setTimeout(() => {
-        onSubscriptionSuccess();
-      }, 500);
+        onClose();
+      }, 2000);
+    } catch (err) {
+      console.error("[UpgradePlanModal] Subscription error:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Subscription Failed",
+        text: err.message || "Failed to complete subscription",
+        confirmButtonColor: "#a855f7",
+      });
+    } finally {
+      setLoading(false);
     }
-
-    setTimeout(() => {
-      onClose();
-    }, 2000);
   };
 
   // Transform API plans to display format
