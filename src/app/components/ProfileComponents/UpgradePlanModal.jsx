@@ -15,8 +15,8 @@ const planFeatures = [
     "Exclusive Tournaments Access",
   ],
   [
-    "1x Major + 1x Mini Tournament Entry (T1/T2 Lobbies)",
-    "Merch Brand Deal: Free site + 0 cost (Earn 5K–10K+ BDT)",
+    "1x Major + 1x Mini Tournament Entry Pass (T1/T2 Lobbies)",
+    "Merch Brand Deal: Free Website & Jersey Making Support (Earn ~5K–10K+ BDT)",
     "100 TK Discount code on partner brands",
     "Inception Esports Tryouts for the World Cup",
     "Live Streams (YT, FB, Discord) + Global News Feature",
@@ -24,8 +24,8 @@ const planFeatures = [
     "Content Mentorship on YouTube, Facebook & Instagram",
   ],
   [
-    "2x Major + 2x Mini Tournament Entry (T1/T2 Lobbies)",
-    "Merch Brand Deal: Free site + 0 cost (Earn 10K–20K+ BDT/mo)",
+    "2x Major + 2x Mini Tournament Entry Pass (T1/T2 Lobbies)",
+    "Merch Brand Deal: Free Website & Jersey Making Support (Earn ~10K–20K+ BDT/mo)",
     "Sponsorship Network: Access to brand deals based on performance",
     "200 TK Discount code on partner brands",
     "Priority Inception Esports Tryouts for the World Cup",
@@ -295,7 +295,7 @@ export default function UpgradePlanModal({
                         )}
                       </div>
                       {/* Features */}
-                      <div className="space-y-3 mb-6 h-50 overflow-y-scroll custom-scrollbar">
+                      <div className="space-y-3 mb-6 h-70 overflow-y-scroll custom-scrollbar">
                         {plan.features.map((feature, idx) => {
                           const isString = typeof feature === "string";
                           const text = isString ? feature : feature.text;
