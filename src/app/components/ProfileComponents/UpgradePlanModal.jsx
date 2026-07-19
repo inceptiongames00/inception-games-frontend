@@ -47,6 +47,7 @@ export default function UpgradePlanModal({
   plans = [],
   activePlanName = null,
   onSubscriptionSuccess,
+  onOpenActivateModal,
 }) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
@@ -102,6 +103,13 @@ export default function UpgradePlanModal({
         timer: 2000,
         timerProgressBar: true,
       });
+
+      // Open ActivateSubscriptionModal after success
+      if (onOpenActivateModal) {
+        setTimeout(() => {
+          onOpenActivateModal();
+        }, 500);
+      }
 
       // Call callback to refresh profile
       if (onSubscriptionSuccess) {

@@ -315,6 +315,10 @@ export default function SubscriptionSection({
           activeSubscription?.plan || activeSubscription?.plan_name
         }
         onSubscriptionSuccess={onSubscriptionSuccess}
+        onOpenActivateModal={() => {
+          setIsUpgradeModalOpen(false);
+          setIsActivateModalOpen(true);
+        }}
       />
     </motion.div>
   );

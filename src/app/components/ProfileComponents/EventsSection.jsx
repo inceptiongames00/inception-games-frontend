@@ -1597,6 +1597,10 @@ export default function EventsSection({
         onClose={() => setIsUpgradePlanModalOpen(false)}
         plans={apiPlans}
         activePlanName={user?.plan_name || null}
+        onOpenActivateModal={() => {
+          setIsUpgradePlanModalOpen(false);
+          setIsActivateModalOpen(true);
+        }}
       />
 
       {/* Activate Subscription Modal */}
