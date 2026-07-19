@@ -7,6 +7,34 @@ import { getTokens } from "@/lib/api";
 import Swal from "sweetalert2";
 import { useAuth } from "@/app/context/AuthContext";
 
+const planFeatures = [
+  [
+    "30-day access",
+    "Premium Features Included",
+    "Priority Support",
+    "Exclusive Tournaments Access",
+  ],
+  [
+    "1x Major + 1x Mini Tournament Entry (T1/T2 Lobbies)",
+    "Merch Brand Deal: Free site + 0 cost (Earn 5K–10K+ BDT)",
+    "100 TK Discount code on partner brands",
+    "Inception Esports Tryouts for the World Cup",
+    "Live Streams (YT, FB, Discord) + Global News Feature",
+    "Basic Performance Analytics & Star Player Recognition",
+    "Content Mentorship on YouTube, Facebook & Instagram",
+  ],
+  [
+    "2x Major + 2x Mini Tournament Entry (T1/T2 Lobbies)",
+    "Merch Brand Deal: Free site + 0 cost (Earn 10K–20K+ BDT/mo)",
+    "Sponsorship Network: Access to brand deals based on performance",
+    "200 TK Discount code on partner brands",
+    "Priority Inception Esports Tryouts for the World Cup",
+    "Priority Live Streams (YT, FB, Discord, etc.) + Premium Global Feature",
+    "Monthly Analytics Report: In-depth end-of-month data tracking",
+    "Advanced Content Mentorship on YouTube, Facebook & Instagram",
+  ],
+];
+
 export default function UpgradePlanModal({
   isOpen,
   onClose,
@@ -27,69 +55,89 @@ export default function UpgradePlanModal({
     setError(null);
     setSuccess(null);
 
-    try {
-      if (!tokens?.accessToken) {
-        Swal.fire({
-          icon: "error",
-          title: "Authentication Error",
-          text: "Not authenticated",
-          confirmButtonColor: "#a855f7",
-        });
-        return;
-      }
+    // try {
+    //   if (!tokens?.accessToken) {
+    //     Swal.fire({
+    //       icon: "error",
+    //       title: "Authentication Error",
+    //       text: "Not authenticated",
+    //       confirmButtonColor: "#a855f7",
+    //     });
+    //     return;
+    //   }
 
-      const response = await fetch(
-        "https://inception-games.an.r.appspot.com/api/v1/subscription/subscribe",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${tokens.accessToken}`,
-          },
-          body: JSON.stringify({
-            user_id: user?.id,
-            plan: planName,
-          }),
-        },
-      );
+    //   const response = await fetch(
+    //     "https://inception-games.an.r.appspot.com/api/v1/subscription/subscribe",
+    //     {
+    //       method: "POST",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //         Authorization: `Bearer ${tokens.accessToken}`,
+    //       },
+    //       body: JSON.stringify({
+    //         user_id: user?.id,
+    //         plan: planName,
+    //       }),
+    //     },
+    //   );
 
-      const data = await response.json();
+    //   const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(data.message || "Subscription failed");
-      }
+    //   if (!response.ok) {
+    //     throw new Error(data.message || "Subscription failed");
+    //   }
 
-      // Show success alert
-      Swal.fire({
-        icon: "success",
-        title: "Subscription Successful!",
-        html: `<p>You have successfully subscribed to <strong>${planName}</strong></p>`,
-        confirmButtonColor: "#a855f7",
-        timer: 2000,
-        timerProgressBar: true,
-      });
+    //   // Show success alert
+    //   Swal.fire({
+    //     icon: "success",
+    //     title: "Subscription Successful!",
+    //     html: `<p>You have successfully subscribed to <strong>${planName}</strong></p>`,
+    //     confirmButtonColor: "#a855f7",
+    //     timer: 2000,
+    //     timerProgressBar: true,
+    //   });
 
-      // Call callback to refresh profile
-      if (onSubscriptionSuccess) {
-        setTimeout(() => {
-          onSubscriptionSuccess();
-        }, 500);
-      }
+    //   // Call callback to refresh profile
+    //   if (onSubscriptionSuccess) {
+    //     setTimeout(() => {
+    //       onSubscriptionSuccess();
+    //     }, 500);
+    //   }
 
+    //   setTimeout(() => {
+    //     onClose();
+    //   }, 2000);
+    // } catch (err) {
+    //   console.error("[UpgradePlanModal] Subscription error:", err);
+    //   Swal.fire({
+    //     icon: "error",
+    //     title: "Subscription Failed",
+    //     text: err.message || "Failed to complete subscription",
+    //     confirmButtonColor: "#a855f7",
+    //   });
+    // } finally {
+    //   setLoading(false);
+    // }
+
+    Swal.fire({
+      icon: "success",
+      title: "Subscription Successful!",
+      html: `<p>You have successfully subscribed to <strong>${planName}</strong></p>`,
+      confirmButtonColor: "#a855f7",
+      timer: 2000,
+      timerProgressBar: true,
+    });
+
+    // Call callback to refresh profile
+    if (onSubscriptionSuccess) {
       setTimeout(() => {
-        onClose();
-      }, 2000);
-    } catch (err) {
-      console.error("[UpgradePlanModal] Subscription error:", err);
-      Swal.fire({
-        icon: "error",
-        title: "Subscription Failed",
-        text: err.message || "Failed to complete subscription",
-        confirmButtonColor: "#a855f7",
-      });
-    } finally {
-      setLoading(false);
+        onSubscriptionSuccess();
+      }, 500);
     }
+
+    setTimeout(() => {
+      onClose();
+    }, 2000);
   };
 
   // Transform API plans to display format
@@ -110,13 +158,8 @@ export default function UpgradePlanModal({
                 : "",
             isCurrentPlan: isActive,
             duration_days: plan.duration_days,
-            features: [
-              `${plan.duration_days}-day access`,
-              "Premium Features Included",
-              "Priority Support",
-              "Exclusive Tournaments Access",
-            ],
-            buttonText: isActive ? "CURRENT PLAN" : "UPGRADE NOW",
+            features: planFeatures[idx],
+            buttonText: isActive ? "CURRENT PLAN" : "BUY NOW",
             buttonStyle: isActive
               ? "bg-gray-500 cursor-not-allowed opacity-60"
               : idx === 1
@@ -252,7 +295,7 @@ export default function UpgradePlanModal({
                         )}
                       </div>
                       {/* Features */}
-                      <div className="space-y-3 mb-6">
+                      <div className="space-y-3 mb-6 h-50 overflow-y-scroll custom-scrollbar">
                         {plan.features.map((feature, idx) => {
                           const isString = typeof feature === "string";
                           const text = isString ? feature : feature.text;
