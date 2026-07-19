@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import TournamentsSection from "./components/TournamentsSection";
 import BrandDealsSection from "./components/BrandDealsSection";
@@ -12,7 +13,23 @@ const tabs = [
 ];
 
 export default function EsportsArena() {
-  const [activeTab, setActiveTab] = useState("tournaments");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const [activeTab, setActiveTab] = useState(
+    searchParams.get("tab") || "tournaments",
+  );
+
+  const handleTabChange = (tabId) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("tab", tabId);
+
+    router.push(`/esports-arena?${params.toString()}`);
+  };
+
+  useEffect(() => {
+    setActiveTab(searchParams.get("tab") || "tournaments");
+  }, [searchParams]);
 
   const handleLoginClick = () => {
     Swal.fire({
@@ -83,7 +100,7 @@ export default function EsportsArena() {
             {tabs.map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => handleTabChange(tab.id)}
                 className={`relative pb-3 text-xs uppercase tracking-widest transition cursor-pointer ${
                   activeTab === tab.id
                     ? "text-purple-300"
@@ -100,7 +117,9 @@ export default function EsportsArena() {
           </motion.div>
 
           {/* Tab Content */}
-          {activeTab === "tournaments" && <TournamentsSection onLoginClick={handleLoginClick} />}
+          {activeTab === "tournaments" && (
+            <TournamentsSection onLoginClick={handleLoginClick} />
+          )}
           {activeTab === "brand-deals" && <BrandDealsSection />}
         </div>
       </section>
