@@ -6,13 +6,19 @@ import { X, Check } from "lucide-react";
 import { getTokens } from "@/lib/api";
 import Swal from "sweetalert2";
 import { useAuth } from "@/app/context/AuthContext";
+import Image from "next/image";
 
 const planFeatures = [
   [
-    "30-day access",
-    "Premium Features Included",
-    "Priority Support",
-    "Exclusive Tournaments Access",
+    "Free Tournament (T1/T2 Lobbies) with International Team",
+    "Scrims Access (T1/T2 Lobbies) with International Team",
+    "Get Discount on Listed Partner Brand",
+    "Get Rewards on Subscription Pack",
+    "Basic Performance Analytics & Star Player Recognition",
+    "Sponsorship Opportunity For Creator or Team or Individual",
+    "Career Guideline on Esports",
+    "Networking Oppotunity & Meetup",
+    "Grind for the Esports World Cup",
   ],
   [
     "1x Major + 1x Mini Tournament Entry Pass (T1/T2 Lobbies)",
@@ -230,12 +236,39 @@ export default function UpgradePlanModal({
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 + index * 0.1 }}
-                    className={`rounded-2xl border transition-all duration-300 ${
+                    className={`rounded-2xl border transition-all duration-300 relative ${
                       plan.highlighted
                         ? "border-purple-500/60 bg-gradient-to-br from-purple-950/40 to-purple-900/20 shadow-lg shadow-purple-600/30 scale-105"
                         : "border-white/[0.08] bg-white/[0.02] hover:bg-white/[0.04]"
                     }`}
                   >
+                    {/* 4 round images — top right, overlapping row */}
+                    <div className="absolute top-5 right-4 flex flex-row z-10">
+                      {[
+                        "https://res.cloudinary.com/jvpygp4b/image/upload/v1784462969/efootball-2022_uxq9.1200_qgp8ke.webp",
+                        "https://res.cloudinary.com/jvpygp4b/image/upload/v1784462998/fc26-1_iuc46n.jpg",
+                        "https://res.cloudinary.com/jvpygp4b/image/upload/v1784463010/co52c8_uw5bug.jpg",
+                        "https://res.cloudinary.com/jvpygp4b/image/upload/v1784463013/pubg-mobile-thumbnail_lqs8ai.webp",
+                      ].map((src, i) => (
+                        <div
+                          key={i}
+                          style={{
+                            marginLeft: i === 0 ? 0 : "-8px",
+                            zIndex: i,
+                          }}
+                          className="w-10 h-10 rounded-full overflow-hidden border-2 border-white bg-white/10"
+                        >
+                          <Image
+                            src={src}
+                            alt=""
+                            width={32}
+                            height={32}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      ))}
+                    </div>
+
                     <div className="p-6 pt-8">
                       {/* Badge */}
                       {plan.badge && (
