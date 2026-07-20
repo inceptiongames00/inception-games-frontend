@@ -794,6 +794,15 @@ export default function UnifiedAuthModal({
         {step === 4 && (
           <>
             <motion.div variants={itemVariants}>
+              <div className="p-4 mb-3 rounded-xl bg-amber-500/5 border border-amber-500/20">
+                <p className="text-amber-200/90 text-xs leading-relaxed">
+                  <span className="font-semibold">📢 NB:</span> Once you confirm
+                  your game in game profile, your selection is final and cannot
+                  be changed, swapped, or reset under any circumstances for the
+                  next 30 days.
+                </p>
+              </div>
+
               <h4 className="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-3">
                 Gaming Profile
               </h4>
@@ -977,7 +986,7 @@ export default function UnifiedAuthModal({
                 variants={itemVariants}
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-3 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-xl transition disabled:opacity-50"
+                className="w-full py-3 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-xl transition disabled:opacity-50 cursor-pointer"
               >
                 {isLoading ? (
                   <>
@@ -1034,7 +1043,7 @@ export default function UnifiedAuthModal({
             variants={itemVariants}
             type="submit"
             disabled={isLoading}
-            className="w-full py-3 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-xl transition disabled:opacity-50 flex items-center justify-center gap-2 text-sm"
+            className="w-full py-3 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-xl transition disabled:opacity-50 flex items-center justify-center gap-2 text-sm cursor-pointer"
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.99 }}
           >
@@ -1072,7 +1081,7 @@ export default function UnifiedAuthModal({
             type="button"
             onClick={() => setStep(step - 1)}
             disabled={isLoading}
-            className="w-full py-3 border border-white/[0.08] text-gray-400 hover:text-white font-semibold rounded-xl transition disabled:opacity-50"
+            className="w-full py-3 border border-white/[0.08] text-gray-400 hover:text-white font-semibold rounded-xl transition disabled:opacity-50 cursor-pointer"
           >
             Back
           </motion.button>
@@ -1085,7 +1094,7 @@ export default function UnifiedAuthModal({
             type="button"
             onClick={() => setStep(4)}
             disabled={isLoading}
-            className="w-full py-3 border border-white/[0.08] text-gray-400 hover:text-white font-semibold rounded-xl transition disabled:opacity-50"
+            className="w-full py-3 border border-white/[0.08] text-gray-400 hover:text-white font-semibold rounded-xl transition disabled:opacity-50 cursor-pointer"
           >
             Back
           </motion.button>

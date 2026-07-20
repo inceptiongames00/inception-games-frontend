@@ -33,16 +33,12 @@ export default function ProfilePage() {
   // Fetch user profile from API
   const fetchUserProfile = async (userId, accessToken) => {
     try {
-      console.log("[ProfilePage] fetchUserProfile called with userId:", userId);
-
       if (!userId || !accessToken) {
-        console.log("[ProfilePage] Missing userId or accessToken");
         setLoadingProfile(false);
         return;
       }
 
       const apiUrl = `${API_BASE_URL}/auth/user-profile/${userId}`;
-      console.log("[ProfilePage] Fetching from URL:", apiUrl);
 
       const response = await fetch(apiUrl, {
         headers: {
@@ -51,25 +47,14 @@ export default function ProfilePage() {
         },
       });
 
-      console.log(
-        "[ProfilePage] Response Status:",
-        response.status,
-        response.statusText,
-      );
-
       if (response.ok) {
         const data = await response.json();
-        console.log("[ProfilePage] Full API Response:", data);
         const profileData = data.data || data;
-        console.log("[ProfilePage] Response Data:", profileData);
-        console.log("[ProfilePage] Subscriptions:", profileData?.subscriptions);
         setApiUserProfile(profileData);
       } else {
         const errorData = await response.json();
-        console.log("[ProfilePage] Error Response:", errorData);
       }
     } catch (error) {
-      console.log("[ProfilePage] Error fetching user profile:", error);
       console.error("[ProfilePage] Error Details:", error);
     } finally {
       setLoadingProfile(false);
@@ -79,14 +64,12 @@ export default function ProfilePage() {
   // Fetch profile whenever user or authentication change
   useEffect(() => {
     if (!user?.id) {
-      console.log("[ProfilePage] No user ID available");
       setLoadingProfile(false);
       return;
     }
 
     const tokens = getTokens();
     if (!tokens?.accessToken) {
-      console.log("[ProfilePage] No access token found");
       setLoadingProfile(false);
       return;
     }
@@ -241,7 +224,7 @@ export default function ProfilePage() {
               />
 
               {/* Game change button */}
-              <div className="p-4 bg-white/[0.02] rounded-xl border border-white/[0.06]">
+              {/* <div className="p-4 bg-white/[0.02] rounded-xl border border-white/[0.06]">
                 <button
                   type="button"
                   onClick={() => {
@@ -252,7 +235,7 @@ export default function ProfilePage() {
                 >
                   Change Game
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
 

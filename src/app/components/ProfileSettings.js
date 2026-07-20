@@ -37,7 +37,6 @@ export default function ProfileSettings({ isOpen, onClose }) {
     setLocalError('');
     try {
       const freshUser = await fetchProfile();
-      console.log('ProfileSettings - refreshed profile:', freshUser);
       if (freshUser) {
         setFullName(freshUser.fullName || '');
         setPhone(freshUser.phone || '');
@@ -66,9 +65,7 @@ export default function ProfileSettings({ isOpen, onClose }) {
 
     setLoading(true);
     try {
-      console.log('ProfileSettings - updating profile with:', { fullName, phone });
       const response = await updateProfile({ fullName, phone: phone || undefined });
-      console.log('ProfileSettings - update response:', response);
       setMessage('Profile updated successfully!');
       setTimeout(() => setMessage(''), 3000);
     } catch (err) {
@@ -84,7 +81,6 @@ export default function ProfileSettings({ isOpen, onClose }) {
     if (confirm('Are you sure you want to logout?')) {
       try {
         await logout();
-        console.log('ProfileSettings - logged out');
         handleClose();
         router.push('/');
       } catch (err) {
@@ -98,7 +94,6 @@ export default function ProfileSettings({ isOpen, onClose }) {
     if (confirm('This will logout. Are you sure?')) {
       try {
         await logout();
-        console.log('ProfileSettings - logged out');
         handleClose();
         router.push('/');
       } catch (err) {

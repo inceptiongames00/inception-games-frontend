@@ -895,10 +895,6 @@ export default function EventsSection({
 
   // Fetch events based on active filter (Scrims, Tournaments, or both for "all")
   const fetchEvents = useCallback(async () => {
-    console.log(
-      "[EventsSection] fetchEvents() called with activeFilter:",
-      activeFilter,
-    );
     setLoading(true);
     setError(null);
     try {
@@ -982,12 +978,6 @@ export default function EventsSection({
           const userId = user?.id || user?.userId || "SNS-5556"; // Use correct user id from context
           const newTournamentURL = `https://inception-games.an.r.appspot.com/api/v1/auth/tournaments/list`;
 
-          console.log(
-            "[EventsSection] Fetching tournaments with userId:",
-            userId,
-          );
-          console.log("[EventsSection] New Tournament URL:", newTournamentURL);
-
           const tournamentsRes = await fetch(newTournamentURL, {
             method: "POST",
             headers: {
@@ -999,22 +989,9 @@ export default function EventsSection({
           });
           const tournamentsData = await tournamentsRes.json();
 
-          console.log(
-            "[EventsSection] Tournaments API Response:",
-            tournamentsData,
-          );
-          console.log(
-            "[EventsSection] Tournaments Response Status:",
-            tournamentsRes.status,
-          );
-
           if (tournamentsRes.ok) {
             const tournamentsArray =
               tournamentsData.tournaments || tournamentsData.data || [];
-            console.log(
-              "[EventsSection] Transformed Tournaments Array:",
-              tournamentsArray,
-            );
 
             // Transform API tournaments to our card format
             const transformedTournaments = tournamentsArray.map(
@@ -1082,15 +1059,7 @@ export default function EventsSection({
               },
             );
 
-            console.log(
-              "[EventsSection] Transformed Tournaments (Card Format):",
-              transformedTournaments,
-            );
             allEvents.push(...transformedTournaments);
-            console.log(
-              "[EventsSection] All Events After Adding Tournaments:",
-              allEvents,
-            );
 
             // Cache the tournaments list for detail page to use
             sessionStorage.setItem(
@@ -1106,8 +1075,6 @@ export default function EventsSection({
           console.error("[EventsSection] Failed to fetch tournaments:", err);
         }
       }
-
-      console.log("[EventsSection] Final All Events Array:", allEvents);
       setEvents(allEvents);
     } catch (err) {
       console.error("[EventsSection] Failed to fetch events:", err);
