@@ -153,7 +153,11 @@ export default function UpgradePlanModal({
             isCurrentPlan: isActive,
             duration_days: plan.duration_days,
             features: planFeatures[idx],
-            buttonText: isActive ? "CURRENT PLAN" : "BUY NOW",
+            buttonText: isActive
+              ? "CURRENT PLAN"
+              : plan.plan === "Casual Pass"
+                ? "Select Free"
+                : "BUY NOW",
             buttonStyle: isActive
               ? "bg-gray-500 cursor-not-allowed opacity-60"
               : idx === 1
@@ -316,7 +320,7 @@ export default function UpgradePlanModal({
                         )}
                       </div>
                       {/* Features */}
-                      <div className="space-y-3 mb-6 h-70 overflow-y-scroll custom-scrollbar">
+                      <div className="space-y-3 mb-6 h-70 overflow-y-scroll overscroll-contain custom-scrollbar">
                         {plan.features.map((feature, idx) => {
                           const isString = typeof feature === "string";
                           const text = isString ? feature : feature.text;

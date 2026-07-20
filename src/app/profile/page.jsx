@@ -224,7 +224,7 @@ export default function ProfilePage() {
               />
 
               {/* Game change button */}
-              <div className="p-4 bg-white/[0.02] rounded-xl border border-white/[0.06]">
+              {/* <div className="p-4 bg-white/[0.02] rounded-xl border border-white/[0.06]">
                 <button
                   type="button"
                   onClick={() => {
@@ -235,7 +235,7 @@ export default function ProfilePage() {
                 >
                   Change Game
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
 

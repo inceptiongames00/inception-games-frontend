@@ -1,36 +1,44 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { X, AlertCircle, CheckCircle, Loader2 } from "lucide-react";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://inception-games.an.r.appspot.com/api/v1';
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  "https://inception-games.an.r.appspot.com/api/v1";
 
-export default function ActivateSubscriptionModal({ isOpen, onClose, subscription, userId, onSuccess }) {
-  const [trxId, setTrxId] = useState('');
-  const [reference, setReference] = useState('');
+export default function ActivateSubscriptionModal({
+  isOpen,
+  onClose,
+  subscription,
+  userId,
+  onSuccess,
+}) {
+  const [trxId, setTrxId] = useState("");
+  const [reference, setReference] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState(null); // 'success', 'error', null
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
 
   if (!subscription) return null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage('');
+    setErrorMessage("");
     setStatus(null);
 
     // Validation
     if (!trxId.trim()) {
-      setErrorMessage('Transaction ID is required');
+      setErrorMessage("Transaction ID is required");
       return;
     }
     if (!reference.trim()) {
-      setErrorMessage('Reference is required');
+      setErrorMessage("Reference is required");
       return;
     }
     if (!userId) {
-      setErrorMessage('User ID is missing. Please refresh the page.');
+      setErrorMessage("User ID is missing. Please refresh the page.");
       return;
     }
 
@@ -44,39 +52,46 @@ export default function ActivateSubscriptionModal({ isOpen, onClose, subscriptio
         trx_id: trxId.trim(),
       };
 
-      const response = await fetch(`${API_BASE_URL}/subscription/submit-proof`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${API_BASE_URL}/subscription/submit-proof`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
         },
-        body: JSON.stringify(payload),
-      });
+      );
 
       const data = await response.json();
 
       if (response.ok) {
-        setStatus('success');
+        setStatus("success");
         // Reset form
-        setTrxId('');
-        setReference('');
-        
+        setTrxId("");
+        setReference("");
+
         // Call onSuccess callback to refetch data
         if (onSuccess) {
           onSuccess();
         }
-        
+
         // Close modal after 2 seconds
         setTimeout(() => {
           onClose();
         }, 2000);
       } else {
-        setStatus('error');
-        setErrorMessage(data.message || 'Failed to submit payment details. Please try again.');
+        setStatus("error");
+        setErrorMessage(
+          data.message || "Failed to submit payment details. Please try again.",
+        );
       }
     } catch (error) {
-      setStatus('error');
-      setErrorMessage('Network error. Please check your connection and try again.');
-      console.error('Error submitting payment details:', error);
+      setStatus("error");
+      setErrorMessage(
+        "Network error. Please check your connection and try again.",
+      );
+      console.error("Error submitting payment details:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -84,10 +99,10 @@ export default function ActivateSubscriptionModal({ isOpen, onClose, subscriptio
 
   const handleClose = () => {
     if (!isSubmitting) {
-      setTrxId('');
-      setReference('');
+      setTrxId("");
+      setReference("");
       setStatus(null);
-      setErrorMessage('');
+      setErrorMessage("");
       onClose();
     }
   };
@@ -95,114 +110,154 @@ export default function ActivateSubscriptionModal({ isOpen, onClose, subscriptio
   return (
     <AnimatePresence>
       {isOpen && (
-<motion.div
-  className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto"
-  initial={{ opacity: 0 }}
-  animate={{ opacity: 1 }}
-  exit={{ opacity: 0 }}
-  onClick={handleClose}
->
-  <motion.div
-    className="bg-[#0c0c14] rounded-2xl border border-white/[0.06] w-full max-w-3xl shadow-2xl my-8 max-h-[90vh] overflow-y-auto"
-    initial={{ scale: 0.9, opacity: 0 }}
-    animate={{ scale: 1, opacity: 1 }}
-    exit={{ scale: 0.9, opacity: 0 }}
-    onClick={(e) => e.stopPropagation()}
-  >
-    {/* Header */}
-    <div className="flex items-center justify-between p-6 border-b border-white/[0.06] sticky top-0 bg-[#0c0c14] z-10 rounded-t-2xl">
-      <h2 className="text-2xl font-bold text-white">Activate Subscription</h2>
-      <button
-        onClick={handleClose}
-        disabled={isSubmitting}
-        className="p-2 hover:bg-white/[0.05] rounded-lg transition disabled:opacity-50"
-      >
-        <X size={24} className="text-gray-400" />
-      </button>
-    </div>
-
-    {/* Content */}
-    <div className="p-6 space-y-6">
-      {status === 'success' ? (
         <motion.div
-          className="flex flex-col items-center justify-center py-8 text-center"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={handleClose}
         >
-          <div className="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center mb-4">
-            <CheckCircle size={32} className="text-emerald-400" />
-          </div>
-          <h3 className="text-xl font-bold text-white mb-2">Payment Submitted!</h3>
-          <p className="text-gray-400 text-sm">
-            Your payment proof has been submitted successfully. Your subscription will be activated soon.
-          </p>
-        </motion.div>
-      ) : status === 'error' ? (
-        <motion.div
-          className="flex flex-col items-center justify-center py-8 text-center"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-        >
-          <div className="w-16 h-16 rounded-full bg-red-500/20 border border-red-500/40 flex items-center justify-center mb-4">
-            <AlertCircle size={32} className="text-red-400" />
-          </div>
-          <h3 className="text-xl font-bold text-white mb-2">Submission Failed</h3>
-          <p className="text-gray-400 text-sm mb-4">{errorMessage}</p>
-          <button
-            onClick={() => {
-              setStatus(null);
-              setErrorMessage('');
-            }}
-            className="px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-medium transition"
+          <motion.div
+            className="bg-[#0c0c14] rounded-2xl border border-white/[0.06] w-full max-w-3xl shadow-2xl my-8 max-h-[90vh] overflow-y-auto custom-scrollbar"
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            onClick={(e) => e.stopPropagation()}
           >
-            Try Again
-          </button>
-        </motion.div>
-      ) : (
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Payment Instructions */}
-          <div className="p-4 rounded-xl bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/30 space-y-3">
-            <div className="flex items-center gap-2">
-              <span className="text-lg font-bold text-white">💳</span>
-              <h4 className="font-semibold text-white">Send BDT {subscription?.price} to this bKash number</h4>
-            </div>
-            
-            {/* bKash Number */}
-            <div className="bg-black/30 rounded-lg p-3 text-center border border-white/[0.05]">
-              <p className="text-2xl font-bold text-purple-400">01926695213</p>
-              <p className="text-xs text-gray-400">Account type: Personal</p>
+            {/* Header */}
+            <div className="flex items-center justify-between p-6 border-b border-white/[0.06] sticky top-0 bg-[#0c0c14] z-10 rounded-t-2xl">
+              <h2 className="text-2xl font-bold text-white">
+                Activate Subscription
+              </h2>
+              <button
+                onClick={handleClose}
+                disabled={isSubmitting}
+                className="p-2 hover:bg-white/[0.05] rounded-lg transition disabled:opacity-50"
+              >
+                <X size={24} className="text-gray-400" />
+              </button>
             </div>
 
-            {/* How to pay with QR Code on the right - Equal heights */}
-            <div className="flex gap-6 items-stretch">
-              {/* Left: How to pay list */}
-              <div className="flex-1 bg-black/20 rounded-lg p-4 border border-white/[0.05]">
-                <div className="space-y-1.5 text-sm">
-                  <p className="text-gray-300 font-medium">📌 How to pay:</p>
-                  <ol className="text-gray-400 space-y-1 pl-4 list-decimal text-xs leading-relaxed">
-                    <li>Open bKash App → Send Money</li>
-                    <li>Enter number: <span className="text-purple-300 font-mono">01926695213</span> OR Scan Our bKash QR Code</li>
-                    <li>Amount: <span className="text-emerald-300 font-bold">BDT {subscription?.price}.00</span></li>
-                    <li>Reference: <span className="text-yellow-300">Check your email for ref no.</span></li>
-                    <li><span className="text-orange-300">Turn on Cashout Charge</span></li>
-                    <li>Send &amp; Copy Your Trnx ID</li>
-                    <li>Paste your Trnx ID and reference No. below here</li>
-                    <li>Submit</li>
-                    <li>After Admin Approval - You can Submit Form for multiple Tournament a month</li>
-                  </ol>
-                </div>
-              </div>
+            {/* Content */}
+            <div className="p-6 space-y-6">
+              {status === "success" ? (
+                <motion.div
+                  className="flex flex-col items-center justify-center py-8 text-center"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                >
+                  <div className="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center mb-4">
+                    <CheckCircle size={32} className="text-emerald-400" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-2">
+                    Payment Submitted!
+                  </h3>
+                  <p className="text-gray-400 text-sm">
+                    Your payment proof has been submitted successfully. Your
+                    subscription will be activated soon.
+                  </p>
+                </motion.div>
+              ) : status === "error" ? (
+                <motion.div
+                  className="flex flex-col items-center justify-center py-8 text-center"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                >
+                  <div className="w-16 h-16 rounded-full bg-red-500/20 border border-red-500/40 flex items-center justify-center mb-4">
+                    <AlertCircle size={32} className="text-red-400" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-2">
+                    Submission Failed
+                  </h3>
+                  <p className="text-gray-400 text-sm mb-4">{errorMessage}</p>
+                  <button
+                    onClick={() => {
+                      setStatus(null);
+                      setErrorMessage("");
+                    }}
+                    className="px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-medium transition"
+                  >
+                    Try Again
+                  </button>
+                </motion.div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  {/* Payment Instructions */}
+                  <div className="p-4 rounded-xl bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/30 space-y-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg font-bold text-white">💳</span>
+                      <h4 className="font-semibold text-white">
+                        Send BDT {subscription?.price} to this bKash number
+                      </h4>
+                    </div>
 
-              {/* Right: QR Code - Larger */}
-              <div className="flex-shrink-0 flex flex-col items-center justify-center bg-black/20 rounded-lg p-4 border border-white/[0.05] min-w-[140px]">
-                <div className="w-32 h-32 bg-white rounded-xl p-2.5 flex items-center justify-center shadow-lg">
-                  <img 
-                    src="/bkash-qr-code.png" 
-                    alt="bKash QR Code" 
-                    className="w-full h-full object-contain"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                      e.target.parentElement.innerHTML = `
+                    {/* bKash Number */}
+                    <div className="bg-black/30 rounded-lg p-3 text-center border border-white/[0.05]">
+                      <p className="text-2xl font-bold text-purple-400">
+                        01926695213
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        Account type: Personal
+                      </p>
+                    </div>
+
+                    {/* How to pay with QR Code on the right - Equal heights */}
+                    <div className="flex gap-6 items-stretch">
+                      {/* Left: How to pay list */}
+                      <div className="flex-1 bg-black/20 rounded-lg p-4 border border-white/[0.05]">
+                        <div className="space-y-1.5 text-sm">
+                          <p className="text-gray-300 font-medium">
+                            📌 How to pay:
+                          </p>
+                          <ol className="text-gray-400 space-y-1 pl-4 list-decimal text-xs leading-relaxed">
+                            <li>Open bKash App → Send Money</li>
+                            <li>
+                              Enter number:{" "}
+                              <span className="text-purple-300 font-mono">
+                                01926695213
+                              </span>{" "}
+                              OR Scan Our bKash QR Code
+                            </li>
+                            <li>
+                              Amount:{" "}
+                              <span className="text-emerald-300 font-bold">
+                                BDT {subscription?.price}.00
+                              </span>
+                            </li>
+                            <li>
+                              Reference:{" "}
+                              <span className="text-yellow-300">
+                                Check your email for ref no.
+                              </span>
+                            </li>
+                            <li>
+                              <span className="text-orange-300">
+                                Turn on Cashout Charge
+                              </span>
+                            </li>
+                            <li>Send &amp; Copy Your Trnx ID</li>
+                            <li>
+                              Paste your Trnx ID and reference No. below here
+                            </li>
+                            <li>Submit</li>
+                            <li>
+                              After Admin Approval - You can Submit Form for
+                              multiple Tournament a month
+                            </li>
+                          </ol>
+                        </div>
+                      </div>
+
+                      {/* Right: QR Code - Larger */}
+                      <div className="flex-shrink-0 flex flex-col items-center justify-center bg-black/20 rounded-lg p-4 border border-white/[0.05] min-w-[140px]">
+                        <div className="w-32 h-32 bg-white rounded-xl p-2.5 flex items-center justify-center shadow-lg">
+                          <img
+                            src="/bkash-qr-code.png"
+                            alt="bKash QR Code"
+                            className="w-full h-full object-contain"
+                            onError={(e) => {
+                              e.target.style.display = "none";
+                              e.target.parentElement.innerHTML = `
                         <div class="w-full h-full bg-gray-800 rounded flex items-center justify-center">
                           <svg class="w-20 h-20 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 4h6v6H4V4zm10 0h6v6h-6V4zM4 14h6v6H4v-6zm10 0h6v6h-6v-6z" />
@@ -210,87 +265,105 @@ export default function ActivateSubscriptionModal({ isOpen, onClose, subscriptio
                           </svg>
                         </div>
                       `;
-                    }}
-                  />
-                </div>
-                <p className="text-xs text-gray-400 text-center mt-2 font-medium">Scan to Pay</p>
-              </div>
+                            }}
+                          />
+                        </div>
+                        <p className="text-xs text-gray-400 text-center mt-2 font-medium">
+                          Scan to Pay
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Notice Box */}
+                  <div className="p-4 rounded-xl bg-amber-500/5 border border-amber-500/20">
+                    <p className="text-amber-200/90 text-xs leading-relaxed">
+                      <span className="font-semibold">📢 নোট:</span> অ্যাডমিন
+                      প্রতিদিন সকাল ১১:০০ টা থেকে রাত ১০:০০ টার মধ্যে আপনার
+                      পেমেন্ট ভেরিফিকেশন (যাচাইকরণ) সম্পন্ন করবেন। যদি এই সময়ের
+                      মধ্যে কোনো সাড়া না পান, তাহলে ফেসবুক পেজে মেসেজ দিন অথবা
+                      ডিসকর্ড অ্যাডমিনকে মেনশন করুন। আপনার পেমেন্ট নিশ্চিত হলেই
+                      রেজিস্ট্রেশন সম্পন্ন হবে।
+                      <br />
+                      <br />
+                      <span className="text-red-400 font-semibold">
+                        ⚠️ ভুয়া পেমেন্টের কোনো অভিযোগ বা সমস্যা বিবেচনা করা হবে
+                        না।
+                      </span>{" "}
+                      আপনার ট্রানজেকশন আইডি (Tranx ID) এবং রেফারেন্স আইডি (Ref
+                      ID) বারবার ভালো করে পরীক্ষা করে নিন। ভুল তথ্য দেওয়ার জন্য
+                      আমরা দায়ী থাকব না। ভুল তথ্য ইনপুট দিলে কোনো রিফান্ড (টাকা
+                      ফেরত) দেওয়া হবে না।
+                    </p>
+                  </div>
+
+                  {/* Transaction ID */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Transaction ID <span className="text-red-400">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={trxId}
+                      onChange={(e) => setTrxId(e.target.value)}
+                      placeholder="e.g., 8TY3K2X9"
+                      className="w-full px-4 py-3 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition"
+                      disabled={isSubmitting}
+                    />
+                  </div>
+
+                  {/* Reference */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Reference <span className="text-red-400">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={reference}
+                      onChange={(e) => setReference(e.target.value)}
+                      placeholder="e.g., IG-001054"
+                      className="w-full px-4 py-3 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition"
+                      disabled={isSubmitting}
+                    />
+                  </div>
+
+                  {/* Error Message */}
+                  {errorMessage && !status && (
+                    <motion.div
+                      className="flex items-center gap-3 p-4 rounded-lg bg-red-500/10 border border-red-500/30"
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                    >
+                      <AlertCircle
+                        size={20}
+                        className="text-red-400 flex-shrink-0"
+                      />
+                      <p className="text-red-300 text-sm">{errorMessage}</p>
+                    </motion.div>
+                  )}
+
+                  {/* Submit Button */}
+                  <motion.button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full py-3 rounded-xl font-bold text-white bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2 cursor-pointer"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 size={18} className="animate-spin" />
+                        Submitting...
+                      </>
+                    ) : (
+                      "Activate Subscription"
+                    )}
+                  </motion.button>
+                </form>
+              )}
             </div>
-          </div>
-
-          {/* Notice Box */}
-          <div className="p-4 rounded-xl bg-amber-500/5 border border-amber-500/20">
-            <p className="text-amber-200/90 text-xs leading-relaxed">
-              <span className="font-semibold">📢 নোট:</span> অ্যাডমিন প্রতিদিন সকাল ১১:০০ টা থেকে রাত ১০:০০ টার মধ্যে আপনার পেমেন্ট ভেরিফিকেশন (যাচাইকরণ) সম্পন্ন করবেন। যদি এই সময়ের মধ্যে কোনো সাড়া না পান, তাহলে ফেসবুক পেজে মেসেজ দিন অথবা ডিসকর্ড অ্যাডমিনকে মেনশন করুন। আপনার পেমেন্ট নিশ্চিত হলেই রেজিস্ট্রেশন সম্পন্ন হবে।
-              <br /><br />
-              <span className="text-red-400 font-semibold">⚠️ ভুয়া পেমেন্টের কোনো অভিযোগ বা সমস্যা বিবেচনা করা হবে না।</span> আপনার ট্রানজেকশন আইডি (Tranx ID) এবং রেফারেন্স আইডি (Ref ID) বারবার ভালো করে পরীক্ষা করে নিন। ভুল তথ্য দেওয়ার জন্য আমরা দায়ী থাকব না। ভুল তথ্য ইনপুট দিলে কোনো রিফান্ড (টাকা ফেরত) দেওয়া হবে না।
-            </p>
-          </div>
-
-          {/* Transaction ID */}
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              Transaction ID <span className="text-red-400">*</span>
-            </label>
-            <input
-              type="text"
-              value={trxId}
-              onChange={(e) => setTrxId(e.target.value)}
-              placeholder="e.g., 8TY3K2X9"
-              className="w-full px-4 py-3 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition"
-              disabled={isSubmitting}
-            />
-          </div>
-
-          {/* Reference */}
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              Reference <span className="text-red-400">*</span>
-            </label>
-            <input
-              type="text"
-              value={reference}
-              onChange={(e) => setReference(e.target.value)}
-              placeholder="e.g., IG-001054"
-              className="w-full px-4 py-3 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition"
-              disabled={isSubmitting}
-            />
-          </div>
-
-          {/* Error Message */}
-          {errorMessage && !status && (
-            <motion.div
-              className="flex items-center gap-3 p-4 rounded-lg bg-red-500/10 border border-red-500/30"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-            >
-              <AlertCircle size={20} className="text-red-400 flex-shrink-0" />
-              <p className="text-red-300 text-sm">{errorMessage}</p>
-            </motion.div>
-          )}
-
-          {/* Submit Button */}
-          <motion.button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full py-3 rounded-xl font-bold text-white bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            {isSubmitting ? (
-              <>
-                <Loader2 size={18} className="animate-spin" />
-                Submitting...
-              </>
-            ) : (
-              'Activate Subscription'
-            )}
-          </motion.button>
-        </form>
-      )}
-    </div>
-  </motion.div>
-</motion.div>
+          </motion.div>
+        </motion.div>
       )}
     </AnimatePresence>
   );

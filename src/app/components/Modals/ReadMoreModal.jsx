@@ -15,7 +15,7 @@ export default function ReadMoreModal({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4 overscroll-contain"
     >
       <div
         className="relative bg-gradient-to-br from-zinc-900 via-zinc-900 to-black
@@ -27,15 +27,15 @@ export default function ReadMoreModal({
         {/* Close Button */}
         <button
           onClick={() => setSelectedNews(null)}
-          className="absolute top-4 right-4 p-2 bg-black/70 hover:bg-black rounded-xl z-30 transition-colors"
+          className="absolute top-4 right-4 p-2 bg-black/70 hover:bg-black rounded-xl z-30 transition-colors cursor-pointer"
         >
           <X className="w-5 h-5 text-white" />
         </button>
 
-        <div className="grid md:grid-cols-2 h-full min-h-0 overflow-hidden">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 h-full min-h-0 overflow-hidden">
           {/* LEFT SIDE */}
           <div
-            className="relative h-full bg-cover bg-top bg-no-repeat rounded-lg overflow-hidden"
+            className="relative h-[250px] md:h-full bg-cover bg-center md:bg-top bg-no-repeat rounded-lg overflow-hidden"
             style={{ backgroundImage: `url(${selectedNews.image})` }}
           >
             {/* Gradient */}
@@ -94,14 +94,14 @@ export default function ReadMoreModal({
 
           {/* RIGHT SIDE */}
           <div className="flex flex-col h-full min-h-0">
-            <h3 className="text-2xl font-bold text-white pl-6 pb-4">
+            <h3 className="text-2xl font-bold text-white px-0 md:px-6 pb-4">
               Full Story
             </h3>
 
             <div className="h-1 bg-gradient-to-r from-purple-500/0 via-purple-500/50 to-purple-500/0 rounded-full" />
 
             {/* Scrollable Content */}
-            <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar p-6">
+            <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar px-0 py-6 md:p-6">
               <p className="text-zinc-300 leading-relaxed whitespace-pre-line">
                 {selectedNews.details ?? selectedNews.description}
               </p>
