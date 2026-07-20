@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import TournamentsSection from "./components/TournamentsSection";
@@ -12,7 +12,7 @@ const tabs = [
   { id: "brand-deals", label: "Brand Deals" },
 ];
 
-export default function EsportsArena() {
+function EsportsArenaContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [loginModalOpen, setLoginModalOpen] = useState(false);
@@ -118,5 +118,13 @@ export default function EsportsArena() {
         onClose={() => setLoginModalOpen(false)}
       />
     </div>
+  );
+}
+
+export default function EsportsArena() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-zinc-950" />}>
+      <EsportsArenaContent />
+    </Suspense>
   );
 }
