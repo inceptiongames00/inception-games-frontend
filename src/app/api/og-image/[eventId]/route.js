@@ -15,7 +15,6 @@ export async function GET(request, { params }) {
     });
 
     if (!response.ok) {
-      console.log('[v0] Event API not found, returning 404');
       return new Response('Event not found', { status: 404 });
     }
 
@@ -34,7 +33,6 @@ export async function GET(request, { params }) {
     if (bannerUrl) {
       // If image URL is absolute, redirect to it directly
       if (bannerUrl.startsWith('http')) {
-        console.log('[v0] Redirecting to absolute banner URL:', bannerUrl);
         return Response.redirect(bannerUrl, 307);
       }
 
@@ -42,8 +40,6 @@ export async function GET(request, { params }) {
       const absoluteImageUrl = bannerUrl.startsWith('/')
         ? `${baseUrl.replace('/api/v1', '')}${bannerUrl}`
         : `${baseUrl.replace('/api/v1', '')}/${bannerUrl}`;
-
-      console.log('[v0] Attempting to fetch banner from:', absoluteImageUrl);
       
       try {
         const imageResponse = await fetch(absoluteImageUrl, {
@@ -60,13 +56,11 @@ export async function GET(request, { params }) {
           });
         }
       } catch (imgError) {
-        console.log('[v0] Failed to fetch banner image:', imgError.message);
         // Fall through to return default
       }
     }
 
     // If no banner or it failed to load, return the primary image as fallback
-    console.log('[v0] No valid banner image, returning 404 for client fallback');
     return new Response('No banner image available', { status: 404 });
     
   } catch (error) {

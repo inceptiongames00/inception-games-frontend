@@ -45,7 +45,7 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
 
       return response.ok;
     } catch (err) {
-      console.log("[ProfileHeroBanner] Could not mark as read on backend");
+      console.error("[ProfileHeroBanner] Could not mark as read on backend");
     }
     return false;
   };
@@ -86,7 +86,6 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
         setNotificationsError(null);
       }
     } catch (err) {
-      console.log("[ProfileHeroBanner] Error fetching notifications:", err);
       setNotificationsError(err.message);
     } finally {
       setNotificationsLoading(false);

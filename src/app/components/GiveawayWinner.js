@@ -1,8 +1,9 @@
 "use client";
-import { ArrowRight, X } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import { FaFacebookF, FaTwitter, FaLinkedin, FaWhatsapp } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
+import ReadMoreModal from "./Modals/ReadMoreModal";
 
 // Initialize Facebook SDK
 const initializeFacebookSDK = () => {
@@ -349,125 +350,11 @@ export default function GiveawayWinner() {
       {/* News Detail Modal */}
       <AnimatePresence>
         {selectedNews && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setSelectedNews(null)}
-            className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4"
-          >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 40 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 40 }}
-              onClick={(e) => e.stopPropagation()}
-              className="bg-gradient-to-br from-zinc-900 via-zinc-900 to-black border border-purple-500/30 rounded-3xl shadow-2xl shadow-purple-500/30 max-w-6xl w-full max-h-[85vh] overflow-hidden flex flex-col"
-            >
-              {/* Header with Image */}
-              <div className="relative">
-                <div
-                  className="h-48 sm:h-56 md:h-72 lg:h-96 bg-gradient-to-br from-slate-700 to-slate-900 bg-cover bg-center"
-                  style={{
-                    backgroundImage: `url('${selectedNews.image}')`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "top",
-                    backgroundRepeat: "no-repeat",
-                  }}
-                >
-                  {/* Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-                </div>
-
-                {/* Close Button */}
-                <button
-                  onClick={() => setSelectedNews(null)}
-                  className="absolute top-3 sm:top-4 right-3 sm:right-4 p-2 bg-black/60 hover:bg-black/80 backdrop-blur-sm rounded-lg transition-colors z-10"
-                >
-                  <X className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                </button>
-
-                {/* Title and Category Overlay */}
-                <div className="absolute bottom-0 left-0 right-0 px-4 sm:px-6 md:px-8 py-5 sm:py-6 bg-gradient-to-t from-black via-black/80 to-transparent">
-                  <div
-                    className={`inline-block mb-2 sm:mb-3 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${selectedNews.categoryColor} backdrop-blur-sm`}
-                  >
-                    {selectedNews.category}
-                  </div>
-                  <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white leading-tight">
-                    {selectedNews.title}
-                  </h2>
-                </div>
-              </div>
-
-              {/* Scrollable Content */}
-              <div className="flex-1 overflow-y-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6">
-                <div className="space-y-4 sm:space-y-6">
-                  <div className="h-1 bg-gradient-to-r from-purple-500/0 via-purple-500/50 to-purple-500/0 rounded-full" />
-
-                  <div className="space-y-3 sm:space-y-4">
-                    <h3 className="text-lg sm:text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
-                      Full Story
-                    </h3>
-                    <p className="text-xs sm:text-sm md:text-base text-zinc-400 leading-relaxed">
-                      {selectedNews.description}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Custom scrollbar styles */}
-                <style jsx>{`
-                  div::-webkit-scrollbar {
-                    width: 8px;
-                  }
-                  div::-webkit-scrollbar-track {
-                    background: rgba(24, 24, 27, 0.5);
-                  }
-                  div::-webkit-scrollbar-thumb {
-                    background: rgba(168, 85, 247, 0.5);
-                    border-radius: 4px;
-                  }
-                  div::-webkit-scrollbar-thumb:hover {
-                    background: rgba(168, 85, 247, 0.8);
-                  }
-                `}</style>
-              </div>
-
-              {/* Footer with Share Buttons */}
-              <div className="border-t border-zinc-700/50 px-4 sm:px-6 md:px-8 py-3 sm:py-4 bg-zinc-900/50 flex items-center gap-2 sm:gap-3 flex-wrap sm:flex-nowrap">
-                <span className="text-xs sm:text-sm text-zinc-400 font-medium">
-                  Share:
-                </span>
-                <button
-                  onClick={() => handleShare("facebook", selectedNews)}
-                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/10 hover:bg-[#1877F2] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
-                  aria-label="Share on Facebook"
-                >
-                  <FaFacebookF className="text-white text-xs sm:text-sm" />
-                </button>
-                <button
-                  onClick={() => handleShare("twitter", selectedNews)}
-                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/10 hover:bg-[#1DA1F2] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
-                  aria-label="Share on Twitter"
-                >
-                  <FaTwitter className="text-white text-xs sm:text-sm" />
-                </button>
-                <button
-                  onClick={() => handleShare("linkedin", selectedNews)}
-                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/10 hover:bg-[#0A66C2] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
-                  aria-label="Share on LinkedIn"
-                >
-                  <FaLinkedin className="text-white text-xs sm:text-sm" />
-                </button>
-                <button
-                  onClick={() => handleShare("whatsapp", selectedNews)}
-                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/10 hover:bg-[#25D366] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
-                  aria-label="Share on WhatsApp"
-                >
-                  <FaWhatsapp className="text-white text-xs sm:text-sm" />
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
+          <ReadMoreModal
+            selectedNews={selectedNews}
+            setSelectedNews={setSelectedNews}
+            handleShare={handleShare}
+          />
         )}
       </AnimatePresence>
     </section>

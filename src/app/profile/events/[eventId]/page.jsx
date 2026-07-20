@@ -372,11 +372,6 @@ export default function EventDetailPage() {
     },
   ];
 
-  console.log("This is Event", event);
-  console.log("This is Event type", event.eventType);
-  console.log("This is User", user);
-  console.log("This is Params", params);
-
   return (
     <div className="min-h-screen bg-[#030305]">
       <Header />

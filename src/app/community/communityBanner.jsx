@@ -2,8 +2,11 @@
 
 import { MessageSquare } from "lucide-react";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 export default function CommunityBanner() {
+  const router = useRouter();
+
   const scrollToSection = (id) => {
     const element = document.getElementById(id);
     if (element) {
@@ -84,6 +87,13 @@ export default function CommunityBanner() {
               className="w-full sm:w-auto rounded-xl border border-white/10 bg-white/5 px-6 sm:px-8 py-3 sm:py-4 font-semibold text-sm sm:text-base backdrop-blur-md transition hover:bg-white/10 cursor-pointer"
             >
               Latest News
+            </button>
+
+            <button
+              onClick={() => router.push("/esports-arena?tab=tournaments")}
+              className="w-full sm:w-auto rounded-xl border border-white/10 bg-white/5 px-6 sm:px-8 py-3 sm:py-4 font-semibold text-sm sm:text-base backdrop-blur-md transition hover:bg-white/10 cursor-pointer"
+            >
+              Esports Arena
             </button>
           </div>
 

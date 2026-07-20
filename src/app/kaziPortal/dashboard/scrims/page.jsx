@@ -171,8 +171,6 @@ export default function ScrimsPage() {
         ),
       };
 
-      // console.log("Payload:", payload);
-
       const response = await fetch(`${API_BASE_URL}/scrims`, {
         method: "POST",
         headers: {

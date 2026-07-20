@@ -121,9 +121,14 @@ export default function OurPartners() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Validation
-    if (!formData.full_name || !formData.email || !formData.whatsapp || !formData.city) {
+    if (
+      !formData.full_name ||
+      !formData.email ||
+      !formData.whatsapp ||
+      !formData.city
+    ) {
       Swal.fire({
         icon: "error",
         title: "Missing Fields",
@@ -146,11 +151,13 @@ export default function OurPartners() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(formData),
-        }
+        },
       );
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error("Failed to submit application");
+        throw new Error(data.message || "Failed to submit application");
       }
 
       Swal.fire({
@@ -177,7 +184,9 @@ export default function OurPartners() {
       Swal.fire({
         icon: "error",
         title: "Submission Failed",
-        text: error.message || "An error occurred while submitting your application.",
+        text:
+          error.message ||
+          "An error occurred while submitting your application.",
         background: "#1a1a2e",
         color: "#fff",
         confirmButtonColor: "#ec4899",
@@ -439,21 +448,22 @@ export default function OurPartners() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsModalOpen(false)}
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+              className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/50 backdrop-blur-sm"
             >
               <motion.div
                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
                 onClick={(e) => e.stopPropagation()}
-                className="bg-gradient-to-br from-zinc-900 via-zinc-900 to-black border border-purple-500/30 rounded-3xl shadow-2xl shadow-purple-500/20 max-w-2xl w-full overflow-hidden"
+                className="bg-gradient-to-br from-zinc-900 via-zinc-900 to-black border border-purple-500/30 rounded-3xl shadow-2xl shadow-purple-500/20 max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden"
               >
                 {/* Header */}
-                <div className="relative bg-gradient-to-r from-purple-600/20 to-pink-600/20 px-6 sm:px-8 py-6 border-b border-purple-500/20">
+                <div className="relative bg-gradient-to-r from-purple-600/20 to-pink-600/20 px-6 sm:px-8 py-6 border-b border-purple-500/20 flex-shrink-0">
                   <div className="flex items-center justify-between">
                     <h2 className="text-2xl sm:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
                       Partnership Application
                     </h2>
+
                     <button
                       onClick={() => setIsModalOpen(false)}
                       className="p-1 hover:bg-white/10 rounded-lg transition-colors"
@@ -464,150 +474,162 @@ export default function OurPartners() {
                 </div>
 
                 {/* Form */}
-                <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-4">
-                  {/* Row 1: Full Name & Email */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-zinc-300 mb-2">
-                        Full Name <span className="text-pink-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        name="full_name"
-                        value={formData.full_name}
-                        onChange={handleInputChange}
-                        placeholder="Enter your full name"
-                        required
-                        className="w-full px-4 py-2.5 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-zinc-300 mb-2">
-                        Email Address <span className="text-pink-500">*</span>
-                      </label>
-                      <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        placeholder="Enter email address"
-                        required
-                        className="w-full px-4 py-2.5 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
-                      />
-                    </div>
-                  </div>
+                <form
+                  onSubmit={handleSubmit}
+                  className="flex flex-col flex-1 min-h-0"
+                >
+                  {/* Scrollable Content */}
+                  <div className="flex-1 overflow-y-auto custom-scrollbar p-6 sm:p-8 space-y-4">
+                    {/* Row 1: Full Name & Email */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-semibold text-zinc-300 mb-2">
+                          Full Name <span className="text-pink-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          name="full_name"
+                          value={formData.full_name}
+                          onChange={handleInputChange}
+                          placeholder="Enter your full name"
+                          required
+                          className="w-full px-4 py-2.5 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                        />
+                      </div>
 
-                  {/* Row 2: WhatsApp & City */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-zinc-300 mb-2">
-                        WhatsApp Number
-                      </label>
-                      <input
-                        type="tel"
-                        name="whatsapp"
-                        value={formData.whatsapp}
-                        onChange={handleInputChange}
-                        placeholder="+1234567890"
-                        className="w-full px-4 py-2.5 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
-                      />
+                      <div>
+                        <label className="block text-sm font-semibold text-zinc-300 mb-2">
+                          Email Address <span className="text-pink-500">*</span>
+                        </label>
+                        <input
+                          type="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleInputChange}
+                          placeholder="Enter email address"
+                          required
+                          className="w-full px-4 py-2.5 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                        />
+                      </div>
                     </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-zinc-300 mb-2">
-                        City <span className="text-pink-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        name="city"
-                        value={formData.city}
-                        onChange={handleInputChange}
-                        placeholder="Enter your city"
-                        required
-                        className="w-full px-4 py-2.5 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
-                      />
-                    </div>
-                  </div>
 
-                  {/* Row 3: Facebook & YouTube */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Row 2: WhatsApp & City */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-semibold text-zinc-300 mb-2">
+                          WhatsApp Number{" "}
+                          <span className="text-pink-500">*</span>
+                        </label>
+                        <input
+                          type="tel"
+                          name="whatsapp"
+                          value={formData.whatsapp}
+                          onChange={handleInputChange}
+                          placeholder="+1234567890"
+                          required
+                          className="w-full px-4 py-2.5 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-semibold text-zinc-300 mb-2">
+                          City <span className="text-pink-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          name="city"
+                          value={formData.city}
+                          onChange={handleInputChange}
+                          placeholder="Enter your city"
+                          required
+                          className="w-full px-4 py-2.5 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Row 3: Facebook & YouTube */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-semibold text-zinc-300 mb-2">
+                          Facebook Page Link
+                        </label>
+                        <input
+                          type="url"
+                          name="fb_page_link"
+                          value={formData.fb_page_link}
+                          onChange={handleInputChange}
+                          placeholder="https://facebook.com/your-page"
+                          className="w-full px-4 py-2.5 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-semibold text-zinc-300 mb-2">
+                          YouTube Link
+                        </label>
+                        <input
+                          type="url"
+                          name="youtube_link"
+                          value={formData.youtube_link}
+                          onChange={handleInputChange}
+                          placeholder="https://youtube.com/c/your-channel"
+                          className="w-full px-4 py-2.5 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Website URL */}
                     <div>
                       <label className="block text-sm font-semibold text-zinc-300 mb-2">
-                        Facebook Page Link
+                        Website URL
                       </label>
                       <input
                         type="url"
-                        name="fb_page_link"
-                        value={formData.fb_page_link}
+                        name="website_url"
+                        value={formData.website_url}
                         onChange={handleInputChange}
-                        placeholder="https://facebook.com/your-page"
+                        placeholder="https://example.com"
                         className="w-full px-4 py-2.5 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
                       />
                     </div>
+
+                    {/* Message */}
                     <div>
                       <label className="block text-sm font-semibold text-zinc-300 mb-2">
-                        YouTube Link
+                        Message
                       </label>
-                      <input
-                        type="url"
-                        name="youtube_link"
-                        value={formData.youtube_link}
+                      <textarea
+                        name="message"
+                        value={formData.message}
                         onChange={handleInputChange}
-                        placeholder="https://youtube.com/c/your-channel"
-                        className="w-full px-4 py-2.5 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                        placeholder="Tell us about your partnership proposal or any additional details..."
+                        rows={4}
+                        className="w-full px-4 py-2.5 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all resize-none"
                       />
                     </div>
                   </div>
 
-                  {/* Row 4: Website URL (Full Width) */}
-                  <div>
-                    <label className="block text-sm font-semibold text-zinc-300 mb-2">
-                      Website URL
-                    </label>
-                    <input
-                      type="url"
-                      name="website_url"
-                      value={formData.website_url}
-                      onChange={handleInputChange}
-                      placeholder="https://example.com"
-                      className="w-full px-4 py-2.5 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
-                    />
+                  {/* Fixed Footer Buttons */}
+                  <div className="flex-shrink-0 p-6 border-t border-purple-500/20 bg-zinc-900/95 backdrop-blur-sm">
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      type="submit"
+                      disabled={isLoading}
+                      className="w-full mb-3 px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold uppercase tracking-wider rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-pink-500/50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isLoading ? "Submitting..." : "Submit Application"}
+                    </motion.button>
+
+                    <button
+                      type="button"
+                      onClick={() => setIsModalOpen(false)}
+                      disabled={isLoading}
+                      className="w-full px-6 py-2.5 bg-zinc-800/50 border border-zinc-700 text-zinc-300 font-semibold rounded-lg hover:bg-zinc-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Cancel
+                    </button>
                   </div>
-
-                  {/* Row 5: Message (Full Width) */}
-                  <div>
-                    <label className="block text-sm font-semibold text-zinc-300 mb-2">
-                      Message
-                    </label>
-                    <textarea
-                      name="message"
-                      value={formData.message}
-                      onChange={handleInputChange}
-                      placeholder="Tell us about your partnership proposal or any additional details..."
-                      rows="4"
-                      className="w-full px-4 py-2.5 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all resize-none"
-                    />
-                  </div>
-
-                  {/* Submit Button */}
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    type="submit"
-                    disabled={isLoading}
-                    className="w-full mt-6 px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold uppercase tracking-wider rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-pink-500/50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isLoading ? "Submitting..." : "Submit Application"}
-                  </motion.button>
-
-                  {/* Cancel Button */}
-                  <button
-                    type="button"
-                    onClick={() => setIsModalOpen(false)}
-                    disabled={isLoading}
-                    className="w-full px-6 py-2.5 bg-zinc-800/50 border border-zinc-700 text-zinc-300 font-semibold rounded-lg hover:bg-zinc-800 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    Cancel
-                  </button>
                 </form>
               </motion.div>
             </motion.div>
