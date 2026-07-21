@@ -14,7 +14,6 @@ import {
   Monitor,
   Users,
   User,
-  DollarSign,
   Flag,
   ExternalLink,
   Loader2,
@@ -1098,14 +1097,24 @@ export default function EventsSection({
     return events.filter((e) => e.eventType === "Tournament");
   }, [events]);
 
+  const freeTournamentCount = tournamentEvents.filter(
+    (event) => event.event_category === "Free Tournament",
+  );
+
   const filterCounts = React.useMemo(() => {
     return {
       all: events.length + 1, // Add 1 for Brand Deals (coming soon)
       Tournament: tournamentEvents.length,
+      "Free Tournament": freeTournamentCount.length,
       Scrims: scrimmageEvents.length,
       "Brand Deal": 0, // Coming soon category
     };
-  }, [events.length, scrimmageEvents.length, tournamentEvents.length]);
+  }, [
+    events.length,
+    scrimmageEvents.length,
+    freeTournamentCount,
+    tournamentEvents.length,
+  ]);
 
   const FILTER_TABS = React.useMemo(
     () => [
@@ -1126,6 +1135,12 @@ export default function EventsSection({
         id: "Brand Deal",
         label: "Brand Deals",
         count: filterCounts["Brand Deal"],
+        icon: Briefcase,
+      },
+      {
+        id: "Free Tournament",
+        label: "Free Tournaments",
+        count: filterCounts["Free Tournament"],
         icon: Briefcase,
       },
     ],
@@ -1312,26 +1327,17 @@ export default function EventsSection({
                 {[
                   { value: "mini", label: "Mini Tournament" },
                   { value: "large", label: "Large Tournament" },
-                  { value: "free", label: "Free Tournament" },
+                  // { value: "free", label: "Free Tournament" },
                 ].map((option) => (
                   <button
                     key={option.value}
                     onClick={() => {
-                      if (option.value === "free") {
-                        setShowFreeTourn(!showFreeTourn);
-                        // Reset size filter when selecting Free Tournament
-                        setSizeFilter(null);
-                        // Auto-switch to Tournament tab when Free Tournament is selected
-                        if (!showFreeTourn) {
-                          setActiveFilter("Tournament");
-                        }
-                      } else {
-                        setSizeFilter(option.value);
-                        // Reset Free Tournament filter when selecting Mini or Large
-                        setShowFreeTourn(false);
-                        // Auto-switch to Tournament tab
-                        setActiveFilter("Tournament");
-                      }
+                      setSizeFilter(option.value);
+                      // Reset Free Tournament filter when selecting Mini or Large
+                      setShowFreeTourn(false);
+                      // Auto-switch to Tournament tab
+                      setActiveFilter("Tournament");
+
                       setShowSizeFilterDropdown(false); // Close dropdown after selection
                     }}
                     className={`w-full text-left px-4 py-2.5 text-sm transition-all duration-200 flex items-center gap-2 ${

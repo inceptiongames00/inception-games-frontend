@@ -30,7 +30,7 @@ const planFeatures = [
     "Content Mentorship on YouTube, Facebook & Instagram",
   ],
   [
-    "2x Major + 2x Mini Tournament Entry Pass (T1/T2 Lobbies)",
+    "2x Major Tournament Entry Pass (T1/T2 Lobbies)",
     "Merch Brand Deal: Free Website & Jersey Making Support (Earn ~10K–20K+ BDT/mo)",
     "Sponsorship Network: Access to brand deals based on performance",
     "200 TK Discount code on partner brands",

@@ -14,23 +14,29 @@ const API_BASE_URL =
 // Helper function to check if user can upgrade (15-day restriction from approval date)
 const canUpgradeSubscription = (activeSubscription) => {
   if (!activeSubscription?.approved_at) return true;
-  
+
   const approvalDate = new Date(activeSubscription.approved_at);
-  const fifteenDaysLater = new Date(approvalDate.getTime() + 15 * 24 * 60 * 60 * 1000);
+  const fifteenDaysLater = new Date(
+    approvalDate.getTime() + 15 * 24 * 60 * 60 * 1000,
+  );
   const now = new Date();
-  
+
   return now >= fifteenDaysLater;
 };
 
 // Helper function to get days remaining until upgrade is allowed
 const getDaysRemainingForUpgrade = (activeSubscription) => {
   if (!activeSubscription?.approved_at) return 0;
-  
+
   const approvalDate = new Date(activeSubscription.approved_at);
-  const fifteenDaysLater = new Date(approvalDate.getTime() + 15 * 24 * 60 * 60 * 1000);
+  const fifteenDaysLater = new Date(
+    approvalDate.getTime() + 15 * 24 * 60 * 60 * 1000,
+  );
   const now = new Date();
-  
-  const daysRemaining = Math.ceil((fifteenDaysLater - now) / (1000 * 60 * 60 * 24));
+
+  const daysRemaining = Math.ceil(
+    (fifteenDaysLater - now) / (1000 * 60 * 60 * 24),
+  );
   return Math.max(0, daysRemaining);
 };
 
@@ -68,7 +74,8 @@ export default function SubscriptionSection({
         active: "bg-emerald-500/20 border-emerald-500/40 text-emerald-400",
         pending: "bg-yellow-500/20 border-yellow-500/40 text-yellow-400",
         expired: "bg-red-500/20 border-red-500/40 text-red-400",
-        "waiting for approval": "bg-blue-500/20 border-blue-500/40 text-blue-400",
+        "waiting for approval":
+          "bg-blue-500/20 border-blue-500/40 text-blue-400",
       };
 
       // Format date safely (YYYY-MM-DD) to avoid hydration mismatch
@@ -88,15 +95,21 @@ export default function SubscriptionSection({
             day % 10 > 3 ? 0 : (day % 100) - 20 > 3 ? 0 : day % 10
           ] || "th";
 
-        expirationText = `Expires: ${day}${suffix} ${month} ${year}`;
+        expirationText =
+          activeSub.plan === "Casual Pass" ? `` : `Expires: Expire in 30 days`;
+        // expirationText = `Expires: ${day}${suffix} ${month} ${year}`;
       }
 
       const displaySub = {
         name: activeSub.plan || activeSub.plan_name || "Plan",
-        badge: activeSub.status?.toLowerCase() === "waiting for approval" 
-          ? "APPROVAL PENDING" 
-          : activeSub.status?.toUpperCase() || "PENDING",
-        badgeColor: statusColors[activeSub.status?.toLowerCase()] || statusColors[activeSub.status] || statusColors.pending,
+        badge:
+          activeSub.status?.toLowerCase() === "waiting for approval"
+            ? "APPROVAL PENDING"
+            : activeSub.status?.toUpperCase() || "PENDING",
+        badgeColor:
+          statusColors[activeSub.status?.toLowerCase()] ||
+          statusColors[activeSub.status] ||
+          statusColors.pending,
         showBadge: activeSub.status?.toLowerCase() !== "waiting for approval",
         price: activeSub.price ? `${activeSub.price} BDT` : "FREE",
         expiration: expirationText,
@@ -110,9 +123,11 @@ export default function SubscriptionSection({
             ? "APPROVAL PENDING"
             : activeSub.status === "pending"
               ? "ACTIVATE SUBSCRIPTION"
-              : activeSub.status === "expired"
-                ? "RENEW PLAN"
-                : "UPGRADE PLAN",
+              : activeSub.status === "active" && activeSub.plan === "Expert"
+                ? "CURRENT PLAN"
+                : activeSub.status === "expired"
+                  ? "RENEW PLAN"
+                  : "UPGRADE PLAN",
         buttonStyle:
           activeSub.status?.toLowerCase() === "waiting for approval"
             ? "bg-gradient-to-r from-gray-600 to-gray-500 hover:from-gray-600 hover:to-gray-500 cursor-not-allowed opacity-60"
@@ -121,7 +136,9 @@ export default function SubscriptionSection({
               : activeSub.status === "expired"
                 ? "bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-500 hover:to-orange-400"
                 : "bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400",
-        isDisabled: activeSub.status?.toLowerCase() === "waiting for approval",
+        isDisabled:
+          activeSub.status?.toLowerCase() === "waiting for approval" ||
+          (activeSub.status === "active" && activeSub.plan === "Expert"),
       };
 
       setSubscriptionTiers([displaySub]);
@@ -158,7 +175,7 @@ export default function SubscriptionSection({
 
   const handleSubscriptionSuccess = () => {
     // Trigger refetch by incrementing trigger state
-    setRefreshTrigger(prev => prev + 1);
+    setRefreshTrigger((prev) => prev + 1);
     // Also call parent callback if provided
     if (onSubscriptionSuccess) {
       onSubscriptionSuccess();
@@ -264,11 +281,12 @@ export default function SubscriptionSection({
                     } else if (tier.badge === "ACTIVE") {
                       // Check 15-day restriction for active subscriptions
                       if (!canUpgradeSubscription(activeSubscription)) {
-                        const daysRemaining = getDaysRemainingForUpgrade(activeSubscription);
+                        const daysRemaining =
+                          getDaysRemainingForUpgrade(activeSubscription);
                         Swal.fire({
                           icon: "info",
                           title: "Upgrade Not Available",
-                          html: `You cannot upgrade your subscription within 15 days of activation.<br/><br/>Please try again in <strong>${daysRemaining} day${daysRemaining !== 1 ? 's' : ''}</strong>.`,
+                          html: `You cannot upgrade your subscription within 15 days of activation.<br/><br/>Please try again in <strong>${daysRemaining} day${daysRemaining !== 1 ? "s" : ""}</strong>.`,
                           confirmButtonText: "Got It",
                           confirmButtonColor: "#9333ea",
                           background: "#1a1a2e",
@@ -284,7 +302,7 @@ export default function SubscriptionSection({
                   }
                 }}
                 disabled={tier.isDisabled}
-                className={`w-full py-3 rounded-xl font-bold text-white text-sm sm:text-sm transition duration-300 shadow-lg shadow-purple-500/20 ${tier.isDisabled ? 'cursor-not-allowed' : 'cursor-pointer'} ${tier.buttonStyle}`}
+                className={`w-full py-3 rounded-xl font-bold text-white text-sm sm:text-sm transition duration-300 shadow-lg shadow-purple-500/20 ${tier.isDisabled ? "cursor-not-allowed" : "cursor-pointer"} ${tier.buttonStyle}`}
                 whileHover={!tier.isDisabled ? { scale: 1.02, y: -1 } : {}}
                 whileTap={!tier.isDisabled ? { scale: 0.98 } : {}}
               >
