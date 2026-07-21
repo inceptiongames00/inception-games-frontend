@@ -1,27 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ShoppingBag, ArrowRight } from "lucide-react";
-import Image from "next/image";
+import { ShoppingBag } from "lucide-react";
 
 export default function ProGearShop() {
-  const gearItems = [
-    {
-      id: 1,
-      name: "Elite Controller",
-      icon: "🎮",
-      image:
-        "https://images.unsplash.com/photo-1531492746076-161ca9bcad58?w=500&h=400&fit=crop",
-    },
-    {
-      id: 2,
-      name: "Pro Headset",
-      icon: "🎧",
-      image:
-        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&h=400&fit=crop",
-    },
-  ];
-
   return (
     <motion.section
       initial={{ opacity: 0, y: 20 }}
