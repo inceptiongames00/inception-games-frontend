@@ -14,7 +14,7 @@ export const API = {
   LOGIN_VERIFY_OTP:      `${BASE_URL}/auth/login/verify-otp`,
 
   // Utility
-  RESEND_OTP:            `${BASE_URL}/auth/resend-otp`,
+  RESEND_OTP:            `${BASE_URL}/auth/register/resend-otp`,
   REFRESH_TOKEN:         `${BASE_URL}/auth/refresh-token`,
 
   // Profile Update - PUT endpoint with FormData
