@@ -67,8 +67,9 @@ export default function ScrimsCarousel({ onLoginClick }) {
     // } else {
     //   onLoginClick();
     // }
+  };
+
   // Auto-scroll functionality
-  
   useEffect(() => {
     if (!isDragging && tournaments.length > 0 && scrollContainerRef.current) {
       autoScrollIntervalRef.current = setInterval(() => {
@@ -103,16 +104,18 @@ export default function ScrimsCarousel({ onLoginClick }) {
   const handleDragMove = (e) => {
     if (!isDragging || !scrollContainerRef.current) return;
 
-    const currentX = e.type.includes("mouse") ? e.clientX : e.touches[0].clientX;
+    const currentX = e.type.includes("mouse")
+      ? e.clientX
+      : e.touches[0].clientX;
     const diff = dragStart - currentX;
 
     setScrollPosition((prev) => {
       const newPosition = prev + diff;
       const maxScroll = scrollContainerRef.current?.scrollWidth / 2 || 0;
-      
+
       if (newPosition < 0) return 0;
       if (newPosition >= maxScroll) return maxScroll;
-      
+
       return newPosition;
     });
 
@@ -121,14 +124,6 @@ export default function ScrimsCarousel({ onLoginClick }) {
 
   const handleDragEnd = () => {
     setIsDragging(false);
-  };
-
-  const handleCardClick = () => {
-    if (isHydrated && user) {
-      navigateToTab("Tournament");
-    } else {
-      onLoginClick();
-    }
   };
 
   if (!isHydrated) {
