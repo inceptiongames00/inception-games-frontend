@@ -7,6 +7,39 @@ import UpgradePlanModal from "./UpgradePlanModal";
 import ActivateSubscriptionModal from "./ActivateSubscriptionModal";
 import Swal from "sweetalert2";
 
+const planFeatures = [
+  [
+    "Free Tournament (T1/T2 Lobbies) with International Team",
+    "Scrims Access (T1/T2 Lobbies) with International Team",
+    "Get Discount on Listed Partner Brand",
+    "Get Rewards on Subscription Pack",
+    "Basic Performance Analytics & Star Player Recognition",
+    "Sponsorship Opportunity For Creator or Team or Individual",
+    "Career Guideline on Esports",
+    "Networking Oppotunity & Meetup",
+    "Grind for the Esports World Cup",
+  ],
+  [
+    "1x Major + 1x Mini Tournament Entry Pass (T1/T2 Lobbies)",
+    "Merch Brand Deal: Free Website & Jersey Making Support (Earn ~5K–10K+ BDT)",
+    "100 TK Discount code on partner brands",
+    "Inception Esports Tryouts for the World Cup",
+    "Live Streams (YT, FB, Discord) + Global News Feature",
+    "Basic Performance Analytics & Star Player Recognition",
+    "Content Mentorship on YouTube, Facebook & Instagram",
+  ],
+  [
+    "2x Major Tournament Entry Pass (T1/T2 Lobbies)",
+    "Merch Brand Deal: Free Website & Jersey Making Support (Earn ~10K–20K+ BDT/mo)",
+    "Sponsorship Network: Access to brand deals based on performance",
+    "200 TK Discount code on partner brands",
+    "Priority Inception Esports Tryouts for the World Cup",
+    "Priority Live Streams (YT, FB, Discord, etc.) + Premium Global Feature",
+    "Monthly Analytics Report: In-depth end-of-month data tracking",
+    "Advanced Content Mentorship on YouTube, Facebook & Instagram",
+  ],
+];
+
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ||
   "https://inception-games.an.r.appspot.com/api/v1";
@@ -113,11 +146,14 @@ export default function SubscriptionSection({
         showBadge: activeSub.status?.toLowerCase() !== "waiting for approval",
         price: activeSub.price ? `${activeSub.price} BDT` : "FREE",
         expiration: expirationText,
-        features: [
-          "Priority Access",
-          "Exclusive Tournaments",
-          "Enhanced Support",
-        ],
+        features:
+          activeSub.plan === "Casual Pass"
+            ? planFeatures[0]
+            : activeSub.plan === "Rising Star"
+              ? planFeatures[1]
+              : activeSub.plan === "Expert"
+                ? planFeatures[2]
+                : null,
         buttonText:
           activeSub.status?.toLowerCase() === "waiting for approval"
             ? "APPROVAL PENDING"
@@ -253,7 +289,7 @@ export default function SubscriptionSection({
               <div className="my-4 h-px bg-gradient-to-r from-white/[0.06] to-transparent" />
 
               {/* Features List */}
-              <div className="space-y-2.5 mb-5">
+              <div className="space-y-2.5 mb-5 max-h-56 overflow-y-scroll custom-scrollbar">
                 {tier.features.map((feature, idx) => (
                   <motion.div
                     key={idx}

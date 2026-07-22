@@ -1094,11 +1094,15 @@ export default function EventsSection({
   }, [events]);
 
   const tournamentEvents = React.useMemo(() => {
-    return events.filter((e) => e.eventType === "Tournament");
+    return events.filter((e) =>
+      ["mini tournament", "large tournament"].includes(
+        (e.event_category || "").toLowerCase(),
+      ),
+    );
   }, [events]);
 
-  const freeTournamentCount = tournamentEvents.filter(
-    (event) => event.event_category === "Free Tournament",
+  const freeTournamentCount = events.filter(
+    (event) => event.event_category === "Free Event",
   );
 
   const filterCounts = React.useMemo(() => {
@@ -1138,7 +1142,7 @@ export default function EventsSection({
         icon: Briefcase,
       },
       {
-        id: "Free Tournament",
+        id: "Free Event",
         label: "Free Tournaments",
         count: filterCounts["Free Tournament"],
         icon: Briefcase,
@@ -1150,15 +1154,12 @@ export default function EventsSection({
   // Memoize filtered events to prevent unnecessary recalculations
   const filteredEvents = React.useMemo(() => {
     return events.filter((event) => {
-      // If Free Tournament filter is active, hide all regular tournament cards
+      // Hide all cards when Free Tournament is selected
       if (showFreeTourn) {
-        return false; // Don't show any cards when Free Tournament is selected
+        return false;
       }
 
-      // Show events based on active filter
-      const matchesFilter =
-        activeFilter === "all" || event.eventType === activeFilter;
-
+      // Search filter
       const matchesSearch =
         (event.title || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
         (event.game?.name || "")
@@ -1168,10 +1169,23 @@ export default function EventsSection({
           .toLowerCase()
           .includes(searchQuery.toLowerCase());
 
-      // Filter by tournament size using event_category
+      // Event category filter
+      let matchesFilter = true;
+
+      const eventCategory = (event.event_category || "").toLowerCase();
+
+      if (activeFilter === "Free Event") {
+        matchesFilter = eventCategory === "free event";
+      } else if (activeFilter === "Tournament") {
+        matchesFilter =
+          eventCategory === "mini tournament" ||
+          eventCategory === "large tournament";
+      }
+
+      // Tournament size filter
       let matchesSize = true;
+
       if (sizeFilter !== "all") {
-        const eventCategory = (event.event_category || "").toLowerCase();
         if (sizeFilter === "mini") {
           matchesSize = eventCategory.includes("mini");
         } else if (sizeFilter === "large") {
@@ -1188,7 +1202,7 @@ export default function EventsSection({
     () => ({
       Tournament: false, // Don't show coming soon for tournaments since we're fetching them
       "Brand Deal": activeFilter === "all" || activeFilter === "Brand Deal",
-      "Free Tournament": showFreeTourn === true, // Only show when explicitly selected
+      "Free Event": activeFilter === "Free Event", //showFreeTourn === true, // Only show when explicitly selected
     }),
     [activeFilter, showFreeTourn],
   );
@@ -1290,7 +1304,7 @@ export default function EventsSection({
         </div>
 
         {/* Size Filter Button */}
-        <div className="flex items-center gap-2">
+        {/* <div className="flex items-center gap-2">
           <div className="relative">
             <button
               onClick={() => setShowSizeFilterDropdown(!showSizeFilterDropdown)}
@@ -1321,7 +1335,7 @@ export default function EventsSection({
                     ? "Large Tournament"
                     : "Filter By"}
             </button>
-            {/* Dropdown */}
+            //Dropdown
             {showSizeFilterDropdown && (
               <div className="absolute right-0 mt-2 w-48 bg-[#111115] border border-white/[0.06] rounded-lg shadow-lg z-10">
                 {[
@@ -1394,7 +1408,7 @@ export default function EventsSection({
               </div>
             )}
           </div>
-        </div>
+        </div> */}
 
         {/* <div className="flex items-center gap-1 bg-[#111115] p-1 rounded-xl border border-white/[0.06]">
           {FILTER_TABS.map((tab) => {
