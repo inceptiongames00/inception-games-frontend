@@ -2,10 +2,12 @@
 
 import { useAuth } from "@/hooks/useAuth";
 import { useProfileNavigation } from "@/hooks/useProfileNavigation";
+import { useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 
 export default function ScrimsCarousel({ onLoginClick }) {
   const { user } = useAuth();
+  const router = useRouter();
   const { navigateToTab } = useProfileNavigation();
   const [isHydrated, setIsHydrated] = useState(false);
   const [tournaments, setTournaments] = useState([]);
@@ -27,7 +29,7 @@ export default function ScrimsCarousel({ onLoginClick }) {
       try {
         setLoading(true);
         const response = await fetch(
-          "https://inception-games.an.r.appspot.com/api/v1/cms/tournaments/all",
+          "https://inception-games.an.r.appspot.com/api/v1/events/tournaments/free-events",
         );
         if (!response.ok) throw new Error("Failed to fetch tournaments");
         const data = await response.json();
@@ -45,6 +47,7 @@ export default function ScrimsCarousel({ onLoginClick }) {
           tournamentsArray = [data];
         }
 
+        localStorage.setItem("free-event", JSON.stringify(tournamentsArray));
         setTournaments(tournamentsArray);
       } catch (error) {
         console.error("Error fetching tournaments:", error);
@@ -56,6 +59,15 @@ export default function ScrimsCarousel({ onLoginClick }) {
 
     fetchTournaments();
   }, [isHydrated]);
+
+  const handleCardClick = (id) => {
+    router.push(`esports-arena/${id}?action=view`);
+    // if (isHydrated && user) {
+    //   navigateToTab("Free Event");
+    // } else {
+    //   onLoginClick();
+    // }
+  };
 
   // Auto-scroll functionality
   useEffect(() => {
@@ -92,16 +104,18 @@ export default function ScrimsCarousel({ onLoginClick }) {
   const handleDragMove = (e) => {
     if (!isDragging || !scrollContainerRef.current) return;
 
-    const currentX = e.type.includes("mouse") ? e.clientX : e.touches[0].clientX;
+    const currentX = e.type.includes("mouse")
+      ? e.clientX
+      : e.touches[0].clientX;
     const diff = dragStart - currentX;
 
     setScrollPosition((prev) => {
       const newPosition = prev + diff;
       const maxScroll = scrollContainerRef.current?.scrollWidth / 2 || 0;
-      
+
       if (newPosition < 0) return 0;
       if (newPosition >= maxScroll) return maxScroll;
-      
+
       return newPosition;
     });
 
@@ -110,14 +124,6 @@ export default function ScrimsCarousel({ onLoginClick }) {
 
   const handleDragEnd = () => {
     setIsDragging(false);
-  };
-
-  const handleCardClick = () => {
-    if (isHydrated && user) {
-      navigateToTab("Tournament");
-    } else {
-      onLoginClick();
-    }
   };
 
   if (!isHydrated) {
@@ -234,11 +240,12 @@ function GameCard({ tournament, onClick, isHydrated, user }) {
 
               {/* CTA Button */}
               <button
-                onClick={onClick}
+                onClick={() => onClick(tournament.id)}
                 className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               >
-                <span className="px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 rounded-full text-white font-semibold text-sm transition-all duration-300">
-                  {isHydrated && user ? "Go To Tournament" : "Sign In"}
+                <span className="px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 rounded-full text-white font-semibold text-sm transition-all duration-300 cursor-pointer">
+                  {/* {isHydrated && user ? "Go To Tournament" : "Sign In"} */}
+                  Go To Details
                 </span>
               </button>
             </div>
