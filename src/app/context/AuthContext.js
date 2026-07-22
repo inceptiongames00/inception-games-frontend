@@ -352,6 +352,42 @@ export function AuthProvider({ children }) {
   }, []);
 
   // ============================================
+  // RESEND OTP
+  // ============================================
+
+  /**
+   * Resend OTP - Generic method for resending OTP
+   * POST /auth/resend-otp  body: { email }
+   */
+  const resendOTP = useCallback(async (email) => {
+    setError(null);
+    const res = await fetch(API.RESEND_OTP, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      const msg = data.error || data.message || "Failed to resend OTP";
+      setError(msg);
+      throw new Error(msg);
+    }
+    return data;
+  }, []);
+
+  /**
+   * Resend OTP for Login
+   * Alias for resendOTP for semantic clarity in login flow
+   */
+  const resendLoginOTP = useCallback((email) => resendOTP(email), [resendOTP]);
+
+  /**
+   * Resend OTP for Registration/Signup
+   * Alias for resendOTP for semantic clarity in signup flow
+   */
+  const resendSignupOTP = useCallback((email) => resendOTP(email), [resendOTP]);
+
+  // ============================================
   // PROFILE MANAGEMENT
   // ============================================
 
@@ -463,6 +499,11 @@ export function AuthProvider({ children }) {
 
     // Logout
     logout,
+
+    // Resend OTP
+    resendOTP,
+    resendLoginOTP,
+    resendSignupOTP,
 
     // Profile
     updateProfile,

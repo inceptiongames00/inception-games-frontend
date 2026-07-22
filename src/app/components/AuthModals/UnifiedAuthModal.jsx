@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X,
@@ -258,6 +258,9 @@ export default function UnifiedAuthModal({
     registerPersonalInfo,
     registerGamingProfile,
     registerProfileImages,
+    resendOTP,
+    resendLoginOTP,
+    resendSignupOTP,
     error: authError,
     setSelectedTournamentCategory,
   } = useAuth();
@@ -270,6 +273,8 @@ export default function UnifiedAuthModal({
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
   const [message, setMessage] = useState("");
+  const [resendTimer, setResendTimer] = useState(0);
+  const [resendLoading, setResendLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     otp: "",
@@ -298,6 +303,45 @@ export default function UnifiedAuthModal({
     setMessage("");
   };
 
+  // Resend OTP Timer Effect
+  useEffect(() => {
+    if (resendTimer <= 0) return;
+    const interval = setInterval(() => {
+      setResendTimer((prev) => prev - 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [resendTimer]);
+
+  // Handle Resend OTP for Login
+  const handleResendLoginOTP = async () => {
+    setLocalError("");
+    setResendLoading(true);
+    try {
+      await resendLoginOTP(formData.email);
+      setMessage("OTP resent successfully! Check your email.");
+      setResendTimer(60); // 60 second cooldown
+    } catch (err) {
+      setLocalError(err.message || "Failed to resend OTP");
+    } finally {
+      setResendLoading(false);
+    }
+  };
+
+  // Handle Resend OTP for Signup
+  const handleResendSignupOTP = async () => {
+    setLocalError("");
+    setResendLoading(true);
+    try {
+      await resendSignupOTP(formData.email);
+      setMessage("OTP resent successfully! Check your email.");
+      setResendTimer(60); // 60 second cooldown
+    } catch (err) {
+      setLocalError(err.message || "Failed to resend OTP");
+    } finally {
+      setResendLoading(false);
+    }
+  };
+
   const handleLoginSendOTP = async (e) => {
     e.preventDefault();
     setLocalError("");
@@ -316,6 +360,7 @@ export default function UnifiedAuthModal({
       setIsLoading(true);
       await loginSendOTP(formData.email);
       setStep(2); // Move to OTP verification
+      setResendTimer(60); // Start 60 second cooldown
     } catch (err) {
       setLocalError(err.message);
     } finally {
@@ -377,6 +422,7 @@ export default function UnifiedAuthModal({
       setIsLoading(true);
       await registerSendOTP(formData.email, formData.phone);
       setStep(2); // Move to OTP verification
+      setResendTimer(60); // Start 60 second cooldown
     } catch (err) {
       setLocalError(err.message);
     } finally {
@@ -587,9 +633,25 @@ export default function UnifiedAuthModal({
               disabled={isLoading}
               className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:border-purple-500 focus:bg-white/10 transition duration-300 disabled:opacity-50"
             />
-            <p className="text-xs text-gray-400 mt-2">
-              Check your email for the OTP
-            </p>
+            <div className="flex items-center justify-between mt-2">
+              <p className="text-xs text-gray-400">
+                Check your email for the OTP
+              </p>
+              {resendTimer > 0 ? (
+                <p className="text-xs text-gray-500">
+                  Resend in {resendTimer}s
+                </p>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleResendLoginOTP}
+                  disabled={resendLoading}
+                  className="text-xs text-purple-400 hover:text-purple-300 disabled:text-gray-600 transition-colors"
+                >
+                  {resendLoading ? "Sending..." : "Resend OTP"}
+                </button>
+              )}
+            </div>
           </motion.div>
         </>
       )}
@@ -604,6 +666,20 @@ export default function UnifiedAuthModal({
             className="p-3 bg-red-500/20 border border-red-500/50 rounded-lg text-red-200 text-sm"
           >
             {localError || authError}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Success Message */}
+      <AnimatePresence>
+        {message && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="p-3 bg-green-500/20 border border-green-500/50 rounded-lg text-green-200 text-sm"
+          >
+            {message}
           </motion.div>
         )}
       </AnimatePresence>
@@ -743,9 +819,25 @@ export default function UnifiedAuthModal({
               disabled={isLoading}
               className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:border-purple-500 focus:bg-white/10 transition duration-300 disabled:opacity-50"
             />
-            <p className="text-xs text-gray-400 mt-2">
-              Check your email for the verification code
-            </p>
+            <div className="flex items-center justify-between mt-2">
+              <p className="text-xs text-gray-400">
+                Check your email for the verification code
+              </p>
+              {resendTimer > 0 ? (
+                <p className="text-xs text-gray-500">
+                  Resend in {resendTimer}s
+                </p>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleResendSignupOTP}
+                  disabled={resendLoading}
+                  className="text-xs text-purple-400 hover:text-purple-300 disabled:text-gray-600 transition-colors"
+                >
+                  {resendLoading ? "Sending..." : "Resend OTP"}
+                </button>
+              )}
+            </div>
           </motion.div>
         )}
 

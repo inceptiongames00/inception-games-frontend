@@ -1,16 +1,19 @@
 "use client";
 
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { motion } from "framer-motion";
 import { X, Loader2, ChevronRight } from "lucide-react";
 import { AuthContext } from "@/app/context/AuthContext";
 import { API, setTokens, setStoredUser } from "@/lib/api";
 
 export default function CombinedSignupJoinForm({ event, isOpen, onClose, isAuthenticated }) {
-  const { user } = useContext(AuthContext);
+  const { user, resendOTP } = useContext(AuthContext);
   const [step, setStep] = useState("email"); // 'email', 'otp', 'personalInfo', 'success'
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [resendTimer, setResendTimer] = useState(0);
+  const [resendLoading, setResendLoading] = useState(false);
+  const [message, setMessage] = useState("");
   
   // Multi-step form data
   const [email, setEmail] = useState(user?.email || "");
@@ -18,6 +21,30 @@ export default function CombinedSignupJoinForm({ event, isOpen, onClose, isAuthe
   const [otp, setOtp] = useState("");
   const [fullName, setFullName] = useState(user?.fullName || "");
   const [username, setUsername] = useState(user?.username || "");
+
+  // Resend OTP Timer Effect
+  useEffect(() => {
+    if (resendTimer <= 0) return;
+    const interval = setInterval(() => {
+      setResendTimer((prev) => prev - 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [resendTimer]);
+
+  // Handle Resend OTP
+  const handleResendOTP = async () => {
+    setError("");
+    setResendLoading(true);
+    try {
+      await resendOTP(email);
+      setMessage("OTP resent successfully! Check your email.");
+      setResendTimer(60); // 60 second cooldown
+    } catch (err) {
+      setError(err.message || "Failed to resend OTP");
+    } finally {
+      setResendLoading(false);
+    }
+  };
 
   // Step 1: Send OTP via email
   const handleSendOTP = async (e) => {
@@ -29,6 +56,7 @@ export default function CombinedSignupJoinForm({ event, isOpen, onClose, isAuthe
     
     setLoading(true);
     setError("");
+    setMessage("");
     try {
       const res = await fetch(API.REGISTER_SEND_OTP, {
         method: "POST",
@@ -44,6 +72,7 @@ export default function CombinedSignupJoinForm({ event, isOpen, onClose, isAuthe
         throw new Error(data.error || data.message || "Failed to send OTP");
       }
       setStep("otp");
+      setResendTimer(60); // Start 60 second cooldown
     } catch (err) {
       console.error("Send OTP error:", err);
       setError(err.message || "Failed to send OTP. Please try again.");
@@ -384,12 +413,36 @@ export default function CombinedSignupJoinForm({ event, isOpen, onClose, isAuthe
                       onChange={(e) => {
                         setOtp(e.target.value);
                         setError("");
+                        setMessage("");
                       }}
                       placeholder="Enter 6-digit OTP"
                       className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition-colors text-center text-2xl tracking-widest"
                       disabled={loading}
                     />
+                    <div className="flex items-center justify-between mt-2">
+                      <p className="text-xs text-gray-400">Check your email</p>
+                      {resendTimer > 0 ? (
+                        <p className="text-xs text-gray-500">
+                          Resend in {resendTimer}s
+                        </p>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={handleResendOTP}
+                          disabled={resendLoading}
+                          className="text-xs text-purple-400 hover:text-purple-300 disabled:text-gray-600 transition-colors"
+                        >
+                          {resendLoading ? "Sending..." : "Resend OTP"}
+                        </button>
+                      )}
+                    </div>
                   </div>
+
+                  {message && (
+                    <div className="mb-4 p-3 bg-green-500/10 border border-green-500/30 rounded-lg text-green-300 text-sm">
+                      {message}
+                    </div>
+                  )}
 
                   {error && (
                     <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-300 text-sm">
