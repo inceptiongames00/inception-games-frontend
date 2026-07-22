@@ -306,11 +306,16 @@ export default function UnifiedAuthModal({
   // Resend OTP Timer Effect
   useEffect(() => {
     if (resendTimer <= 0) return;
+
     const interval = setInterval(() => {
       setResendTimer((prev) => prev - 1);
     }, 1000);
+
     return () => clearInterval(interval);
   }, [resendTimer]);
+
+  const minutes = Math.floor(resendTimer / 60);
+  const seconds = resendTimer % 60;
 
   // Handle Resend OTP for Login
   const handleResendLoginOTP = async () => {
@@ -319,7 +324,7 @@ export default function UnifiedAuthModal({
     try {
       await resendLoginOTP(formData.email);
       setMessage("OTP resent successfully! Check your email.");
-      setResendTimer(60); // 60 second cooldown
+      setResendTimer(600); // 60 second cooldown
     } catch (err) {
       setLocalError(err.message || "Failed to resend OTP");
     } finally {
@@ -334,7 +339,7 @@ export default function UnifiedAuthModal({
     try {
       await resendSignupOTP(formData.email);
       setMessage("OTP resent successfully! Check your email.");
-      setResendTimer(60); // 60 second cooldown
+      setResendTimer(600); // 60 second cooldown
     } catch (err) {
       setLocalError(err.message || "Failed to resend OTP");
     } finally {
@@ -360,7 +365,7 @@ export default function UnifiedAuthModal({
       setIsLoading(true);
       await loginSendOTP(formData.email);
       setStep(2); // Move to OTP verification
-      setResendTimer(60); // Start 60 second cooldown
+      setResendTimer(600); // Start 60 second cooldown
     } catch (err) {
       setLocalError(err.message);
     } finally {
@@ -422,7 +427,7 @@ export default function UnifiedAuthModal({
       setIsLoading(true);
       await registerSendOTP(formData.email, formData.phone);
       setStep(2); // Move to OTP verification
-      setResendTimer(60); // Start 60 second cooldown
+      setResendTimer(600); // Start 60 second cooldown
     } catch (err) {
       setLocalError(err.message);
     } finally {
@@ -639,7 +644,7 @@ export default function UnifiedAuthModal({
               </p>
               {resendTimer > 0 ? (
                 <p className="text-xs text-gray-500">
-                  Resend in {resendTimer}s
+                  Resend in {minutes}m {String(seconds).padStart(2, "0")}s
                 </p>
               ) : (
                 <button
@@ -825,7 +830,7 @@ export default function UnifiedAuthModal({
               </p>
               {resendTimer > 0 ? (
                 <p className="text-xs text-gray-500">
-                  Resend in {resendTimer}s
+                  Resend in {minutes}m {String(seconds).padStart(2, "0")}s
                 </p>
               ) : (
                 <button

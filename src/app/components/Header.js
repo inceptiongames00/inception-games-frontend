@@ -546,16 +546,13 @@ export default function Header() {
               </a> */}
 
               <button
-                onClick={() => {
-                  handleLinkClick();
-                  navigateToSection("ecosystem-games");
-                }}
-                className="text-white text-base font-medium py-3 border-b border-purple-500/10 hover:text-purple-400 transition-colors w-full text-left cursor-pointer"
+                onClick={() => navigateToSection("eshop")}
+                className="text-white text-base font-medium py-3 border-b border-purple-500/10 hover:text-purple-400 transition-colors w-full text-left block"
               >
-                Games
+                eShop
               </button>
 
-              <button
+              {/* <button
                 onClick={() => {
                   handleLinkClick();
                   navigateToSection("ecosystem-partners");
@@ -563,7 +560,7 @@ export default function Header() {
                 className="text-white text-base font-medium py-3 border-b border-purple-500/10 hover:text-purple-400 transition-colors w-full text-left cursor-pointer"
               >
                 Partners
-              </button>
+              </button> */}
 
               <Link
                 href="/community"
@@ -643,7 +640,7 @@ export default function Header() {
               >
                 News
               </button>
-              <button
+              {/* <button
                 onClick={() => {
                   handleLinkClick();
                   setUpgradePlanModalOpen(true);
@@ -669,7 +666,7 @@ export default function Header() {
                 className="text-white text-base font-medium py-3 hover:text-purple-400 transition-colors w-full text-left cursor-pointer"
               >
                 Contact Us
-              </button>
+              </button> */}
             </nav>
           </motion.div>
         )}

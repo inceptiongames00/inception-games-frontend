@@ -1076,7 +1076,7 @@ export default function EventDetailPage() {
                       animate={{ scale: 1, opacity: 1 }}
                       exit={{ scale: 0.9, opacity: 0 }}
                       onClick={(e) => e.stopPropagation()}
-                      className="bg-gradient-to-br from-[#0c0c14] to-[#14141f] rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto border border-purple-500/20"
+                      className="bg-gradient-to-br from-[#0c0c14] to-[#14141f] rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto custom-scrollbar border border-purple-500/20"
                     >
                       {/* Modal Header */}
                       <div className="flex items-center justify-between p-6 border-b border-white/10">
@@ -1312,15 +1312,43 @@ export default function EventDetailPage() {
                           )}
 
                           {/* Team Name */}
+                          {event?.teamType !== "Solo" && (
+                            <div className="relative">
+                              <input
+                                type="text"
+                                required
+                                value={formData.teamName}
+                                onChange={(e) =>
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    teamName: e.target.value,
+                                  }))
+                                }
+                                placeholder=" "
+                                className="w-full p-4 pt-6 bg-gray-800 border border-gray-700 rounded-xl text-white focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition-all peer"
+                              />
+                              <label
+                                className={`absolute left-4 transition-all pointer-events-none ${
+                                  formData.teamName
+                                    ? "top-2 text-xs text-purple-400"
+                                    : "top-4 text-gray-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-purple-400"
+                                }`}
+                              >
+                                Team Name *
+                              </label>
+                            </div>
+                          )}
+
+                          {/* Full Name */}
                           <div className="relative">
                             <input
                               type="text"
                               required
-                              value={formData.teamName}
+                              value={formData.inGameName}
                               onChange={(e) =>
                                 setFormData((prev) => ({
                                   ...prev,
-                                  teamName: e.target.value,
+                                  inGameName: e.target.value,
                                 }))
                               }
                               placeholder=" "
@@ -1328,12 +1356,14 @@ export default function EventDetailPage() {
                             />
                             <label
                               className={`absolute left-4 transition-all pointer-events-none ${
-                                formData.teamName
+                                formData.inGameName
                                   ? "top-2 text-xs text-purple-400"
                                   : "top-4 text-gray-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-purple-400"
                               }`}
                             >
-                              Team Name *
+                              {event?.teamType !== "Solo"
+                                ? "IGL Name *"
+                                : "Full Name *"}
                             </label>
                           </div>
 
@@ -1417,31 +1447,6 @@ export default function EventDetailPage() {
                             <input
                               type="text"
                               required
-                              value={formData.inGameName}
-                              onChange={(e) =>
-                                setFormData((prev) => ({
-                                  ...prev,
-                                  inGameName: e.target.value,
-                                }))
-                              }
-                              placeholder=" "
-                              className="w-full p-4 pt-6 bg-gray-800 border border-gray-700 rounded-xl text-white focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition-all peer"
-                            />
-                            <label
-                              className={`absolute left-4 transition-all pointer-events-none ${
-                                formData.inGameName
-                                  ? "top-2 text-xs text-purple-400"
-                                  : "top-4 text-gray-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-purple-400"
-                              }`}
-                            >
-                              IGL Name *
-                            </label>
-                          </div>
-
-                          <div className="relative">
-                            <input
-                              type="text"
-                              required
                               value={formData.inGameId}
                               onChange={(e) =>
                                 setFormData((prev) => ({
@@ -1459,7 +1464,9 @@ export default function EventDetailPage() {
                                   : "top-4 text-gray-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-purple-400"
                               }`}
                             >
-                              IGL UID *
+                              {event?.teamType !== "Solo"
+                                ? "IGL UID *"
+                                : "UID *"}
                             </label>
                           </div>
 
@@ -1483,7 +1490,9 @@ export default function EventDetailPage() {
                                   : "top-4 text-gray-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-purple-400"
                               }`}
                             >
-                              IGL Discord ID (optional)
+                              {event?.teamType !== "Solo"
+                                ? "IGL Discord ID (optional)"
+                                : "Discord ID (optional)"}
                             </label>
                           </div>
 
