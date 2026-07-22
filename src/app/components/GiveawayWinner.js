@@ -29,13 +29,12 @@ const initializeFacebookSDK = () => {
 };
 
 export default function GiveawayWinner() {
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedNews, setSelectedNews] = useState(null);
+  const [scrollPosition, setScrollPosition] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState(0);
-  const [dragEnd, setDragEnd] = useState(0);
-  const carouselRef = useRef(null);
-  const autoPlayIntervalRef = useRef(null);
+  const scrollContainerRef = useRef(null);
+  const autoScrollIntervalRef = useRef(null);
 
   const winnersData = [
     {
@@ -81,71 +80,60 @@ export default function GiveawayWinner() {
   // Duplicate for seamless infinite loop
   const winners = [...winnersData, ...winnersData];
 
-  // Auto-rotate carousel
+  // Auto-scroll functionality
   useEffect(() => {
-    if (!isDragging) {
-      autoPlayIntervalRef.current = setInterval(() => {
-        setCurrentIndex((prev) => {
-          const nextIndex = prev + 1;
-          return nextIndex >= winnersData.length * 2 ? 0 : nextIndex;
+    if (!isDragging && winnersData.length > 0 && scrollContainerRef.current) {
+      autoScrollIntervalRef.current = setInterval(() => {
+        setScrollPosition((prev) => {
+          const newPosition = prev + 2;
+          const maxScroll = scrollContainerRef.current?.scrollWidth / 2 || 0;
+          return newPosition >= maxScroll ? 0 : newPosition;
         });
-      }, 5000);
+      }, 50);
     }
 
     return () => {
-      if (autoPlayIntervalRef.current) {
-        clearInterval(autoPlayIntervalRef.current);
+      if (autoScrollIntervalRef.current) {
+        clearInterval(autoScrollIntervalRef.current);
       }
     };
   }, [isDragging, winnersData.length]);
 
-  // Handle drag start
+  // Update scroll container position
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.style.transform = `translateX(-${scrollPosition}px)`;
+    }
+  }, [scrollPosition]);
+
+  // Touch/Mouse handlers for dragging
   const handleDragStart = (e) => {
     setIsDragging(true);
     const clientX = e.type && e.type.startsWith("touch") ? e.touches?.[0]?.clientX : e.clientX;
     setDragStart(clientX || 0);
   };
 
-  // Handle drag move (for better tracking)
   const handleDragMove = (e) => {
-    if (!isDragging) return;
-    // Update drag start for continuous tracking during swipe
-    const currentX = e.type && e.type.startsWith("touch") ? e.touches?.[0]?.clientX : e.clientX;
-    if (!currentX) return;
-    
-    const diff = dragStart - currentX;
-    const minSwipeDistance = 10;
+    if (!isDragging || !scrollContainerRef.current) return;
 
-    if (Math.abs(diff) > minSwipeDistance) {
-      setDragEnd(currentX);
-    }
+    const currentX = e.type && e.type.startsWith("touch") ? e.touches?.[0]?.clientX : e.clientX;
+    const diff = dragStart - (currentX || 0);
+
+    setScrollPosition((prev) => {
+      const newPosition = prev + diff;
+      const maxScroll = scrollContainerRef.current?.scrollWidth / 2 || 0;
+      
+      if (newPosition < 0) return 0;
+      if (newPosition >= maxScroll) return maxScroll;
+      
+      return newPosition;
+    });
+
+    setDragStart(currentX || 0);
   };
 
-  // Handle drag end
-  const handleDragEnd = (e) => {
-    if (!isDragging) return;
-    
-    const clientX = e.type && e.type.startsWith("touch") ? e.changedTouches?.[0]?.clientX : e.clientX;
-    const endX = clientX || dragEnd;
+  const handleDragEnd = () => {
     setIsDragging(false);
-
-    const diff = dragStart - endX;
-    const minSwipeDistance = 30;
-
-    if (Math.abs(diff) > minSwipeDistance) {
-      if (diff > 0) {
-        // Swiped left - next slide
-        setCurrentIndex((prev) => {
-          const nextIndex = prev + 1;
-          return nextIndex >= winnersData.length * 2 ? 0 : nextIndex;
-        });
-      } else {
-        // Swiped right - previous slide
-        setCurrentIndex((prev) => {
-          return prev === 0 ? winnersData.length * 2 - 1 : prev - 1;
-        });
-      }
-    }
   };
 
   const handleShare = (platform, winner) => {
@@ -282,10 +270,10 @@ export default function GiveawayWinner() {
           <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 md:w-32 lg:w-40 bg-gradient-to-l from-[#0a0a14] to-transparent z-10"></div>
 
           <div
-            ref={carouselRef}
-            className="flex gap-3 sm:gap-4 lg:gap-5 transition-transform duration-500 ease-out px-4 sm:px-6 cursor-grab active:cursor-grabbing select-none"
+            ref={scrollContainerRef}
+            className="flex gap-3 sm:gap-4 lg:gap-5 cursor-grab active:cursor-grabbing transition-transform select-none"
             style={{
-              transform: `translateX(calc(-${currentIndex} * (calc(100% / 3))))`,
+              transition: isDragging ? "none" : "transform 0.3s ease-out",
               touchAction: "pan-y pinch-zoom",
               userSelect: "none",
             }}
@@ -382,21 +370,6 @@ export default function GiveawayWinner() {
               </div>
             ))}
           </div>
-        </div>
-
-        <div className="flex justify-center gap-2 mt-8">
-          {winnersData.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => setCurrentIndex(idx)}
-              className={`transition-all duration-300 rounded-full ${
-                idx === currentIndex % winnersData.length
-                  ? "w-8 h-2 bg-gradient-to-r from-pink-500 to-purple-500"
-                  : "w-2 h-2 bg-zinc-600 hover:bg-zinc-500"
-              }`}
-              aria-label={`Go to slide ${idx + 1}`}
-            />
-          ))}
         </div>
       </div>
 
