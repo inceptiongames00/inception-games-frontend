@@ -30,22 +30,25 @@ export default function Footer() {
     setError("");
 
     try {
-      const response = await fetch("https://inception-games.an.r.appspot.com/api/v1/contact/submit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        "https://inception-games.an.r.appspot.com/api/v1/contact/submit",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: formData.name,
+            email: formData.email,
+            phone: "", // Optional field
+            message: formData.message,
+          }),
         },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          phone: "", // Optional field
-          message: formData.message,
-        }),
-      });
+      );
 
       if (response.ok) {
         const data = await response.json();
-        
+
         // Show success alert
         await Swal.fire({
           icon: "success",
@@ -71,7 +74,7 @@ export default function Footer() {
       }
     } catch (err) {
       console.error("Contact form error:", err);
-      
+
       // Show error alert
       await Swal.fire({
         icon: "error",
@@ -146,7 +149,7 @@ export default function Footer() {
                 Follow Us
               </h3>
               <div className="space-y-3 w-full">
-                <motion.a
+                {/* <motion.a
                   href={process.env.NEXT_PUBLIC_LINKEDIN_URL}
                   className="flex items-center justify-start space-x-3 text-white hover:text-pink-300 transition-colors group cursor-pointer"
                   whileHover={{ x: 5 }}
@@ -166,7 +169,7 @@ export default function Footer() {
                       d="M13 7l5 5m0 0l-5 5m5-5H6"
                     />
                   </svg>
-                </motion.a>
+                </motion.a> */}
 
                 <motion.a
                   href={process.env.NEXT_PUBLIC_FACEBOOK_URL}
