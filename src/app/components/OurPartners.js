@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import Swal from "sweetalert2";
@@ -10,6 +10,11 @@ export default function OurPartners() {
   const [autoPlay, setAutoPlay] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState(0);
+  const scrollContainerRef = useRef(null);
+  const autoScrollIntervalRef = useRef(null);
   const [formData, setFormData] = useState({
     full_name: "",
     email: "",
@@ -95,6 +100,61 @@ export default function OurPartners() {
 
     return () => clearInterval(timer);
   }, [autoPlay, partners.length]);
+
+  // Auto-scroll functionality for carousel
+  useEffect(() => {
+    if (!isDragging && partners.length > 0 && scrollContainerRef.current) {
+      autoScrollIntervalRef.current = setInterval(() => {
+        setScrollPosition((prev) => {
+          const newPosition = prev + 1.5; // Scroll speed
+          const maxScroll = scrollContainerRef.current?.scrollWidth / 2 || 0;
+          return newPosition >= maxScroll ? 0 : newPosition;
+        });
+      }, 50);
+    }
+
+    return () => {
+      if (autoScrollIntervalRef.current) {
+        clearInterval(autoScrollIntervalRef.current);
+      }
+    };
+  }, [isDragging, partners.length]);
+
+  // Update scroll container position
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.style.transform = `translateX(-${scrollPosition}px)`;
+    }
+  }, [scrollPosition]);
+
+  // Touch/Mouse handlers for dragging
+  const handleDragStart = (e) => {
+    setIsDragging(true);
+    setDragStart(e.type.includes("mouse") ? e.clientX : e.touches[0].clientX);
+  };
+
+  const handleDragMove = (e) => {
+    if (!isDragging || !scrollContainerRef.current) return;
+
+    const currentX = e.type.includes("mouse") ? e.clientX : e.touches[0].clientX;
+    const diff = dragStart - currentX;
+
+    setScrollPosition((prev) => {
+      const newPosition = prev + diff;
+      const maxScroll = scrollContainerRef.current?.scrollWidth / 2 || 0;
+      
+      if (newPosition < 0) return 0;
+      if (newPosition >= maxScroll) return maxScroll;
+      
+      return newPosition;
+    });
+
+    setDragStart(currentX);
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
+  };
 
   const goToSlide = (index) => {
     setActiveSlide(index);
@@ -335,7 +395,20 @@ export default function OurPartners() {
             <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-l from-[#0a0a14] to-transparent z-10"></div>
 
             {/* Auto-scrolling container */}
-            <div className="flex animate-carousel-scroll gap-4 sm:gap-6">
+            <div
+              ref={scrollContainerRef}
+              className="flex gap-4 sm:gap-6 cursor-grab active:cursor-grabbing transition-transform"
+              style={{
+                transition: isDragging ? "none" : "transform 0.3s ease-out",
+              }}
+              onMouseDown={handleDragStart}
+              onMouseMove={handleDragMove}
+              onMouseUp={handleDragEnd}
+              onMouseLeave={handleDragEnd}
+              onTouchStart={handleDragStart}
+              onTouchMove={handleDragMove}
+              onTouchEnd={handleDragEnd}
+            >
               {/* First set of cards */}
               {updates.map((update, index) => (
                 <div

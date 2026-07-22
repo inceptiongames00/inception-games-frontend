@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import Swal from "sweetalert2";
@@ -10,6 +10,11 @@ export default function CommunityActivies() {
   const [autoPlay, setAutoPlay] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState(0);
+  const scrollContainerRef = useRef(null);
+  const autoScrollIntervalRef = useRef(null);
   const [formData, setFormData] = useState({
     full_name: "",
     email: "",
@@ -98,6 +103,62 @@ export default function CommunityActivies() {
 
     return () => clearInterval(timer);
   }, [autoPlay, partners.length]);
+
+  // Auto-scroll functionality for updates carousel
+  useEffect(() => {
+    if (!isDragging && updates.length > 0 && scrollContainerRef.current) {
+      autoScrollIntervalRef.current = setInterval(() => {
+        setScrollPosition((prev) => {
+          const newPosition = prev + 1.5;
+          const maxScroll = scrollContainerRef.current?.scrollWidth / 2 || 0;
+          return newPosition >= maxScroll ? 0 : newPosition;
+        });
+      }, 50);
+    }
+
+    return () => {
+      if (autoScrollIntervalRef.current) {
+        clearInterval(autoScrollIntervalRef.current);
+      }
+    };
+  }, [isDragging, updates.length]);
+
+  // Update scroll container position
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.style.transform = `translateX(-${scrollPosition}px)`;
+    }
+  }, [scrollPosition]);
+
+  // Touch/Mouse handlers for dragging
+  const handleDragStart = (e) => {
+    setIsDragging(true);
+    const clientX = e.type && e.type.startsWith("touch") ? e.touches?.[0]?.clientX : e.clientX;
+    setDragStart(clientX || 0);
+  };
+
+  const handleDragMove = (e) => {
+    if (!isDragging || !scrollContainerRef.current) return;
+
+    const currentX = e.type && e.type.startsWith("touch") ? e.touches?.[0]?.clientX : e.clientX;
+    const diff = dragStart - (currentX || 0);
+
+    setScrollPosition((prev) => {
+      const newPosition = prev + diff;
+      const maxScroll = scrollContainerRef.current?.scrollWidth / 2 || 0;
+      
+      if (newPosition < 0) return 0;
+      if (newPosition >= maxScroll) return maxScroll;
+      
+      return newPosition;
+    });
+
+    setDragStart(currentX || 0);
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
+  };
 
   const goToSlide = (index) => {
     setActiveSlide(index);
@@ -338,7 +399,21 @@ export default function CommunityActivies() {
             <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-l from-[#0a0a14] to-transparent z-10"></div>
 
             {/* Auto-scrolling container */}
-            <div className="flex animate-carousel-scroll gap-4 sm:gap-6">
+            <div
+              ref={scrollContainerRef}
+              className="flex gap-4 sm:gap-6 cursor-grab active:cursor-grabbing transition-transform select-none"
+              style={{
+                transition: isDragging ? "none" : "transform 0.3s ease-out",
+                touchAction: "pan-y pinch-zoom",
+              }}
+              onMouseDown={handleDragStart}
+              onMouseMove={handleDragMove}
+              onMouseUp={handleDragEnd}
+              onMouseLeave={handleDragEnd}
+              onTouchStart={handleDragStart}
+              onTouchMove={handleDragMove}
+              onTouchEnd={handleDragEnd}
+            >
               {/* First set of cards */}
               {updates.map((update, index) => (
                 <div
@@ -423,25 +498,6 @@ export default function CommunityActivies() {
             </div>
           </div>
         </div>
-
-        <style jsx>{`
-          @keyframes carousel-scroll {
-            0% {
-              transform: translateX(0);
-            }
-            100% {
-              transform: translateX(-50%);
-            }
-          }
-
-          .animate-carousel-scroll {
-            animation: carousel-scroll 40s linear infinite;
-          }
-
-          .animate-carousel-scroll:hover {
-            animation-play-state: paused;
-          }
-        `}</style>
 
         {/* Partnership Modal */}
         <AnimatePresence>

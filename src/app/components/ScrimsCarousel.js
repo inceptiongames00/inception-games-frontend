@@ -2,7 +2,7 @@
 
 import { useAuth } from "@/hooks/useAuth";
 import { useProfileNavigation } from "@/hooks/useProfileNavigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export default function ScrimsCarousel({ onLoginClick }) {
   const { user } = useAuth();
@@ -10,6 +10,11 @@ export default function ScrimsCarousel({ onLoginClick }) {
   const [isHydrated, setIsHydrated] = useState(false);
   const [tournaments, setTournaments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState(0);
+  const scrollContainerRef = useRef(null);
+  const autoScrollIntervalRef = useRef(null);
 
   useEffect(() => {
     setIsHydrated(true);
@@ -52,6 +57,61 @@ export default function ScrimsCarousel({ onLoginClick }) {
     fetchTournaments();
   }, [isHydrated]);
 
+  // Auto-scroll functionality
+  useEffect(() => {
+    if (!isDragging && tournaments.length > 0 && scrollContainerRef.current) {
+      autoScrollIntervalRef.current = setInterval(() => {
+        setScrollPosition((prev) => {
+          const newPosition = prev + 1.5; // Scroll speed
+          const maxScroll = scrollContainerRef.current?.scrollWidth / 2 || 0;
+          return newPosition >= maxScroll ? 0 : newPosition;
+        });
+      }, 50);
+    }
+
+    return () => {
+      if (autoScrollIntervalRef.current) {
+        clearInterval(autoScrollIntervalRef.current);
+      }
+    };
+  }, [isDragging, tournaments.length]);
+
+  // Update scroll container position
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.style.transform = `translateX(-${scrollPosition}px)`;
+    }
+  }, [scrollPosition]);
+
+  // Touch/Mouse handlers for dragging
+  const handleDragStart = (e) => {
+    setIsDragging(true);
+    setDragStart(e.type.includes("mouse") ? e.clientX : e.touches[0].clientX);
+  };
+
+  const handleDragMove = (e) => {
+    if (!isDragging || !scrollContainerRef.current) return;
+
+    const currentX = e.type.includes("mouse") ? e.clientX : e.touches[0].clientX;
+    const diff = dragStart - currentX;
+
+    setScrollPosition((prev) => {
+      const newPosition = prev + diff;
+      const maxScroll = scrollContainerRef.current?.scrollWidth / 2 || 0;
+      
+      if (newPosition < 0) return 0;
+      if (newPosition >= maxScroll) return maxScroll;
+      
+      return newPosition;
+    });
+
+    setDragStart(currentX);
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
+  };
+
   const handleCardClick = () => {
     if (isHydrated && user) {
       navigateToTab("Tournament");
@@ -71,7 +131,20 @@ export default function ScrimsCarousel({ onLoginClick }) {
       <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 md:w-32 lg:w-40 bg-gradient-to-l from-zinc-950 to-transparent z-10" />
 
       {/* Scrolling container */}
-      <div className="flex animate-scrims-scroll">
+      <div
+        ref={scrollContainerRef}
+        className="flex cursor-grab active:cursor-grabbing transition-transform"
+        style={{
+          transition: isDragging ? "none" : "transform 0.3s ease-out",
+        }}
+        onMouseDown={handleDragStart}
+        onMouseMove={handleDragMove}
+        onMouseUp={handleDragEnd}
+        onMouseLeave={handleDragEnd}
+        onTouchStart={handleDragStart}
+        onTouchMove={handleDragMove}
+        onTouchEnd={handleDragEnd}
+      >
         {/* First set */}
         {tournaments.map((tournament, index) => (
           <GameCard
@@ -94,25 +167,6 @@ export default function ScrimsCarousel({ onLoginClick }) {
           />
         ))}
       </div>
-
-      <style jsx>{`
-        @keyframes scrims-scroll {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
-        }
-
-        .animate-scrims-scroll {
-          animation: scrims-scroll 40s linear infinite;
-        }
-
-        .animate-scrims-scroll:hover {
-          animation-play-state: paused;
-        }
-      `}</style>
     </div>
   );
 }

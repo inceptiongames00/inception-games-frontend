@@ -1,6 +1,6 @@
 "use client";
 import { ArrowRight } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FaFacebookF, FaTwitter, FaLinkedin, FaWhatsapp } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import ReadMoreModal from "./Modals/ReadMoreModal";
@@ -31,6 +31,11 @@ const initializeFacebookSDK = () => {
 export default function GiveawayWinner() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedNews, setSelectedNews] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState(0);
+  const [dragEnd, setDragEnd] = useState(0);
+  const carouselRef = useRef(null);
+  const autoPlayIntervalRef = useRef(null);
 
   const winnersData = [
     {
@@ -78,16 +83,70 @@ export default function GiveawayWinner() {
 
   // Auto-rotate carousel
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => {
-        const nextIndex = prev + 1;
-        // Loop back when reaching the end of duplicated set
-        return nextIndex >= winnersData.length * 2 ? 0 : nextIndex;
-      });
-    }, 5000); // Change slide every 5 seconds
+    if (!isDragging) {
+      autoPlayIntervalRef.current = setInterval(() => {
+        setCurrentIndex((prev) => {
+          const nextIndex = prev + 1;
+          return nextIndex >= winnersData.length * 2 ? 0 : nextIndex;
+        });
+      }, 5000);
+    }
 
-    return () => clearInterval(interval);
-  }, [winnersData.length]);
+    return () => {
+      if (autoPlayIntervalRef.current) {
+        clearInterval(autoPlayIntervalRef.current);
+      }
+    };
+  }, [isDragging, winnersData.length]);
+
+  // Handle drag start
+  const handleDragStart = (e) => {
+    setIsDragging(true);
+    const clientX = e.type && e.type.startsWith("touch") ? e.touches?.[0]?.clientX : e.clientX;
+    setDragStart(clientX || 0);
+  };
+
+  // Handle drag move (for better tracking)
+  const handleDragMove = (e) => {
+    if (!isDragging) return;
+    // Update drag start for continuous tracking during swipe
+    const currentX = e.type && e.type.startsWith("touch") ? e.touches?.[0]?.clientX : e.clientX;
+    if (!currentX) return;
+    
+    const diff = dragStart - currentX;
+    const minSwipeDistance = 10;
+
+    if (Math.abs(diff) > minSwipeDistance) {
+      setDragEnd(currentX);
+    }
+  };
+
+  // Handle drag end
+  const handleDragEnd = (e) => {
+    if (!isDragging) return;
+    
+    const clientX = e.type && e.type.startsWith("touch") ? e.changedTouches?.[0]?.clientX : e.clientX;
+    const endX = clientX || dragEnd;
+    setIsDragging(false);
+
+    const diff = dragStart - endX;
+    const minSwipeDistance = 30;
+
+    if (Math.abs(diff) > minSwipeDistance) {
+      if (diff > 0) {
+        // Swiped left - next slide
+        setCurrentIndex((prev) => {
+          const nextIndex = prev + 1;
+          return nextIndex >= winnersData.length * 2 ? 0 : nextIndex;
+        });
+      } else {
+        // Swiped right - previous slide
+        setCurrentIndex((prev) => {
+          return prev === 0 ? winnersData.length * 2 - 1 : prev - 1;
+        });
+      }
+    }
+  };
 
   const handleShare = (platform, winner) => {
     const shareUrl = typeof window !== "undefined" ? window.location.href : "";
@@ -95,7 +154,6 @@ export default function GiveawayWinner() {
     const description = winner.description;
     const image = winner.image;
 
-    // Update Open Graph meta tags dynamically for social sharing
     if (typeof window !== "undefined") {
       const updateMetaTags = () => {
         let ogTitle = document.querySelector('meta[property="og:title"]');
@@ -162,7 +220,6 @@ export default function GiveawayWinner() {
 
     switch (platform) {
       case "facebook":
-        // Use Facebook Share Dialog - requires app ID but gives better results
         if (typeof window !== "undefined" && window.FB) {
           FB.ui(
             {
@@ -175,7 +232,6 @@ export default function GiveawayWinner() {
           );
           return;
         } else {
-          // Fallback to direct share
           shareLink = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(title)}`;
         }
         break;
@@ -203,7 +259,6 @@ export default function GiveawayWinner() {
       style={{ backgroundColor: "#0a0a14" }}
     >
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -217,24 +272,30 @@ export default function GiveawayWinner() {
               WINNER
             </span>
           </h2>
-          {/* Underline accent */}
           <div className="flex justify-center gap-2 mt-4">
             <div className="w-50 h-1.5 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 rounded-full" />
           </div>
         </motion.div>
 
-        {/* Auto-Slider Container */}
         <div className="relative overflow-hidden">
-          {/* Gradient overlays */}
           <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-24 md:w-32 lg:w-40 bg-gradient-to-r from-[#0a0a14] to-transparent z-10"></div>
           <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 md:w-32 lg:w-40 bg-gradient-to-l from-[#0a0a14] to-transparent z-10"></div>
 
-          {/* Carousel Container - Show 3 cards */}
           <div
-            className="flex gap-3 sm:gap-4 lg:gap-5 transition-transform duration-500 ease-out px-4 sm:px-6"
+            ref={carouselRef}
+            className="flex gap-3 sm:gap-4 lg:gap-5 transition-transform duration-500 ease-out px-4 sm:px-6 cursor-grab active:cursor-grabbing select-none"
             style={{
               transform: `translateX(calc(-${currentIndex} * (calc(100% / 3))))`,
+              touchAction: "pan-y pinch-zoom",
+              userSelect: "none",
             }}
+            onMouseDown={handleDragStart}
+            onMouseMove={handleDragMove}
+            onMouseUp={handleDragEnd}
+            onMouseLeave={handleDragEnd}
+            onTouchStart={handleDragStart}
+            onTouchMove={handleDragMove}
+            onTouchEnd={handleDragEnd}
           >
             {winners.map((winner, idx) => (
               <div
@@ -247,9 +308,7 @@ export default function GiveawayWinner() {
                   transition={{ duration: 0.5 }}
                   className="group cursor-pointer h-full"
                 >
-                  {/* Card Container */}
                   <div className="rounded-2xl overflow-hidden bg-zinc-900/40 border border-zinc-800/50 hover:border-zinc-700/50 transition-all duration-300 flex flex-col backdrop-blur-sm hover:shadow-2xl hover:shadow-purple-500/10 h-full">
-                    {/* Image Section */}
                     <div
                       className="relative h-64 sm:h-72 md:h-80 overflow-hidden bg-gradient-to-br from-slate-700 to-slate-900 bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
                       style={{
@@ -258,22 +317,18 @@ export default function GiveawayWinner() {
                         backgroundPosition: "center",
                       }}
                     >
-                      {/* Dark Overlay */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/30" />
 
-                      {/* Category Badge */}
                       <div
                         className={`absolute top-4 left-4 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider ${winner.categoryColor} backdrop-blur-md`}
                       >
                         {winner.category}
                       </div>
 
-                      {/* Corner decorations */}
                       <div className="absolute top-0 right-0 w-16 h-16 border-r-2 border-t-2 border-white/10 opacity-50" />
                       <div className="absolute bottom-0 left-0 w-16 h-16 border-l-2 border-b-2 border-white/10 opacity-50" />
                     </div>
 
-                    {/* Content Section */}
                     <div className="p-6 flex-grow flex flex-col justify-between">
                       <div>
                         <h3 className="text-sm md:text-lg text-center font-bold text-white mb-3 leading-tight group-hover:text-purple-300 transition-colors duration-300">
@@ -281,7 +336,6 @@ export default function GiveawayWinner() {
                         </h3>
                       </div>
 
-                      {/* Bottom section with accent line and share buttons */}
                       <div className="mt-6 pt-4 border-t border-zinc-700/50">
                         <div className="flex items-center gap-2">
                           <button
@@ -330,7 +384,6 @@ export default function GiveawayWinner() {
           </div>
         </div>
 
-        {/* Slide Indicators */}
         <div className="flex justify-center gap-2 mt-8">
           {winnersData.map((_, idx) => (
             <button
@@ -347,7 +400,6 @@ export default function GiveawayWinner() {
         </div>
       </div>
 
-      {/* News Detail Modal */}
       <AnimatePresence>
         {selectedNews && (
           <ReadMoreModal

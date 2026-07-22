@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
@@ -13,6 +13,11 @@ export default function TournamentsSection({ onLoginClick }) {
   const [tournaments, setTournaments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isHydrated, setIsHydrated] = useState(false);
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState(0);
+  const scrollContainerRef = useRef(null);
+  const autoScrollIntervalRef = useRef(null);
 
   useEffect(() => {
     setIsHydrated(true);
@@ -56,6 +61,61 @@ export default function TournamentsSection({ onLoginClick }) {
     fetchTournaments();
   }, [isHydrated]);
 
+  // Auto-scroll functionality
+  useEffect(() => {
+    if (!isDragging && tournaments.length > 0 && scrollContainerRef.current) {
+      autoScrollIntervalRef.current = setInterval(() => {
+        setScrollPosition((prev) => {
+          const newPosition = prev + 2; // Scroll speed
+          const maxScroll = scrollContainerRef.current?.scrollWidth / 2 || 0;
+          return newPosition >= maxScroll ? 0 : newPosition;
+        });
+      }, 50);
+    }
+
+    return () => {
+      if (autoScrollIntervalRef.current) {
+        clearInterval(autoScrollIntervalRef.current);
+      }
+    };
+  }, [isDragging, tournaments.length]);
+
+  // Update scroll container position
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.style.transform = `translateX(-${scrollPosition}px)`;
+    }
+  }, [scrollPosition]);
+
+  // Touch/Mouse handlers for dragging
+  const handleDragStart = (e) => {
+    setIsDragging(true);
+    setDragStart(e.type.includes("mouse") ? e.clientX : e.touches[0].clientX);
+  };
+
+  const handleDragMove = (e) => {
+    if (!isDragging || !scrollContainerRef.current) return;
+
+    const currentX = e.type.includes("mouse") ? e.clientX : e.touches[0].clientX;
+    const diff = dragStart - currentX;
+
+    setScrollPosition((prev) => {
+      const newPosition = prev + diff;
+      const maxScroll = scrollContainerRef.current?.scrollWidth / 2 || 0;
+      
+      if (newPosition < 0) return 0;
+      if (newPosition >= maxScroll) return maxScroll;
+      
+      return newPosition;
+    });
+
+    setDragStart(currentX);
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
+  };
+
   const handleCardClick = () => {
     if (isHydrated && user) {
       navigateToTab("Tournament");
@@ -91,7 +151,20 @@ export default function TournamentsSection({ onLoginClick }) {
       <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 md:w-32 lg:w-40 bg-gradient-to-l from-zinc-950 to-transparent z-10" />
 
       {/* Scrolling container */}
-      <div className="flex animate-tournaments-scroll">
+      <div
+        ref={scrollContainerRef}
+        className="flex cursor-grab active:cursor-grabbing transition-transform"
+        style={{
+          transition: isDragging ? "none" : "transform 0.3s ease-out",
+        }}
+        onMouseDown={handleDragStart}
+        onMouseMove={handleDragMove}
+        onMouseUp={handleDragEnd}
+        onMouseLeave={handleDragEnd}
+        onTouchStart={handleDragStart}
+        onTouchMove={handleDragMove}
+        onTouchEnd={handleDragEnd}
+      >
         {/* First set */}
         {tournaments.map((tournament, index) => (
           <TournamentCard
@@ -114,25 +187,6 @@ export default function TournamentsSection({ onLoginClick }) {
           />
         ))}
       </div>
-
-      <style jsx>{`
-        @keyframes tournaments-scroll {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
-        }
-
-        .animate-tournaments-scroll {
-          animation: tournaments-scroll 60s linear infinite;
-        }
-
-        .animate-tournaments-scroll:hover {
-          animation-play-state: paused;
-        }
-      `}</style>
     </div>
   );
 }
