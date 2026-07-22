@@ -1180,6 +1180,8 @@ export default function EventsSection({
         matchesFilter =
           eventCategory === "mini tournament" ||
           eventCategory === "large tournament";
+      } else if (activeFilter === "Brand Deal") {
+        matchesFilter = false;
       }
 
       // Tournament size filter
