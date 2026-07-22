@@ -6,9 +6,11 @@ import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfileNavigation } from "@/hooks/useProfileNavigation";
+import { useRouter } from "next/navigation";
 
 export default function TournamentsSection({ onLoginClick }) {
   const { user } = useAuth();
+  const router = useRouter();
   const { navigateToTab } = useProfileNavigation();
   const [tournaments, setTournaments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -25,7 +27,7 @@ export default function TournamentsSection({ onLoginClick }) {
       try {
         setLoading(true);
         const response = await fetch(
-          "https://inception-games.an.r.appspot.com/api/v1/cms/tournaments/all"
+          "https://inception-games.an.r.appspot.com/api/v1/events/tournaments/free-events",
         );
 
         if (!response.ok) throw new Error("Failed to fetch tournaments");
@@ -56,12 +58,14 @@ export default function TournamentsSection({ onLoginClick }) {
     fetchTournaments();
   }, [isHydrated]);
 
-  const handleCardClick = () => {
-    if (isHydrated && user) {
-      navigateToTab("Tournament");
-    } else {
-      onLoginClick?.();
-    }
+  const handleCardClick = (id) => {
+    console.log("id", id);
+    router.push(`esports-arena/${id}?action=view`);
+    // if (isHydrated && user) {
+    //   navigateToTab("Free Event");
+    // } else {
+    //   onLoginClick?.();
+    // }
   };
 
   if (!isHydrated) {
@@ -79,7 +83,9 @@ export default function TournamentsSection({ onLoginClick }) {
   if (tournaments.length === 0) {
     return (
       <div className="text-center py-20">
-        <p className="text-zinc-400 text-lg">No tournaments available at this time.</p>
+        <p className="text-zinc-400 text-lg">
+          No tournaments available at this time.
+        </p>
       </div>
     );
   }
@@ -139,7 +145,10 @@ export default function TournamentsSection({ onLoginClick }) {
 
 function TournamentCard({ tournament, onClick, isHydrated, user }) {
   return (
-    <div className="px-2 sm:px-3 md:px-4" style={{ width: "300px", flexShrink: 0 }}>
+    <div
+      className="px-2 sm:px-3 md:px-4"
+      style={{ width: "300px", flexShrink: 0 }}
+    >
       <motion.div
         whileHover={{ y: -4 }}
         className="group cursor-pointer rounded-2xl border border-white/10 bg-zinc-900/50 overflow-hidden transition-all duration-300 hover:border-purple-500/30 hover:shadow-[0_0_35px_rgba(168,85,247,.2)] backdrop-blur-sm h-full relative"
@@ -162,8 +171,8 @@ function TournamentCard({ tournament, onClick, isHydrated, user }) {
 
           {/* CTA Button */}
           <button
-            onClick={onClick}
-            className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            onClick={() => onClick(tournament.id)}
+            className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"
           >
             <span className="px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 rounded-full text-white font-semibold text-sm transition-all duration-300">
               {isHydrated && user ? "Go To Tournament" : "Sign In"}
@@ -172,7 +181,7 @@ function TournamentCard({ tournament, onClick, isHydrated, user }) {
 
           {tournament.status && (
             <div className="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold text-white bg-purple-600">
-              {tournament.status}
+              {tournament.entry_type}
             </div>
           )}
         </div>
@@ -188,10 +197,12 @@ function TournamentCard({ tournament, onClick, isHydrated, user }) {
               <span className="text-zinc-400">Game:</span> {tournament.game}
             </p>
             <p>
-              <span className="text-zinc-400">Prize Pool:</span> {tournament.prize_pool} {tournament.currency}
+              <span className="text-zinc-400">Prize Pool:</span>{" "}
+              {tournament.prize_pool} {tournament.currency}
             </p>
             <p>
-              <span className="text-zinc-400">Team Size:</span> {tournament.team_size}
+              <span className="text-zinc-400">Team Size:</span>{" "}
+              {tournament.team_size}
             </p>
           </div>
         </div>

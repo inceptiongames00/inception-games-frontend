@@ -7,8 +7,9 @@ const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 export const useEventData = (eventId) => {
   // Initialize state with potential cached value
   const [event, setEvent] = useState(() => {
-    if (typeof window !== 'undefined' && eventId) {
+    if (typeof window !== "undefined" && eventId) {
       const cachedEvent = sessionStorage.getItem(`event_${eventId}`);
+      console.log("cachedEvent", cachedEvent);
       if (cachedEvent) {
         try {
           return JSON.parse(cachedEvent);
@@ -19,15 +20,15 @@ export const useEventData = (eventId) => {
     }
     return null;
   });
-  
+
   const [loading, setLoading] = useState(() => {
-    if (typeof window !== 'undefined' && eventId) {
+    if (typeof window !== "undefined" && eventId) {
       const cachedEvent = sessionStorage.getItem(`event_${eventId}`);
       return !cachedEvent;
     }
     return true;
   });
-  
+
   const [error, setError] = useState(null);
 
   const transformScrim = (matchedScrim) => {
@@ -123,7 +124,10 @@ export const useEventData = (eventId) => {
             const transformedEvent = transformScrim(matchedScrim);
             setEvent(transformedEvent);
             // Cache this specific event for instant load on back-navigation
-            sessionStorage.setItem(eventCacheKey, JSON.stringify(transformedEvent));
+            sessionStorage.setItem(
+              eventCacheKey,
+              JSON.stringify(transformedEvent),
+            );
             setLoading(false);
             return;
           }
@@ -145,8 +149,7 @@ export const useEventData = (eventId) => {
             if (bannerImage.startsWith("http")) {
               absoluteBannerUrl = bannerImage;
             } else {
-              const apiBase =
-                "https://inception-games.an.r.appspot.com/api/v1";
+              const apiBase = "https://inception-games.an.r.appspot.com/api/v1";
               absoluteBannerUrl = bannerImage.startsWith("/")
                 ? `${apiBase}${bannerImage}`
                 : `${apiBase}/${bannerImage}`;
