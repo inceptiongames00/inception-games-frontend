@@ -1415,7 +1415,9 @@ export default function EventDetailPage() {
                                   : "top-4 text-gray-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-purple-400"
                               }`}
                             >
-                              IGL Email Address *
+                              {event?.teamType !== "Solo"
+                                ? "IGL Email Address *"
+                                : "Email Address *"}
                             </label>
                           </div>
 
