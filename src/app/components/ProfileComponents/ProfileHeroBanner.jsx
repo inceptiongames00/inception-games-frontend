@@ -409,9 +409,9 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
                         {user?.primaryGame || user?.primary_game || user?.game}
                       </div>
                     )}
-                    {(user?.gameRole || user?.game_role || user?.role) && (
+                    {(user?.gameRole || user?.game_role) && (
                       <div className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-white/[0.05] border border-white/[0.1] text-gray-300 font-medium whitespace-nowrap text-[11px] sm:text-xs">
-                        {user?.gameRole || user?.game_role || user?.role}
+                        {user?.gameRole || user?.game_role}
                       </div>
                     )}
                     {user?.rank && (
