@@ -1468,7 +1468,9 @@ export default function EventDetailPage() {
                             >
                               {event?.teamType !== "Solo"
                                 ? "IGL UID *"
-                                : "UID *"}
+                                : event.game.name === "EA FC 26"
+                                  ? "EA ID / PSN ID *"
+                                  : "UID *"}
                             </label>
                           </div>
 

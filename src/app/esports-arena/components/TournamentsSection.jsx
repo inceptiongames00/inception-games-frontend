@@ -64,8 +64,7 @@ export default function TournamentsSection({ onLoginClick }) {
   }, [isHydrated]);
 
   const handleCardClick = (id) => {
-    console.log("id", id);
-    router.push(`esports-arena/${id}?action=view`);
+    router.push(`esports-arena/${id}?action=join`);
     // if (isHydrated && user) {
     //   navigateToTab("Free Event");
     // } else {

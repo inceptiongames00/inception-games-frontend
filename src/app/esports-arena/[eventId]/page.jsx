@@ -48,8 +48,6 @@ export default function EventDetailPage() {
   const [otpError, setOtpError] = useState("");
   const otpInputRefs = useRef([]);
 
-  console.log("params", params);
-
   const {
     isSubmitting,
     notification,
@@ -83,13 +81,9 @@ export default function EventDetailPage() {
     if (storedEvents) {
       const events = JSON.parse(storedEvents);
 
-      (console.log("events"), events);
-
       const matchedEvent = events.find(
         (event) => event.id === parseInt(params.eventId),
       );
-
-      console.log("matchedEvent", matchedEvent);
 
       if (matchedEvent) {
         setEvent(matchedEvent);
@@ -105,7 +99,7 @@ export default function EventDetailPage() {
 
   // Calculate eligibility
   const userPrimaryGame = user?.primaryGame || user?.primary_game;
-  const eventGameName = event?.game_name || event?.game?.name;
+  const eventGameName = event?.game_name || event?.game?.name || event?.game;
   const isEligible =
     userPrimaryGame &&
     eventGameName &&
@@ -115,7 +109,7 @@ export default function EventDetailPage() {
     if ((showSignupForm || showRegistrationModal) && user) {
       // Calculate the number of team members based on game
       let teamMembersCount = 0;
-      if (event?.teamType !== "Solo") {
+      if (event?.game_mode !== "Solo") {
         const gameName = (
           event?.game?.name ||
           event?.game_name ||
@@ -479,13 +473,13 @@ export default function EventDetailPage() {
 
                       {/* Team Type Badge */}
                       <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20">
-                        {(event.teamType || "").toLowerCase() === "solo" ? (
+                        {(event.game_mode || "").toLowerCase() === "solo" ? (
                           <User size={14} className="text-yellow-400" />
                         ) : (
                           <Users size={14} className="text-cyan-400" />
                         )}
                         <span className="text-xs sm:text-sm font-medium text-gray-200">
-                          {event.teamType || "Team"}
+                          {event.game_mode || "Team"}
                         </span>
                       </div>
                     </div>
@@ -849,7 +843,7 @@ export default function EventDetailPage() {
                               Format
                             </span>
                             <span className="text-white font-semibold text-right">
-                              {event.format || event.teamType || "Team"}
+                              {event.format || event.game_mode || "Team"}
                             </span>
                           </div>
 
@@ -1284,7 +1278,7 @@ export default function EventDetailPage() {
                           )}
 
                           {/* Team Name */}
-                          {event?.teamType !== "Solo" && (
+                          {event?.game_mode !== "Solo" && (
                             <div className="relative">
                               <input
                                 type="text"
@@ -1333,7 +1327,7 @@ export default function EventDetailPage() {
                                   : "top-4 text-gray-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-purple-400"
                               }`}
                             >
-                              {event?.teamType !== "Solo"
+                              {event?.game_mode !== "Solo"
                                 ? "IGL Name *"
                                 : "Full Name *"}
                             </label>
@@ -1387,7 +1381,9 @@ export default function EventDetailPage() {
                                   : "top-4 text-gray-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-purple-400"
                               }`}
                             >
-                              IGL Email Address *
+                              {event?.game_mode !== "Solo"
+                                ? "IGL Email Address *"
+                                : "Email Address *"}
                             </label>
                           </div>
 
@@ -1436,9 +1432,11 @@ export default function EventDetailPage() {
                                   : "top-4 text-gray-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-purple-400"
                               }`}
                             >
-                              {event?.teamType !== "Solo"
+                              {event?.game_mode !== "Solo"
                                 ? "IGL UID *"
-                                : "UID *"}
+                                : event.game === "EA FC 26"
+                                  ? "EA ID / PSN ID *"
+                                  : "UID *"}
                             </label>
                           </div>
 
@@ -1462,14 +1460,14 @@ export default function EventDetailPage() {
                                   : "top-4 text-gray-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-purple-400"
                               }`}
                             >
-                              {event?.teamType !== "Solo"
+                              {event?.game_mode !== "Solo"
                                 ? "IGL Discord ID (optional)"
                                 : "Discord ID (optional)"}
                             </label>
                           </div>
 
                           {/* Team Members */}
-                          {event?.teamType !== "Solo" && (
+                          {event?.game_mode !== "Solo" && (
                             <>
                               <div className="pt-4 border-t border-gray-700">
                                 <h4 className="text-lg font-semibold text-white mb-4">
@@ -1480,7 +1478,7 @@ export default function EventDetailPage() {
                                     ? "Add 4 team members (5 players total including you as leader)"
                                     : gameName === "Free Fire"
                                       ? "Add 3 team members (4 players total including you as leader)"
-                                      : `Add team members for your ${event?.teamType} team`}
+                                      : `Add team members for your ${event?.team_size} team`}
                                 </p>
                               </div>
 
@@ -1905,7 +1903,7 @@ function RegistrationForm({
               onChange={onInputChange}
               required
             />
-            {event.teamType !== "Solo" && (
+            {event.game_mode !== "Solo" && (
               <AnimatedInput
                 label="Team Name"
                 name="teamName"

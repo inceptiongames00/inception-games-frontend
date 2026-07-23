@@ -9,7 +9,6 @@ export const useEventData = (eventId) => {
   const [event, setEvent] = useState(() => {
     if (typeof window !== "undefined" && eventId) {
       const cachedEvent = sessionStorage.getItem(`event_${eventId}`);
-      console.log("cachedEvent", cachedEvent);
       if (cachedEvent) {
         try {
           return JSON.parse(cachedEvent);
