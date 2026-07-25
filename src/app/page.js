@@ -222,7 +222,7 @@ function HomeContent() {
                   { icon: "🏆", text: "Play Scrims" },
                   { icon: "🏆", text: "Play Tournaments" },
                   { icon: "💎", text: "Brand Deals" },
-                  { icon: "🎁", text: "Free Entry @ 500 Fans" },
+                  // { icon: "🎁", text: "Free Entry @ 500 Fans" },
                 ].map((item, i) => (
                   <motion.button
                     key={i}
@@ -304,91 +304,94 @@ function HomeContent() {
             </div> */}
 
             {howToEarn.map((item, i) => (
-              <div key={i} className="flex flex-col md:flex-row items-center w-full md:w-auto">
-              <motion.div
-                initial={{ opacity: 0, y: 40, scale: 0.9 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                whileHover={{ y: -16 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{
-                  delay: i * 0.1,
-                  duration: 0.6,
-                  type: "spring",
-                  stiffness: 100,
-                  damping: 15,
-                }}
-                className="relative flex flex-col items-center text-center group"
+              <div
+                key={i}
+                className="flex flex-col md:flex-row items-center w-full md:w-auto"
               >
                 <motion.div
-                  whileHover={{
-                    scale: 1.2,
-                    y: -4,
+                  initial={{ opacity: 0, y: 40, scale: 0.9 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  whileHover={{ y: -16 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{
+                    delay: i * 0.1,
+                    duration: 0.6,
+                    type: "spring",
+                    stiffness: 100,
+                    damping: 15,
                   }}
-                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                  className={`icon-animate-reveal icon-animate-reveal-${i} bg-gray-900 w-32 h-35 rounded-full flex items-center justify-center relative z-10 transition-all duration-300`}
-                  style={{
-                    boxShadow: `0 20px 40px rgba(100, 100, 100, 0.1)`,
-                  }}
+                  className="relative flex flex-col items-center text-center group"
                 >
                   <motion.div
-                    transition={{
-                      duration: 25,
-                      repeat: Infinity,
-                      ease: "linear",
+                    whileHover={{
+                      scale: 1.2,
+                      y: -4,
                     }}
-                    className="absolute inset-1 rounded-full opacity-50 group-hover:opacity-40 transition-opacity duration-300"
+                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                    className={`icon-animate-reveal icon-animate-reveal-${i} bg-gray-900 w-32 h-35 rounded-full flex items-center justify-center relative z-10 transition-all duration-300`}
                     style={{
-                      borderColor: "rgb(129, 23, 241)",
+                      boxShadow: `0 20px 40px rgba(100, 100, 100, 0.1)`,
                     }}
-                  />
-                  <Image
-                    src={item.icon}
-                    alt={item.title}
-                    width={100}
-                    height={100}
-                    className="w-32 h-38 relative z-20 object-cover"
-                  />
+                  >
+                    <motion.div
+                      transition={{
+                        duration: 25,
+                        repeat: Infinity,
+                        ease: "linear",
+                      }}
+                      className="absolute inset-1 rounded-full opacity-50 group-hover:opacity-40 transition-opacity duration-300"
+                      style={{
+                        borderColor: "rgb(129, 23, 241)",
+                      }}
+                    />
+                    <Image
+                      src={item.icon}
+                      alt={item.title}
+                      width={100}
+                      height={100}
+                      className="w-32 h-38 relative z-20 object-cover"
+                    />
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1 + 0.2 }}
+                    className="step-label text-xs font-extrabold mb-2 tracking-widest mt-4"
+                    style={{
+                      color: "rgb(120, 120, 120)",
+                    }}
+                  >
+                    STEP {item.step}
+                  </motion.div>
+
+                  <motion.h3
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1 + 0.1 }}
+                    className="step-title text-lg font-bold leading-tight transition-all duration-300"
+                    style={{
+                      color: "rgb(130, 130, 130)",
+                    }}
+                  >
+                    {item.title}
+                  </motion.h3>
                 </motion.div>
 
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 + 0.2 }}
-                  className="step-label text-xs font-extrabold mb-2 tracking-widest mt-4"
-                  style={{
-                    color: "rgb(120, 120, 120)",
-                  }}
-                >
-                  STEP {item.step}
-                </motion.div>
-
-                <motion.h3
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 + 0.1 }}
-                  className="step-title text-lg font-bold leading-tight transition-all duration-300"
-                  style={{
-                    color: "rgb(130, 130, 130)",
-                  }}
-                >
-                  {item.title}
-                </motion.h3>
-              </motion.div>
-
-              {/* Arrow between steps */}
-              {i < howToEarn.length - 1 && (
-                <div className="flex items-start justify-center md:my-8 md:mx-2 rotate-90 md:rotate-0 flex-shrink-0 md:self-start">
-                  <Image
-                    src={arrow}
-                    alt="next step"
-                    width={48}
-                    height={48}
-                    className="w-42 h-12 opacity-60"
-                  />
-                </div>
-              )}
+                {/* Arrow between steps */}
+                {i < howToEarn.length - 1 && (
+                  <div className="flex items-start justify-center md:my-8 md:mx-2 rotate-90 md:rotate-0 flex-shrink-0 md:self-start">
+                    <Image
+                      src={arrow}
+                      alt="next step"
+                      width={48}
+                      height={48}
+                      className="w-42 h-12 opacity-60"
+                    />
+                  </div>
+                )}
               </div>
             ))}
           </div>
