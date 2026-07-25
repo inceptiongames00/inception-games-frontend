@@ -61,7 +61,7 @@ export default function ScrimsCarousel({ onLoginClick }) {
   }, [isHydrated]);
 
   const handleCardClick = (id) => {
-    router.push(`esports-arena/${id}?action=join`);
+    router.push(`esports-arena/${id}?action=view`);
     // if (isHydrated && user) {
     //   navigateToTab("Free Event");
     // } else {

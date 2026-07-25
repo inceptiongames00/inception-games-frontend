@@ -17,6 +17,8 @@ export default function ActivateSubscriptionModal({
 }) {
   const [trxId, setTrxId] = useState("");
   const [reference, setReference] = useState("");
+  const [last4digit, setLast4digit] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("BKASH");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState(null); // 'success', 'error', null
   const [errorMessage, setErrorMessage] = useState("");
@@ -50,6 +52,8 @@ export default function ActivateSubscriptionModal({
         user_id: userId,
         reference: reference.trim(),
         trx_id: trxId.trim(),
+        sender_last_4: last4digit.trim(),
+        payment_method: paymentMethod.trim(),
       };
 
       const response = await fetch(
@@ -101,6 +105,7 @@ export default function ActivateSubscriptionModal({
     if (!isSubmitting) {
       setTrxId("");
       setReference("");
+      setLast4digit("");
       setStatus(null);
       setErrorMessage("");
       onClose();
@@ -297,6 +302,46 @@ export default function ActivateSubscriptionModal({
                     </p>
                   </div>
 
+                  {/* Reference */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Reference <span className="text-red-400">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={reference}
+                      onChange={(e) => setReference(e.target.value)}
+                      placeholder="e.g., IG-001054"
+                      className="w-full px-4 py-3 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition"
+                      disabled={isSubmitting}
+                    />
+                  </div>
+
+                  {/* Payment Method */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">
+                      Select Payment Method{" "}
+                      <span className="text-red-400">*</span>
+                    </label>
+                    <select
+                      name="paymentMethod"
+                      value={paymentMethod}
+                      onChange={(e) => setPaymentMethod(e.target.value)}
+                      disabled={isSubmitting}
+                      className="w-full px-4 pr-4 py-3 bg-white/[0.05] border border-white/[0.1] rounded-xl text-white focus:outline-none focus:border-purple-500/50 focus:bg-white/[0.05] text-sm transition appearance-none cursor-pointer"
+                    >
+                      {["BKASH", "NAGAD", "ROCKET"].map((type) => (
+                        <option
+                          key={type}
+                          value={type}
+                          className="bg-[#1a1a24]"
+                        >
+                          {type}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
                   {/* Transaction ID */}
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-2">
@@ -312,16 +357,16 @@ export default function ActivateSubscriptionModal({
                     />
                   </div>
 
-                  {/* Reference */}
+                  {/* Last 4 digit */}
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Reference <span className="text-red-400">*</span>
+                      Last 4 digit <span className="text-red-400">*</span>
                     </label>
                     <input
                       type="text"
-                      value={reference}
-                      onChange={(e) => setReference(e.target.value)}
-                      placeholder="e.g., IG-001054"
+                      value={last4digit}
+                      onChange={(e) => setLast4digit(e.target.value)}
+                      placeholder="e.g., 2222"
                       className="w-full px-4 py-3 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition"
                       disabled={isSubmitting}
                     />
