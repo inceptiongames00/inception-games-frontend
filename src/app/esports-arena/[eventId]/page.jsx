@@ -104,6 +104,7 @@ export default function EventDetailPage() {
     userPrimaryGame &&
     eventGameName &&
     userPrimaryGame.toLowerCase().trim() === eventGameName.toLowerCase().trim();
+  console.log("event", event);
 
   useEffect(() => {
     if ((showSignupForm || showRegistrationModal) && user) {

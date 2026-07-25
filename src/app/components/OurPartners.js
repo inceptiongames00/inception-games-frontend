@@ -136,16 +136,18 @@ export default function OurPartners() {
   const handleDragMove = (e) => {
     if (!isDragging || !scrollContainerRef.current) return;
 
-    const currentX = e.type.includes("mouse") ? e.clientX : e.touches[0].clientX;
+    const currentX = e.type.includes("mouse")
+      ? e.clientX
+      : e.touches[0].clientX;
     const diff = dragStart - currentX;
 
     setScrollPosition((prev) => {
       const newPosition = prev + diff;
       const maxScroll = scrollContainerRef.current?.scrollWidth / 2 || 0;
-      
+
       if (newPosition < 0) return 0;
       if (newPosition >= maxScroll) return maxScroll;
-      
+
       return newPosition;
     });
 
@@ -410,14 +412,14 @@ export default function OurPartners() {
               onTouchEnd={handleDragEnd}
             >
               {/* First set of cards */}
-              {updates.map((update, index) => (
+              {/* {updates.map((update, index) => (
                 <div
                   key={`update-1-${index}`}
                   className="flex-shrink-0 w-56 sm:w-64 md:w-72 group cursor-pointer"
                 >
-                  {/* Card */}
+                  
                   <div className="rounded-xl sm:rounded-2xl overflow-hidden bg-zinc-900/50 border border-zinc-800/50 hover:border-zinc-700/50 transition-all duration-300 h-full flex flex-col backdrop-blur-sm hover:shadow-2xl hover:shadow-purple-500/10">
-                    {/* Image Section */}
+                  
                     <div
                       className="relative h-40 sm:h-48 overflow-hidden bg-gradient-to-br from-slate-700 to-slate-900 bg-cover bg-center group-hover:scale-110 transition-transform duration-500"
                       style={{
@@ -426,39 +428,32 @@ export default function OurPartners() {
                         backgroundPosition: "center",
                       }}
                     >
-                      {/* Overlay */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
 
-                      {/* Category Badge */}
                       <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-pink-500/30 text-pink-300 border border-pink-500/50 backdrop-blur-sm">
                         {update.category}
                       </div>
                     </div>
 
-                    {/* Content Section */}
                     <div className="p-4 sm:p-5 flex-grow flex flex-col justify-between">
                       <div>
                         <h3 className="text-base sm:text-lg font-bold text-white mb-2 leading-tight group-hover:text-purple-300 transition-colors duration-300 line-clamp-3">
                           {update.title}
                         </h3>
-                        {/* <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed line-clamp-2">
-                          {update.description}
-                        </p> */}
                       </div>
                     </div>
                   </div>
                 </div>
-              ))}
+              ))} */}
 
               {/* Duplicate set for seamless loop */}
-              {updates.map((update, index) => (
+              {/* {updates.map((update, index) => (
                 <div
                   key={`update-2-${index}`}
                   className="flex-shrink-0 w-56 sm:w-64 md:w-72 group cursor-pointer"
                 >
-                  {/* Card */}
                   <div className="rounded-xl sm:rounded-2xl overflow-hidden bg-zinc-900/50 border border-zinc-800/50 hover:border-zinc-700/50 transition-all duration-300 h-full flex flex-col backdrop-blur-sm hover:shadow-2xl hover:shadow-purple-500/10">
-                    {/* Image Section */}
+                   
                     <div
                       className="relative h-40 sm:h-48 overflow-hidden bg-gradient-to-br from-slate-700 to-slate-900 bg-cover bg-center group-hover:scale-110 transition-transform duration-500"
                       style={{
@@ -467,16 +462,16 @@ export default function OurPartners() {
                         backgroundPosition: "center",
                       }}
                     >
-                      {/* Overlay */}
+                    
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
 
-                      {/* Category Badge */}
+                      
                       <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-pink-500/30 text-pink-300 border border-pink-500/50 backdrop-blur-sm">
                         {update.category}
                       </div>
                     </div>
 
-                    {/* Content Section */}
+                   
                     <div className="p-4 sm:p-5 flex-grow flex flex-col justify-between">
                       <div>
                         <h3 className="text-base sm:text-lg font-bold text-white mb-2 leading-tight group-hover:text-purple-300 transition-colors duration-300 line-clamp-2">
@@ -489,7 +484,7 @@ export default function OurPartners() {
                     </div>
                   </div>
                 </div>
-              ))}
+              ))} */}
             </div>
           </div>
         </div>
