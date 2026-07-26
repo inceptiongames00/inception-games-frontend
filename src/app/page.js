@@ -179,7 +179,7 @@ function HomeContent() {
               >
                 <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 bg-green-400 rounded-full animate-pulse" />
                 <span className="text-xs sm:text-sm text-zinc-300 whitespace-nowrap">
-                  500 Gamers Earning,{" "}
+                  Gamers Earning,{" "}
                   <span className="text-purple-400 font-semibold">
                     Right Now
                   </span>
