@@ -5,6 +5,8 @@ import Image from "next/image";
 import { Calendar, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Swal from "sweetalert2";
+import ReadMoreModal from "../components/Modals/ReadMoreModal";
+import { FaFacebookF, FaTwitter, FaLinkedin, FaWhatsapp } from "react-icons/fa";
 
 const events = [
   {
@@ -16,6 +18,9 @@ const events = [
     date: "November 14",
     type: "upcoming",
     badge: "UPCOMING",
+    details: "Inception Games at Startup Showcase Event - Connecting with aspiring entrepreneurs and gamers. Join us for an exciting showcase of gaming innovations and entrepreneurial opportunities.",
+    category: "EVENT",
+    categoryColor: "bg-purple-500/20 text-purple-300 border border-purple-500/30",
   },
   {
     id: 2,
@@ -26,6 +31,9 @@ const events = [
     date: "December 10",
     type: "upcoming",
     badge: "STARTING SOON",
+    details: "Digital Entrepreneurship and Innovation Ecosystem Development (DEIED) Project Office has organized a Dialogue Session to introduce the Startup and Scaleup Program (Accelerating Bangladesh) and the University Innovation Hub Program to senior public-sector leadership. This is a great opportunity to learn about startup opportunities and innovation programs.",
+    category: "INITIATIVE",
+    categoryColor: "bg-cyan-500/20 text-cyan-300 border border-cyan-500/30",
   },
   {
     id: 3,
@@ -36,6 +44,9 @@ const events = [
     date: "December 10",
     type: "upcoming",
     badge: "UPCOMING",
+    details: "Dedicating to my Core Teammates & gamers ❤️. Tournament sign up going on at our website. Don't forget to sign up. Slice N Share at Airtel Buzz Presents Bangladesh Gaming & Esports Summit 2025 Online Community Feedback. Sign up now and compete with the best gamers.",
+    category: "TOURNAMENT",
+    categoryColor: "bg-pink-500/20 text-pink-300 border border-pink-500/30",
   },
   {
     id: 4,
@@ -46,6 +57,9 @@ const events = [
     date: "December 07",
     type: "past",
     badge: "COMPLETED",
+    details: "YUNet Bangladesh Gaming & Esports Summit 2025 was an amazing event bringing together the best esports enthusiasts from across Bangladesh. This summit showcased talent, innovation, and the future of gaming in the region. Thank you to all participants and organizers.",
+    category: "SUMMIT",
+    categoryColor: "bg-green-500/20 text-green-300 border border-green-500/30",
   },
 ];
 
@@ -82,6 +96,34 @@ export default function UpcomingComEvents() {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const handleShare = (platform, event) => {
+    const shareUrl = typeof window !== "undefined" ? window.location.href : "";
+    const title = event.title;
+    const description = event.details || event.title;
+    let shareLink = "";
+
+    switch (platform) {
+      case "facebook":
+        shareLink = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(title + " - " + description)}`;
+        break;
+      case "twitter":
+        shareLink = `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(title + " - " + description)}`;
+        break;
+      case "linkedin":
+        shareLink = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
+        break;
+      case "whatsapp":
+        shareLink = `https://wa.me/?text=${encodeURIComponent(title + " - " + description + " " + shareUrl)}`;
+        break;
+      default:
+        return;
+    }
+
+    if (typeof window !== "undefined") {
+      window.open(shareLink, "share-dialog", "width=800,height=600");
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -272,7 +314,7 @@ export default function UpcomingComEvents() {
                   onClick={() => openEventModal(event)}
                   className="mt-6 inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-500 rounded-full text-white font-semibold text-xs uppercase tracking-wider transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/50 cursor-pointer"
                 >
-                  Join Event
+                  {event.type === "past" ? "Read More" : "Join Event"}
                 </button>
               </div>
             </motion.div>
@@ -280,9 +322,15 @@ export default function UpcomingComEvents() {
         </div>
       </div>
 
-      {/* Event Registration Modal */}
+      {/* Event Modal - Read More for Past Events or Registration for Upcoming */}
       <AnimatePresence>
-        {isModalOpen && (
+        {isModalOpen && selectedEvent && selectedEvent.type === "past" ? (
+          <ReadMoreModal
+            selectedNews={selectedEvent}
+            setSelectedNews={() => setIsModalOpen(false)}
+            handleShare={handleShare}
+          />
+        ) : isModalOpen && selectedEvent && selectedEvent.type === "upcoming" ? (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -324,7 +372,7 @@ export default function UpcomingComEvents() {
                 </div>
               </div>
 
-              {/* Form */}
+              {/* Registration Form Content */}
               <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-4 overflow-y-auto flex-1">
                 {/* Row 1: Full Name & Email */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -474,7 +522,7 @@ export default function UpcomingComEvents() {
               </form>
             </motion.div>
           </motion.div>
-        )}
+        ) : null}
       </AnimatePresence>
     </section>
   );

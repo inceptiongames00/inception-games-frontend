@@ -325,7 +325,7 @@ export default function Header() {
                 <div className="relative profile-dropdown-container">
                   <button
                     onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-                    className="flex items-center gap-2 group"
+                    className="flex items-center gap-2 group cursor-pointer"
                   >
                     <AnimatedProfileRing size={44}>
                       {user.avatar ? (
