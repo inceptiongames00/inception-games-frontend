@@ -786,7 +786,7 @@ EventCard.displayName = "EventCard";
 // Main Events Section Component
 export default function EventsSection({
   user,
-  initialFilter = "all",
+  initialFilter = "Tournament",
   routePrefix = "/profile",
 }) {
   const router = useRouter();

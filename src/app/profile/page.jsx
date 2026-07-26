@@ -241,7 +241,7 @@ export default function ProfilePage() {
 
           {/* Events Section - Full Width */}
           <div className="space-y-6 md:space-y-8">
-            <EventsSection initialFilter={tab || "all"} user={mergedUser} />
+            <EventsSection initialFilter={tab || "Tournament"} user={mergedUser} />
           </div>
         </div>
       </main>

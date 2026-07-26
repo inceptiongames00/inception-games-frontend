@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, AlertCircle, CheckCircle, Loader2 } from "lucide-react";
+import Swal from "sweetalert2";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ||
@@ -74,28 +75,78 @@ export default function ActivateSubscriptionModal({
         // Reset form
         setTrxId("");
         setReference("");
+        setLast4digit("");
+
+        // Show SweetAlert with manual close button
+        Swal.fire({
+          icon: "success",
+          title: "Payment Submitted!",
+          html: `<div class="text-left">
+            <p class="text-gray-300">Your payment proof has been submitted successfully.</p>
+            <p class="text-gray-300 mt-2">Your subscription will be activated soon.</p>
+            <p class="text-yellow-400 text-sm mt-4 font-semibold">Admin Verification Time:</p>
+            <p class="text-gray-400 text-sm">Daily 11:00 AM - 10:00 PM</p>
+          </div>`,
+          background: "#1a1a2e",
+          color: "#fff",
+          confirmButtonColor: "#ec4899",
+          confirmButtonText: "Close",
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+        });
 
         // Call onSuccess callback to refetch data
         if (onSuccess) {
           onSuccess();
         }
 
-        // Close modal after 2 seconds
+        // Close modal after alert is closed
         setTimeout(() => {
           onClose();
-        }, 2000);
+        }, 500);
       } else {
         setStatus("error");
         setErrorMessage(
           data.message || "Failed to submit payment details. Please try again.",
         );
+
+        // Show error SweetAlert with manual close button
+        Swal.fire({
+          icon: "error",
+          title: "Submission Failed",
+          text: data.message || "Failed to submit payment details. Please try again.",
+          background: "#1a1a2e",
+          color: "#fff",
+          confirmButtonColor: "#ec4899",
+          confirmButtonText: "Try Again",
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+        }).then(() => {
+          setStatus(null);
+          setErrorMessage("");
+        });
       }
     } catch (error) {
       setStatus("error");
-      setErrorMessage(
-        "Network error. Please check your connection and try again.",
-      );
+      const errorMsg = "Network error. Please check your connection and try again.";
+      setErrorMessage(errorMsg);
       console.error("Error submitting payment details:", error);
+
+      // Show error SweetAlert with manual close button
+      Swal.fire({
+        icon: "error",
+        title: "Network Error",
+        text: errorMsg,
+        background: "#1a1a2e",
+        color: "#fff",
+        confirmButtonColor: "#ec4899",
+        confirmButtonText: "Try Again",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+      }).then(() => {
+        setStatus(null);
+        setErrorMessage("");
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -155,35 +206,11 @@ export default function ActivateSubscriptionModal({
                     <CheckCircle size={32} className="text-emerald-400" />
                   </div>
                   <h3 className="text-xl font-bold text-white mb-2">
-                    Payment Submitted!
+                    Processing...
                   </h3>
                   <p className="text-gray-400 text-sm">
-                    Your payment proof has been submitted successfully. Your
-                    subscription will be activated soon.
+                    Please wait while we process your submission.
                   </p>
-                </motion.div>
-              ) : status === "error" ? (
-                <motion.div
-                  className="flex flex-col items-center justify-center py-8 text-center"
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                >
-                  <div className="w-16 h-16 rounded-full bg-red-500/20 border border-red-500/40 flex items-center justify-center mb-4">
-                    <AlertCircle size={32} className="text-red-400" />
-                  </div>
-                  <h3 className="text-xl font-bold text-white mb-2">
-                    Submission Failed
-                  </h3>
-                  <p className="text-gray-400 text-sm mb-4">{errorMessage}</p>
-                  <button
-                    onClick={() => {
-                      setStatus(null);
-                      setErrorMessage("");
-                    }}
-                    className="px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-medium transition"
-                  >
-                    Try Again
-                  </button>
                 </motion.div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-5">

@@ -117,7 +117,7 @@ export default function CommunityBanner() {
         >
           <div className="grid w-full grid-cols-2 md:grid-cols-3 items-stretch">
             <div className="py-6 sm:py-7 px-4 text-center border-r border-white/10 md:border-r">
-              <h2 className="text-2xl sm:text-3xl font-bold">$1,500+</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold">$500+</h2>
               <p className="mt-2 text-[10px] sm:text-xs uppercase tracking-widest text-purple-300">
                 Paid Out
               </p>
