@@ -255,10 +255,6 @@ function TournamentCard({ tournament, onClick, isHydrated, user }) {
               <span className="text-zinc-400">Prize Pool:</span>{" "}
               {tournament.prize_pool} {tournament.currency}
             </p>
-            <p>
-              <span className="text-zinc-400">Team Size:</span>{" "}
-              {tournament.team_size}
-            </p>
           </div>
         </div>
       </motion.div>
