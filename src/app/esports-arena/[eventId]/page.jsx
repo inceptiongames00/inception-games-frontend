@@ -289,11 +289,11 @@ export default function EventDetailPage() {
   const progressionSteps = [
     {
       label: "Reg Starting",
-      date: event?.registration_start
-        ? new Date(event.registration_start)
+      date: event?.reg_start_at
+        ? new Date(event.reg_start_at)
         : new Date(),
-      time: event?.registration_start
-        ? new Date(event.registration_start).toLocaleTimeString("en-US", {
+      time: event?.reg_start_at
+        ? new Date(event.reg_start_at).toLocaleTimeString("en-US", {
             hour: "2-digit",
             minute: "2-digit",
             hour12: false,
@@ -302,11 +302,11 @@ export default function EventDetailPage() {
     },
     {
       label: "Reg Ending",
-      date: event?.registration_end
-        ? new Date(event.registration_end)
+      date: event?.reg_end_at
+        ? new Date(event.reg_end_at)
         : new Date(),
-      time: event?.registration_end
-        ? new Date(event.registration_end).toLocaleTimeString("en-US", {
+      time: event?.reg_end_at
+        ? new Date(event.reg_end_at).toLocaleTimeString("en-US", {
             hour: "2-digit",
             minute: "2-digit",
             hour12: false,
@@ -315,11 +315,11 @@ export default function EventDetailPage() {
     },
     {
       label: "Match Starts",
-      date: event?.tournamentStart
-        ? new Date(event.tournamentStart)
+      date: event?.start_at
+        ? new Date(event.start_at)
         : new Date(),
-      time: event?.tournamentStart
-        ? new Date(event.tournamentStart).toLocaleTimeString("en-US", {
+      time: event?.start_at
+        ? new Date(event.start_at).toLocaleTimeString("en-US", {
             hour: "2-digit",
             minute: "2-digit",
             hour12: false,
@@ -328,9 +328,9 @@ export default function EventDetailPage() {
     },
     {
       label: "Match Ends",
-      date: event?.tournamentEnd ? new Date(event.tournamentEnd) : new Date(),
-      time: event?.tournamentEnd
-        ? new Date(event.tournamentEnd).toLocaleTimeString("en-US", {
+      date: event?.end_at ? new Date(event.end_at) : new Date(),
+      time: event?.end_at
+        ? new Date(event.end_at).toLocaleTimeString("en-US", {
             hour: "2-digit",
             minute: "2-digit",
             hour12: false,
