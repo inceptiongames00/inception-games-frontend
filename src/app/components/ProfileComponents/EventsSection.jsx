@@ -254,6 +254,13 @@ function ComingSoonCard({ category, icon: IconComponent }) {
       accent: "bg-pink-500/10 border-pink-500/30",
       text: "text-pink-300",
     },
+    Scrims: {
+      bg: "from-red-600/20 to-orange-600/20",
+      border: "border-red-500/30",
+      icon: "text-red-400",
+      accent: "bg-red-500/10 border-red-500/30",
+      text: "text-red-300",
+    },
   };
 
   const colors = categoryColors[category] || categoryColors.Tournament;
@@ -524,72 +531,74 @@ export default function EventsSection({ user, initialFilter = "all", routePrefix
   const fetchEvents = useCallback(async () => {
     setLoading(true);
     setError(null);
-    try {
-      const res = await fetch(API.SCRIMS_GET_ALL, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await res.json();
+    // try {
+    //   const res = await fetch(API.SCRIMS_GET_ALL, {
+    //     method: "GET",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //   });
+    //   const data = await res.json();
 
-      if (res.ok) {
-        // New API shape: { total, scrims: [...] }
-        const scrimsData = data.scrims || data.data || [];
+    //   if (res.ok) {
+    //     // New API shape: { total, scrims: [...] }
+    //     const scrimsData = data.scrims || data.data || [];
 
-        // Transform API scrims to our card format
-        const transformedEvents = scrimsData.map((scrim) => {
-          return {
-            id: scrim.id,
-            title: scrim.title,
-            eventType: "Scrims",
-            game: {
-              name: scrim.game || scrim.title?.split(" ")[0] || "Gaming",
-              image: getGameImage(scrim.title, scrim.game),
-            },
-            game_name: scrim.game,
-            status: scrim.status,
-            start_date: scrim.start_at,
-            event_date: scrim.start_at,
-            end_date: scrim.end_at,
-            location: scrim.region,
-            venue: scrim.region,
-            platform: scrim.platform || "All Platforms",
-            teamType: scrim.game_mode || "Open",
-            prizePool: parseFloat(scrim.prize_pool) || 0,
-            prize_pool: parseFloat(scrim.prize_pool) || 0,
-            currency: scrim.currency || "BDT",
-            entryType: scrim.entry_type,
-            entryFee: parseFloat(scrim.entry_fee) || 0,
-            teamSize: scrim.team_size,
-            totalSlots: scrim.max_teams || 0,
-            total_slots: scrim.max_teams || 0,
-            filledSlots: scrim.filled_teams || 0,
-            filled_slots: scrim.filled_teams || 0,
-            registrationStart: scrim.reg_start_at,
-            registration_start: scrim.reg_start_at,
-            registrationEnd: scrim.reg_end_at,
-            registration_end: scrim.reg_end_at,
-            tournamentStart: scrim.start_at,
-            tournamentEnd: scrim.end_at,
-            rules: scrim.rules,
-            slots: scrim.slots || [],
-            host: scrim.hosted_by || "Inception Games",
-            organizer: scrim.hosted_by || "Inception Games",
-            banner_image: scrim.banner_image,
-          };
-        });
-        setEvents(transformedEvents);
-      } else {
-        setEvents([]);
-      }
-    } catch (err) {
-      console.error("[v0] Failed to fetch scrims:", err);
-      setError("Failed to load scrims. Please try again.");
-      setEvents([]);
-    } finally {
-      setLoading(false);
-    }
+    //     // Transform API scrims to our card format
+    //     const transformedEvents = scrimsData.map((scrim) => {
+    //       return {
+    //         id: scrim.id,
+    //         title: scrim.title,
+    //         eventType: "Scrims",
+    //         game: {
+    //           name: scrim.game || scrim.title?.split(" ")[0] || "Gaming",
+    //           image: getGameImage(scrim.title, scrim.game),
+    //         },
+    //         game_name: scrim.game,
+    //         status: scrim.status,
+    //         start_date: scrim.start_at,
+    //         event_date: scrim.start_at,
+    //         end_date: scrim.end_at,
+    //         location: scrim.region,
+    //         venue: scrim.region,
+    //         platform: scrim.platform || "All Platforms",
+    //         teamType: scrim.game_mode || "Open",
+    //         prizePool: parseFloat(scrim.prize_pool) || 0,
+    //         prize_pool: parseFloat(scrim.prize_pool) || 0,
+    //         currency: scrim.currency || "BDT",
+    //         entryType: scrim.entry_type,
+    //         entryFee: parseFloat(scrim.entry_fee) || 0,
+    //         teamSize: scrim.team_size,
+    //         totalSlots: scrim.max_teams || 0,
+    //         total_slots: scrim.max_teams || 0,
+    //         filledSlots: scrim.filled_teams || 0,
+    //         filled_slots: scrim.filled_teams || 0,
+    //         registrationStart: scrim.reg_start_at,
+    //         registration_start: scrim.reg_start_at,
+    //         registrationEnd: scrim.reg_end_at,
+    //         registration_end: scrim.reg_end_at,
+    //         tournamentStart: scrim.start_at,
+    //         tournamentEnd: scrim.end_at,
+    //         rules: scrim.rules,
+    //         slots: scrim.slots || [],
+    //         host: scrim.hosted_by || "Inception Games",
+    //         organizer: scrim.hosted_by || "Inception Games",
+    //         banner_image: scrim.banner_image,
+    //       };
+    //     });
+    //     setEvents(transformedEvents);
+    //   } else {
+    //     setEvents([]);
+    //   }
+    // } catch (err) {
+    //   console.error("[v0] Failed to fetch scrims:", err);
+    //   setError("Failed to load scrims. Please try again.");
+    //   setEvents([]);
+    // } finally {
+    //   setLoading(false);
+    // }
+    setEvents([]);
+    setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -642,7 +651,11 @@ export default function EventsSection({ user, initialFilter = "all", routePrefix
   const showComingSoonCards = {
     Tournament: activeFilter === "all" || activeFilter === "Tournament",
     "Brand Deal": activeFilter === "all" || activeFilter === "Brand Deal",
+    Scrims: activeFilter === "all" || activeFilter === "Scrims",
   };
+
+  // Check if currently viewing a specific coming soon category (not "all")
+  const isViewingComingSoonCategory = activeFilter === "Tournament" || activeFilter === "Brand Deal" || activeFilter === "Scrims";
 
   const handleEventClick = (event) => {
     // Navigate to event detail page with actual event ID
@@ -677,7 +690,7 @@ export default function EventsSection({ user, initialFilter = "all", routePrefix
                 {IconComponent && <IconComponent size={14} />}
                 {tab.label}
                 <span className={`text-xs ${activeFilter === tab.id ? 'text-purple-200' : 'text-gray-500'}`}>
-                  ({tab.count})
+                  {/* ({tab.count}) */}
                 </span>
               </button>
             )
@@ -770,6 +783,19 @@ export default function EventsSection({ user, initialFilter = "all", routePrefix
           layout
         >
           <AnimatePresence mode="popLayout">
+            {/* Coming Soon Card - Scrims */}
+            {showComingSoonCards.Scrims && (
+              <motion.div
+                layout
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.3 }}
+              >
+                <ComingSoonCard category="Scrims" icon={Swords} />
+              </motion.div>
+            )}
+
             {/* Coming Soon Cards - Tournaments */}
             {showComingSoonCards.Tournament && (
               <motion.div
@@ -783,8 +809,21 @@ export default function EventsSection({ user, initialFilter = "all", routePrefix
               </motion.div>
             )}
 
-            {/* Scrims from API */}
-            {filteredEvents.map((event) => (
+            {/* Coming Soon Card - Brand Deals */}
+            {showComingSoonCards["Brand Deal"] && (
+              <motion.div
+                layout
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.3 }}
+              >
+                <ComingSoonCard category="Brand Deal" icon={Briefcase} />
+              </motion.div>
+            )}
+
+            {/* Scrims from API - Only show if NOT viewing a coming soon category */}
+            {!isViewingComingSoonCategory && filteredEvents.map((event) => (
               <motion.div
                 key={event.id}
                 layout
