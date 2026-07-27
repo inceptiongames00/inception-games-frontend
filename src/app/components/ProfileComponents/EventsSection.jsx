@@ -236,7 +236,7 @@ function PlatformDisplay({ platform }) {
 
 // Coming Soon Card Component
 function ComingSoonCard({ category, icon: IconComponent }) {
-  const isComingSoonDate = new Date("2025-05-01");
+  const isComingSoonDate = new Date("2026-07-28");
   const daysUntil = Math.ceil((isComingSoonDate - new Date()) / (1000 * 60 * 60 * 24));
   
   const categoryColors = {
@@ -297,7 +297,7 @@ function ComingSoonCard({ category, icon: IconComponent }) {
 
         {/* Coming Soon Date */}
         <div className="space-y-2 pt-2">
-          <p className="text-gray-300 text-sm font-medium">Opens June 20th, 2026</p>
+          <p className="text-gray-300 text-sm font-medium">Opens July 28th, 2026</p>
           <p className="text-gray-500 text-xs">
             {/* {daysUntil > 0 ? `In ${daysUntil} days` : "Available now!"} */}
           </p>
