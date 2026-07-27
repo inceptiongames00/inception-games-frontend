@@ -17,6 +17,7 @@ export default function ScrimsCarousel({ onLoginClick }) {
   const [dragStart, setDragStart] = useState(0);
   const scrollContainerRef = useRef(null);
   const autoScrollIntervalRef = useRef(null);
+  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     setIsHydrated(true);
@@ -71,11 +72,17 @@ export default function ScrimsCarousel({ onLoginClick }) {
 
   // Auto-scroll functionality
   useEffect(() => {
-    if (!isDragging && tournaments.length > 0 && scrollContainerRef.current) {
+    if (
+      !isDragging &&
+      !isHovered &&
+      tournaments.length > 0 &&
+      scrollContainerRef.current
+    ) {
       autoScrollIntervalRef.current = setInterval(() => {
         setScrollPosition((prev) => {
-          const newPosition = prev + 1.5; // Scroll speed
+          const newPosition = prev + 1.5;
           const maxScroll = scrollContainerRef.current?.scrollWidth / 2 || 0;
+
           return newPosition >= maxScroll ? 0 : newPosition;
         });
       }, 50);
@@ -86,7 +93,7 @@ export default function ScrimsCarousel({ onLoginClick }) {
         clearInterval(autoScrollIntervalRef.current);
       }
     };
-  }, [isDragging, tournaments.length]);
+  }, [isDragging, isHovered, tournaments.length]);
 
   // Update scroll container position
   useEffect(() => {
@@ -124,6 +131,7 @@ export default function ScrimsCarousel({ onLoginClick }) {
 
   const handleDragEnd = () => {
     setIsDragging(false);
+    setIsHovered(false);
   };
 
   if (!isHydrated) {
@@ -150,6 +158,7 @@ export default function ScrimsCarousel({ onLoginClick }) {
         onTouchStart={handleDragStart}
         onTouchMove={handleDragMove}
         onTouchEnd={handleDragEnd}
+        onMouseEnter={() => setIsHovered(true)}
       >
         {/* First set */}
         {tournaments.map((tournament, index) => (

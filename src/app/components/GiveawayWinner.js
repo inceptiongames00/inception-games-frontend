@@ -35,6 +35,7 @@ export default function GiveawayWinner() {
   const [dragStart, setDragStart] = useState(0);
   const scrollContainerRef = useRef(null);
   const autoScrollIntervalRef = useRef(null);
+  const [isHovered, setIsHovered] = useState(false);
 
   const winnersData = [
     {
@@ -82,11 +83,17 @@ export default function GiveawayWinner() {
 
   // Auto-scroll functionality
   useEffect(() => {
-    if (!isDragging && winnersData.length > 0 && scrollContainerRef.current) {
+    if (
+      !isDragging &&
+      !isHovered &&
+      winnersData.length > 0 &&
+      scrollContainerRef.current
+    ) {
       autoScrollIntervalRef.current = setInterval(() => {
         setScrollPosition((prev) => {
-          const newPosition = prev + 2;
+          const newPosition = prev + 1.5;
           const maxScroll = scrollContainerRef.current?.scrollWidth / 2 || 0;
+
           return newPosition >= maxScroll ? 0 : newPosition;
         });
       }, 50);
@@ -97,7 +104,7 @@ export default function GiveawayWinner() {
         clearInterval(autoScrollIntervalRef.current);
       }
     };
-  }, [isDragging, winnersData.length]);
+  }, [isDragging, isHovered, winnersData.length]);
 
   // Update scroll container position
   useEffect(() => {
@@ -109,23 +116,29 @@ export default function GiveawayWinner() {
   // Touch/Mouse handlers for dragging
   const handleDragStart = (e) => {
     setIsDragging(true);
-    const clientX = e.type && e.type.startsWith("touch") ? e.touches?.[0]?.clientX : e.clientX;
+    const clientX =
+      e.type && e.type.startsWith("touch")
+        ? e.touches?.[0]?.clientX
+        : e.clientX;
     setDragStart(clientX || 0);
   };
 
   const handleDragMove = (e) => {
     if (!isDragging || !scrollContainerRef.current) return;
 
-    const currentX = e.type && e.type.startsWith("touch") ? e.touches?.[0]?.clientX : e.clientX;
+    const currentX =
+      e.type && e.type.startsWith("touch")
+        ? e.touches?.[0]?.clientX
+        : e.clientX;
     const diff = dragStart - (currentX || 0);
 
     setScrollPosition((prev) => {
       const newPosition = prev + diff;
       const maxScroll = scrollContainerRef.current?.scrollWidth / 2 || 0;
-      
+
       if (newPosition < 0) return 0;
       if (newPosition >= maxScroll) return maxScroll;
-      
+
       return newPosition;
     });
 
@@ -134,6 +147,7 @@ export default function GiveawayWinner() {
 
   const handleDragEnd = () => {
     setIsDragging(false);
+    setIsHovered(false);
   };
 
   const handleShare = (platform, winner) => {
@@ -284,6 +298,7 @@ export default function GiveawayWinner() {
             onTouchStart={handleDragStart}
             onTouchMove={handleDragMove}
             onTouchEnd={handleDragEnd}
+            onMouseEnter={() => setIsHovered(true)}
           >
             {winners.map((winner, idx) => (
               <div

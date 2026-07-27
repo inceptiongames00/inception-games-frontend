@@ -544,32 +544,51 @@ export default function UnifiedAuthModal({
       } else {
         // The AuthContext will handle the redirect to /profile automatically
         // Reset form state
-        setFormData({
-          email: "",
-          otp: "",
-          username: "",
-          fullName: "",
-          game: "",
-          role: "",
-          rank: "",
-          phone: "",
-          discord: "",
-          bio: "",
-        });
-        setSelectedContinent("");
-        setSelectedCountry("");
-        setSelectedCity("");
-        setStep(1);
-        setMode("login");
+        // setFormData({
+        //   email: "",
+        //   otp: "",
+        //   username: "",
+        //   fullName: "",
+        //   game: "",
+        //   role: "",
+        //   rank: "",
+        //   phone: "",
+        //   discord: "",
+        //   bio: "",
+        // });
+        // setSelectedContinent("");
+        // setSelectedCountry("");
+        // setSelectedCity("");
+        // setStep(1);
+        // setMode("login");
         // Close modal after a brief delay
-        setTimeout(() => {
-          onClose();
-        }, 500);
+        // setTimeout(() => {
+        //   onClose();
+        // }, 500);
       }
     } catch (err) {
       setLocalError(err.message);
     } finally {
       setIsLoading(false);
+      onClose();
+      router.push(`/profile?tab=Tournament`);
+      setFormData({
+        email: "",
+        otp: "",
+        username: "",
+        fullName: "",
+        game: "",
+        role: "",
+        rank: "",
+        phone: "",
+        discord: "",
+        bio: "",
+      });
+      setSelectedContinent("");
+      setSelectedCountry("");
+      setSelectedCity("");
+      setStep(1);
+      setMode("login");
     }
   };
 
