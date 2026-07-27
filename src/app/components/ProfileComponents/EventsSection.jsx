@@ -786,6 +786,7 @@ export default function EventsSection({ user, initialFilter = "all", routePrefix
             {/* Coming Soon Card - Scrims */}
             {showComingSoonCards.Scrims && (
               <motion.div
+                key="scrims-coming-soon"
                 layout
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -799,6 +800,7 @@ export default function EventsSection({ user, initialFilter = "all", routePrefix
             {/* Coming Soon Cards - Tournaments */}
             {showComingSoonCards.Tournament && (
               <motion.div
+                key="tournament-coming-soon"
                 layout
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -812,6 +814,7 @@ export default function EventsSection({ user, initialFilter = "all", routePrefix
             {/* Coming Soon Card - Brand Deals */}
             {showComingSoonCards["Brand Deal"] && (
               <motion.div
+                key="branddeals-coming-soon"
                 layout
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
