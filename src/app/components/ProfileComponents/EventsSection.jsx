@@ -670,7 +670,7 @@ const EventCard = React.memo(function EventCard({
                 Swal.fire({
                   icon: "info",
                   title: "Activate Your Plan",
-                  html: "Unavailable: Your subscription tier is pending approval or inactive.",
+                  html: "Unavailable: Your subscription is currently pending approval or inactive. Access will be available once your subscription is activated.",
                   confirmButtonText: "Activate",
                   confirmButtonColor: "#9333ea",
                   background: "#1a1a2e",
@@ -689,7 +689,7 @@ const EventCard = React.memo(function EventCard({
                 Swal.fire({
                   icon: "info",
                   title: "Waiting For Approval",
-                  html: "Unavailable: Your subscription tier is pending approval or inactive.",
+                  html: "Unavailable: Your subscription is currently pending approval or inactive. Access will be available once your subscription is activated.",
                   confirmButtonText: "Got It",
                   confirmButtonColor: "#9333ea",
                   background: "#1a1a2e",

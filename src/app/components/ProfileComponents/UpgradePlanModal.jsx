@@ -51,14 +51,16 @@ export default function UpgradePlanModal({
 }) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [loadingPlanId, setLoadingPlanId] = useState(null);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const tokens = getTokens();
 
-  const handleSubscribe = async (planName) => {
+  const handleSubscribe = async (planName, planId) => {
     if (!planName || planName.toLowerCase().includes("free")) return;
 
     setLoading(true);
+    setLoadingPlanId(planId);
     setError(null);
     setSuccess(null);
 
@@ -70,6 +72,7 @@ export default function UpgradePlanModal({
           text: "Not authenticated",
           confirmButtonColor: "#a855f7",
         });
+        setLoadingPlanId(null);
         return;
       }
 
@@ -131,6 +134,7 @@ export default function UpgradePlanModal({
       });
     } finally {
       setLoading(false);
+      setLoadingPlanId(null);
     }
   };
 
@@ -351,17 +355,17 @@ export default function UpgradePlanModal({
 
                       {/* Button */}
                       <motion.button
-                        onClick={() => handleSubscribe(plan.name)}
-                        disabled={plan.isCurrentPlan || loading}
-                        className={`w-full py-3 cursor-pointer rounded-lg font-bold text-sm uppercase tracking-wider transition-all duration-300 ${plan.buttonStyle} ${loading && !plan.isCurrentPlan ? "opacity-50" : ""}`}
+                        onClick={() => handleSubscribe(plan.name, plan.id)}
+                        disabled={plan.isCurrentPlan || (loading && loadingPlanId === plan.id)}
+                        className={`w-full py-3 cursor-pointer rounded-lg font-bold text-sm uppercase tracking-wider transition-all duration-300 ${plan.buttonStyle} ${loading && loadingPlanId === plan.id ? "opacity-50" : ""}`}
                         whileHover={{
-                          scale: plan.isCurrentPlan || loading ? 1 : 1.02,
+                          scale: plan.isCurrentPlan || (loading && loadingPlanId === plan.id) ? 1 : 1.02,
                         }}
                         whileTap={{
-                          scale: plan.isCurrentPlan || loading ? 1 : 0.98,
+                          scale: plan.isCurrentPlan || (loading && loadingPlanId === plan.id) ? 1 : 0.98,
                         }}
                       >
-                        {loading && !plan.isCurrentPlan
+                        {loading && loadingPlanId === plan.id
                           ? "Processing..."
                           : plan.buttonText}
                       </motion.button>

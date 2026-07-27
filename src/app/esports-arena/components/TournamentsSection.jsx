@@ -230,7 +230,7 @@ function TournamentCard({ tournament, onClick, isHydrated, user }) {
             className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"
           >
             <span className="px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 rounded-full text-white font-semibold text-sm transition-all duration-300">
-              {isHydrated && user ? "Go To Tournament" : "Sign In"}
+              Go To Tournament
             </span>
           </button>
 

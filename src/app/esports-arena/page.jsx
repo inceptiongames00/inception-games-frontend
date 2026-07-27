@@ -104,6 +104,21 @@ function EsportsArenaContent() {
             ))}
           </motion.div>
 
+          {/* Notice Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="mb-8 p-4 rounded-xl bg-blue-500/10 border border-blue-500/30"
+          >
+            <p className="text-sm text-blue-300 flex items-center gap-2">
+              <span className="text-lg">ℹ️</span>
+              <span>
+                <span className="font-semibold">Note:</span> You have to create an account to join the event.
+              </span>
+            </p>
+          </motion.div>
+
           {/* Tab Content */}
           {activeTab === "tournaments" && (
             <TournamentsSection onLoginClick={() => setLoginModalOpen(true)} />

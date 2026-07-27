@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, AlertCircle, CheckCircle, Loader2 } from "lucide-react";
+import { X, AlertCircle, CheckCircle, Loader2, ChevronDown } from "lucide-react";
 import Swal from "sweetalert2";
 
 const API_BASE_URL =
@@ -23,8 +23,15 @@ export default function ActivateSubscriptionModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState(null); // 'success', 'error', null
   const [errorMessage, setErrorMessage] = useState("");
+  const [copiedBkash, setCopiedBkash] = useState(false);
 
   if (!subscription) return null;
+
+  const handleCopyBkash = () => {
+    navigator.clipboard.writeText("01926695213");
+    setCopiedBkash(true);
+    setTimeout(() => setCopiedBkash(false), 2000);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -224,13 +231,24 @@ export default function ActivateSubscriptionModal({
                     </div>
 
                     {/* bKash Number */}
-                    <div className="bg-black/30 rounded-lg p-3 text-center border border-white/[0.05]">
-                      <p className="text-2xl font-bold text-purple-400">
-                        01926695213
-                      </p>
-                      <p className="text-xs text-gray-400">
-                        Account type: Personal
-                      </p>
+                    <div className="bg-black/30 rounded-lg p-3 border border-white/[0.05]">
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="text-center flex-1">
+                          <p className="text-2xl font-bold text-purple-400">
+                            01926695213
+                          </p>
+                          <p className="text-xs text-gray-400">
+                            Account type: Personal
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={handleCopyBkash}
+                          className="px-3 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold transition-all duration-300 flex-shrink-0 whitespace-nowrap cursor-pointer"
+                        >
+                          {copiedBkash ? "✓ Copied!" : "Copy"}
+                        </button>
+                      </div>
                     </div>
 
                     {/* How to pay with QR Code on the right - Equal heights */}
@@ -253,7 +271,7 @@ export default function ActivateSubscriptionModal({
                             <li>
                               Amount:{" "}
                               <span className="text-emerald-300 font-bold">
-                                BDT {subscription?.price}.00
+                                BDT {subscription?.price}
                               </span>
                             </li>
                             <li>
@@ -338,7 +356,7 @@ export default function ActivateSubscriptionModal({
                       type="text"
                       value={reference}
                       onChange={(e) => setReference(e.target.value)}
-                      placeholder="e.g., IG-001054"
+                      placeholder="Check your email for reference no. e.g., IG-001054"
                       className="w-full px-4 py-3 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition"
                       disabled={isSubmitting}
                     />
@@ -350,23 +368,29 @@ export default function ActivateSubscriptionModal({
                       Select Payment Method{" "}
                       <span className="text-red-400">*</span>
                     </label>
-                    <select
-                      name="paymentMethod"
-                      value={paymentMethod}
-                      onChange={(e) => setPaymentMethod(e.target.value)}
-                      disabled={isSubmitting}
-                      className="w-full px-4 pr-4 py-3 bg-white/[0.05] border border-white/[0.1] rounded-xl text-white focus:outline-none focus:border-purple-500/50 focus:bg-white/[0.05] text-sm transition appearance-none cursor-pointer"
-                    >
-                      {["BKASH", "NAGAD", "ROCKET"].map((type) => (
-                        <option
-                          key={type}
-                          value={type}
-                          className="bg-[#1a1a24]"
-                        >
-                          {type}
-                        </option>
-                      ))}
-                    </select>
+                    <div className="relative">
+                      <select
+                        name="paymentMethod"
+                        value={paymentMethod}
+                        onChange={(e) => setPaymentMethod(e.target.value)}
+                        disabled={isSubmitting}
+                        className="w-full px-4 pr-10 py-3 bg-white/[0.05] border border-white/[0.1] rounded-xl text-white focus:outline-none focus:border-purple-500/50 focus:bg-white/[0.05] text-sm transition appearance-none cursor-pointer"
+                      >
+                        {["BKASH", "NAGAD", "ROCKET"].map((type) => (
+                          <option
+                            key={type}
+                            value={type}
+                            className="bg-[#1a1a24]"
+                          >
+                            {type}
+                          </option>
+                        ))}
+                      </select>
+                      <ChevronDown
+                        size={18}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+                      />
+                    </div>
                   </div>
 
                   {/* Transaction ID */}
@@ -393,7 +417,7 @@ export default function ActivateSubscriptionModal({
                       type="text"
                       value={last4digit}
                       onChange={(e) => setLast4digit(e.target.value)}
-                      placeholder="e.g., 2222"
+                      placeholder="Enter the last 4 digits of your payment phone no. e.g., 2222"
                       className="w-full px-4 py-3 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white placeholder-gray-500 focus:outline-none focus:border-purple-500/50 transition"
                       disabled={isSubmitting}
                     />

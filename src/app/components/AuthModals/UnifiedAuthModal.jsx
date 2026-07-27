@@ -1110,7 +1110,7 @@ export default function UnifiedAuthModal({
                     Completing...
                   </>
                 ) : (
-                  <>Complete Registration</>
+                  <>Go To Profile</>
                 )}
               </motion.button>
             </div>
