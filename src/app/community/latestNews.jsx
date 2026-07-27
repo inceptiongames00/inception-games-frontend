@@ -7,6 +7,17 @@ import ReadMoreModal from "../components/Modals/ReadMoreModal";
 
 const newsItems = [
   {
+    title:
+      "৫০০ বিলিয়ন ডলারের বৈশ্বিক গেমিং ইন্ডাস্ট্রিতে বাংলাদেশের Inception Games",
+    description:
+      "বাংলাদেশের গেমিং ইন্ডাস্ট্রি এখন আর শুধু সম্ভাবনার গল্প নয় এটি ধীরে ধীরে বৈশ্বিক বাজারে নিজেদের অবস্থান তৈরি করছে। আর সেই যাত্রার অন্যতম পথপ্রদর্শক Inception Games আলোচনায় উঠে এসেছে — Inception Games-এর শুরুর গল্প ও যাত্রা বাংলাদেশে গেমিং ইন্ডাস্ট্রির বর্তমান অবস্থা বৈশ্বিক বাজারে বাংলাদেশি গেম স্টুডিওর সম্ভাবনা গেম ডেভেলপমেন্টে ক্যারিয়ার গড়ার সুযোগ উদ্যোক্তা হিসেবে চ্যালেঞ্জ, শিক্ষা ও ভবিষ্যৎ পরিকল্পনা কীভাবে বাংলাদেশ ৫০০ বিলিয়ন ডলারের গেমিং অর্থনীতিতে বড় ভূমিকা রাখতে পারে গেমিং শুধু বিনোদন নয়; এটি প্রযুক্তি, সৃজনশীলতা, কর্মসংস্থান এবং বৈদেশিক আয়ের একটি শক্তিশালী খাত। সঠিক দক্ষতা ও উদ্ভাবনের মাধ্যমে বাংলাদেশও এই ইন্ডাস্ট্রিতে বিশ্বমঞ্চে নিজেদের পরিচিতি আরও শক্তিশালী করতে পারে। পুরো পর্বটি দেখুন এবং জানুন, কীভাবে Inception Games বাংলাদেশের গেমিং ইকোসিস্টেমকে সামনে এগিয়ে নিয়ে যাচ্ছে। Co-powered by নাগরিক প্রতিদিন and Startup Association of Bangladesh (SAB)",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1785129436/News_-3_j3fuxq.jpg",
+    category: "Gaming",
+    categoryColor: "bg-cyan-500/20 text-cyan-300 border border-cyan-500/30",
+    readMoreLink: "",
+  },
+  {
     title: "গেম খেলা হতে পারে কারো পেশা",
     description:
       "গেম তৈরি ও বাজারজাত করে দেশের অর্থনীতিতেও বড় অবদান রাখতে পারে গেম নির্মাতা প্রতিষ্ঠান। পেশাদার গেমারদের জন্য প্ল্যাটফর্ম তৈরি ও গেম তৈরির কাজ করছেন কাজী হাসিব ও তাঁর দল। তাঁদের দুই প্রতিষ্ঠানের সম্পর্কে লিখেছেন আশিক উল বারাত",
@@ -21,11 +32,11 @@ const newsItems = [
   },
   {
     title:
-      "Digital Entrepreneurship and Innovation Ecosystem Development (DEIED)",
+      "National Demo Day Certification of Accelerating Bangladesh backed by World Bank , Hi-Tech Park (DEIED) Bangladesh",
     description:
-      "Digital Entrepreneurship and Innovation Ecosystem Development (DEIED) Project Office has organized a Dialogue Session to introduce the Startup and Scaleup Program (Accelerating Bangladesh) and the University Innovation Hub Program to senior public-sector leadership. ",
+      "At National Demo Day, Inception Games had the opportunity to pitch in front of leading investors. Since last year, our team has been fully bootstrapping and the progress so far has been strong and sustainable. In the coming week, we are launching several products for the Bangladesh market, with plans to expand into the South Asian region (10+ countries) over the next few months. Even without formal marketing, gamers from multiple countries are already supporting the vision of Inception Games through the esports ecosystem. I shared the vision of eSports with Mr Rehan Asif Asad , adviser to the ministry of posts, telecommunications and information technology. Thanks to Project Director of DEIED  , Monjur Mohammad Shahriar Sir, Bangladesh Hi-Tech Park Authority. & his whole Team. The presence of Startup Leader from different Govt entities boosted the whole Program. Thanks to Mr. Nurul H. , MD & CEO of Startup Bangladesh Limited for giving the valuable speech to every startups. Thanks to Mr. Murtuza Zulkar Nain Noman , Project Director of iDEA Project. ICT Division Bangladesh. It was pleasure to meet with Mr. Siddhartho Goshwami from IDEA Project as well. Thanks to Mr. Rahat Ahmed. We had started our journey after covid from NSU Startups Next. Got many advices when we knew nothing about Startup Thanks to Ayman Sadiq  for amazing advice from Panel on the National Demo Days. It was pleasure to meet with Md Mohsinur Rahman , BRAC Bank PLC Thanks to all the Bankers, investors, founders from different Startups. Our mission is clear: to build a global brand that empowers underprivileged yet highly talented gamers creating real income opportunities where none previously existed. Global remittance will be impacted in National Economic Growth.",
     image:
-      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157043/news3_freort.jpg",
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1785129799/National_Demo_Day_rgetlx.jpg",
     category: "ESPORTS",
     categoryColor: "bg-cyan-500/20 text-cyan-300 border border-cyan-500/30",
     readMoreLink: "",
@@ -33,14 +44,23 @@ const newsItems = [
   {
     title: "Airtel Buzz Presents Bangladesh Gaming & Esports Summit 2025",
     description:
-      "Dedicating to my Core Teammates & gamers ❤️. Tournament sign up going on at our website. Don't forget to sign up. Slice N Share at Airtel Buzz Presents Bangladesh Gaming & Esports Summit 2025.",
-    details:
-      "Congratulations to our early startup days ex intern Imtiaz. We love to see your Growth over the years. It gives us good hope that you will shine more . Best Wishes. 🔥❤️ He shared that he has honored to receive the Bronze Award at the Airtel Buzz Presents YUNet Bangladesh Gaming & Esports Summit 2025 Powered by XQUBE Studio for game MotoShooter. This recognition from the @IGDA Bangladesh means a lot, especially being evaluated alongside many strong projects based on design, execution, and technical quality.",
+      "Dedicating to my Core Teammates & gamers . Tournament sign up going on at our website. Don’t forget to sign up at Airtel Buzz Presents Bangladesh Gaming & Esports Summit 2025 Stay tuned -  the showdown is coming!",
     image:
       "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157047/news4_u9saum.jpg",
     category: "COMMUNITY",
     categoryColor:
       "bg-purple-500/20 text-purple-300 border border-purple-500/30",
+    readMoreLink: "",
+  },
+  {
+    title:
+      "Digital Entrepreneurship and Innovation Ecosystem Development (DEIED)",
+    description:
+      "Digital Entrepreneurship and Innovation Ecosystem Development (DEIED) Project Office has organized a Dialogue Session to introduce the Startup and Scaleup Program (Accelerating Bangladesh) and the University Innovation Hub Program to senior public-sector leadership. ",
+    image:
+      "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157043/news3_freort.jpg",
+    category: "ESPORTS",
+    categoryColor: "bg-cyan-500/20 text-cyan-300 border border-cyan-500/30",
     readMoreLink: "",
   },
 ];

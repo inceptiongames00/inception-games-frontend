@@ -288,7 +288,7 @@ export default function EditProfileModal({
       const { continent, country, city } = parseRegionString(existingRegion);
       setSelectedContinent(continent || currentUser?.continent || "");
       setSelectedCountry(country || currentUser?.country || "");
-      setSelectedCity(city || "");
+      setSelectedCity(city || currentUser?.city || "");
       setFormData({
         fullName: currentUser?.fullName || currentUser?.full_name || "",
         phone: currentUser?.phone || "",

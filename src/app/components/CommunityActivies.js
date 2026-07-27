@@ -34,7 +34,7 @@ export default function CommunityActivies() {
       badge: "EXCLUSIVE LAUNCH",
       buttons: ["CORPORATE PARTNERSHIP", "ESPORTS COMMUNITY PARTNERSHIP"],
       image:
-        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783147172/mime2_hhp4nf.jpg",
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783146941/c7_knftcn.jpg",
       bgGradient: "from-blue-600/20 via-purple-600/20 to-cyan-600/20",
     },
     {
@@ -44,17 +44,15 @@ export default function CommunityActivies() {
       badge: "FEATURED PARTNER",
       buttons: ["GAMING PARTNERSHIP", "TOURNAMENT OPPORTUNITIES"],
       image:
-        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783147168/MOAR_hkr10h.png",
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783146940/c8_xoi6zb.jpg",
       bgGradient: "from-pink-600/20 via-purple-600/20 to-blue-600/20",
     },
     {
-      title: "iFarmer: Connecting Communities",
-      description:
-        "Building bridges between technology and agriculture. Experience innovative solutions that empower businesses and communities. Join us in creating sustainable growth through digital transformation.",
-      badge: "INNOVATION PARTNER",
-      buttons: ["COMMUNITY PARTNERSHIP", "DIGITAL SOLUTIONS"],
+      title: "YUNet Bangladesh Gaming & Esports Summit 2025",
+      description: "",
+      badge: "Event",
       image:
-        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783147170/ifarmer2_utju6u.jpg",
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783146526/c1_oboa3t.jpg",
       bgGradient: "from-green-600/20 via-emerald-600/20 to-cyan-600/20",
     },
   ];

@@ -63,7 +63,7 @@ const getDaysRemainingForUpgrade = (activeSubscription) => {
 
   const approvalDate = new Date(activeSubscription.approved_at);
   const fifteenDaysLater = new Date(
-    approvalDate.getTime() + 15 * 24 * 60 * 60 * 1000,
+    approvalDate.getTime() + 30 * 24 * 60 * 60 * 1000,
   );
   const now = new Date();
 
@@ -322,7 +322,7 @@ export default function SubscriptionSection({
                         Swal.fire({
                           icon: "info",
                           title: "Upgrade Not Available",
-                          html: `You cannot upgrade your subscription within 15 days of activation.<br/><br/>Please try again in <strong>${daysRemaining} day${daysRemaining !== 1 ? "s" : ""}</strong>.`,
+                          html: `You cannot upgrade your subscription within 30 days of activation.<br/><br/>Please try again in <strong>${daysRemaining} day${daysRemaining !== 1 ? "s" : ""}</strong>.`,
                           confirmButtonText: "Got It",
                           confirmButtonColor: "#9333ea",
                           background: "#1a1a2e",
