@@ -5,7 +5,13 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 /** @type {import('next').NextConfig} */
+import path from 'path';
+
 const nextConfig = {
+  turbopack: {
+    // Ensure an absolute path is used to avoid invalid config warnings
+    root: path.resolve(process.cwd()),
+  },
   images: {
     domains: ["images.unsplash.com"],
     remotePatterns: [
