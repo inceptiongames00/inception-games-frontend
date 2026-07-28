@@ -328,7 +328,7 @@ export default function SubscriptionsSection({ user }) {
                     className={`w-full py-2.5 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-all duration-300 ${
                       isActive
                         ? `bg-gradient-to-r ${sub.color} text-white shadow-lg cursor-default`
-                        : 'bg-white/[0.04] text-gray-300 border border-white/[0.08] hover:bg-white/[0.08] hover:text-white'
+                        : 'bg-white/[0.04] text-gray-300 border border-white/[0.08] hover:bg-white/[0.08] hover:text-white cursor-pointer'
                     }`}
                     whileHover={isActive ? {} : { scale: 1.01 }}
                     whileTap={isActive ? {} : { scale: 0.99 }}

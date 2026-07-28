@@ -41,7 +41,6 @@ export default function SettingsPage() {
 
   const handleLogout = async () => {
     if (confirm('Are you sure you want to logout?')) {
-      console.log('Settings - logging out...')
       await logout()
       router.push('/')
     }
@@ -49,7 +48,6 @@ export default function SettingsPage() {
 
   const handleLogoutAll = async () => {
     if (confirm('This will logout from all devices. Are you sure?')) {
-      console.log('Settings - logging out from all devices...')
       await logoutAll()
       router.push('/')
     }
@@ -234,12 +232,10 @@ function ProfileTab({ user, updateProfile }) {
     setLocalError('')
     setMessage('')
     try {
-      console.log('Settings ProfileTab - saving:', { fullName, phone })
       const formData = new FormData()
       formData.append('full_name', fullName)
       if (phone) formData.append('phone', phone)
       await updateProfile(user.id, formData)
-      console.log('Settings ProfileTab - saved successfully')
       setMessage('Profile updated successfully!')
       setTimeout(() => setMessage(''), 3000)
     } catch (err) {
@@ -259,7 +255,6 @@ function ProfileTab({ user, updateProfile }) {
         const freshUser = JSON.parse(stored)
         setFullName(freshUser.fullName || '')
         setPhone(freshUser.phone || '')
-        console.log('Settings ProfileTab - refreshed from storage')
         setMessage('Profile refreshed')
         setTimeout(() => setMessage(''), 3000)
       }

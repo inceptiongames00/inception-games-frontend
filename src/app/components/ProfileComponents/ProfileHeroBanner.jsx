@@ -2,23 +2,111 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Share2,
-  Edit3,
-  Gamepad2,
-  MapPin,
-  Award,
-  Check,
-  Link2,
-  Facebook,
-  Twitter,
-  Bell,
-} from "lucide-react";
+import { Share2, Edit3, Bell, X } from "lucide-react";
+import { getTokens } from "@/lib/api";
+
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  "https://inception-games.an.r.appspot.com/api/v1";
 
 export default function ProfileHeroBanner({ user, onEditProfile }) {
   const [showShareMenu, setShowShareMenu] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const shareRef = useRef(null);
+  const NOTIFICATIONS_ENDPOINT = user?.id
+    ? `${API_BASE_URL}/message/${user.id}`
+    : null;
+
+  // Notifications state
+  const [notifications, setNotifications] = useState([]);
+  const [notificationsLoading, setNotificationsLoading] = useState(false);
+  const [notificationsError, setNotificationsError] = useState(null);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [showNotificationsList, setShowNotificationsList] = useState(false);
+  const [selectedNotif, setSelectedNotif] = useState(null);
+  const [localReadStates, setLocalReadStates] = useState({});
+
+  // Mark notification as read
+  const markNotificationAsRead = async (notificationId) => {
+    try {
+      const tokens = getTokens();
+      if (!tokens?.accessToken || !NOTIFICATIONS_ENDPOINT) return false;
+
+      const response = await fetch(
+        `${NOTIFICATIONS_ENDPOINT}/${notificationId}/read`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tokens.accessToken}`,
+          },
+        },
+      );
+
+      return response.ok;
+    } catch (err) {
+      console.error("[ProfileHeroBanner] Could not mark as read on backend");
+    }
+    return false;
+  };
+
+  // Fetch notifications
+  const fetchNotifications = async () => {
+    try {
+      const tokens = getTokens();
+      if (!tokens?.accessToken || !NOTIFICATIONS_ENDPOINT) {
+        setNotificationsError("Not authenticated or user not loaded");
+        setNotificationsLoading(false);
+        return;
+      }
+
+      const response = await fetch(NOTIFICATIONS_ENDPOINT, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${tokens.accessToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (data.success && data.messages) {
+        const updatedMessages = data.messages.map((msg) => {
+          if (localReadStates[msg.id]) {
+            return { ...msg, is_read: 1 };
+          }
+          return msg;
+        });
+
+        setNotifications(updatedMessages);
+        setUnreadCount(data.unread_count || 0);
+        setNotificationsError(null);
+      }
+    } catch (err) {
+      setNotificationsError(err.message);
+    } finally {
+      setNotificationsLoading(false);
+    }
+  };
+
+  // Detect screen size
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768); // md breakpoint
+    };
+
+    handleResize(); // Set initial value
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Fetch notifications on mount
+  useEffect(() => {
+    fetchNotifications();
+  }, []);
 
   // Close share menu on outside click
   useEffect(() => {
@@ -34,11 +122,11 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
   useEffect(() => {
     if (!user) return;
 
-    const playerName = user?.fullName || user?.username || 'Player';
-    const playerTag = user?.username || 'player';
-    const primaryGame = user?.primaryGame || user?.game || 'Gaming';
-    const rank = user?.rank || 'Player';
-    const avatar = user?.avatar || '';
+    const playerName = user?.fullName || user?.username || "Player";
+    const playerTag = user?.username || "player";
+    const primaryGame = user?.primaryGame || user?.game || "Gaming";
+    const rank = user?.rank || "Player";
+    const avatar = user?.avatar || "";
 
     // Build OG image URL with player data
     const ogImageParams = new URLSearchParams({
@@ -52,25 +140,33 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
 
     // Update meta tags
     const updateMetaTag = (name, content) => {
-      let tag = document.querySelector(`meta[property="${name}"]`) || document.querySelector(`meta[name="${name}"]`);
+      let tag =
+        document.querySelector(`meta[property="${name}"]`) ||
+        document.querySelector(`meta[name="${name}"]`);
       if (!tag) {
-        tag = document.createElement('meta');
-        tag.setAttribute(name.startsWith('og:') ? 'property' : 'name', name);
+        tag = document.createElement("meta");
+        tag.setAttribute(name.startsWith("og:") ? "property" : "name", name);
         document.head.appendChild(tag);
       }
       tag.content = content;
     };
 
-    updateMetaTag('og:title', `${playerName} - Inception Games Profile`);
-    updateMetaTag('og:description', `Check out ${playerName}'s esports profile on Inception Games. ${primaryGame} player with ${rank} rank.`);
-    updateMetaTag('og:image', ogImageUrl);
-    updateMetaTag('og:type', 'profile');
-    updateMetaTag('twitter:card', 'summary_large_image');
-    updateMetaTag('twitter:title', `${playerName} - Inception Games`);
-    updateMetaTag('twitter:description', `${playerName}'s esports profile on Inception Games`);
-    updateMetaTag('twitter:image', ogImageUrl);
-
+    updateMetaTag("og:title", `${playerName} - Inception Games Profile`);
+    updateMetaTag(
+      "og:description",
+      `Check out ${playerName}'s esports profile on Inception Games. ${primaryGame} player with ${rank} rank.`,
+    );
+    updateMetaTag("og:image", ogImageUrl);
+    updateMetaTag("og:type", "profile");
+    updateMetaTag("twitter:card", "summary_large_image");
+    updateMetaTag("twitter:title", `${playerName} - Inception Games`);
+    updateMetaTag(
+      "twitter:description",
+      `${playerName}'s esports profile on Inception Games`,
+    );
+    updateMetaTag("twitter:image", ogImageUrl);
   }, [user]);
+
   const initials = (user?.fullName || user?.username || "P")
     .split(" ")
     .map((w) => w[0])
@@ -78,9 +174,141 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
     .toUpperCase()
     .slice(0, 2);
 
+  // Share button component (reused in both layouts)
+  const ShareButton = ({ size, buttonClass, iconSize }) => (
+    <div className="relative" ref={shareRef}>
+      <motion.button
+        className={buttonClass}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={() => setShowShareMenu(!showShareMenu)}
+        aria-label="Share profile"
+      >
+        <Share2 size={size} className={iconSize} />
+      </motion.button>
+
+      <AnimatePresence>
+        {showShareMenu && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 5 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 5 }}
+            className={
+              isMobile
+                ? "absolute right-8 sm:right-10 bottom-1 z-50 w-40 sm:w-44 rounded-xl bg-[#1a1a24] border border-white/[0.08] shadow-2xl shadow-black/40 overflow-hidden"
+                : "absolute right-10 sm:right-12 bottom-1 z-50 w-44 sm:w-48 rounded-xl bg-[#1a1a24] border border-white/[0.08] shadow-2xl shadow-black/40 overflow-hidden"
+            }
+          >
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(
+                  typeof window !== "undefined" ? window.location.href : "",
+                );
+                setShowShareMenu(false);
+              }}
+              className={
+                isMobile
+                  ? "w-full px-3 py-2 text-left flex items-center gap-2 text-gray-300 hover:bg-white/[0.05] transition border-b border-white/[0.05] text-xs sm:text-sm"
+                  : "w-full px-3 sm:px-4 py-2.5 sm:py-3 text-left flex items-center gap-2 sm:gap-3 text-gray-300 hover:bg-white/[0.05] transition border-b border-white/[0.05] text-sm"
+              }
+            >
+              <svg
+                className={
+                  isMobile
+                    ? "w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0"
+                    : "w-4 sm:w-5 h-4 sm:h-5 flex-shrink-0"
+                }
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.658 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                />
+              </svg>
+              <span className="font-medium">Copy Link</span>
+            </button>
+
+            <button
+              onClick={() => {
+                const url =
+                  typeof window !== "undefined" ? window.location.href : "";
+                const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+                window.open(
+                  facebookUrl,
+                  "facebook-share",
+                  "width=600,height=400",
+                );
+                setShowShareMenu(false);
+              }}
+              className={
+                isMobile
+                  ? "w-full px-3 py-2 text-left flex items-center gap-2 text-gray-300 hover:bg-white/[0.05] transition border-b border-white/[0.05] text-xs sm:text-sm"
+                  : "w-full px-3 sm:px-4 py-2.5 sm:py-3 text-left flex items-center gap-2 sm:gap-3 text-gray-300 hover:bg-white/[0.05] transition border-b border-white/[0.05] text-sm"
+              }
+            >
+              <svg
+                className={
+                  isMobile
+                    ? "w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0"
+                    : "w-4 sm:w-5 h-4 sm:h-5 flex-shrink-0"
+                }
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+              </svg>
+              <span className="font-medium">Facebook</span>
+            </button>
+
+            <button
+              onClick={() => {
+                const url =
+                  typeof window !== "undefined" ? window.location.href : "";
+                const text = `Check out my profile on Inception Games!`;
+                const twitterUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
+                window.open(
+                  twitterUrl,
+                  "twitter-share",
+                  "width=600,height=400",
+                );
+                setShowShareMenu(false);
+              }}
+              className={
+                isMobile
+                  ? "w-full px-3 py-2 text-left flex items-center gap-2 text-gray-300 hover:bg-white/[0.05] transition text-xs sm:text-sm"
+                  : "w-full px-3 sm:px-4 py-2.5 sm:py-3 text-left flex items-center gap-2 sm:gap-3 text-gray-300 hover:bg-white/[0.05] transition text-sm"
+              }
+            >
+              <svg
+                className={
+                  isMobile
+                    ? "w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0"
+                    : "w-4 sm:w-5 h-4 sm:h-5 flex-shrink-0"
+                }
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2s9 5 20 5a9.5 9.5 0 00-9-5.5c4.75 2.25 7-7 7-7" />
+              </svg>
+              <span className="font-medium">Twitter / X</span>
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+
   return (
     <motion.div
-      className="relative w-full rounded-2xl overflow-visible border border-white/[0.06] min-h-[420px] sm:min-h-[320px] lg:min-h-[420px]"
+      className={
+        isMobile
+          ? "relative w-full rounded-2xl overflow-hidden border border-white/[0.06] min-h-[180px]"
+          : "relative w-full rounded-2xl overflow-hidden border border-white/[0.06] min-h-[320px] sm:min-h-[280px] md:min-h-[240px]"
+      }
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7 }}
@@ -119,231 +347,481 @@ export default function ProfileHeroBanner({ user, onEditProfile }) {
         }}
       />
 
-      {/* Content */}
-      <div className="relative z-10 h-full flex flex-col justify-between px-6 sm:px-8 lg:px-10 py-6 mt-[20%]">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-8">
-          {/* Avatar */}
-          <motion.div
-            className="relative"
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.2, type: "spring", stiffness: 180 }}
-          >
-            {/* Glow */}
-            <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 blur-md opacity-60 animate-pulse" />
+      {/* CONDITIONAL RENDERING: Desktop vs Mobile Layout */}
+      {!isMobile ? (
+        // DESKTOP LAYOUT
+        <div className="relative z-10 flex flex-col justify-end px-4 sm:px-6 md:px-8 lg:px-10 pb-6 sm:pb-8 pt-auto min-h-[320px] sm:min-h-[280px] md:min-h-[240px]">
+          <div className="flex flex-col sm:flex-row items-center sm:items-end justify-between gap-4 sm:gap-6 w-full">
+            {/* Left: Avatar + Info */}
+            <div className="flex flex-col sm:flex-row items-center sm:items-end gap-4 sm:gap-6 md:gap-8 flex-1 min-w-0 w-full sm:w-auto">
+              {/* Avatar */}
+              <motion.div
+                className="relative flex-shrink-0"
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.2, type: "spring", stiffness: 180 }}
+              >
+                <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 blur-md opacity-60 animate-pulse" />
+                <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 rounded-full p-[2px] bg-gradient-to-br from-purple-500 to-pink-500">
+                  <div className="w-full h-full rounded-full bg-[#0c0c14] overflow-hidden flex items-center justify-center">
+                    {user?.avatar || user?.avatar_url ? (
+                      <img
+                        src={user.avatar || user.avatar_url}
+                        className="w-full h-full object-cover"
+                        alt="Profile avatar"
+                      />
+                    ) : (
+                      <span className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold bg-gradient-to-br from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                        {initials}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <span className="absolute bottom-2 sm:bottom-3 right-2 sm:right-3 w-3 sm:w-4 h-3 sm:h-4 bg-emerald-500 rounded-full border-2 border-[#0c0c14] animate-pulse" />
+              </motion.div>
 
-            {/* Avatar */}
-            <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full p-[2px] bg-gradient-to-br from-purple-500 to-pink-500">
-              <div className="w-full h-full rounded-full bg-[#0c0c14] overflow-hidden flex items-center justify-center">
-                {user?.avatar || user?.avatar_url ? (
-                  <img
-                    src={user.avatar || user.avatar_url}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <span className="text-4xl font-bold bg-gradient-to-br from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                    {initials}
-                  </span>
-                )}
-              </div>
+              {/* Player Info */}
+              <motion.div
+                className="flex-1 min-w-0 text-center sm:text-left"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.3 }}
+              >
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-baseline flex-wrap gap-2">
+                    <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white leading-tight">
+                      {user?.fullName ||
+                        user?.full_name ||
+                        user?.username ||
+                        "Player"}
+                    </h1>
+                    {user?.username && (
+                      <span className="text-gray-400 text-xs sm:text-sm leading-tight">
+                        @{user.username}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap items-center justify-center sm:justify-start gap-1.5 sm:gap-2 text-xs sm:text-sm mt-2">
+                    {(user?.primaryGame ||
+                      user?.primary_game ||
+                      user?.game) && (
+                      <div className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-white/[0.05] border border-white/[0.1] text-gray-300 font-medium whitespace-nowrap text-[11px] sm:text-xs">
+                        {user?.primaryGame || user?.primary_game || user?.game}
+                      </div>
+                    )}
+                    {(user?.gameRole || user?.game_role) && (
+                      <div className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-white/[0.05] border border-white/[0.1] text-gray-300 font-medium whitespace-nowrap text-[11px] sm:text-xs">
+                        {user?.gameRole || user?.game_role}
+                      </div>
+                    )}
+                    {user?.rank && (
+                      <div className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-white/[0.05] border border-white/[0.1] text-gray-300 font-medium whitespace-nowrap text-[11px] sm:text-xs">
+                        {user.rank}
+                      </div>
+                    )}
+                    {user?.email && (
+                      <div className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-white/[0.05] border border-white/[0.1] text-gray-300 font-medium whitespace-nowrap truncate max-w-[150px] sm:max-w-[200px] text-[11px] sm:text-xs">
+                        {user.email}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
             </div>
 
-            {/* Online indicator */}
-            <span className="absolute bottom-3 right-3 w-4 h-4 bg-emerald-400 rounded-full border-2 border-[#0c0c14] animate-ping" />
-            <span className="absolute bottom-3 right-3 w-4 h-4 bg-emerald-500 rounded-full border-2 border-[#0c0c14]" />
-          </motion.div>
-
-          {/* Info */}
-          <div className="flex-1 min-w-0">
+            {/* Right: Action Buttons */}
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
+              className="flex items-center gap-2 sm:gap-3 flex-shrink-0"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4 }}
             >
-              <div className="flex items-center gap-3 flex-wrap">
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight">
-                  {user?.fullName ||
-                    user?.full_name ||
-                    user?.username ||
-                    "Player"}
-                </h1>
-                {user?.username &&
-                  user.username !== (user?.fullName || user?.full_name) && (
-                    <span className="px-2.5 py-0.5 rounded-md bg-white/[0.06] text-gray-400 text-sm font-medium">
-                      @{user.username}
-                    </span>
-                  )}
-              </div>
-
-              {/* Tags row */}
-              <div className="flex flex-wrap items-center gap-2 mt-3">
-                {(user?.primaryGame || user?.primary_game || user?.game) && (
-                  <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-purple-500/10 text-purple-300 border border-purple-500/20">
-                    <Gamepad2 size={12} />
-                    {user?.primaryGame || user?.primary_game || user?.game}
-                  </span>
-                )}
-                {user?.rank && (
-                  <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-pink-500/10 text-pink-300 border border-pink-500/20">
-                    <Award size={12} />
-                    {user.rank}
-                  </span>
-                )}
-                {user?.region && (
-                  <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-white/[0.04] text-gray-400 border border-white/[0.08]">
-                    <MapPin size={12} />
-                    {user.region}
-                  </span>
-                )}
-                {(user?.gameRole || user?.game_role || user?.role) && (
-                  <span className="px-3 py-1 rounded-full text-xs font-medium bg-white/[0.04] text-gray-400 border border-white/[0.08]">
-                    {user?.gameRole || user?.game_role || user?.role}
-                  </span>
-                )}
-              </div>
-
-              {user?.bio && (
-                <p className="text-gray-400 text-sm mt-3 max-w-xl leading-relaxed line-clamp-2">
-                  {user.bio}
-                </p>
+              <ShareButton
+                size={16}
+                buttonClass="p-2 sm:p-2.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-gray-400 hover:text-white hover:bg-white/[0.08] transition cursor-pointer"
+                iconSize="sm:w-5 sm:h-5"
+              />
+              {onEditProfile && (
+                <motion.button
+                  className="p-2 sm:p-2.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-gray-400 hover:text-white hover:bg-white/[0.08] transition cursor-pointer"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={onEditProfile}
+                  aria-label="Edit Profile"
+                >
+                  <Edit3 size={16} className="sm:w-5 sm:h-5" />
+                </motion.button>
               )}
             </motion.div>
           </div>
+        </div>
+      ) : (
+        // MOBILE LAYOUT
+        <div className="relative z-10 flex flex-col justify-end px-4 sm:px-6 md:px-8 lg:px-10 pb-6 sm:pb-8 pt-auto min-h-[180px]">
+          <div className="flex flex-row items-start justify-between gap-3 w-full">
+            {/* Left: Avatar + Info */}
+            <div className="flex flex-row items-start gap-3 flex-1 min-w-0">
+              {/* Avatar */}
+              <motion.div
+                className="relative flex-shrink-0 mt-1"
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.2, type: "spring", stiffness: 180 }}
+              >
+                <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 blur-md opacity-60 animate-pulse" />
+                <div className="relative w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-full p-[2px] bg-gradient-to-br from-purple-500 to-pink-500">
+                  <div className="w-full h-full rounded-full bg-[#0c0c14] overflow-hidden flex items-center justify-center">
+                    {user?.avatar || user?.avatar_url ? (
+                      <img
+                        src={user.avatar || user.avatar_url}
+                        className="w-full h-full object-cover"
+                        alt="Profile avatar"
+                      />
+                    ) : (
+                      <span className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold bg-gradient-to-br from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                        {initials}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <span className="absolute bottom-1 right-1 w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5 bg-emerald-500 rounded-full border-2 border-[#0c0c14] animate-pulse" />
+              </motion.div>
 
-          {/* Action Buttons */}
-          <motion.div
-            className="flex gap-2 flex-shrink-0"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.4 }}
-          >
-            {/* Share button with dropdown */}
-            <div className="relative" ref={shareRef}>
+              {/* Player Info */}
+              <motion.div
+                className="flex-1 min-w-0"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.3 }}
+              >
+                <div className="flex items-baseline flex-wrap gap-1.5">
+                  <h1 className="text-base sm:text-xl md:text-2xl lg:text-3xl font-bold text-white leading-tight truncate">
+                    {user?.fullName ||
+                      user?.full_name ||
+                      user?.username ||
+                      "Player"}
+                  </h1>
+                  {user?.username && (
+                    <span className="text-gray-400 text-[10px] sm:text-xs md:text-sm leading-tight">
+                      @{user.username}
+                    </span>
+                  )}
+                </div>
+                <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
+                  {(user?.primaryGame || user?.primary_game || user?.game) && (
+                    <div className="px-2 py-0.5 rounded-full bg-white/[0.05] border border-white/[0.1] text-gray-300 font-medium whitespace-nowrap text-[10px] sm:text-xs">
+                      {user?.primaryGame || user?.primary_game || user?.game}
+                    </div>
+                  )}
+                  {(user?.gameRole || user?.game_role || user?.role) && (
+                    <div className="px-2 py-0.5 rounded-full bg-white/[0.05] border border-white/[0.1] text-gray-300 font-medium whitespace-nowrap text-[10px] sm:text-xs">
+                      {user?.gameRole || user?.game_role || user?.role}
+                    </div>
+                  )}
+                  {user?.rank && (
+                    <div className="px-2 py-0.5 rounded-full bg-white/[0.05] border border-white/[0.1] text-gray-300 font-medium whitespace-nowrap text-[10px] sm:text-xs">
+                      {user.rank}
+                    </div>
+                  )}
+                </div>
+                {user?.email && (
+                  <div className="mt-1">
+                    <div className="px-2 py-0.5 rounded-full bg-white/[0.05] border border-white/[0.1] text-gray-300 font-medium whitespace-nowrap truncate max-w-[150px] text-[10px] sm:text-xs inline-block">
+                      {user.email}
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+            </div>
+
+            {/* Right: Action Buttons */}
+            <motion.div
+              className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 mt-1"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4 }}
+            >
+              <ShareButton
+                size={14}
+                buttonClass="p-1.5 sm:p-2 rounded-lg bg-white/[0.05] border border-white/[0.1] text-gray-400 hover:text-white hover:bg-white/[0.08] transition"
+                iconSize="sm:w-4 sm:h-4 md:w-5 md:h-5"
+              />
+              {onEditProfile && (
+                <motion.button
+                  className="p-1.5 sm:p-2 rounded-lg bg-white/[0.05] border border-white/[0.1] text-gray-400 hover:text-white hover:bg-white/[0.08] transition"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={onEditProfile}
+                  aria-label="Edit Profile"
+                >
+                  <Edit3 size={14} className="sm:w-4 sm:h-4 md:w-5 md:h-5" />
+                </motion.button>
+              )}
+              {/* Bell Icon for Notifications (Mobile Only) */}
               <motion.button
-                className="p-2.5 rounded-xl bg-white/[0.04] border border-white/[0.08] text-gray-400 hover:text-white hover:bg-white/[0.08] transition"
+                className="relative p-1.5 sm:p-2 rounded-lg bg-white/[0.05] border border-white/[0.1] text-gray-400 hover:text-white hover:bg-white/[0.08] transition"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => setShowShareMenu(!showShareMenu)}
-                aria-label="Share profile"
+                onClick={() => {
+                  setNotificationsLoading(true);
+                  fetchNotifications();
+                  setShowNotificationsList(true);
+                }}
+                aria-label="Notifications"
               >
-                {copied ? (
-                  <Check size={18} className="text-emerald-400" />
-                ) : (
-                  <Share2 size={18} />
-                )}
-              </motion.button>
-              <AnimatePresence>
-                {showShareMenu && (
+                <Bell size={14} className="sm:w-4 sm:h-4 md:w-5 md:h-5" />
+                {unreadCount > 0 && (
                   <motion.div
-                    initial={{ opacity: 0, scale: 0.9, y: 5 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.9, y: 5 }}
-                 className="absolute -right-40 bottom-12 z-50 w-48 rounded-xl bg-[#1a1a24] border border-white/[0.08] shadow-2xl shadow-black/40 overflow-hidden"
+                    className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-gradient-to-r from-pink-600 to-pink-500 text-white text-[9px] font-bold flex items-center justify-center shadow-lg shadow-pink-600/50"
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
                   >
-                    <button
-                      className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-300 hover:bg-white/[0.06] hover:text-white transition"
-                      onClick={async () => {
-                        const url =
-                          typeof window !== "undefined"
-                            ? window.location.href
-                            : "";
-                        if (navigator.share) {
-                          try {
-                            await navigator.share({
-                              title: `${user?.fullName || "Player"} - SNS Profile`,
-                              url,
-                            });
-                          } catch {}
-                        } else {
-                          await navigator.clipboard.writeText(url);
-                          setCopied(true);
-                          setTimeout(() => setCopied(false), 2000);
-                        }
-                        setShowShareMenu(false);
-                      }}
-                    >
-                      <Link2 size={14} /> Copy Link
-                    </button>
-                    <button
-                      className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-300 hover:bg-white/[0.06] hover:text-white transition"
-                      onClick={() => {
-                        const url =
-                          typeof window !== "undefined"
-                            ? window.location.href
-                            : "";
-                        window.open(
-                          `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
-                          "_blank",
-                          "width=600,height=400",
-                        );
-                        setShowShareMenu(false);
-                      }}
-                    >
-                      <Facebook size={14} /> Facebook
-                    </button>
-                    <button
-                      className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-300 hover:bg-white/[0.06] hover:text-white transition"
-                      onClick={() => {
-                        const url =
-                          typeof window !== "undefined"
-                            ? window.location.href
-                            : "";
-                        window.open(
-                          `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(`Check out ${user?.fullName || "this player"} on Inception Games!`)}`,
-                          "_blank",
-                          "width=600,height=400",
-                        );
-                        setShowShareMenu(false);
-                      }}
-                    >
-                      <Twitter size={14} /> Twitter / X
-                    </button>
+                    {unreadCount > 9 ? "9+" : unreadCount}
                   </motion.div>
                 )}
-              </AnimatePresence>
-            </div>
-            {/* Notification button */}
-
-            {/* Edit Profile button */}
-            {onEditProfile && (
-              <motion.button
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 hover:bg-purple-500/15 hover:border-purple-500/30 text-sm font-medium transition"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={onEditProfile}
-                aria-label="Edit Profile"
-              >
-                <Edit3 size={15} />
-                <span className="hidden sm:inline">Edit Profile</span>
               </motion.button>
-            )}
-          </motion.div>
+            </motion.div>
+          </div>
         </div>
+      )}
 
-        {/* Bottom stats row */}
-        {/* <motion.div
-          className="flex items-center gap-8 mt-8 pt-6 border-t border-white/[0.06]"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-        >
-          <div>
-            <p className="text-gray-500 text-[10px] font-semibold uppercase tracking-widest">Followers</p>
-            <p className="text-xl sm:text-2xl font-bold text-white mt-0.5">--</p>
-          </div>
-          <div>
-            <p className="text-gray-500 text-[10px] font-semibold uppercase tracking-widest">Following</p>
-            <p className="text-xl sm:text-2xl font-bold text-white mt-0.5">--</p>
-          </div>
-          <div>
-            <p className="text-gray-500 text-[10px] font-semibold uppercase tracking-widest">Member Since</p>
-            <p className="text-xl sm:text-2xl font-bold text-white mt-0.5">2025</p>
-          </div>
-        </motion.div> */}
-      </div>
+      {/* Notifications List Modal */}
+      <AnimatePresence>
+        {showNotificationsList && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowNotificationsList(false)}
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[200] p-4"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ type: "spring", duration: 0.3 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-gradient-to-br from-black via-[#0a0a0f] to-black border border-white/[0.08] rounded-2xl max-w-2xl w-full shadow-2xl shadow-black/50 overflow-hidden max-h-150 flex flex-col"
+            >
+              {/* Header */}
+              <div className="px-6 py-4 border-b border-white/[0.08] bg-white/[0.02] flex items-center justify-between">
+                <h3 className="text-lg font-bold text-white">
+                  Notifications{" "}
+                  {notifications.length > 0 && `(${notifications.length})`}
+                </h3>
+                <button
+                  onClick={() => setShowNotificationsList(false)}
+                  className="p-2 rounded-lg bg-white/[0.05] border border-white/[0.1] text-gray-400 hover:text-white transition"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              {/* Scrollable List */}
+              <div className="flex-1 overflow-y-auto">
+                {notificationsLoading && (
+                  <div className="flex items-center justify-center py-12">
+                    <div className="w-5 h-5 rounded-full border-2 border-purple-500/20 border-t-purple-500 animate-spin" />
+                  </div>
+                )}
+
+                {!notificationsLoading && notifications.length === 0 && (
+                  <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
+                    <p className="text-sm text-gray-500">No notifications</p>
+                  </div>
+                )}
+
+                {!notificationsLoading && notifications.length > 0 && (
+                  <div className="divide-y divide-white/[0.05]">
+                    {notifications.map((notif, idx) => {
+                      const isUnread = !notif.is_read;
+
+                      return (
+                        <motion.button
+                          key={notif.id}
+                          onClick={() => {
+                            if (isUnread) {
+                              setLocalReadStates((prev) => ({
+                                ...prev,
+                                [notif.id]: true,
+                              }));
+
+                              setNotifications((prev) =>
+                                prev.map((n) =>
+                                  n.id === notif.id ? { ...n, is_read: 1 } : n,
+                                ),
+                              );
+                              setUnreadCount((prev) => Math.max(0, prev - 1));
+
+                              markNotificationAsRead(notif.id);
+                            }
+
+                            setSelectedNotif(notif);
+                            setShowNotificationsList(false);
+                          }}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: idx * 0.05 }}
+                          className={`w-full px-6 py-4 text-left hover:bg-white/[0.04] transition flex items-start gap-4 group border-l-4 ${
+                            isUnread
+                              ? "border-l-purple-500/70"
+                              : "border-l-purple-500/20"
+                          }`}
+                        >
+                          <div
+                            className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center text-lg transition-all duration-300 ${
+                              isUnread
+                                ? "bg-gradient-to-br from-purple-600 to-pink-600 shadow-lg shadow-purple-600/60"
+                                : "bg-gradient-to-br from-purple-700/50 to-pink-700/50"
+                            }`}
+                          >
+                            🎯
+                          </div>
+
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">
+                              {notif.game_name || "General"}
+                            </p>
+                            <p className="text-sm text-white group-hover:text-gray-100 transition">
+                              {notif.message}
+                            </p>
+                            <p className="text-xs text-gray-600 mt-2">
+                              {new Date(notif.created_at).toLocaleDateString(
+                                "en-US",
+                                {
+                                  month: "short",
+                                  day: "numeric",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                },
+                              )}
+                            </p>
+                          </div>
+
+                          {isUnread && (
+                            <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-emerald-400 mt-2 animate-pulse" />
+                          )}
+                        </motion.button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Notification Details Modal */}
+      <AnimatePresence>
+        {selectedNotif && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedNotif(null)}
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[150] p-4"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ type: "spring", duration: 0.3 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-gradient-to-br from-black via-[#0a0a0f] to-black border border-white/[0.08] rounded-2xl max-w-md w-full shadow-2xl shadow-black/50 overflow-hidden"
+            >
+              <button
+                onClick={() => setSelectedNotif(null)}
+                className="absolute top-4 right-4 p-2 rounded-lg bg-white/[0.05] border border-white/[0.1] text-gray-400 hover:text-white hover:bg-white/[0.08] transition z-10"
+              >
+                <X size={18} />
+              </button>
+
+              <div className="p-6">
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                  className="mb-6"
+                >
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-3 h-3 bg-emerald-400 rounded-full animate-pulse" />
+                    <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
+                      {selectedNotif.game_name || "General"}
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-bold text-white">
+                    {selectedNotif.message || "New Notification"}
+                  </h3>
+                  <p className="text-xs text-gray-500 mt-2">
+                    {new Date(selectedNotif.created_at).toLocaleDateString(
+                      "en-US",
+                      {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      },
+                    )}
+                  </p>
+                </motion.div>
+
+                <div className="h-px bg-gradient-to-r from-white/[0.08] to-transparent mb-6" />
+
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                  className="space-y-4"
+                >
+                  <div>
+                    <p className="text-xs uppercase tracking-wider text-gray-500 mb-2">
+                      Game
+                    </p>
+                    <p className="text-sm text-white font-medium">
+                      {selectedNotif.game_name || "N/A"}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-xs uppercase tracking-wider text-gray-500 mb-2">
+                      Details
+                    </p>
+                    <p className="text-sm text-gray-300 leading-relaxed">
+                      {selectedNotif.message}
+                    </p>
+                  </div>
+
+                  {selectedNotif.notification_type && (
+                    <div>
+                      <p className="text-xs uppercase tracking-wider text-gray-500 mb-2">
+                        Type
+                      </p>
+                      <p className="text-sm text-white font-medium">
+                        {selectedNotif.notification_type}
+                      </p>
+                    </div>
+                  )}
+                </motion.div>
+
+                <motion.button
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                  onClick={() => setSelectedNotif(null)}
+                  className="w-full mt-6 py-2.5 rounded-lg bg-white/[0.05] border border-white/[0.1] text-white text-sm font-medium hover:bg-white/[0.08] transition"
+                >
+                  Close
+                </motion.button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Top accent line */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-500/40 to-pink-500/40" />
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-500/30 to-transparent" />
     </motion.div>
   );
 }

@@ -6,49 +6,55 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export const gamesData = {
-  title: "Our Games",
+  title: "OUR GAMES",
   subtitle: "Compete in your favorite titles",
   items: [
     {
       id: 1,
       name: "Z Inception",
       genre: "Action",
-      photo: "/Ecosystem/Games/zinception.jpg",
+      photo:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783147054/zinception_gkfydy.jpg",
       link: "https://drive.google.com/file/d/1a0PfwyBeGXXJAvE5wRGG_7wey0y5JCZx/view",
     },
     {
       id: 2,
       name: "Beyblade",
       genre: "Sports",
-      photo: "/Ecosystem/Games/Beyblade.png",
+      photo:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783147059/Beyblade_vwy1ee.png",
       link: "https://gamejolt.com/games/bayblade_demo/274742",
     },
     {
       id: 3,
       name: "Dhaka Racing Sim",
       genre: "Racing",
-      photo: "/Ecosystem/Games/DhakaRacingSim.jpg",
+      photo:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783147061/DhakaRacingSim_z1yhzy.jpg",
       link: "https://www.facebook.com/reel/2260993467662799",
     },
     {
       id: 4,
       name: "Exo Discover",
       genre: "Adventure",
-      photo: "/Ecosystem/Games/discover.png",
+      photo:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783147064/discover_zgyd63.png",
       link: "https://imtiazahmeddipto.itch.io/exo-descover",
     },
     {
       id: 5,
       name: "Arcade Game",
       genre: "Casual",
-      photo: "/Ecosystem/Games/ArcadeGame.jpeg",
+      photo:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783147057/ArcadeGame_ou85fx.jpg",
       link: "https://play.google.com/store/apps/details?id=asia.ifarmer.farmers",
     },
     {
       id: 6,
       name: "Unknown Surge",
       genre: "Action",
-      photo: "/Ecosystem/Games/unknownsurge.png",
+      photo:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783147067/unknownsurge_xza67r.png",
       link: "https://store.steampowered.com/app/1132450/Unknown_Surge/",
     },
   ],
@@ -141,6 +147,7 @@ export function GamesCarousel() {
   const [paused, setPaused] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const intervalRef = useRef(null);
+  const [direction, setDirection] = useState(1);
 
   useEffect(() => {
     const handleResize = () => {
@@ -152,10 +159,12 @@ export function GamesCarousel() {
   }, []);
 
   const next = useCallback(() => {
+    setDirection(1);
     setActiveIndex((prev) => (prev + 1) % total);
   }, [total]);
 
   const prev = useCallback(() => {
+    setDirection(-1);
     setActiveIndex((prev) => (prev - 1 + total) % total);
   }, [total]);
 
@@ -204,9 +213,9 @@ export function GamesCarousel() {
 
         <div
           className="relative flex items-center justify-center w-full overflow-hidden"
-          style={{ 
+          style={{
             height: isMobile ? "340px" : "540px",
-            maxWidth: "100vw"
+            maxWidth: "100vw",
           }}
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
@@ -235,14 +244,22 @@ export function GamesCarousel() {
                 <motion.div
                   key={`${card.position}-${card.key}`}
                   className="absolute flex-shrink-0"
-                  initial={{ opacity: 0, scale: 0.7, x: 250 }}
+                  initial={{
+                    opacity: 0,
+                    scale: 0.7,
+                    x: direction === 1 ? 250 : -250,
+                  }}
                   animate={{
                     x,
                     opacity: isCenter ? 1 : isMobile ? 0 : 0.5,
                     scale: isCenter ? 1 : isMobile ? 0 : 0.8,
                     zIndex: isCenter ? 30 : 10,
                   }}
-                  exit={{ opacity: 0, scale: 0.7, x: -250 }}
+                  exit={{
+                    opacity: 0,
+                    scale: 0.7,
+                    x: direction === 1 ? 250 : -250,
+                  }}
                   transition={{ type: "spring", stiffness: 260, damping: 28 }}
                   style={{ width, height }}
                 >
