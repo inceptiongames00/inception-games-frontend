@@ -356,11 +356,11 @@ function PlatformDisplay({ platform }) {
   );
 }
 
-// Coming Soon Card Component
-const ComingSoonCard = React.memo(function ComingSoonCard({ category, icon: IconComponent }) {
-  const isComingSoonDate = new Date("2026-07-28");
-  const daysUntil = Math.ceil((isComingSoonDate - new Date()) / (1000 * 60 * 60 * 24));
-  
+// Coming Soon Card Component - Memoized
+const ComingSoonCard = React.memo(function ComingSoonCard({
+  category,
+  icon: IconComponent,
+}) {
   const categoryColors = {
     Tournament: {
       bg: "from-orange-600/20 to-red-600/20",
@@ -376,12 +376,12 @@ const ComingSoonCard = React.memo(function ComingSoonCard({ category, icon: Icon
       accent: "bg-pink-500/10 border-pink-500/30",
       text: "text-pink-300",
     },
-    Scrims: {
-      bg: "from-red-600/20 to-orange-600/20",
-      border: "border-red-500/30",
-      icon: "text-red-400",
-      accent: "bg-red-500/10 border-red-500/30",
-      text: "text-red-300",
+    "Free Tournament": {
+      bg: "from-emerald-600/20 to-green-600/20",
+      border: "border-emerald-500/30",
+      icon: "text-emerald-400",
+      accent: "bg-emerald-500/10 border-emerald-500/30",
+      text: "text-emerald-300",
     },
   };
 
@@ -425,7 +425,9 @@ const ComingSoonCard = React.memo(function ComingSoonCard({ category, icon: Icon
 
         {/* Coming Soon Date */}
         <div className="space-y-2 pt-2">
-          <p className="text-gray-300 text-sm font-medium">Opens July 28th, 2026</p>
+          <p className="text-gray-300 text-sm font-medium">
+            Opens June 20th, 2026
+          </p>
           <p className="text-gray-500 text-xs">
             {/* {daysUntil > 0 ? `In ${daysUntil} days` : "Available now!"} */}
           </p>
@@ -895,74 +897,192 @@ export default function EventsSection({
   const fetchEvents = useCallback(async () => {
     setLoading(true);
     setError(null);
-    // try {
-    //   const res = await fetch(API.SCRIMS_GET_ALL, {
-    //     method: "GET",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //   });
-    //   const data = await res.json();
+    try {
+      let allEvents = [];
 
-    //   if (res.ok) {
-    //     // New API shape: { total, scrims: [...] }
-    //     const scrimsData = data.scrims || data.data || [];
+      // Fetch Scrims if "all" or "Scrims" is selected
+      // TEMPORARILY DISABLED - Scrims feature coming soon
+      /*
+      if (activeFilter === "all" || activeFilter === "Scrims") {
+        try {
+          const scrimsRes = await fetch(SCRIMS_API_URL, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          const scrimsData = await scrimsRes.json();
 
-    //     // Transform API scrims to our card format
-    //     const transformedEvents = scrimsData.map((scrim) => {
-    //       return {
-    //         id: scrim.id,
-    //         title: scrim.title,
-    //         eventType: "Scrims",
-    //         game: {
-    //           name: scrim.game || scrim.title?.split(" ")[0] || "Gaming",
-    //           image: getGameImage(scrim.title, scrim.game),
-    //         },
-    //         game_name: scrim.game,
-    //         status: scrim.status,
-    //         start_date: scrim.start_at,
-    //         event_date: scrim.start_at,
-    //         end_date: scrim.end_at,
-    //         location: scrim.region,
-    //         venue: scrim.region,
-    //         platform: scrim.platform || "All Platforms",
-    //         teamType: scrim.game_mode || "Open",
-    //         prizePool: parseFloat(scrim.prize_pool) || 0,
-    //         prize_pool: parseFloat(scrim.prize_pool) || 0,
-    //         currency: scrim.currency || "BDT",
-    //         entryType: scrim.entry_type,
-    //         entryFee: parseFloat(scrim.entry_fee) || 0,
-    //         teamSize: scrim.team_size,
-    //         totalSlots: scrim.max_teams || 0,
-    //         total_slots: scrim.max_teams || 0,
-    //         filledSlots: scrim.filled_teams || 0,
-    //         filled_slots: scrim.filled_teams || 0,
-    //         registrationStart: scrim.reg_start_at,
-    //         registration_start: scrim.reg_start_at,
-    //         registrationEnd: scrim.reg_end_at,
-    //         registration_end: scrim.reg_end_at,
-    //         tournamentStart: scrim.start_at,
-    //         tournamentEnd: scrim.end_at,
-    //         rules: scrim.rules,
-    //         slots: scrim.slots || [],
-    //         host: scrim.hosted_by || "Inception Games",
-    //         organizer: scrim.hosted_by || "Inception Games",
-    //         banner_image: scrim.banner_image,
-    //       };
-    //     });
-    //     setEvents(transformedEvents);
-    //   } else {
-    //     setEvents([]);
-    //   }
-    // } catch (err) {
-    //   console.error("[v0] Failed to fetch scrims:", err);
-    //   setError("Failed to load scrims. Please try again.");
-    //   setEvents([]);
-    // } finally {
-    //   setLoading(false);
-    // }
-    setEvents([]);
-    setLoading(false);
+          if (scrimsRes.ok) {
+            const scrimsArray = scrimsData.scrims || scrimsData.data || [];
+            
+            // Transform API scrims to our card format
+            const transformedScrims = scrimsArray.map((scrim) => {
+              return {
+                id: scrim.id,
+                title: scrim.title,
+                eventType: "Scrims",
+                game: {
+                  name: scrim.game || scrim.title?.split(" ")[0] || "Gaming",
+                  image: getGameImage(scrim.title, scrim.game),
+                },
+                game_name: scrim.game,
+                status: scrim.status,
+                start_date: scrim.start_at,
+                event_date: scrim.start_at,
+                end_date: scrim.end_at,
+                location: scrim.region,
+                venue: scrim.region,
+                platform: scrim.platform || "All Platforms",
+                teamType: scrim.game_mode || "Open",
+                prizePool: parseFloat(scrim.prize_pool) || 0,
+                prize_pool: parseFloat(scrim.prize_pool) || 0,
+                currency: scrim.currency || "BDT",
+                entryType: scrim.entry_type,
+                entryFee: parseFloat(scrim.entry_fee) || 0,
+                teamSize: scrim.team_size,
+                totalSlots: scrim.max_teams || 0,
+                total_slots: scrim.max_teams || 0,
+                filledSlots: scrim.filled_teams || 0,
+                filled_slots: scrim.filled_teams || 0,
+                registrationStart: scrim.reg_start_at,
+                registration_start: scrim.reg_start_at,
+                registrationEnd: scrim.reg_end_at,
+                registration_end: scrim.reg_end_at,
+                tournamentStart: scrim.start_at,
+                tournamentEnd: scrim.end_at,
+                rules: scrim.rules,
+                slots: scrim.slots || [],
+                host: scrim.hosted_by || "Inception Games",
+                organizer: scrim.hosted_by || "Inception Games",
+                banner_image: scrim.banner_image,
+              };
+            });
+            
+            allEvents.push(...transformedScrims);
+            
+            // Cache the scrims list for detail page to use
+            sessionStorage.setItem("scrims_cache", JSON.stringify(scrimsArray));
+            sessionStorage.setItem("scrims_cache_timestamp", Date.now().toString());
+          }
+        } catch (err) {
+          console.error("[EventsSection] Failed to fetch scrims:", err);
+        }
+      }
+      */
+
+      // Fetch Tournaments if "all" or "Tournament" is selected
+      if (activeFilter === "all" || activeFilter === "Tournament") {
+        try {
+          // Use the new authenticated endpoint with userId
+          const userId = user?.id || user?.userId || "SNS-5556"; // Use correct user id from context
+          const newTournamentURL = `https://inception-games.an.r.appspot.com/api/v1/auth/tournaments/list`;
+
+          const tournamentsRes = await fetch(newTournamentURL, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              userId: userId,
+            }),
+          });
+          const tournamentsData = await tournamentsRes.json();
+
+          if (tournamentsRes.ok) {
+            const tournamentsArray =
+              tournamentsData.tournaments || tournamentsData.data || [];
+
+            // Transform API tournaments to our card format
+            const transformedTournaments = tournamentsArray.map(
+              (tournament) => {
+                return {
+                  id: tournament.id,
+                  title: tournament.title,
+                  eventType: "Tournament",
+                  game: {
+                    name:
+                      tournament.game ||
+                      tournament.title?.split(" ")[0] ||
+                      "Gaming",
+                    image: getGameImage(tournament.title, tournament.game),
+                  },
+                  game_name: tournament.game,
+                  status: tournament.status,
+                  start_date: tournament.reg_start_at || tournament.start_date,
+                  event_date: tournament.reg_end_at || tournament.start_date,
+                  end_date: tournament.end_at || tournament.end_date,
+                  location: tournament.region || tournament.location,
+                  venue: tournament.region || tournament.location,
+                  platform: tournament.platform || "All Platforms",
+                  teamType:
+                    tournament.game_mode || tournament.team_type || "Team",
+                  prizePool: parseFloat(tournament.prize_pool) || 0,
+                  prize_pool: parseFloat(tournament.prize_pool) || 0,
+                  currency: tournament.currency || "BDT",
+                  entryType: tournament.entry_type,
+                  entryFee: parseFloat(tournament.entry_fee) || 0,
+                  teamSize: tournament.team_size,
+                  totalSlots:
+                    tournament.max_teams || tournament.total_slots || 0,
+                  total_slots:
+                    tournament.max_teams || tournament.total_slots || 0,
+                  filledSlots:
+                    tournament.filled_teams || tournament.filled_slots || 0,
+                  filled_slots:
+                    tournament.filled_teams || tournament.filled_slots || 0,
+                  registrationStart:
+                    tournament.reg_start_at || tournament.registration_start,
+                  registration_start:
+                    tournament.reg_start_at || tournament.registration_start,
+                  registrationEnd:
+                    tournament.reg_end_at || tournament.registration_end,
+                  registration_end:
+                    tournament.reg_end_at || tournament.registration_end,
+                  tournamentStart: tournament.start_at || tournament.start_date,
+                  tournamentEnd: tournament.end_at || tournament.end_date,
+                  rules: tournament.rules,
+                  slots: tournament.slots || [],
+                  host:
+                    tournament.hosted_by ||
+                    tournament.organizer ||
+                    "Inception Games",
+                  organizer:
+                    tournament.hosted_by ||
+                    tournament.organizer ||
+                    "Inception Games",
+                  banner_image: tournament.banner_image,
+                  is_lock: tournament.is_lock || false,
+                  applicability_reason: tournament.applicability_reason || "",
+                  event_category: tournament.event_category || "Tournament",
+                };
+              },
+            );
+
+            allEvents.push(...transformedTournaments);
+
+            // Cache the tournaments list for detail page to use
+            sessionStorage.setItem(
+              "tournaments_cache",
+              JSON.stringify(tournamentsArray),
+            );
+            sessionStorage.setItem(
+              "tournaments_cache_timestamp",
+              Date.now().toString(),
+            );
+          }
+        } catch (err) {
+          console.error("[EventsSection] Failed to fetch tournaments:", err);
+        }
+      }
+      setEvents(allEvents);
+    } catch (err) {
+      console.error("[EventsSection] Failed to fetch events:", err);
+      setError("Failed to load scrims. Please try again.");
+      setEvents([]);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => {
@@ -1040,34 +1160,100 @@ export default function EventsSection({
         return false;
       }
 
-  const filteredEvents = events.filter((event) => {
-    // Only show Scrims from API
-    const matchesFilter =
-      activeFilter === "all" 
-        ? event.eventType === "Scrims"
-        : (event.eventType === activeFilter && event.eventType === "Scrims");
-    const matchesSearch =
-      (event.title || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (event.game?.name || "")
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
-      (event.organizer || "").toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesFilter && matchesSearch;
-  });
+      // Search filter
+      const matchesSearch =
+        (event.title || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (event.game?.name || "")
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase()) ||
+        (event.organizer || "")
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase());
 
-  // Determine which coming soon cards to show
-  const showComingSoonCards = {
-    Tournament: activeFilter === "all" || activeFilter === "Tournament",
-    "Brand Deal": activeFilter === "all" || activeFilter === "Brand Deal",
-    Scrims: activeFilter === "all" || activeFilter === "Scrims",
+      // Event category filter
+      let matchesFilter = true;
+
+      const eventCategory = (event.event_category || "").toLowerCase();
+
+      if (activeFilter === "Free Event") {
+        matchesFilter = eventCategory === "free event";
+      } else if (activeFilter === "Tournament") {
+        matchesFilter =
+          eventCategory === "mini tournament" ||
+          eventCategory === "large tournament";
+      } else if (activeFilter === "Brand Deal") {
+        matchesFilter = false;
+      }
+
+      // Tournament size filter
+      let matchesSize = true;
+
+      if (sizeFilter !== "all") {
+        if (sizeFilter === "mini") {
+          matchesSize = eventCategory.includes("mini");
+        } else if (sizeFilter === "large") {
+          matchesSize = eventCategory.includes("large");
+        }
+      }
+
+      return matchesFilter && matchesSearch && matchesSize;
+    });
+  }, [events, activeFilter, searchQuery, sizeFilter, showFreeTourn]);
+
+  // Memoize which coming soon cards to show
+  const showComingSoonCards = React.useMemo(
+    () => ({
+      Tournament: false, // Don't show coming soon for tournaments since we're fetching them
+      "Brand Deal": activeFilter === "all" || activeFilter === "Brand Deal",
+      "Free Event": activeFilter === "Free Event", //showFreeTourn === true, // Only show when explicitly selected
+    }),
+    [activeFilter, showFreeTourn],
+  );
+
+  const handleEventClick = (event, action = "view") => {
+    // Cache the event data for instant load on detail page
+    // Store the transformed version for immediate display
+    const eventCacheKey = `event_${event.id}`;
+    sessionStorage.setItem(eventCacheKey, JSON.stringify(event));
+
+    // Navigate to event detail page with actual event ID and action parameter
+    // action can be: 'view', 'join', or 'not-applicable'
+    router.push(`${routePrefix}/events/${event.id}?action=${action}`);
   };
 
-  // Check if currently viewing a specific coming soon category (not "all")
-  const isViewingComingSoonCategory = activeFilter === "Tournament" || activeFilter === "Brand Deal" || activeFilter === "Scrims";
+  const handleSubscriptionActivated = async () => {
+    // Refetch user data after successful activation
+    try {
+      const userId = user?.id || user?.userId || "SNS-5556";
+      const response = await fetch(
+        "https://inception-games.an.r.appspot.com/api/v1/auth/user/profile",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: userId,
+          }),
+        },
+      );
 
-  const handleEventClick = (event) => {
-    // Navigate to event detail page with actual event ID
-    router.push(`${routePrefix}/events/${event.id}`);
+      if (response.ok) {
+        const data = await response.json();
+        // Update user profile with new subscription status
+        if (data.user) {
+          // Call parent's refetch or update mechanism
+          // For now, just close the modal and refetch events
+          setIsActivateModalOpen(false);
+          // Re-fetch events to update button states
+          fetchEvents();
+        }
+      }
+    } catch (error) {
+      console.error("Error refetching user profile:", error);
+      setIsActivateModalOpen(false);
+      fetchEvents();
+    }
   };
 
   // Don't render until client is mounted to prevent hydration mismatch
@@ -1088,26 +1274,35 @@ export default function EventsSection({
         {/* Filter Tabs */}
         <div className="overflow-x-auto">
           <div className="flex items-center gap-1 bg-[#111115] p-1 rounded-xl border border-white/[0.06] min-w-max">
-          {FILTER_TABS.map((tab) => {
-            const IconComponent = tab.icon
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveFilter(tab.id)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
-                  activeFilter === tab.id
-                    ? 'bg-purple-600 text-white'
-                    : 'text-gray-400 hover:text-white hover:bg-white/[0.05]'
-                }`}
-              >
-                {IconComponent && <IconComponent size={14} />}
-                {tab.label}
-                <span className={`text-xs ${activeFilter === tab.id ? 'text-purple-200' : 'text-gray-500'}`}>
-                  {/* ({tab.count}) */}
-                </span>
-              </button>
-            )
-          })}
+            {FILTER_TABS.map((tab) => {
+              const IconComponent = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    setActiveFilter(tab.id);
+                    // Reset size filter when clicking on "all" or "Brand Deal" tabs
+                    if (tab.id !== "Tournament") {
+                      setSizeFilter(null);
+                      setShowFreeTourn(false);
+                    }
+                  }}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 cursor-pointer ${
+                    activeFilter === tab.id
+                      ? "bg-purple-600 text-white"
+                      : "text-gray-400 hover:text-white hover:bg-white/[0.05]"
+                  }`}
+                >
+                  {IconComponent && <IconComponent size={14} />}
+                  {tab.label}
+                  <span
+                    className={`text-xs ${activeFilter === tab.id ? "text-purple-200" : "text-gray-500"}`}
+                  >
+                    ({tab.count})
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -1302,51 +1497,22 @@ export default function EventsSection({
           className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
           layout={false}
         >
-          <AnimatePresence mode="popLayout">
-            {/* Coming Soon Card - Scrims */}
-            {showComingSoonCards.Scrims && (
-              <motion.div
-                key="scrims-coming-soon"
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
-              >
-                <ComingSoonCard category="Scrims" icon={Swords} />
-              </motion.div>
-            )}
-
+          <AnimatePresence mode="wait">
             {/* Coming Soon Cards - Tournaments */}
             {showComingSoonCards.Tournament && (
               <motion.div
-                key="tournament-coming-soon"
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
+                key="tournament-card"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.2 }}
               >
                 <ComingSoonCard category="Tournament" icon={Trophy} />
               </motion.div>
             )}
 
-            {/* Coming Soon Card - Brand Deals */}
-            {showComingSoonCards["Brand Deal"] && (
-              <motion.div
-                key="branddeals-coming-soon"
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
-              >
-                <ComingSoonCard category="Brand Deal" icon={Briefcase} />
-              </motion.div>
-            )}
-
-            {/* Scrims from API - Only show if NOT viewing a coming soon category */}
-            {!isViewingComingSoonCategory && filteredEvents.map((event) => (
+            {/* Scrims from API */}
+            {filteredEvents.map((event) => (
               <motion.div
                 key={`${event.eventType}-${event.id}`}
                 initial={{ opacity: 0, y: 20 }}
