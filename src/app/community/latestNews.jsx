@@ -5,7 +5,8 @@ import { useState } from "react";
 import { FaFacebookF, FaTwitter, FaLinkedin, FaWhatsapp } from "react-icons/fa";
 import ReadMoreModal from "../components/Modals/ReadMoreModal";
 
-// test branchh 
+// test live data change
+
 const newsItems = [
   {
     title:
