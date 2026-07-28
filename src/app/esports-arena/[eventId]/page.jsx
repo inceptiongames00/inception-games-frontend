@@ -289,9 +289,7 @@ export default function EventDetailPage() {
   const progressionSteps = [
     {
       label: "Reg Starting",
-      date: event?.reg_start_at
-        ? new Date(event.reg_start_at)
-        : new Date(),
+      date: event?.reg_start_at ? new Date(event.reg_start_at) : new Date(),
       time: event?.reg_start_at
         ? new Date(event.reg_start_at).toLocaleTimeString("en-US", {
             hour: "2-digit",
@@ -302,9 +300,7 @@ export default function EventDetailPage() {
     },
     {
       label: "Reg Ending",
-      date: event?.reg_end_at
-        ? new Date(event.reg_end_at)
-        : new Date(),
+      date: event?.reg_end_at ? new Date(event.reg_end_at) : new Date(),
       time: event?.reg_end_at
         ? new Date(event.reg_end_at).toLocaleTimeString("en-US", {
             hour: "2-digit",
@@ -315,9 +311,7 @@ export default function EventDetailPage() {
     },
     {
       label: "Match Starts",
-      date: event?.start_at
-        ? new Date(event.start_at)
-        : new Date(),
+      date: event?.start_at ? new Date(event.start_at) : new Date(),
       time: event?.start_at
         ? new Date(event.start_at).toLocaleTimeString("en-US", {
             hour: "2-digit",
@@ -497,7 +491,7 @@ export default function EventDetailPage() {
                           />
                         </div>
                         <span className="text-white font-semibold text-sm sm:text-lg">
-                          {event.game} 
+                          {event.game}
                         </span>
                         <Trophy size={16} />
                         <span>Hosted by {event.host}</span>
@@ -681,30 +675,29 @@ export default function EventDetailPage() {
                       </p>
 
                       {/* Rules List with Checkmarks */}
-                     <div className="space-y-3">
-                                           {(Array.isArray(event.rules)
-                                             ? event.rules
-                                             : [
-                                                 "All participants must be registered before the deadline",
-                                                 "Fair play policy strictly enforced",
-                                                 "All match stats will be recorded",
-                                                 "Prize money will be distributed 45 days after the final match. Please note that payment delays may occur due to processing factors (T&C)",
-                                               ]
-                                           ).map((rule, index) => (
-                                             <div key={index} className="flex items-start gap-3">
-                                               <div className="flex-shrink-0 w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center mt-0.5">
-                                                 <CheckCircle
-                                                   size={16}
-                                                   className="text-emerald-400"
-                                                 />
-                                               </div>
-                                               <p className="text-gray-300 text-sm sm:text-base">
-                                                 {rule}
-                                               </p>
-                                             </div>
-                                           ))}
-                                         </div>
-                   
+                      <div className="space-y-3">
+                        {(Array.isArray(event.rules)
+                          ? event.rules
+                          : [
+                              "All participants must be registered before the deadline",
+                              "Fair play policy strictly enforced",
+                              "All match stats will be recorded",
+                              "Prize money will be distributed 45 days after the final match. Please note that payment delays may occur due to processing factors (T&C)",
+                            ]
+                        ).map((rule, index) => (
+                          <div key={index} className="flex items-start gap-3">
+                            <div className="flex-shrink-0 w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center mt-0.5">
+                              <CheckCircle
+                                size={16}
+                                className="text-emerald-400"
+                              />
+                            </div>
+                            <p className="text-gray-300 text-sm sm:text-base">
+                              {rule}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
 
                       {/* Important Note Box */}
                       <div className="mt-6 p-4 sm:p-5 rounded-lg border border-amber-500/30 bg-amber-500/5">
@@ -725,6 +718,17 @@ export default function EventDetailPage() {
                             </p>
                           </div>
                         </div>
+                      </div>
+
+                      {/* Notice Section */}
+                      <div className="mb-8 p-4 rounded-xl bg-blue-500/10 border border-blue-500/30 mt-4">
+                        <p className="text-sm text-blue-300 flex items-center gap-2">
+                          <span className="text-lg">ℹ️</span>
+                          <span>
+                            <span className="font-semibold">Note:</span> You
+                            have to create an account to join the event.
+                          </span>
+                        </p>
                       </div>
                     </div>
 
