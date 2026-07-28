@@ -356,7 +356,7 @@ function PlatformDisplay({ platform }) {
   );
 }
 
-// Coming Soon Card Component - Memoized
+// Coming Soon Card Component - Memoize
 const ComingSoonCard = React.memo(function ComingSoonCard({
   category,
   icon: IconComponent,
