@@ -28,20 +28,20 @@ export default function CommunityActivies() {
 
   const partners = [
     {
-      title: "MIME GO: The Future of Entertainment",
+      title: "GKEC LAN Tournament Jersey Giveaway",
       description:
-        "Experience the next generation of streaming, calling, and savings. Everything you need for your digital lifestyle in one powerful app. Join the MIME community and revolutionize your internet experience.",
-      badge: "EXCLUSIVE LAUNCH",
+        "",
+      badge: "Efootball Giveaway",
       buttons: ["CORPORATE PARTNERSHIP", "ESPORTS COMMUNITY PARTNERSHIP"],
       image:
         "https://res.cloudinary.com/jvpygp4b/image/upload/v1783146941/c7_knftcn.jpg",
       bgGradient: "from-blue-600/20 via-purple-600/20 to-cyan-600/20",
     },
     {
-      title: "MOAR: Next Level Gaming",
+      title: "GKEC LAN Tournament Jersey Giveaway",
       description:
-        "Join a revolutionary platform designed for gamers and esports enthusiasts. Compete, earn rewards, and connect with the global gaming community. Discover exclusive partnerships and opportunities.",
-      badge: "FEATURED PARTNER",
+        "",
+      badge: "Efootball Giveaway",
       buttons: ["GAMING PARTNERSHIP", "TOURNAMENT OPPORTUNITIES"],
       image:
         "https://res.cloudinary.com/jvpygp4b/image/upload/v1783146940/c8_xoi6zb.jpg",
@@ -307,7 +307,7 @@ export default function CommunityActivies() {
             onClick={() => setIsModalOpen(true)}
             className="absolute left-0 -bottom-5 z-20 px-6 py-2.5 sm:px-8 sm:py-3 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold uppercase text-xs sm:text-sm tracking-widest rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-pink-500/50"
           >
-            APPLY FOR COMMUNITY
+            APPLY FOR PARTNERSHIP
           </motion.button>
           {/* Slides */}
           <div className="relative overflow-hidden">
