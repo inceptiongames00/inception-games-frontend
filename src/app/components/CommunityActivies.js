@@ -305,7 +305,7 @@ export default function CommunityActivies() {
             viewport={{ once: true }}
             transition={{ delay: 0.3, duration: 0.6 }}
             onClick={() => setIsModalOpen(true)}
-            className="absolute left-0 -bottom-5 z-20 px-6 py-2.5 sm:px-8 sm:py-3 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold uppercase text-xs sm:text-sm tracking-widest rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-pink-500/50"
+            className="absolute left-0 -bottom-12 sm:-bottom-8 md:-bottom-5 z-20 px-6 py-2.5 sm:px-8 sm:py-3 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold uppercase text-xs sm:text-sm tracking-widest rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-pink-500/50"
           >
             APPLY FOR PARTNERSHIP
           </motion.button>
