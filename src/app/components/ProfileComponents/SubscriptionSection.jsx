@@ -11,12 +11,10 @@ const planFeatures = [
   [
     "Free Tournament (T1/T2 Lobbies) with International Team",
     "Scrims Access (T1/T2 Lobbies) with International Team",
-    "Get Discount on Listed Partner Brand",
-    "Get Rewards on Subscription Pack",
+    "Get Rewards on Tournament MVP",
     "Basic Performance Analytics & Star Player Recognition",
-    "Sponsorship Opportunity For Creator or Team or Individual",
     "Career Guideline on Esports",
-    "Networking Oppotunity & Meetup",
+    "Networking Opportunity & Meetup",
     "Grind for the Esports World Cup",
   ],
   [
