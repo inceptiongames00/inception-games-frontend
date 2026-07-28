@@ -174,7 +174,7 @@ export default function UpgradePlanModal({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
-          className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[200] p-4"
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[200] p-0 sm:p-4"
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -182,7 +182,7 @@ export default function UpgradePlanModal({
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: "spring", duration: 0.4 }}
             onClick={(e) => e.stopPropagation()}
-            className="bg-gradient-to-br from-black via-[#0a0a0f] to-black border border-white/[0.08] rounded-3xl max-w-6xl w-full shadow-2xl shadow-black/50 overflow-hidden"
+            className="bg-gradient-to-br from-black via-[#0a0a0f] to-black border border-white/[0.08] rounded-none sm:rounded-3xl w-full sm:max-w-6xl shadow-2xl shadow-black/50 overflow-hidden"
           >
             {/* Close button */}
             <button
