@@ -219,7 +219,7 @@ export default function MyScrims({ userRegistrations }) {
 
       <div className="p-3 xs:p-4 sm:p-5 md:p-6">
         {/* Header */}
-        <div className="flex items-center justify-between mb-4 xs:mb-5">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-4 xs:mb-5">
           <div className="flex items-center gap-2 xs:gap-3 min-w-0">
             <div className="w-9 xs:w-10 h-9 xs:h-10 rounded-lg xs:rounded-xl bg-purple-500/10 flex items-center justify-center flex-shrink-0">
               {activeTab === "scrims" ? (
@@ -242,29 +242,27 @@ export default function MyScrims({ userRegistrations }) {
             </div>
           </div>
 
-          {/* Tournament Quota Button - More Prominent Design */}
+          {/* Tournament Quota Button - Responsive Design */}
           {userRegistrations?.event_quota_status && (
-            <div className="flex items-center gap-3">
-              <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-900/30 border border-purple-500/30 hover:bg-purple-900/50 transition-all duration-300">
-                <span className="text-xs text-zinc-400">Mini Tournament:</span>
-                <span className="text-sm font-bold text-purple-400">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+              <button className="flex items-center justify-between sm:justify-start gap-2 px-3 py-1.5 xs:px-4 xs:py-2 rounded-lg bg-purple-900/30 border border-purple-500/30 hover:bg-purple-900/50 transition-all duration-300 text-xs xs:text-sm whitespace-nowrap">
+                <span className="text-zinc-400">Mini Tournament:</span>
+                <span className="font-bold text-purple-400">
                   {
                     userRegistrations.event_quota_status.mini_tournaments
                       .remaining
                   }
                 </span>
-                <span className="text-xs text-zinc-500">remain</span>
               </button>
 
-              <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-pink-900/30 border border-pink-500/30 hover:bg-pink-900/50 transition-all duration-300">
-                <span className="text-xs text-zinc-400">Large Tournament:</span>
-                <span className="text-sm font-bold text-pink-400">
+              <button className="flex items-center justify-between sm:justify-start gap-2 px-3 py-1.5 xs:px-4 xs:py-2 rounded-lg bg-pink-900/30 border border-pink-500/30 hover:bg-pink-900/50 transition-all duration-300 text-xs xs:text-sm whitespace-nowrap">
+                <span className="text-zinc-400">Large Tournament:</span>
+                <span className="font-bold text-pink-400">
                   {
                     userRegistrations.event_quota_status.large_tournaments
                       .remaining
                   }
                 </span>
-                <span className="text-xs text-zinc-500">remain</span>
               </button>
             </div>
           )}
@@ -319,9 +317,9 @@ export default function MyScrims({ userRegistrations }) {
         {/* Cards Grid */}
         {!isEmpty && (
           <>
-            {/* Mobile: Horizontal scroll */}
+            {/* Mobile & Tablet: Horizontal scroll */}
             <div
-              className="md:hidden overflow-x-auto pb-2 -mx-3 xs:-mx-4 sm:-mx-5 px-3 xs:px-4 sm:px-5"
+              className="lg:hidden overflow-x-auto pb-2 -mx-3 xs:-mx-4 sm:-mx-5 px-3 xs:px-4 sm:px-5"
               style={{
                 scrollbarWidth: "thin",
                 scrollbarColor: "rgba(147, 51, 234, 0.3) transparent",
@@ -331,7 +329,7 @@ export default function MyScrims({ userRegistrations }) {
                 {displayRegistrations.map((reg, i) => (
                   <div
                     key={reg.id}
-                    className="flex-shrink-0 w-full sm:w-[calc(50%-0.5rem)] h-auto"
+                    className="flex-shrink-0 w-80 sm:w-96 h-auto"
                   >
                     <RegistrationCard
                       registration={reg}
@@ -346,7 +344,7 @@ export default function MyScrims({ userRegistrations }) {
             </div>
 
             {/* Desktop: Grid layout */}
-            <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-3 xs:gap-4">
+            <div className="hidden lg:grid grid-cols-2 xl:grid-cols-3 gap-4">
               {displayRegistrations.map((reg, i) => (
                 <RegistrationCard
                   key={reg.id}

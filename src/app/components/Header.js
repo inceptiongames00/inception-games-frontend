@@ -515,7 +515,7 @@ export default function Header() {
                     >
                       Tournaments
                     </button>
-                    <button
+                    {/* <button
                       onClick={() => {
                         handleLinkClick();
                         if (isAuthenticated) {
@@ -527,7 +527,7 @@ export default function Header() {
                       className="w-full block text-white/80 text-sm py-2 pl-4 hover:text-purple-400 transition-colors text-left cursor-pointer"
                     >
                       Scrims
-                    </button>
+                    </button> */}
                     <button
                       onClick={() => {
                         handleLinkClick();
