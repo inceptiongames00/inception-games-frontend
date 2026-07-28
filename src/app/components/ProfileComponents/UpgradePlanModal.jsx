@@ -52,6 +52,7 @@ export default function UpgradePlanModal({
   const [loadingPlanId, setLoadingPlanId] = useState(null);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  const [currentSlide, setCurrentSlide] = useState(0);
   const tokens = getTokens();
 
   const handleSubscribe = async (planName, planId) => {
@@ -208,177 +209,243 @@ export default function UpgradePlanModal({
                 </p>
               </motion.div>
 
-              {/* Plans Grid */}
-              <motion.div
-                className="grid grid-cols-1 md:grid-cols-3 gap-6"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.2, staggerChildren: 0.1 }}
-              >
-                {/* Error Message */}
-                {error && (
-                  <motion.div
-                    className="col-span-full p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                  >
-                    {error}
-                  </motion.div>
-                )}
+              {/* Error Message */}
+              {error && (
+                <motion.div
+                  className="mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                >
+                  {error}
+                </motion.div>
+              )}
 
-                {/* Success Message */}
-                {success && (
-                  <motion.div
-                    className="col-span-full p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                  >
-                    ✓ {success}
-                  </motion.div>
-                )}
+              {/* Success Message */}
+              {success && (
+                <motion.div
+                  className="mb-6 p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                >
+                  ✓ {success}
+                </motion.div>
+              )}
 
-                {displayPlans.map((plan, index) => (
-                  <motion.div
-                    key={plan.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 + index * 0.1 }}
-                    className={`rounded-2xl border transition-all duration-300 relative ${
-                      plan.highlighted
-                        ? "border-purple-500/60 bg-gradient-to-br from-purple-950/40 to-purple-900/20 shadow-lg shadow-purple-600/30 scale-105"
-                        : "border-white/[0.08] bg-white/[0.02] hover:bg-white/[0.04]"
-                    }`}
-                  >
-                    {/* 4 round images — top right, overlapping row */}
-                    <div className="absolute top-5 right-4 flex flex-row z-10">
-                      {[
-                        "https://res.cloudinary.com/jvpygp4b/image/upload/v1784462969/efootball-2022_uxq9.1200_qgp8ke.webp",
-                        "https://res.cloudinary.com/jvpygp4b/image/upload/v1784462998/fc26-1_iuc46n.jpg",
-                        "https://res.cloudinary.com/jvpygp4b/image/upload/v1784463010/co52c8_uw5bug.jpg",
-                        "https://res.cloudinary.com/jvpygp4b/image/upload/v1784463013/pubg-mobile-thumbnail_lqs8ai.webp",
-                      ].map((src, i) => (
-                        <div
-                          key={i}
-                          style={{
-                            marginLeft: i === 0 ? 0 : "-8px",
-                            zIndex: i,
-                          }}
-                          className="w-10 h-10 rounded-full overflow-hidden border-2 border-white bg-white/10"
-                        >
-                          <Image
-                            src={src}
-                            alt=""
-                            width={32}
-                            height={32}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                      ))}
+              {/* Plans Container with horizontal scroll on mobile */}
+              {/* Desktop: Grid Layout */}
+              <div className="hidden sm:block">
+                <motion.div
+                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2, staggerChildren: 0.1 }}
+                >
+                  {displayPlans.map((plan, index) => (
+                    <PlanCard 
+                      key={plan.id} 
+                      plan={plan} 
+                      index={index} 
+                      loading={loading} 
+                      loadingPlanId={loadingPlanId} 
+                      handleSubscribe={handleSubscribe} 
+                    />
+                  ))}
+                </motion.div>
+              </div>
+
+              {/* Mobile: Swipeable Slider */}
+              <div className="sm:hidden">
+                <motion.div
+                  drag="x"
+                  dragElastic={0.2}
+                  dragMomentum={false}
+                  onDragEnd={(e, { offset, velocity }) => {
+                    const swipe = (offset.x / 100) * velocity.x;
+                    if (swipe < -50 && currentSlide < displayPlans.length - 1) {
+                      setCurrentSlide(currentSlide + 1);
+                    }
+                    if (swipe > 50 && currentSlide > 0) {
+                      setCurrentSlide(currentSlide - 1);
+                    }
+                  }}
+                  animate={{ x: -currentSlide * 100 + "%" }}
+                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  className="flex cursor-grab active:cursor-grabbing"
+                >
+                  {displayPlans.map((plan, index) => (
+                    <div key={plan.id} className="w-full flex-shrink-0 px-4">
+                      <PlanCard 
+                        plan={plan} 
+                        index={index} 
+                        loading={loading} 
+                        loadingPlanId={loadingPlanId} 
+                        handleSubscribe={handleSubscribe} 
+                      />
                     </div>
+                  ))}
+                </motion.div>
 
-                    <div className="p-6 pt-8">
-                      {/* Badge */}
-                      {plan.badge && (
-                        <div className="flex justify-center mb-4 -mt-12">
-                          <span
-                            className={`text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider ${plan.badgeColor}`}
-                          >
-                            {plan.badge}
-                          </span>
-                        </div>
-                      )}
-                      {/* Plan Name */}
-                      <h3 className="text-xl font-bold text-white mb-2">
-                        {plan.name}
-                      </h3>
-
-                      {/* Price */}
-                      <div className="flex items-baseline gap-1 mb-6">
-                        {parseInt(plan.price) === 0 ? (
-                          <span className="text-3xl font-bold text-white">
-                            FREE
-                          </span>
-                        ) : (
-                          <>
-                            <span className="text-3xl font-bold text-white">
-                              {parseInt(plan.price)}
-                            </span>
-                            <span className="text-sm font-medium text-gray-400">
-                              BDT
-                            </span>
-                          </>
-                        )}
-                        {plan.period && parseInt(plan.price) !== 0 && (
-                          <span className="text-sm text-gray-500">
-                            /{plan.period}
-                          </span>
-                        )}
-                      </div>
-                      {/* Features */}
-                      <div className="space-y-3 mb-6 h-70 overflow-y-scroll overscroll-contain custom-scrollbar">
-                        {plan.features.map((feature, idx) => {
-                          const isString = typeof feature === "string";
-                          const text = isString ? feature : feature.text;
-                          const disabled = feature.disabled;
-
-                          return (
-                            <div
-                              key={idx}
-                              className={`flex items-start gap-3 ${disabled ? "opacity-40" : ""}`}
-                            >
-                              <Check
-                                size={18}
-                                className={`flex-shrink-0 mt-0.5 ${
-                                  disabled
-                                    ? "text-gray-600"
-                                    : "text-emerald-400"
-                                }`}
-                              />
-                              <span
-                                className={`text-sm ${disabled ? "text-gray-600" : "text-gray-300"}`}
-                              >
-                                {text}
-                              </span>
-                            </div>
-                          );
-                        })}
-                      </div>
-
-                      {/* Button */}
-                      <motion.button
-                        onClick={() => handleSubscribe(plan.name, plan.id)}
-                        disabled={
-                          plan.isCurrentPlan ||
-                          (loading && loadingPlanId === plan.id)
-                        }
-                        className={`w-full py-3 cursor-pointer rounded-lg font-bold text-sm uppercase tracking-wider transition-all duration-300 ${plan.buttonStyle} ${loading && loadingPlanId === plan.id ? "opacity-50" : ""}`}
-                        whileHover={{
-                          scale:
-                            plan.isCurrentPlan ||
-                            (loading && loadingPlanId === plan.id)
-                              ? 1
-                              : 1.02,
-                        }}
-                        whileTap={{
-                          scale:
-                            plan.isCurrentPlan ||
-                            (loading && loadingPlanId === plan.id)
-                              ? 1
-                              : 0.98,
-                        }}
-                      >
-                        {loading && loadingPlanId === plan.id
-                          ? "Processing..."
-                          : plan.buttonText}
-                      </motion.button>
-                    </div>
-                  </motion.div>
-                ))}
-              </motion.div>
+                {/* Slider Indicators */}
+                <div className="flex justify-center gap-2 mt-6">
+                  {displayPlans.map((_, index) => (
+                    <motion.button
+                      key={index}
+                      onClick={() => setCurrentSlide(index)}
+                      className={`h-2 rounded-full transition-all ${
+                        index === currentSlide
+                          ? "bg-purple-600 w-6"
+                          : "bg-white/20 w-2"
+                      }`}
+                      whileHover={{ scale: 1.2 }}
+                      whileTap={{ scale: 0.9 }}
+                    />
+                  ))}
+                </div>
+              </div>
             </div>
           </motion.div>
         </motion.div>
       )}
     </AnimatePresence>
+  );
+}
+
+function PlanCard({ plan, index, loading, loadingPlanId, handleSubscribe }) {
+  return (
+    <motion.div
+      key={plan.id}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.2 + index * 0.1 }}
+      className={`rounded-2xl border transition-all duration-300 relative ${
+        plan.highlighted
+          ? "border-purple-500/60 bg-gradient-to-br from-purple-950/40 to-purple-900/20 shadow-lg shadow-purple-600/30 scale-105"
+          : "border-white/[0.08] bg-white/[0.02] hover:bg-white/[0.04]"
+      }`}
+    >
+      {/* 4 round images — top right, overlapping row */}
+      <div className="absolute top-5 right-4 flex flex-row z-10">
+        {[
+          "https://res.cloudinary.com/jvpygp4b/image/upload/v1784462969/efootball-2022_uxq9.1200_qgp8ke.webp",
+          "https://res.cloudinary.com/jvpygp4b/image/upload/v1784462998/fc26-1_iuc46n.jpg",
+          "https://res.cloudinary.com/jvpygp4b/image/upload/v1784463010/co52c8_uw5bug.jpg",
+          "https://res.cloudinary.com/jvpygp4b/image/upload/v1784463013/pubg-mobile-thumbnail_lqs8ai.webp",
+        ].map((src, i) => (
+          <div
+            key={i}
+            style={{
+              marginLeft: i === 0 ? 0 : "-8px",
+              zIndex: i,
+            }}
+            className="w-10 h-10 rounded-full overflow-hidden border-2 border-white bg-white/10"
+          >
+            <Image
+              src={src}
+              alt=""
+              width={32}
+              height={32}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        ))}
+      </div>
+
+      <div className="p-6 pt-8">
+        {/* Badge */}
+        {plan.badge && (
+          <div className="flex justify-center mb-4 -mt-12">
+            <span
+              className={`text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider ${plan.badgeColor}`}
+            >
+              {plan.badge}
+            </span>
+          </div>
+        )}
+        {/* Plan Name */}
+        <h3 className="text-xl font-bold text-white mb-2">
+          {plan.name}
+        </h3>
+
+        {/* Price */}
+        <div className="flex items-baseline gap-1 mb-6">
+          {parseInt(plan.price) === 0 ? (
+            <span className="text-3xl font-bold text-white">
+              FREE
+            </span>
+          ) : (
+            <>
+              <span className="text-3xl font-bold text-white">
+                {parseInt(plan.price)}
+              </span>
+              <span className="text-sm font-medium text-gray-400">
+                BDT
+              </span>
+            </>
+          )}
+          {plan.period && parseInt(plan.price) !== 0 && (
+            <span className="text-sm text-gray-500">
+              /{plan.period}
+            </span>
+          )}
+        </div>
+        {/* Features */}
+        <div className="space-y-3 mb-6 h-70 overflow-y-scroll overscroll-contain custom-scrollbar">
+          {plan.features.map((feature, idx) => {
+            const isString = typeof feature === "string";
+            const text = isString ? feature : feature.text;
+            const disabled = feature.disabled;
+
+            return (
+              <div
+                key={idx}
+                className={`flex items-start gap-3 ${disabled ? "opacity-40" : ""}`}
+              >
+                <Check
+                  size={18}
+                  className={`flex-shrink-0 mt-0.5 ${
+                    disabled
+                      ? "text-gray-600"
+                      : "text-emerald-400"
+                  }`}
+                />
+                <span
+                  className={`text-sm ${disabled ? "text-gray-600" : "text-gray-300"}`}
+                >
+                  {text}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Button */}
+        <motion.button
+          onClick={() => handleSubscribe(plan.name, plan.id)}
+          disabled={
+            plan.isCurrentPlan ||
+            (loading && loadingPlanId === plan.id)
+          }
+          className={`w-full py-3 cursor-pointer rounded-lg font-bold text-sm uppercase tracking-wider transition-all duration-300 ${plan.buttonStyle} ${loading && loadingPlanId === plan.id ? "opacity-50" : ""}`}
+          whileHover={{
+            scale:
+              plan.isCurrentPlan ||
+              (loading && loadingPlanId === plan.id)
+                ? 1
+                : 1.02,
+          }}
+          whileTap={{
+            scale:
+              plan.isCurrentPlan ||
+              (loading && loadingPlanId === plan.id)
+                ? 1
+                : 0.98,
+          }}
+        >
+          {loading && loadingPlanId === plan.id
+            ? "Processing..."
+            : plan.buttonText}
+        </motion.button>
+      </div>
+    </motion.div>
   );
 }
