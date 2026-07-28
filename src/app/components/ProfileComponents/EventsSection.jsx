@@ -446,8 +446,7 @@ function ComingSoonCard({ category, icon: IconComponent }) {
       </div>
     </motion.div>
   );
-});
-ComingSoonCard.displayName = "ComingSoonCard";
+}
 
 // Event Card Component - Memoized
 const EventCard = React.memo(function EventCard({
@@ -1033,13 +1032,6 @@ export default function EventsSection({
   );
 
   // Memoize filtered events to prevent unnecessary recalculations
-  const filteredEvents = React.useMemo(() => {
-    return events.filter((event) => {
-      // Hide all cards when Free Tournament is selected
-      if (showFreeTourn) {
-        return false;
-      }
-
   const filteredEvents = events.filter((event) => {
     // Only show Scrims from API
     const matchesFilter =
