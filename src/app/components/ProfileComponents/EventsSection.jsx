@@ -426,7 +426,7 @@ const ComingSoonCard = React.memo(function ComingSoonCard({
         {/* Coming Soon Date */}
         <div className="space-y-2 pt-2">
           <p className="text-gray-300 text-sm font-medium">
-            Opens June 20th, 2026
+            Opens August 10, 2026
           </p>
           <p className="text-gray-500 text-xs">
             {/* {daysUntil > 0 ? `In ${daysUntil} days` : "Available now!"} */}
