@@ -788,6 +788,7 @@ export default function EventsSection({
   user,
   initialFilter = "Tournament",
   routePrefix = "/profile",
+  onSubscriptionSuccess,
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -1586,6 +1587,7 @@ export default function EventsSection({
         onClose={() => setIsUpgradePlanModalOpen(false)}
         plans={apiPlans}
         activePlanName={user?.plan_name || null}
+        onSubscriptionSuccess={onSubscriptionSuccess}
         onOpenActivateModal={() => {
           setIsUpgradePlanModalOpen(false);
           setIsActivateModalOpen(true);

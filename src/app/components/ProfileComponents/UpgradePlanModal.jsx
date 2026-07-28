@@ -97,8 +97,13 @@ export default function UpgradePlanModal({
         throw new Error(data.message || "Subscription failed");
       }
 
-      // Show success alert
-      Swal.fire({
+      // Trigger profile refetch immediately after successful API call
+      if (onSubscriptionSuccess) {
+        onSubscriptionSuccess();
+      }
+
+      // Show success alert, then close this modal and open activate modal
+      await Swal.fire({
         icon: "success",
         title: "Subscription Successful!",
         html: `<p>You have successfully subscribed to <strong>${planName}</strong></p>`,
@@ -107,23 +112,11 @@ export default function UpgradePlanModal({
         timerProgressBar: true,
       });
 
-      // Open ActivateSubscriptionModal after success
+      // After Swal closes, close this modal then open the activate modal
+      onClose();
       if (onOpenActivateModal) {
-        setTimeout(() => {
-          onOpenActivateModal();
-        }, 500);
+        onOpenActivateModal();
       }
-
-      // Call callback to refresh profile
-      if (onSubscriptionSuccess) {
-        setTimeout(() => {
-          onSubscriptionSuccess();
-        }, 500);
-      }
-
-      setTimeout(() => {
-        onClose();
-      }, 2000);
     } catch (err) {
       console.error("[UpgradePlanModal] Subscription error:", err);
       Swal.fire({
@@ -356,13 +349,24 @@ export default function UpgradePlanModal({
                       {/* Button */}
                       <motion.button
                         onClick={() => handleSubscribe(plan.name, plan.id)}
-                        disabled={plan.isCurrentPlan || (loading && loadingPlanId === plan.id)}
+                        disabled={
+                          plan.isCurrentPlan ||
+                          (loading && loadingPlanId === plan.id)
+                        }
                         className={`w-full py-3 cursor-pointer rounded-lg font-bold text-sm uppercase tracking-wider transition-all duration-300 ${plan.buttonStyle} ${loading && loadingPlanId === plan.id ? "opacity-50" : ""}`}
                         whileHover={{
-                          scale: plan.isCurrentPlan || (loading && loadingPlanId === plan.id) ? 1 : 1.02,
+                          scale:
+                            plan.isCurrentPlan ||
+                            (loading && loadingPlanId === plan.id)
+                              ? 1
+                              : 1.02,
                         }}
                         whileTap={{
-                          scale: plan.isCurrentPlan || (loading && loadingPlanId === plan.id) ? 1 : 0.98,
+                          scale:
+                            plan.isCurrentPlan ||
+                            (loading && loadingPlanId === plan.id)
+                              ? 1
+                              : 0.98,
                         }}
                       >
                         {loading && loadingPlanId === plan.id

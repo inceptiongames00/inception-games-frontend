@@ -303,6 +303,7 @@ export function AuthProvider({ children }) {
           rank: gameData.rank,
           continent: gameData.continent,
           country: gameData.country,
+          city: gameData.city,
         }),
       );
     }
