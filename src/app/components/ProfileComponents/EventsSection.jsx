@@ -1062,6 +1062,14 @@ export default function EventsSection({
     router.push(`${routePrefix}/events/${event.id}`);
   };
 
+  const handleSubscriptionActivated = () => {
+    // Refresh events or close modal on successful subscription activation
+    setIsActivateModalOpen(false);
+    if (onSubscriptionSuccess) {
+      onSubscriptionSuccess();
+    }
+  };
+
   // Don't render until client is mounted to prevent hydration mismatch
   if (!hasMounted) {
     return null;
