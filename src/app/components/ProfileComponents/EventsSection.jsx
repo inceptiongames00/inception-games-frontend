@@ -357,7 +357,7 @@ function PlatformDisplay({ platform }) {
 }
 
 // Coming Soon Card Component
-function ComingSoonCard({ category, icon: IconComponent }) {
+const ComingSoonCard = React.memo(function ComingSoonCard({ category, icon: IconComponent }) {
   const isComingSoonDate = new Date("2026-07-28");
   const daysUntil = Math.ceil((isComingSoonDate - new Date()) / (1000 * 60 * 60 * 24));
   
