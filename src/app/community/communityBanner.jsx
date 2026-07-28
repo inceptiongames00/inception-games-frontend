@@ -32,7 +32,6 @@ export default function CommunityBanner() {
         >
           JOIN OUR COMMUNITY
         </motion.p>
-
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
