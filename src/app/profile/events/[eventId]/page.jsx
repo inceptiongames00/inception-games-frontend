@@ -572,7 +572,7 @@ export default function EventDetailPage() {
               </div> */}
 
                       <div className="flex items-center gap-1 sm:gap-2">
-                        <SharePreview event={event} />
+                        {/* <SharePreview event={event} /> */}
 
                         {event.status !== "Completed" &&
                           !showSignupForm &&
@@ -586,7 +586,11 @@ export default function EventDetailPage() {
                             >
                               <Users size={14} className="hidden sm:inline" />
                               <Users size={12} className="sm:hidden" />
-                              <span>Join Event</span>
+                              <span>
+                                {event.event_category?.toLowerCase() === "free event"
+                                  ? "Fill Up Form"
+                                  : "Join Event"}
+                              </span>
                             </motion.button>
                           )}
                       </div>
@@ -721,8 +725,8 @@ export default function EventDetailPage() {
                           : [
                               "All participants must be registered before the deadline",
                               "Fair play policy strictly enforced",
-                              "All matches will be streamed on official channels",
-                              "Prizes will be distributed within 7 days of event completion",
+                              "All match stats will be recorded",
+                              "Prize money will be distributed 45 days after the final match. Please note that payment delays may occur due to processing factors (T&C)",
                             ]
                         ).map((rule, index) => (
                           <div key={index} className="flex items-start gap-3">
@@ -780,8 +784,9 @@ export default function EventDetailPage() {
                             1st Place
                           </p>
                           <p className="text-2xl sm:text-3xl font-bold text-white">
-                            {event.currency}{" "}
-                            {Math.round(event.prizePool * 0.5).toLocaleString()}
+                            {/* {event.currency}{" "} */}
+                            {/* {Math.round(event.prizePool * 0.5).toLocaleString()} */}
+                            TBA
                           </p>
                         </div>
 
@@ -792,8 +797,9 @@ export default function EventDetailPage() {
                             2nd Place
                           </p>
                           <p className="text-2xl sm:text-3xl font-bold text-white">
-                            {event.currency}{" "}
-                            {Math.round(event.prizePool * 0.3).toLocaleString()}
+                            {/* {event.currency}{" "} */}
+                            {/* {Math.round(event.prizePool * 0.3).toLocaleString()} */}
+                            TBA
                           </p>
                         </div>
 
@@ -804,8 +810,9 @@ export default function EventDetailPage() {
                             3rd Place
                           </p>
                           <p className="text-2xl sm:text-3xl font-bold text-white">
-                            {event.currency}{" "}
-                            {Math.round(event.prizePool * 0.2).toLocaleString()}
+                            {/* {event.currency}{" "} */}
+                            {/* {Math.round(event.prizePool * 0.2).toLocaleString()} */}
+                            TBA
                           </p>
                         </div>
                       </div>

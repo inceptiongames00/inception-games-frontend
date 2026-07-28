@@ -12,12 +12,10 @@ const planFeatures = [
   [
     "Free Tournament (T1/T2 Lobbies) with International Team",
     "Scrims Access (T1/T2 Lobbies) with International Team",
-    "Get Discount on Listed Partner Brand",
-    "Get Rewards on Subscription Pack",
+    "Get Rewards on Tournament MVP",
     "Basic Performance Analytics & Star Player Recognition",
-    "Sponsorship Opportunity For Creator or Team or Individual",
     "Career Guideline on Esports",
-    "Networking Oppotunity & Meetup",
+    "Networking Opportunity & Meetup",
     "Grind for the Esports World Cup",
   ],
   [
@@ -141,10 +139,10 @@ export default function UpgradePlanModal({
             name: plan.plan,
             price: `${plan.price} BDT`,
             period: `month`,
-            badge: isActive ? "ACTIVE" : idx === 1 ? "MOST POPULAR" : null,
+            badge: isActive ? "ACTIVE" : idx === 2 ? "MOST POPULAR" : null,
             badgeColor: isActive
               ? "bg-emerald-500 text-white"
-              : idx === 1
+              : idx === 2
                 ? "bg-purple-600 text-white"
                 : "",
             isCurrentPlan: isActive,
@@ -157,10 +155,10 @@ export default function UpgradePlanModal({
                 : "BUY NOW",
             buttonStyle: isActive
               ? "bg-gray-500 cursor-not-allowed opacity-60"
-              : idx === 1
+              : idx === 2
                 ? "bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400"
                 : "bg-transparent border-2 border-purple-500 text-purple-400 hover:bg-purple-500/10",
-            highlighted: idx === 1 && !isActive,
+            highlighted: idx === 2 && !isActive,
           };
         })
       : [];

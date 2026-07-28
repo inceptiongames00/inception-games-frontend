@@ -299,7 +299,7 @@ export default function ActivateSubscriptionModal({
                       </div>
 
                       {/* Right: QR Code - Larger */}
-                      <div className="flex-shrink-0 flex flex-col items-center justify-center bg-black/20 rounded-lg p-4 border border-white/[0.05] min-w-[140px]">
+                      {/* <div className="flex-shrink-0 flex flex-col items-center justify-center bg-black/20 rounded-lg p-4 border border-white/[0.05] min-w-[140px]">
                         <div className="w-32 h-32 bg-white rounded-xl p-2.5 flex items-center justify-center shadow-lg">
                           <img
                             src="/bkash-qr-code.png"
@@ -321,7 +321,7 @@ export default function ActivateSubscriptionModal({
                         <p className="text-xs text-gray-400 text-center mt-2 font-medium">
                           Scan to Pay
                         </p>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
 
@@ -376,7 +376,7 @@ export default function ActivateSubscriptionModal({
                         disabled={isSubmitting}
                         className="w-full px-4 pr-10 py-3 bg-white/[0.05] border border-white/[0.1] rounded-xl text-white focus:outline-none focus:border-purple-500/50 focus:bg-white/[0.05] text-sm transition appearance-none cursor-pointer"
                       >
-                        {["BKASH", "NAGAD", "ROCKET"].map((type) => (
+                        {["BKASH"].map((type) => (
                           <option
                             key={type}
                             value={type}
