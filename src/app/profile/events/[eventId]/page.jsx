@@ -423,7 +423,7 @@ export default function EventDetailPage() {
             {/* Main Content */}
             <div className="lg:col-span-3">
               {/* Banner */}
-              <div className="relative h-64 md:h-80 lg:h-[450px] rounded-2xl overflow-hidden mb-6">
+              <div className="relative h-96 md:h-80 lg:h-[450px] rounded-2xl overflow-hidden mb-6">
                 <Image
                   src={gameImage}
                   alt={gameName}
@@ -519,8 +519,9 @@ export default function EventDetailPage() {
                     </div>
 
                     {/* Game + Actions Row - Moved Inside Banner Overlay */}
-                    <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-4 mt-4 sm:mt-6">
-                      <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mt-4 sm:mt-6">
+                      {/* Left side - Game info (hidden on mobile, shown on sm+) */}
+                      <div className="hidden sm:flex items-center gap-2 sm:gap-3 min-w-0">
                         <div className="w-10 sm:w-12 h-10 sm:h-12 rounded-lg sm:rounded-xl overflow-hidden bg-gray-800 flex-shrink-0">
                           <Image
                             src={gameImage}
@@ -534,8 +535,8 @@ export default function EventDetailPage() {
                           {gameName}
                         </span>
                         <Trophy size={16} />
-                        <span>Hosted by {event.host}</span>
-                        <span>·</span>
+                        <span className="hidden md:inline">Hosted by {event.host}</span>
+                        <span className="hidden md:inline">·</span>
                         <span
                           className={`font-semibold ${
                             event.status === "Upcoming"
@@ -552,35 +553,16 @@ export default function EventDetailPage() {
                               : "Completed"}
                         </span>
                       </div>
-                      {/* <div className="flex items-center gap-2 text-sm text-gray-400 mb-6 mt-2">
-                <Trophy size={16} />
-                <span>Hosted by {event.host}</span>
-                <span>·</span>
-                <span className={`font-semibold ${
-                  event.status === "Upcoming"
-                    ? "text-emerald-400"
-                    : event.status === "Ongoing"
-                    ? "text-blue-400"
-                    : "text-gray-400"
-                }`}>
-                  {event.status === "Upcoming"
-                    ? "Upcoming"
-                    : event.status === "Ongoing"
-                    ? "Ongoing"
-                    : "Completed"}
-                </span>
-              </div> */}
 
-                      <div className="flex items-center gap-1 sm:gap-2">
-                        {/* <SharePreview event={event} /> */}
-
+                      {/* Right side - Button (full width on mobile, auto on sm+) */}
+                      <div className="w-full sm:w-auto flex items-center gap-1 sm:gap-2">
                         {event.status !== "Completed" &&
                           !showSignupForm &&
                           isEligible &&
                           actionSource === "join" && (
                             <motion.button
                               onClick={() => setShowRegistrationModal(true)}
-                              className="px-2 sm:px-4 py-2 sm:py-2.5 font-bold rounded-lg transition-all duration-300 flex items-center gap-1 sm:gap-2 shadow-lg text-xs sm:text-sm cursor-pointer bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white shadow-purple-500/20"
+                              className="w-full sm:w-auto px-3 sm:px-4 py-2 sm:py-2.5 font-bold rounded-lg transition-all duration-300 flex items-center justify-center sm:justify-start gap-1 sm:gap-2 shadow-lg text-xs sm:text-sm cursor-pointer bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white shadow-purple-500/20"
                               whileHover={{ scale: 1.02 }}
                               whileTap={{ scale: 0.98 }}
                             >
