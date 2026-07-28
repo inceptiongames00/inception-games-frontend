@@ -241,7 +241,12 @@ export default function ProfilePage() {
 
           {/* Events Section - Full Width */}
           <div className="space-y-6 md:space-y-8">
-            <EventsSection initialFilter={tab || "Tournament"} user={mergedUser} />
+            <EventsSection initialFilter={tab || "Tournament"} user={mergedUser} onSubscriptionSuccess={() => {
+                  const tokens = getTokens();
+                  if (user?.id && tokens?.accessToken) {
+                    fetchUserProfile(user.id, tokens.accessToken);
+                  }
+                }} />
           </div>
         </div>
       </main>

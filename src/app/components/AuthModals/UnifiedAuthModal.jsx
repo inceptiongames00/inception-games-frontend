@@ -511,6 +511,7 @@ export default function UnifiedAuthModal({
         rank: formData.rank || null,
         continent: selectedContinent,
         country: selectedCountry,
+        city: selectedCity,
         region: region,
       });
       // Move to step 5 to finalize registration

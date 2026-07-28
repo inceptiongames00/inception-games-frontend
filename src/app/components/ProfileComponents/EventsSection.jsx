@@ -26,7 +26,7 @@ import {
 import Image from "next/image";
 import { API } from "@/lib/api";
 
-// Fallback API configuration if API.TOURNAMENT_GET_ALL is undefined
+// Fallback API configuration if API.TOURNAMENT_GET_ALL is undefine
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ||
   "https://inception-games.an.r.appspot.com/api/v1";
@@ -788,6 +788,7 @@ export default function EventsSection({
   user,
   initialFilter = "Tournament",
   routePrefix = "/profile",
+  onSubscriptionSuccess,
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -1586,6 +1587,7 @@ export default function EventsSection({
         onClose={() => setIsUpgradePlanModalOpen(false)}
         plans={apiPlans}
         activePlanName={user?.plan_name || null}
+        onSubscriptionSuccess={onSubscriptionSuccess}
         onOpenActivateModal={() => {
           setIsUpgradePlanModalOpen(false);
           setIsActivateModalOpen(true);
