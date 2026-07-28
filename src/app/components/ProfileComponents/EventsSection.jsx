@@ -356,23 +356,11 @@ function PlatformDisplay({ platform }) {
   );
 }
 
-<<<<<<< HEAD
-// Coming Soon Card Component
-=======
 // Coming Soon Card Component - Memoized
->>>>>>> ab12ff78bfbbd5ee57ddf2a9539952049ac04d16
 const ComingSoonCard = React.memo(function ComingSoonCard({
   category,
   icon: IconComponent,
 }) {
-<<<<<<< HEAD
-  const isComingSoonDate = new Date("2026-07-28");
-  const daysUntil = Math.ceil(
-    (isComingSoonDate - new Date()) / (1000 * 60 * 60 * 24),
-  );
-
-=======
->>>>>>> ab12ff78bfbbd5ee57ddf2a9539952049ac04d16
   const categoryColors = {
     Tournament: {
       bg: "from-orange-600/20 to-red-600/20",
@@ -438,11 +426,7 @@ const ComingSoonCard = React.memo(function ComingSoonCard({
         {/* Coming Soon Date */}
         <div className="space-y-2 pt-2">
           <p className="text-gray-300 text-sm font-medium">
-<<<<<<< HEAD
-            Opens July 28th, 2026
-=======
             Opens June 20th, 2026
->>>>>>> ab12ff78bfbbd5ee57ddf2a9539952049ac04d16
           </p>
           <p className="text-gray-500 text-xs">
             {/* {daysUntil > 0 ? `In ${daysUntil} days` : "Available now!"} */}
@@ -465,6 +449,7 @@ const ComingSoonCard = React.memo(function ComingSoonCard({
     </motion.div>
   );
 });
+ComingSoonCard.displayName = "ComingSoonCard";
 
 // Event Card Component - Memoized
 const EventCard = React.memo(function EventCard({
@@ -1168,22 +1153,6 @@ export default function EventsSection({
   );
 
   // Memoize filtered events to prevent unnecessary recalculations
-<<<<<<< HEAD
-  const filteredEvents = events.filter((event) => {
-    // Only show Scrims from API
-    const matchesFilter =
-      activeFilter === "all"
-        ? event.eventType === "Scrims"
-        : event.eventType === activeFilter && event.eventType === "Scrims";
-    const matchesSearch =
-      (event.title || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (event.game?.name || "")
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
-      (event.organizer || "").toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesFilter && matchesSearch;
-  });
-=======
   const filteredEvents = React.useMemo(() => {
     return events.filter((event) => {
       // Hide all cards when Free Tournament is selected
@@ -1200,7 +1169,6 @@ export default function EventsSection({
         (event.organizer || "")
           .toLowerCase()
           .includes(searchQuery.toLowerCase());
->>>>>>> ab12ff78bfbbd5ee57ddf2a9539952049ac04d16
 
       // Event category filter
       let matchesFilter = true;
@@ -1253,13 +1221,6 @@ export default function EventsSection({
     router.push(`${routePrefix}/events/${event.id}?action=${action}`);
   };
 
-<<<<<<< HEAD
-  // Check if currently viewing a specific coming soon category (not "all")
-  const isViewingComingSoonCategory =
-    activeFilter === "Tournament" ||
-    activeFilter === "Brand Deal" ||
-    activeFilter === "Scrims";
-=======
   const handleSubscriptionActivated = async () => {
     // Refetch user data after successful activation
     try {
@@ -1276,7 +1237,6 @@ export default function EventsSection({
           }),
         },
       );
->>>>>>> ab12ff78bfbbd5ee57ddf2a9539952049ac04d16
 
       if (response.ok) {
         const data = await response.json();
@@ -1293,14 +1253,6 @@ export default function EventsSection({
       console.error("Error refetching user profile:", error);
       setIsActivateModalOpen(false);
       fetchEvents();
-    }
-  };
-
-  const handleSubscriptionActivated = () => {
-    // Refresh events or close modal on successful subscription activation
-    setIsActivateModalOpen(false);
-    if (onSubscriptionSuccess) {
-      onSubscriptionSuccess();
     }
   };
 
@@ -1327,10 +1279,6 @@ export default function EventsSection({
               return (
                 <button
                   key={tab.id}
-<<<<<<< HEAD
-                  onClick={() => setActiveFilter(tab.id)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
-=======
                   onClick={() => {
                     setActiveFilter(tab.id);
                     // Reset size filter when clicking on "all" or "Brand Deal" tabs
@@ -1340,7 +1288,6 @@ export default function EventsSection({
                     }
                   }}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 cursor-pointer ${
->>>>>>> ab12ff78bfbbd5ee57ddf2a9539952049ac04d16
                     activeFilter === tab.id
                       ? "bg-purple-600 text-white"
                       : "text-gray-400 hover:text-white hover:bg-white/[0.05]"
@@ -1351,11 +1298,7 @@ export default function EventsSection({
                   <span
                     className={`text-xs ${activeFilter === tab.id ? "text-purple-200" : "text-gray-500"}`}
                   >
-<<<<<<< HEAD
-                    {/* ({tab.count}) */}
-=======
                     ({tab.count})
->>>>>>> ab12ff78bfbbd5ee57ddf2a9539952049ac04d16
                   </span>
                 </button>
               );
@@ -1568,42 +1511,6 @@ export default function EventsSection({
               </motion.div>
             )}
 
-<<<<<<< HEAD
-            {/* Coming Soon Card - Brand Deals */}
-            {showComingSoonCards["Brand Deal"] && (
-              <motion.div
-                key="branddeals-coming-soon"
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
-              >
-                <ComingSoonCard category="Brand Deal" icon={Briefcase} />
-              </motion.div>
-            )}
-
-            {/* Scrims from API - Only show if NOT viewing a coming soon category */}
-            {!isViewingComingSoonCategory &&
-              filteredEvents.map((event) => (
-                <motion.div
-                  key={`${event.eventType}-${event.id}`}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <EventCard
-                    event={event}
-                    onClick={handleEventClick}
-                    user={user}
-                    userRegistrations={user}
-                    onUpgradePlanClick={() => setIsUpgradePlanModalOpen(true)}
-                    onActivateClick={() => setIsActivateModalOpen(true)}
-                  />
-                </motion.div>
-              ))}
-=======
             {/* Scrims from API */}
             {filteredEvents.map((event) => (
               <motion.div
@@ -1623,7 +1530,6 @@ export default function EventsSection({
                 />
               </motion.div>
             ))}
->>>>>>> ab12ff78bfbbd5ee57ddf2a9539952049ac04d16
 
             {/* Coming Soon Cards - Brand Deals */}
             {showComingSoonCards["Brand Deal"] && (
