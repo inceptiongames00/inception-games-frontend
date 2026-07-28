@@ -520,8 +520,8 @@ export default function EventDetailPage() {
 
                     {/* Game + Actions Row - Moved Inside Banner Overlay */}
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mt-4 sm:mt-6">
-                      {/* Left side - Game info (hidden on mobile, shown on sm+) */}
-                      <div className="hidden sm:flex items-center gap-2 sm:gap-3 min-w-0">
+                      {/* Left side - Game info (visible on all sizes) */}
+                      <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-wrap">
                         <div className="w-10 sm:w-12 h-10 sm:h-12 rounded-lg sm:rounded-xl overflow-hidden bg-gray-800 flex-shrink-0">
                           <Image
                             src={gameImage}
@@ -534,11 +534,11 @@ export default function EventDetailPage() {
                         <span className="text-white font-semibold text-sm sm:text-lg">
                           {gameName}
                         </span>
-                        <Trophy size={16} />
-                        <span className="hidden md:inline">Hosted by {event.host}</span>
-                        <span className="hidden md:inline">·</span>
+                        <Trophy size={14} className="text-gray-400 hidden sm:inline" />
+                        <span className="hidden sm:inline text-sm text-gray-400">Hosted by {event.host}</span>
+                        <span className="hidden sm:inline text-gray-600">·</span>
                         <span
-                          className={`font-semibold ${
+                          className={`font-semibold text-xs sm:text-sm ${
                             event.status === "Upcoming"
                               ? "text-emerald-400"
                               : event.status === "Ongoing"
