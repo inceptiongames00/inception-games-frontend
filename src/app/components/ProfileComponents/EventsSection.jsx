@@ -446,8 +446,7 @@ const ComingSoonCard = React.memo(function ComingSoonCard({ category, icon: Icon
       </div>
     </motion.div>
   );
-});
-ComingSoonCard.displayName = "ComingSoonCard";
+}
 
 // Event Card Component - Memoized
 const EventCard = React.memo(function EventCard({
@@ -1033,13 +1032,6 @@ export default function EventsSection({
   );
 
   // Memoize filtered events to prevent unnecessary recalculations
-  const filteredEvents = React.useMemo(() => {
-    return events.filter((event) => {
-      // Hide all cards when Free Tournament is selected
-      if (showFreeTourn) {
-        return false;
-      }
-
   const filteredEvents = events.filter((event) => {
     // Only show Scrims from API
     const matchesFilter =
@@ -1068,6 +1060,14 @@ export default function EventsSection({
   const handleEventClick = (event) => {
     // Navigate to event detail page with actual event ID
     router.push(`${routePrefix}/events/${event.id}`);
+  };
+
+  const handleSubscriptionActivated = () => {
+    // Refresh events or close modal on successful subscription activation
+    setIsActivateModalOpen(false);
+    if (onSubscriptionSuccess) {
+      onSubscriptionSuccess();
+    }
   };
 
   // Don't render until client is mounted to prevent hydration mismatch
