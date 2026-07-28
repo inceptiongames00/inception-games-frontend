@@ -1,10 +1,13 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Menu, X, User, ChevronDown, LogOut, Settings } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import UnifiedAuthModal from "./AuthModals/UnifiedAuthModal";
 import LaunchCountdownModal from "./LaunchCountdownModal";
+import UpgradePlanModal from "./ProfileComponents/UpgradePlanModal";
 import { useAuth } from "../../hooks/useAuth";
 import { useHomeNavigation } from "../../hooks/useHomeNavigation";
 import { useProfileNavigation } from "../../hooks/useProfileNavigation";
@@ -43,6 +46,7 @@ function AnimatedProfileRing({ children, size = 44 }) {
 }
 
 export default function Header() {
+  const router = useRouter();
   const { user, isAuthenticated, logout } = useAuth();
   const { navigateToSection } = useHomeNavigation();
   const { navigateToTab } = useProfileNavigation();
@@ -50,6 +54,7 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [countdownModalOpen, setCountdownModalOpen] = useState(false);
+  const [upgradePlanModalOpen, setUpgradePlanModalOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [esportsDropdownOpen, setEsportsDropdownOpen] = useState(false);
   const [ecosystemDropdownOpen, setEcosystemDropdownOpen] = useState(false);
@@ -117,7 +122,17 @@ export default function Header() {
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2 flex-shrink-0">
-            {/* <img src="/Logo/Logo.png" alt="Inceptions Logo" className="h-7 sm:h-8 md:h-14" /> */}
+            <Image
+              src="https://res.cloudinary.com/jvpygp4b/image/upload/v1783240841/logo_lh4bu1.png"
+              alt="Inceptions Logo"
+              width={56}
+              height={56}
+              className="h-7 sm:h-8 md:h-14 w-auto"
+              // style={{
+              //   filter:
+              //     "drop-shadow(0 0 20px #ff0040) drop-shadow(0 0 40px #8116f1)",
+              // }}
+            />
           </Link>
 
           {/* Desktop Navigation */}
@@ -135,7 +150,7 @@ export default function Header() {
                 onClick={() => setEsportsDropdownOpen(!esportsDropdownOpen)}
                 className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors flex items-center gap-1"
               >
-                E-Sports
+                Esports
                 <ChevronDown
                   size={16}
                   className={`transition-transform duration-200 ${esportsDropdownOpen ? "rotate-180" : ""}`}
@@ -154,17 +169,13 @@ export default function Header() {
                     <button
                       onClick={() => {
                         setEsportsDropdownOpen(false);
-                        if (isAuthenticated) {
-                          navigateToTab("Tournament");
-                        } else {
-                          setLoginModalOpen(true);
-                        }
+                        router.push("/esports-arena?tab=tournaments");
                       }}
                       className="w-full flex items-center gap-3 px-4 py-3 text-white/80 hover:text-white hover:bg-white/5 transition-colors border-b border-white/10 cursor-pointer"
                     >
                       <span>Tournaments</span>
                     </button>
-                    <button
+                    {/* <button
                       onClick={() => {
                         setEsportsDropdownOpen(false);
                         if (isAuthenticated) {
@@ -176,15 +187,11 @@ export default function Header() {
                       className="w-full flex items-center gap-3 px-4 py-3 text-white/80 hover:text-white hover:bg-white/5 transition-colors border-b border-white/10 cursor-pointer"
                     >
                       <span>Scrims</span>
-                    </button>
+                    </button> */}
                     <button
                       onClick={() => {
                         setEsportsDropdownOpen(false);
-                        if (isAuthenticated) {
-                          navigateToTab("Brand Deal");
-                        } else {
-                          setLoginModalOpen(true);
-                        }
+                        router.push("/esports-arena?tab=brand-deals");
                       }}
                       className="w-full flex items-center gap-3 px-4 py-3 text-white/80 hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
                     >
@@ -199,25 +206,32 @@ export default function Header() {
             </Link> */}
 
             <button
-              onClick={() => navigateToSection("ecosystem-games")}
+              onClick={() => navigateToSection("eshop")}
               className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors cursor-pointer"
             >
-              Game
+              eShop
             </button>
 
             <button
+              onClick={() => navigateToSection("ecosystem-games")}
+              className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors cursor-pointer"
+            >
+              Games
+            </button>
+
+            {/* <button
               onClick={() => navigateToSection("ecosystem-partners")}
               className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors cursor-pointer"
             >
               Partners
-            </button>
+            </button> */}
 
-            <button
-              onClick={() => navigateToSection("ecosystem-community")}
-              className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors cursor-pointer"
+            <Link
+              href="/community"
+              className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors"
             >
               Community
-            </button>
+            </Link>
 
             {/* Ecosystem Dropdown */}
             {/* <div className="relative ecosystem-dropdown-container">
@@ -284,14 +298,14 @@ export default function Header() {
             </button>
 
             {/* <Link href="#career" className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors">
-              Career
+              Caree
             </Link> */}
-            <button
-              onClick={() => navigateToSection("contact")}
+            {/* <button
+              onClick={() => setUpgradePlanModalOpen(true)}
               className="text-white text-[16px] font-medium hover:text-purple-400 transition-colors cursor-pointer"
             >
-              Contact Us
-            </button>
+              Pricing
+            </button> */}
           </nav>
 
           {/* Auth Section - Desktop */}
@@ -311,10 +325,11 @@ export default function Header() {
                 <div className="relative profile-dropdown-container">
                   <button
                     onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-                    className="flex items-center gap-2 group"
+                    className="flex items-center gap-2 group cursor-pointer"
                   >
                     <AnimatedProfileRing size={44}>
                       {user.avatar ? (
+                        // eslint-disable-next-line @next/next/no-img-element
                         <img
                           src={user.avatar}
                           alt={user.fullName || user.username || "Profile"}
@@ -378,7 +393,7 @@ export default function Header() {
             ) : (
               <button
                 onClick={handleLoginClick}
-                className="relative group px-6 py-2.5 rounded-full font-semibold text-white overflow-hidden"
+                className="relative group px-6 py-2.5 rounded-full font-semibold text-white overflow-hidden cursor-pointer"
               >
                 {/* Animated gradient background */}
                 <span className="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 bg-[length:200%_100%] animate-gradient-x" />
@@ -402,6 +417,7 @@ export default function Header() {
                 <Link href="/profile" className="flex-shrink-0">
                   <AnimatedProfileRing size={38}>
                     {user.avatar ? (
+                      // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={user.avatar}
                         alt={user.fullName || user.username || "Profile"}
@@ -475,7 +491,7 @@ export default function Header() {
                 onClick={() => setEsportsDropdownOpen(!esportsDropdownOpen)}
                 className="text-white text-base font-medium py-3 border-b border-purple-500/10 hover:text-purple-400 transition-colors flex items-center justify-between w-full"
               >
-                E-Sports
+                Esports
                 <ChevronDown
                   size={16}
                   className={`transition-transform duration-200 ${esportsDropdownOpen ? "rotate-180" : ""}`}
@@ -493,11 +509,7 @@ export default function Header() {
                     <button
                       onClick={() => {
                         handleLinkClick();
-                        if (isAuthenticated) {
-                          navigateToTab("Tournament");
-                        } else {
-                          setLoginModalOpen(true);
-                        }
+                        router.push("/esports-arena?tab=tournaments");
                       }}
                       className="w-full block text-white/80 text-sm py-2 pl-4 hover:text-purple-400 transition-colors text-left cursor-pointer"
                     >
@@ -519,11 +531,7 @@ export default function Header() {
                     <button
                       onClick={() => {
                         handleLinkClick();
-                        if (isAuthenticated) {
-                          navigateToTab("Brand Deal");
-                        } else {
-                          setLoginModalOpen(true);
-                        }
+                        router.push("/esports-arena?tab=brand-deals");
                       }}
                       className="w-full block text-white/80 text-sm py-2 pl-4 hover:text-purple-400 transition-colors text-left cursor-pointer"
                     >
@@ -538,16 +546,13 @@ export default function Header() {
               </a> */}
 
               <button
-                onClick={() => {
-                  handleLinkClick();
-                  navigateToSection("ecosystem-games");
-                }}
-                className="text-white text-base font-medium py-3 border-b border-purple-500/10 hover:text-purple-400 transition-colors w-full text-left cursor-pointer"
+                onClick={() => navigateToSection("eshop")}
+                className="text-white text-base font-medium py-3 border-b border-purple-500/10 hover:text-purple-400 transition-colors w-full text-left block"
               >
-                Games
+                eShop
               </button>
 
-              <button
+              {/* <button
                 onClick={() => {
                   handleLinkClick();
                   navigateToSection("ecosystem-partners");
@@ -555,17 +560,15 @@ export default function Header() {
                 className="text-white text-base font-medium py-3 border-b border-purple-500/10 hover:text-purple-400 transition-colors w-full text-left cursor-pointer"
               >
                 Partners
-              </button>
+              </button> */}
 
-              <button
-                onClick={() => {
-                  handleLinkClick();
-                  navigateToSection("ecosystem-community");
-                }}
-                className="text-white text-base font-medium py-3 border-b border-purple-500/10 hover:text-purple-400 transition-colors w-full text-left cursor-pointer"
+              <Link
+                href="/community"
+                onClick={handleLinkClick}
+                className="text-white text-base font-medium py-3 border-b border-purple-500/10 hover:text-purple-400 transition-colors w-full text-left block"
               >
                 Community
-              </button>
+              </Link>
 
               {/* Ecosystem Mobile */}
               {/* <button
@@ -637,6 +640,15 @@ export default function Header() {
               >
                 News
               </button>
+              {/* <button
+                onClick={() => {
+                  handleLinkClick();
+                  setUpgradePlanModalOpen(true);
+                }}
+                className="text-white text-base font-medium py-3 border-b border-purple-500/10 hover:text-purple-400 transition-colors w-full text-left cursor-pointer"
+              >
+                Pricing
+              </button>
               <button
                 onClick={() => {
                   handleLinkClick();
@@ -654,7 +666,7 @@ export default function Header() {
                 className="text-white text-base font-medium py-3 hover:text-purple-400 transition-colors w-full text-left cursor-pointer"
               >
                 Contact Us
-              </button>
+              </button> */}
             </nav>
           </motion.div>
         )}
@@ -675,6 +687,12 @@ export default function Header() {
         isOpen={loginModalOpen}
         onClose={() => setLoginModalOpen(false)}
         initialMode="login"
+      />
+
+      {/* Upgrade Plan Modal - Opens from Pricing button */}
+      <UpgradePlanModal
+        isOpen={upgradePlanModalOpen}
+        onClose={() => setUpgradePlanModalOpen(false)}
       />
     </>
   );

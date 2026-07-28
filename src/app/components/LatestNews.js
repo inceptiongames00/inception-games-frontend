@@ -1,251 +1,227 @@
-"use client"
-
-import { FaFacebookF, FaTwitter, FaLinkedin, FaWhatsapp } from "react-icons/fa"
+"use client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowRight } from "lucide-react";
+import { FaFacebookF, FaTwitter, FaLinkedin, FaWhatsapp } from "react-icons/fa";
+import ReadMoreModal from "./Modals/ReadMoreModal";
 
 export default function LatestNews() {
+  const router = useRouter();
+  const [selectedNews, setSelectedNews] = useState(null);
+
   const newsList = [
     {
-      title: "গেম খেলা হতে পারে কারো পেশা",
+      title:
+        "৫০০ বিলিয়ন ডলারের বৈশ্বিক গেমিং ইন্ডাস্ট্রিতে বাংলাদেশের Inception Games",
       description:
-        "গেম তৈরি ও বাজারজাত করে দেশের অর্থনীতিতেও বড় অবদান রাখতে পারে গেম নির্মাতা প্রতিষ্ঠান। পেশাদার গেমারদের জন্য প্ল্যাটফর্ম তৈরি ও গেম তৈরির কাজ করছেন কাজী হাসিব ও তাঁর দল। তাঁদের দুই প্রতিষ্ঠানের সম্পর্কে লিখেছেন আশিক উল বারাত... ",
-      image: "/News/bignews.jpg",
-      readMore: true,
+        "বাংলাদেশের গেমিং ইন্ডাস্ট্রি এখন আর শুধু সম্ভাবনার গল্প নয় এটি ধীরে ধীরে বৈশ্বিক বাজারে নিজেদের অবস্থান তৈরি করছে। আর সেই যাত্রার অন্যতম পথপ্রদর্শক Inception Games আলোচনায় উঠে এসেছে — Inception Games-এর শুরুর গল্প ও যাত্রা বাংলাদেশে গেমিং ইন্ডাস্ট্রির বর্তমান অবস্থা বৈশ্বিক বাজারে বাংলাদেশি গেম স্টুডিওর সম্ভাবনা গেম ডেভেলপমেন্টে ক্যারিয়ার গড়ার সুযোগ উদ্যোক্তা হিসেবে চ্যালেঞ্জ, শিক্ষা ও ভবিষ্যৎ পরিকল্পনা কীভাবে বাংলাদেশ ৫০০ বিলিয়ন ডলারের গেমিং অর্থনীতিতে বড় ভূমিকা রাখতে পারে গেমিং শুধু বিনোদন নয়; এটি প্রযুক্তি, সৃজনশীলতা, কর্মসংস্থান এবং বৈদেশিক আয়ের একটি শক্তিশালী খাত। সঠিক দক্ষতা ও উদ্ভাবনের মাধ্যমে বাংলাদেশও এই ইন্ডাস্ট্রিতে বিশ্বমঞ্চে নিজেদের পরিচিতি আরও শক্তিশালী করতে পারে। পুরো পর্বটি দেখুন এবং জানুন, কীভাবে Inception Games বাংলাদেশের গেমিং ইকোসিস্টেমকে সামনে এগিয়ে নিয়ে যাচ্ছে। Co-powered by নাগরিক প্রতিদিন and Startup Association of Bangladesh (SAB)",
+      image:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1785129436/News_-3_j3fuxq.jpg",
+      category: "Gaming",
+      categoryColor: "bg-cyan-500/20 text-cyan-300 border border-cyan-500/30",
+      readMoreLink: "",
     },
-  ]
+    {
+      title:
+        "National Demo Day Certification of Accelerating Bangladesh backed by World Bank , Hi-Tech Park (DEIED) Bangladesh",
+      description:
+        "At National Demo Day, Inception Games had the opportunity to pitch in front of leading investors. Since last year, our team has been fully bootstrapping and the progress so far has been strong and sustainable. In the coming week, we are launching several products for the Bangladesh market, with plans to expand into the South Asian region (10+ countries) over the next few months. Even without formal marketing, gamers from multiple countries are already supporting the vision of Inception Games through the esports ecosystem. I shared the vision of eSports with Mr Rehan Asif Asad , adviser to the ministry of posts, telecommunications and information technology. Thanks to Project Director of DEIED  , Monjur Mohammad Shahriar Sir, Bangladesh Hi-Tech Park Authority. & his whole Team. The presence of Startup Leader from different Govt entities boosted the whole Program. Thanks to Mr. Nurul H. , MD & CEO of Startup Bangladesh Limited for giving the valuable speech to every startups. Thanks to Mr. Murtuza Zulkar Nain Noman , Project Director of iDEA Project. ICT Division Bangladesh. It was pleasure to meet with Mr. Siddhartho Goshwami from IDEA Project as well. Thanks to Mr. Rahat Ahmed. We had started our journey after covid from NSU Startups Next. Got many advices when we knew nothing about Startup Thanks to Ayman Sadiq  for amazing advice from Panel on the National Demo Days. It was pleasure to meet with Md Mohsinur Rahman , BRAC Bank PLC Thanks to all the Bankers, investors, founders from different Startups. Our mission is clear: to build a global brand that empowers underprivileged yet highly talented gamers creating real income opportunities where none previously existed. Global remittance will be impacted in National Economic Growth.",
+      image:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1785129799/National_Demo_Day_rgetlx.jpg",
+      category: "ESPORTS",
+      categoryColor: "bg-cyan-500/20 text-cyan-300 border border-cyan-500/30",
+      readMoreLink: "",
+    },
+    {
+      title: "Airtel Buzz Presents Bangladesh Gaming & Esports Summit 2025",
+      description:
+        "Dedicating to my Core Teammates & gamers . Tournament sign up going on at our website. Don’t forget to sign up at Airtel Buzz Presents Bangladesh Gaming & Esports Summit 2025 Stay tuned -  the showdown is coming!",
+      image:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783157047/news4_u9saum.jpg",
+      category: "COMMUNITY",
+      categoryColor:
+        "bg-purple-500/20 text-purple-300 border border-purple-500/30",
+      readMoreLink: "",
+    },
+  ];
 
-  const smallNews = [
+  const handleShare = (platform, news) => {
+    const shareUrl = typeof window !== "undefined" ? window.location.href : "";
+    const title = news.title;
+    const description = news.description;
+    let shareLink = "";
 
-    {
-      title: "Mousepad Giveaway tonight guys. Don't miss the chance. ",
-      image: "/News/mouse-pad.jpg",
-      category: "E-sports",
-      time: "March 25",
-      link: `https://www.facebook.com/share/p/${process.env.NEXT_PUBLIC_FACEBOOK_POST_1}`,
-    },
-    {
-      title: "5 Jerseys Giveaway is ON GKEC 🎉",
-      image: "/News/jersey.jpg",
-      category: "E-sports",
-      time: "March 30",
-      link: `https://www.facebook.com/share/p/${process.env.NEXT_PUBLIC_FACEBOOK_POST_2}`,
-    },
-    {
-      title: "GPU Winner - AL MOHAIMIN FARABI",
-      image: "/News/gpu-winner.jpg",
-      category: "E-sports",
-      time: "March 16",
-      link: `https://www.facebook.com/share/p/${process.env.NEXT_PUBLIC_FACEBOOK_POST_3}`,
-    },
-    {
-      title: "Gaming Mouse Winner - ANTOR HASAN",
-      image: "/News/mouse-winner.jpg",
-      category: "E-sports",
-      time: "March 16",
-      link: `https://www.facebook.com/share/p/${process.env.NEXT_PUBLIC_FACEBOOK_POST_4}`,
-    },
-    {
-      title: "Inception Games at Startup Showcase Event - Connecting with aspiring entrepreneurs and gamers",
-      image: "/News/showcase.jpg",
-      category: "E-sports",
-      time: "November 14",
-      link: `https://www.facebook.com/share/p/${process.env.NEXT_PUBLIC_FACEBOOK_POST_5}`,
-    },
-    {
-      title: "YUNet Bangladesh Gaming & Esports Summit 2025 - Sign Up going on. Follow YUNet Esport Arena",
-      image: "/News/summit.jpg",
-      category: "E-sports",
-      time: "December 7",
-      link: `https://www.facebook.com/share/p/${process.env.NEXT_PUBLIC_FACEBOOK_POST_6}`,
-    },
-    {
-      title: "Digital Entrepreneurship and Innovation Ecosystem Development (DEIED) Project Office has organized a Dialogue Session to introduce the Startup and Scaleup Program (Accelerating Bangladesh) and the University Innovation Hub Program to senior public-sector leadership. ",
-      image: "/News/news3.jpg",
-      category: "E-sports",
-      time: "December 10",
-      link: `https://www.facebook.com/share/p/${process.env.NEXT_PUBLIC_FACEBOOK_POST_7}`,
-    },
-    {
-      title: "Dedicating to my Core Teammates & gamers ❤️. Tournament sign up going on at our website. Don't forget to sign up. Slice N Share at Airtel Buzz Presents Bangladesh Gaming & Esports Summit 2025 ",
-      image: "/News/news4.jpg",
-      category: "E-sports",
-      time: "December 10",
-      link: `https://www.facebook.com/share/p/${process.env.NEXT_PUBLIC_FACEBOOK_POST_8}`,
-    },
-  ]
-
-  const shareUrl = `https://www.facebook.com/share/p/${process.env.NEXT_PUBLIC_FEATURED_FACEBOOK_POST}?mibextid=wwXIfr`
-  const shareTitle = "Inception Games Championship - 15 Lakh BDT Prize Pool!"
-
-  const handleShare = (platform) => {
-    const url = encodeURIComponent(shareUrl)
-    const text = encodeURIComponent(shareTitle)
-
-    const shareLinks = {
-      facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}`,
-      twitter: `https://twitter.com/intent/tweet?url=${url}&text=${text}`,
-      linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${url}`,
-      whatsapp: `https://wa.me/?text=${text}%20${url}`,
+    switch (platform) {
+      case "facebook":
+        shareLink = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(title + " - " + description)}`;
+        break;
+      case "twitter":
+        shareLink = `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(title + " - " + description)}`;
+        break;
+      case "linkedin":
+        shareLink = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
+        break;
+      case "whatsapp":
+        shareLink = `https://wa.me/?text=${encodeURIComponent(title + " - " + description + " " + shareUrl)}`;
+        break;
+      default:
+        return;
     }
 
-    window.open(shareLinks[platform], "_blank", "width=600,height=400")
-  }
+    if (typeof window !== "undefined") {
+      window.open(shareLink, "share-dialog", "width=800,height=600");
+    }
+  };
 
   return (
-    <section id="news" className="py-20 px-4" style={{ backgroundColor: "#0a0a14" }}>
+    <section
+      id="news"
+      className="py-20 px-4 sm:px-6"
+      style={{ backgroundColor: "#0a0a14" }}
+    >
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex items-start md:items-center justify-between mb-12">
-          <h2
-            className="text-2xl md:text-6xl font-bold text-white mb-4 md:mb-0"
-            style={{ fontFamily: "Bebas Neue, sans-serif" }}
-          >
-            Latest News
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="flex flex-col items-center mb-16"
+        >
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white">
+            LATEST{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
+              NEWS
+            </span>
           </h2>
-          <a
-            href="#"
-            className="text-white hover:text-purple-400 transition flex items-center gap-2 text-sm md:text-lg"
-          >
-            {/* Explore All <span>›</span> */}
-          </a>
-        </div>
 
-        <div className="rounded-3xl p-[3px] bg-gradient-to-br from-[#A076CC] to-[#40057C] mb-12">
-          <div
-            className="relative rounded-3xl overflow-hidden min-h-[400px] md:min-h-[600px] flex items-end"
-            style={{
-              backgroundImage: `url('${newsList[0].image}')`,
-              backgroundSize: "cover",
-              backgroundPosition: "center top",
-              backgroundRepeat: "no-repeat",
-              backgroundColor: "#0a0a14",
-            }}
-          >
-            {/* 70% gradient overlay from bottom - dark to transparent */}
-            <div
-              className="absolute inset-0"
-              style={{
-                background: `linear-gradient(to top, 
-                  rgba(0, 0, 0, 0.95) 0%, 
-                  rgba(0, 0, 0, 0.85) 25%, 
-                  rgba(0, 0, 0, 0.6) 50%, 
-                  rgba(0, 0, 0, 0.2) 70%, 
-                  transparent 100%)`,
-              }}
-            />
+          {/* Underline accent */}
+          <div className="flex justify-center gap-2 mt-4">
+            <div className="w-50 h-1.5 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 rounded-full" />
+          </div>
+        </motion.div>
 
-            {/* Text content on top of overlay */}
-            <div className="relative z-10 p-4 md:p-12 max-w-3xl">
-              <h3 className="text-lg md:text-4xl font-bold text-white mb-3 md:mb-4">{newsList[0].title}</h3>
-              <p className="text-gray-200 text-sm md:text-lg mb-2 md:mb-6 leading-relaxed line-clamp-3 md:line-clamp-none">
-                {newsList[0].description}
-              </p>
-
-              <div className="flex items-center gap-4 flex-wrap">
-                <a
-                  href="https://www.facebook.com/share/p/16yMhZvtR9/?mibextid=wwXIfr"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block px-3 md:px-8 py-1 md:py-3 rounded-full font-bold text-sm text-white transition hover:scale-105"
+        {/* News Grid - 3 columns */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+          {newsList.map((news, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ delay: idx * 0.15, duration: 0.6 }}
+              whileHover={{ y: -8 }}
+              className="group cursor-pointer"
+            >
+              {/* Card Container */}
+              <div className="rounded-2xl overflow-hidden bg-zinc-900/50 border border-zinc-800/50 hover:border-zinc-700/50 transition-all duration-300 h-full flex flex-col backdrop-blur-sm">
+                {/* Image Section */}
+                <div
+                  className="relative h-48 sm:h-56 md:h-64 overflow-hidden bg-gradient-to-br from-slate-700 to-slate-900 bg-cover bg-top"
                   style={{
-                    background: "linear-gradient(135deg, #8117EE 0%, #A076CC 100%)",
+                    backgroundImage: `url('${news.image}')`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "top",
                   }}
                 >
-                  Read More
-                </a>
+                  {/* Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
 
-                {/* Social Share Icons */}
-                <div className="flex items-center gap-3">
-                  {/* <span className="text-gray-400 text-xs md:text-sm hidden md:block">Share:</span> */}
-                  <button
-                    onClick={() => handleShare("facebook")}
-                    className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 hover:bg-[#1877F2] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
-                    aria-label="Share on Facebook"
+                  {/* Category Badge */}
+                  <div
+                    className={`absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${news.categoryColor} backdrop-blur-sm`}
                   >
-                    <FaFacebookF className="text-white text-sm md:text-base" />
-                  </button>
-                  <button
-                    onClick={() => handleShare("twitter")}
-                    className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 hover:bg-[#1DA1F2] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
-                    aria-label="Share on Twitter"
-                  >
-                    <FaTwitter className="text-white text-sm md:text-base" />
-                  </button>
-                  <button
-                    onClick={() => handleShare("linkedin")}
-                    className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 hover:bg-[#0A66C2] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
-                    aria-label="Share on LinkedIn"
-                  >
-                    <FaLinkedin className="text-white text-sm md:text-base" />
-                  </button>
-                  <button
-                    onClick={() => handleShare("whatsapp")}
-                    className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 hover:bg-[#25D366] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
-                    aria-label="Share on WhatsApp"
-                  >
-                    <FaWhatsapp className="text-white text-sm md:text-base" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {smallNews.map((news, idx) => (
-            <a
-              key={idx}
-              href={news.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-2xl overflow-hidden group cursor-pointer transform transition duration-300 hover:scale-[1.02]"
-              style={{
-                border: "2px solid transparent",
-                backgroundImage: "linear-gradient(#0a0a14, #0a0a14), linear-gradient(135deg, #A076CC 0%, #40057C 100%)",
-                backgroundOrigin: "border-box",
-                backgroundClip: "padding-box, border-box",
-              }}
-            >
-              {/* Card Image with gradient overlay from bottom */}
-              <div
-                className="relative h-64 overflow-hidden"
-                style={{
-                  backgroundImage: `url('${news.image}')`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  backgroundRepeat: "no-repeat",
-                }}
-              >
-                {/* Gradient overlay from bottom */}
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    background: `linear-gradient(to top, 
-                      rgba(0, 0, 0, 0.9) 0%, 
-                      rgba(0, 0, 0, 0.7) 40%, 
-                      rgba(0, 0, 0, 0.3) 70%, 
-                      transparent 100%)`,
-                  }}
-                />
-
-                {/* Category badge */}
-                <div className="absolute top-3 left-3 flex items-center gap-2">
-                  <span className="text-xs font-semibold text-gray-300 bg-black/60 px-3 py-1 rounded-full backdrop-blur-sm">
                     {news.category}
-                  </span>
-                  <span className="text-xs text-gray-400">• {news.time}</span>
+                  </div>
                 </div>
 
-                {/* Title at bottom on top of gradient */}
-                <div className="absolute bottom-0 left-0 right-0 p-4 z-10">
-                  <h4 className="text-sm md:text-base font-bold text-white line-clamp-3 group-hover:text-purple-300 transition">
-                    {news.title}
-                  </h4>
+                {/* Content Section */}
+                <div className="p-5 sm:p-6 flex-grow flex flex-col justify-between">
+                  <div>
+                    <h3 className="text-lg sm:text-xl font-bold text-white mb-3 leading-tight group-hover:text-purple-300 transition-colors duration-300 line-clamp-2">
+                      {news.title}
+                    </h3>
+                    <p className="text-sm sm:text-base text-zinc-300 leading-relaxed line-clamp-3">
+                      {news.description}
+                    </p>
+                  </div>
+
+                  {/* Read More Link */}
+                  <div className="mt-4 pt-4 border-t border-zinc-700/50">
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={() => setSelectedNews(news)}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-500 rounded-full text-white font-semibold text-xs uppercase tracking-wider transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/50 group/link"
+                      >
+                        Read More
+                        <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform duration-300" />
+                      </button>
+                      <button
+                        onClick={() => handleShare("facebook", news)}
+                        className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 hover:bg-[#1877F2] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
+                        aria-label="Share on Facebook"
+                      >
+                        <FaFacebookF className="text-white text-sm md:text-base" />
+                      </button>
+                      <button
+                        onClick={() => handleShare("twitter", news)}
+                        className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 hover:bg-[#1DA1F2] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
+                        aria-label="Share on Twitter"
+                      >
+                        <FaTwitter className="text-white text-sm md:text-base" />
+                      </button>
+                      <button
+                        onClick={() => handleShare("linkedin", news)}
+                        className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 hover:bg-[#0A66C2] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
+                        aria-label="Share on LinkedIn"
+                      >
+                        <FaLinkedin className="text-white text-sm md:text-base" />
+                      </button>
+                      <button
+                        onClick={() => handleShare("whatsapp", news)}
+                        className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white/10 hover:bg-[#25D366] backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:scale-110"
+                        aria-label="Share on WhatsApp"
+                      >
+                        <FaWhatsapp className="text-white text-sm md:text-base" />
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </a>
+            </motion.div>
           ))}
         </div>
+
+        {/* View All Button */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="flex justify-center mt-12"
+        >
+          <motion.button
+            onClick={() => router.push("/community#news")}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="px-8 py-3 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 rounded-full text-white font-semibold hover:shadow-lg hover:shadow-pink-500/50 transition-all duration-300 cursor-pointer"
+          >
+            View All
+          </motion.button>
+        </motion.div>
+
+        {/* News Detail Modal */}
+        <AnimatePresence>
+          {selectedNews && (
+            <ReadMoreModal
+              selectedNews={selectedNews}
+              setSelectedNews={setSelectedNews}
+              handleShare={handleShare}
+            />
+          )}
+        </AnimatePresence>
       </div>
     </section>
-  )
+  );
 }

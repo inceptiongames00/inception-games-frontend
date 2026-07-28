@@ -12,14 +12,46 @@ export const communityData = {
   //   { id: 8, photo: "/Ecosystem/Community/c17.jpg" },
   // ],
   items: [
-    { id: 1, photo: "https://res.cloudinary.com/dpwjt3jxx/image/upload/v1782378978/imageedit_1_2817650733_in9ukw.jpg" },
-    { id: 2, photo: "https://res.cloudinary.com/dpwjt3jxx/image/upload/v1782378977/imageedit_2_9852649692_rvgi9y.jpg" },
-    { id: 3, photo: "https://res.cloudinary.com/dpwjt3jxx/image/upload/v1782378521/c3_wp2vvp.jpg" },
-    { id: 4, photo: "https://res.cloudinary.com/dpwjt3jxx/image/upload/v1782378520/c17_wzbvyw.jpg" },
-    { id: 5, photo: "https://res.cloudinary.com/dpwjt3jxx/image/upload/v1782378519/c2_rdswyk.jpg" },
-    { id: 6, photo: "https://res.cloudinary.com/dpwjt3jxx/image/upload/v1782378519/c6_jxtmsx.jpg" },
-    { id: 7, photo: "https://res.cloudinary.com/dpwjt3jxx/image/upload/v1782378518/c4_hkcr9b.jpg" },
-    { id: 8, photo: "https://res.cloudinary.com/dpwjt3jxx/image/upload/v1782378518/c1_clfutc.jpg" },
+    {
+      id: 1,
+      photo:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783146526/c1_oboa3t.jpg",
+    },
+    {
+      id: 2,
+      photo:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783146523/c2_j8gqgm.jpg",
+    },
+    {
+      id: 3,
+      photo:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783146526/c3_j3yoag.jpg",
+    },
+    {
+      id: 4,
+      photo:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783146528/c4_ztd1sr.jpg",
+    },
+    {
+      id: 6,
+      photo:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783146530/c6_lhwwsj.jpg",
+    },
+    {
+      id: 7,
+      photo:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783146941/c7_knftcn.jpg",
+    },
+    {
+      id: 8,
+      photo:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783146940/c8_xoi6zb.jpg",
+    },
+    {
+      id: 17,
+      photo:
+        "https://res.cloudinary.com/jvpygp4b/image/upload/v1783146525/c17_l2nols.jpg",
+    },
   ],
 };
 

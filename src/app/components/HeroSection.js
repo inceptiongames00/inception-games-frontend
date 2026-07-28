@@ -46,7 +46,7 @@ function HiringFormModal({ isOpen, onClose }) {
             <div className="flex items-center justify-between p-4 border-b border-white/10 bg-gradient-to-r from-purple-900/30 to-transparent">
               <div className="flex items-center gap-3">
                 <img
-                  src="/Logo/SNS_Logo.svg"
+                  src="https://res.cloudinary.com/jvpygp4b/image/upload/v1783146434/SNS_Logo_axsyyg.svg"
                   alt="SNS Logo"
                   className="w-8 h-8"
                 />
@@ -100,7 +100,7 @@ export default function HeroSection() {
         <div
           className="absolute inset-0"
           style={{
-            backgroundImage: "url('/Hero/hero-bg.png')",
+            backgroundImage: `url("https://res.cloudinary.com/jvpygp4b/image/upload/v1783156807/hero-bg_ssmbni.png")`,
             backgroundSize: "cover",
             backgroundPosition: "center",
             zIndex: 0,
@@ -131,7 +131,7 @@ export default function HeroSection() {
           >
             <div className="flex items-center justify-center">
               <img
-                src="/Logo/fullLogo.png"
+                src="https://res.cloudinary.com/jvpygp4b/image/upload/v1783144236/fulllogo_xdqw20.jpg"
                 alt="SNS Logo"
                 className="w-60  h-auto"
               />

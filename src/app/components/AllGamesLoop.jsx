@@ -1,29 +1,61 @@
 "use client";
 
-import game1 from "../../assets/AllGames/brand-1.webp";
-import game2 from "../../assets/AllGames/brand-10.webp";
-import game3 from "../../assets/AllGames/brand-11.webp";
-import game4 from "../../assets/AllGames/brand-2.webp";
-import game5 from "../../assets/AllGames/brand-3.webp";
-import game6 from "../../assets/AllGames/brand-4.webp";
-import game7 from "../../assets/AllGames/brand-5.webp";
-import game8 from "../../assets/AllGames/brand-7.webp";
-import game9 from "../../assets/AllGames/brand-8.webp";
-import game10 from "../../assets/AllGames/brand-9.webp";
-import game11 from "../../assets/AllGames/brand-pubg.webp";
-
 const games = [
-  { src: game1?.src ?? game1, alt: "Dota 2", color: "#E2231A" },
-  { src: game2?.src ?? game2, alt: "Street Fighter", color: "#FFD400" },
-  { src: game3?.src ?? game3, alt: "Tekken", color: "#FF5A00" },
-  { src: game4?.src ?? game4, alt: "Fortnite", color: "#00B7FF" },
-  { src: game5?.src ?? game5, alt: "Counter Strike 2", color: "#F59E0B" },
-  { src: game6?.src ?? game6, alt: "Free Fire", color: "#FF6B00" },
-  { src: game7?.src ?? game7, alt: "eFootball", color: "#005CFF" },
-  { src: game8?.src ?? game8, alt: "Valorant", color: "#FF4655" },
-  { src: game9?.src ?? game9, alt: "EA Sports", color: "#00A3FF" },
-  { src: game10?.src ?? game10, alt: "League of Legends", color: "#C89B3C" },
-  { src: game11?.src ?? game11, alt: "PUBG Mobile", color: "#F2A900" },
+  {
+    src: "https://res.cloudinary.com/jvpygp4b/image/upload/v1783145859/brand-1_pdv3n5.webp",
+    alt: "Dota 2",
+    color: "#E2231A",
+  },
+  {
+    src: "https://res.cloudinary.com/jvpygp4b/image/upload/v1783145855/brand-10_bkvtk4.webp",
+    alt: "Street Fighter",
+    color: "#FFD400",
+  },
+  {
+    src: "https://res.cloudinary.com/jvpygp4b/image/upload/v1783145857/brand-11_pv0jzb.webp",
+    alt: "Tekken",
+    color: "#FF5A00",
+  },
+  {
+    src: "https://res.cloudinary.com/jvpygp4b/image/upload/v1783145861/brand-2_k1erag.webp",
+    alt: "Fortnite",
+    color: "#00B7FF",
+  },
+  {
+    src: "https://res.cloudinary.com/jvpygp4b/image/upload/v1783145862/brand-3_linwku.webp",
+    alt: "Counter Strike 2",
+    color: "#F59E0B",
+  },
+  {
+    src: "https://res.cloudinary.com/jvpygp4b/image/upload/v1783145863/brand-4_msjc4u.webp",
+    alt: "Free Fire",
+    color: "#FF6B00",
+  },
+  {
+    src: "https://res.cloudinary.com/jvpygp4b/image/upload/v1783145865/brand-5_icbfvs.webp",
+    alt: "eFootball",
+    color: "#005CFF",
+  },
+  {
+    src: "https://res.cloudinary.com/jvpygp4b/image/upload/v1783145866/brand-7_esymyl.webp",
+    alt: "Valorant",
+    color: "#FF4655",
+  },
+  {
+    src: "https://res.cloudinary.com/jvpygp4b/image/upload/v1783145854/brand-8_yjgbw0.webp",
+    alt: "EA Sports",
+    color: "#00A3FF",
+  },
+  {
+    src: "https://res.cloudinary.com/jvpygp4b/image/upload/v1783145853/brand-9_uvpdi7.webp",
+    alt: "League of Legends",
+    color: "#C89B3C",
+  },
+  {
+    src: "https://res.cloudinary.com/jvpygp4b/image/upload/v1783145858/brand-pubg_hjrplb.webp",
+    alt: "PUBG Mobile",
+    color: "#F2A900",
+  },
 ];
 
 export default function AllGamesLoop() {
@@ -153,4 +185,3 @@ export default function AllGamesLoop() {
     </section>
   );
 }
-
