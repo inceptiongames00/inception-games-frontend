@@ -26,7 +26,7 @@ import {
 import Image from "next/image";
 import { API } from "@/lib/api";
 
-// Fallback API configuration if API.TOURNAMENT_GET_ALL is undefined
+// Fallback API configuration if API.TOURNAMENT_GET_ALL is undefine
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ||
   "https://inception-games.an.r.appspot.com/api/v1";
