@@ -14,6 +14,46 @@ import {
   Swords,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { getGameImage } from "@/app/utils/gameData";
+
+// Transform registration data to event format for page details
+const transformRegistrationToEvent = (registration, type) => {
+  return {
+    id: registration.tournament_id || registration.scrim_id,
+    title: registration.title,
+    game: registration.game,
+    game_name: registration.game,
+    gameName: registration.game,
+    gameImage: getGameImage(registration.title, registration.game),
+    banner_image: registration.banner_image,
+    status: registration.status,
+    platform: registration.platform || "All Platforms",
+    location: registration.region || "Global",
+    teamType: registration.team_mode || registration.game_mode || "Team",
+    team_size: registration.team_size || 1,
+    teamSize: registration.team_size || 1,
+    team_name: registration.team_name,
+    event_category: registration.event_category,
+    eventType: type === "scrims" ? "Scrims" : "Tournaments",
+    description: registration.description,
+    rules: registration.rules,
+    prizePool: parseFloat(registration.prize_pool) || 0,
+    prize_pool: parseFloat(registration.prize_pool) || 0,
+    currency: registration.currency || "BDT",
+    totalSlots: registration.max_slots || registration.max_teams || 64,
+    filledSlots: registration.filled_slots || registration.filled_teams || 0,
+    registration_start: registration.reg_start_at,
+    registration_end: registration.reg_end_at,
+    registrationStart: registration.reg_start_at,
+    registrationEnd: registration.reg_end_at,
+    tournamentStart: registration.tournament_start_at || registration.start_at,
+    tournamentEnd: registration.tournament_end_at || registration.end_at,
+    host: registration.hosted_by || "Inception Games",
+    organizer: registration.hosted_by || "Inception Games",
+    slots: registration.slots || [],
+    format: registration.format,
+  };
+};
 
 const statusStyles = {
   Confirmed: {
@@ -164,7 +204,10 @@ function RegistrationCard({
       )}
 
       <button
-        onClick={() => handleNavigation(registration.tournament_id)}
+        onClick={() => {
+          const eventData = transformRegistrationToEvent(registration, type);
+          handleNavigation(registration.tournament_id || registration.scrim_id, eventData);
+        }}
         className="w-full py-2 font-bold text-sm rounded-xl uppercase tracking-wider bg-gradient-to-r from-green-600 to-green-500 text-white opacity-90 cursor-pointer"
       >
         View Details
@@ -178,8 +221,13 @@ export default function MyScrims({ userRegistrations }) {
   const [activeTab, setActiveTab] = useState("tournaments");
   const [selectedRegistration, setSelectedRegistration] = useState(null);
 
-  const handleNavigation = (id) =>
+  const handleNavigation = (id, eventData = null) => {
+    if (eventData) {
+      // Pass event data via sessionStorage using the same key as EventsSection
+      sessionStorage.setItem(`event_${id}`, JSON.stringify(eventData));
+    }
     router.push(`/profile/events/${id}?action=view`);
+  };
 
   // Get unique registrations - remove duplicates by scrim_id and tournament_id
   const scrimRegistrations = userRegistrations?.scrim_registrations

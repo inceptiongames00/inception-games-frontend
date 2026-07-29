@@ -4,7 +4,7 @@ import { getGameImage } from "@/app/utils/gameData";
 
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
-export const useEventData = (eventId) => {
+export const useEventData = (eventId, skipFetch = false) => {
   // Initialize state with potential cached value
   const [event, setEvent] = useState(() => {
     if (typeof window !== "undefined" && eventId) {
@@ -23,9 +23,9 @@ export const useEventData = (eventId) => {
   const [loading, setLoading] = useState(() => {
     if (typeof window !== "undefined" && eventId) {
       const cachedEvent = sessionStorage.getItem(`event_${eventId}`);
-      return !cachedEvent;
+      return !cachedEvent && !skipFetch;
     }
-    return true;
+    return !skipFetch;
   });
 
   const [error, setError] = useState(null);
@@ -65,7 +65,8 @@ export const useEventData = (eventId) => {
   };
 
   useEffect(() => {
-    if (!eventId) return;
+    // Skip fetch if skipFetch is true
+    if (skipFetch || !eventId) return;
 
     const fetchEvent = async () => {
       try {
@@ -199,7 +200,7 @@ export const useEventData = (eventId) => {
     };
 
     fetchEvent();
-  }, [eventId]);
+  }, [eventId, skipFetch]);
 
   return { event, loading, error };
 };
