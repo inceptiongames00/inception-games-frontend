@@ -5,13 +5,11 @@ import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useAuth } from "@/hooks/useAuth";
-import { useProfileNavigation } from "@/hooks/useProfileNavigation";
 import { useRouter } from "next/navigation";
 
 export default function TournamentsSection({ onLoginClick }) {
   const { user } = useAuth();
   const router = useRouter();
-  const { navigateToTab } = useProfileNavigation();
   const [tournaments, setTournaments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isHydrated, setIsHydrated] = useState(false);
@@ -64,12 +62,11 @@ export default function TournamentsSection({ onLoginClick }) {
   }, [isHydrated]);
 
   const handleCardClick = (id) => {
-    router.push(`esports-arena/${id}?action=view`);
-    // if (isHydrated && user) {
-    //   navigateToTab("Free Event");
-    // } else {
-    //   onLoginClick?.();
-    // }
+    if (isHydrated && user) {
+      router.push(`/profile?tab=Free Event`);
+    } else {
+      onLoginClick?.();
+    }
   };
 
   // Auto-scroll functionality
@@ -230,7 +227,7 @@ function TournamentCard({ tournament, onClick, isHydrated, user }) {
             className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"
           >
             <span className="px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 rounded-full text-white font-semibold text-sm transition-all duration-300">
-              Go To Tournament
+              {isHydrated && user ? "Go To Tournament" : "Sign In"}
             </span>
           </button>
 

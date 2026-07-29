@@ -49,7 +49,6 @@ export default function Header() {
   const router = useRouter();
   const { user, isAuthenticated, logout } = useAuth();
   const { navigateToSection } = useHomeNavigation();
-  const { navigateToTab } = useProfileNavigation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
@@ -58,6 +57,7 @@ export default function Header() {
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [esportsDropdownOpen, setEsportsDropdownOpen] = useState(false);
   const [ecosystemDropdownOpen, setEcosystemDropdownOpen] = useState(false);
+  const [initialMode, setInitialMode] = useState("login");
 
   useEffect(() => {
     const handleScroll = () => {
@@ -97,8 +97,9 @@ export default function Header() {
     setMobileMenuOpen(false);
   };
 
-  const handleLoginClick = () => {
+  const handleLoginClick = (mode) => {
     // setCountdownModalOpen(true)
+    setInitialMode(mode);
     setLoginModalOpen(true);
   };
 
@@ -392,7 +393,7 @@ export default function Header() {
               </>
             ) : (
               <button
-                onClick={handleLoginClick}
+                onClick={() => handleLoginClick("login")}
                 className="relative group px-6 py-2.5 rounded-full font-semibold text-white overflow-hidden cursor-pointer"
               >
                 {/* Animated gradient background */}
@@ -441,19 +442,27 @@ export default function Header() {
               </>
             ) : (
               /* AUTH: Not logged in */
-              <button
-                onClick={handleLoginClick}
-                className="relative px-4 py-2 rounded-full font-semibold text-white text-sm overflow-hidden"
-              >
-                {/* gradient background */}
-                <span className="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 bg-[length:200%_100%] animate-gradient-x" />
+              <div>
+                <button
+                  onClick={() => handleLoginClick("signup")}
+                  className="relative mr-2 rounded-full px-4 py-1.5 overflow-visible border border-gradient-to-r from-purple-600 via-pink-500 to-purple-600 text-sm"
+                >
+                  Signup
+                </button>
+                <button
+                  onClick={() => handleLoginClick("login")}
+                  className="relative px-4 py-2 rounded-full font-semibold text-white text-sm overflow-hidden"
+                >
+                  {/* gradient background */}
+                  <span className="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 bg-[length:200%_100%] animate-gradient-x" />
 
-                {/* glow effect */}
-                <span className="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 bg-[length:200%_100%] animate-gradient-x blur-md opacity-60" />
+                  {/* glow effect */}
+                  <span className="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-500 to-purple-600 bg-[length:200%_100%] animate-gradient-x blur-md opacity-60" />
 
-                {/* text */}
-                <span className="relative">Login</span>
-              </button>
+                  {/* text */}
+                  <span className="relative">Login</span>
+                </button>
+              </div>
             )}
 
             {/* Hamburger Menu Button */}
@@ -686,7 +695,7 @@ export default function Header() {
       <UnifiedAuthModal
         isOpen={loginModalOpen}
         onClose={() => setLoginModalOpen(false)}
-        initialMode="login"
+        initialMode={initialMode}
       />
 
       {/* Upgrade Plan Modal - Opens from Pricing button */}

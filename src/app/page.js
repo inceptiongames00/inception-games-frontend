@@ -382,7 +382,7 @@ function HomeContent() {
 
                 {/* Arrow between steps */}
                 {i < howToEarn.length - 1 && (
-                  <div className="flex items-start justify-center md:my-8 md:mx-2 rotate-90 md:rotate-0 flex-shrink-0 md:self-start">
+                  <div className="hidden md:flex items-start justify-center md:my-8 md:mx-2 rotate-90 md:rotate-0 flex-shrink-0 md:self-start">
                     <Image
                       src={arrow}
                       alt="next step"

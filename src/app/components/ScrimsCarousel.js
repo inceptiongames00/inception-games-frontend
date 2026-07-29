@@ -1,23 +1,21 @@
 "use client";
 
 import { useAuth } from "@/hooks/useAuth";
-import { useProfileNavigation } from "@/hooks/useProfileNavigation";
 import { useRouter } from "next/navigation";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 
 export default function ScrimsCarousel({ onLoginClick }) {
   const { user } = useAuth();
   const router = useRouter();
-  const { navigateToTab } = useProfileNavigation();
   const [isHydrated, setIsHydrated] = useState(false);
   const [tournaments, setTournaments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [scrollPosition, setScrollPosition] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState(0);
-  const scrollContainerRef = useRef(null);
-  const autoScrollIntervalRef = useRef(null);
-  const [isHovered, setIsHovered] = useState(false);
+
+  // Drag/swipe refs — no state so no re-renders
+  const trackRef = useRef(null);
+  const isDragging = useRef(false);
+  const dragStartX = useRef(0);
+  const dragOffsetAtStart = useRef(0);
 
   useEffect(() => {
     setIsHydrated(true);
@@ -35,7 +33,6 @@ export default function ScrimsCarousel({ onLoginClick }) {
         if (!response.ok) throw new Error("Failed to fetch tournaments");
         const data = await response.json();
 
-        // Handle different response formats
         let tournamentsArray = [];
         if (Array.isArray(data)) {
           tournamentsArray = data;
@@ -44,11 +41,10 @@ export default function ScrimsCarousel({ onLoginClick }) {
         } else if (data && Array.isArray(data.tournaments)) {
           tournamentsArray = data.tournaments;
         } else if (data && typeof data === "object") {
-          // Single tournament object - wrap in array
           tournamentsArray = [data];
         }
 
-        localStorage.setItem("free-event", JSON.stringify(tournamentsArray));
+        sessionStorage.setItem("free-event", JSON.stringify(tournamentsArray));
         setTournaments(tournamentsArray);
       } catch (error) {
         console.error("Error fetching tournaments:", error);
@@ -61,149 +57,154 @@ export default function ScrimsCarousel({ onLoginClick }) {
     fetchTournaments();
   }, [isHydrated]);
 
-  const handleCardClick = (id) => {
-    router.push(`esports-arena/${id}?action=view`);
-    // if (isHydrated && user) {
-    //   navigateToTab("Free Event");
-    // } else {
-    //   onLoginClick();
-    // }
+  // ── Drag / swipe helpers ──────────────────────────────────────────────────
+
+  /** Read the live translateX being applied by the CSS animation. */
+  const getCurrentOffset = () => {
+    const el = trackRef.current;
+    if (!el) return 0;
+    const matrix = window.getComputedStyle(el).transform;
+    if (!matrix || matrix === "none") return 0;
+    const match = matrix.match(/matrix.*\((.+)\)/);
+    if (!match) return 0;
+    return parseFloat(match[1].split(", ")[4]) || 0;
   };
 
-  // Auto-scroll functionality
-  useEffect(() => {
-    if (
-      !isDragging &&
-      !isHovered &&
-      tournaments.length > 0 &&
-      scrollContainerRef.current
-    ) {
-      autoScrollIntervalRef.current = setInterval(() => {
-        setScrollPosition((prev) => {
-          const newPosition = prev + 1.5;
-          const maxScroll = scrollContainerRef.current?.scrollWidth / 2 || 0;
+  /** Pause animation and lock the track at its current pixel position. */
+  const freezeAtCurrentOffset = () => {
+    const el = trackRef.current;
+    if (!el) return 0;
+    const offset = getCurrentOffset();
+    el.style.animationPlayState = "paused";
+    el.style.transform = `translateX(${offset}px)`;
+    el.style.animation = "none"; // detach so manual transform takes over
+    return offset;
+  };
 
-          return newPosition >= maxScroll ? 0 : newPosition;
-        });
-      }, 50);
+  /** Resume animation from the given pixel offset without a visible jump. */
+  const resumeAnimation = useCallback(
+    (offsetPx, stripWidth, duration) => {
+      const el = trackRef.current;
+      if (!el) return;
+      // Clamp into one full strip loop
+      const clamped = ((offsetPx % stripWidth) - stripWidth) % stripWidth; // negative offset
+      const progress = Math.abs(clamped) / stripWidth; // 0..1
+      const delay = -(progress * duration);
+      el.style.transform = "";
+      el.style.animation = `ticker ${duration}s linear ${delay}s infinite`;
+      el.style.animationPlayState = "running";
+    },
+    []
+  );
+
+  const onDragStart = useCallback((clientX) => {
+    isDragging.current = true;
+    dragStartX.current = clientX;
+    dragOffsetAtStart.current = freezeAtCurrentOffset();
+    if (trackRef.current) trackRef.current.style.cursor = "grabbing";
+  }, []);
+
+  const onDragMove = useCallback((clientX) => {
+    if (!isDragging.current || !trackRef.current) return;
+    const delta = clientX - dragStartX.current;
+    trackRef.current.style.transform = `translateX(${dragOffsetAtStart.current + delta}px)`;
+  }, []);
+
+  const onDragEnd = useCallback(
+    (clientX, stripWidth, duration) => {
+      if (!isDragging.current) return;
+      isDragging.current = false;
+      if (trackRef.current) trackRef.current.style.cursor = "grab";
+      const delta = clientX - dragStartX.current;
+      const finalOffset = dragOffsetAtStart.current + delta;
+      resumeAnimation(finalOffset, stripWidth, duration);
+    },
+    [resumeAnimation]
+  );
+
+  // ── Card click ────────────────────────────────────────────────────────────
+
+  const handleCardClick = () => {
+    if (isHydrated && user) {
+      router.push(`/profile?tab=Free Event`);
+    } else {
+      onLoginClick();
     }
-
-    return () => {
-      if (autoScrollIntervalRef.current) {
-        clearInterval(autoScrollIntervalRef.current);
-      }
-    };
-  }, [isDragging, isHovered, tournaments.length]);
-
-  // Update scroll container position
-  useEffect(() => {
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.style.transform = `translateX(-${scrollPosition}px)`;
-    }
-  }, [scrollPosition]);
-
-  // Touch/Mouse handlers for dragging
-  const handleDragStart = (e) => {
-    setIsDragging(true);
-    setDragStart(e.type.includes("mouse") ? e.clientX : e.touches[0].clientX);
   };
 
-  const handleDragMove = (e) => {
-    if (!isDragging || !scrollContainerRef.current) return;
+  if (!isHydrated || loading || tournaments.length === 0) return null;
 
-    const currentX = e.type.includes("mouse")
-      ? e.clientX
-      : e.touches[0].clientX;
-    const diff = dragStart - currentX;
-
-    setScrollPosition((prev) => {
-      const newPosition = prev + diff;
-      const maxScroll = scrollContainerRef.current?.scrollWidth / 2 || 0;
-
-      if (newPosition < 0) return 0;
-      if (newPosition >= maxScroll) return maxScroll;
-
-      return newPosition;
-    });
-
-    setDragStart(currentX);
-  };
-
-  const handleDragEnd = () => {
-    setIsDragging(false);
-    setIsHovered(false);
-  };
-
-  if (!isHydrated) {
-    return null;
-  }
+  // Repeat enough times so the strip is always wider than the viewport
+  const repeated = [
+    ...tournaments,
+    ...tournaments,
+    ...tournaments,
+    ...tournaments,
+  ];
+  // Total width of one full set (card width 270px + px-2 padding ~16px = ~286px)
+  const cardWidth = 286;
+  const stripWidth = tournaments.length * cardWidth;
 
   return (
-    <div className="relative overflow-hidden">
-      {/* Gradient overlays */}
-      <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-24 md:w-32 lg:w-40 bg-gradient-to-r from-zinc-950 to-transparent z-10" />
-      <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 md:w-32 lg:w-40 bg-gradient-to-l from-zinc-950 to-transparent z-10" />
+    <>
+      <style>{`
+        @keyframes ticker {
+          0%   { transform: translateX(0); }
+          100% { transform: translateX(-${stripWidth}px); }
+        }
+        .scrims-track {
+          animation: ticker ${tournaments.length * 5}s linear infinite;
+          will-change: transform;
+        }
+        .scrims-track:hover {
+          animation-play-state: paused;
+        }
+      `}</style>
 
-      {/* Scrolling container */}
       <div
-        ref={scrollContainerRef}
-        className="flex cursor-grab active:cursor-grabbing transition-transform"
-        style={{
-          transition: isDragging ? "none" : "transform 0.3s ease-out",
-        }}
-        onMouseDown={handleDragStart}
-        onMouseMove={handleDragMove}
-        onMouseUp={handleDragEnd}
-        onMouseLeave={handleDragEnd}
-        onTouchStart={handleDragStart}
-        onTouchMove={handleDragMove}
-        onTouchEnd={handleDragEnd}
-        onMouseEnter={() => setIsHovered(true)}
+        className="relative overflow-hidden"
+        onMouseMove={(e) => onDragMove(e.clientX)}
+        onMouseUp={(e) => onDragEnd(e.clientX, stripWidth, tournaments.length * 5)}
+        onMouseLeave={(e) => { if (isDragging.current) onDragEnd(e.clientX, stripWidth, tournaments.length * 5); }}
       >
-        {/* First set */}
-        {tournaments.map((tournament, index) => (
-          <GameCard
-            key={`tournament-1-${index}`}
-            tournament={tournament}
-            onClick={handleCardClick}
-            isHydrated={isHydrated}
-            user={user}
-          />
-        ))}
+        {/* Gradient overlays */}
+        <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-24 md:w-32 lg:w-40 bg-gradient-to-r from-zinc-950 to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 md:w-32 lg:w-40 bg-gradient-to-l from-zinc-950 to-transparent z-10 pointer-events-none" />
 
-        {/* Duplicate set for seamless loop */}
-        {tournaments.map((tournament, index) => (
-          <GameCard
-            key={`tournament-2-${index}`}
-            tournament={tournament}
-            onClick={handleCardClick}
-            isHydrated={isHydrated}
-            user={user}
-          />
-        ))}
+        {/* Ticker track */}
+        <div
+          ref={trackRef}
+          className="flex scrims-track cursor-grab select-none"
+          onMouseDown={(e) => onDragStart(e.clientX)}
+          onTouchStart={(e) => onDragStart(e.touches[0].clientX)}
+          onTouchMove={(e) => onDragMove(e.touches[0].clientX)}
+          onTouchEnd={(e) => onDragEnd(e.changedTouches[0].clientX, stripWidth, tournaments.length * 5)}
+          style={{ touchAction: "pan-y pinch-zoom" }}
+        >
+          {repeated.map((tournament, index) => (
+            <GameCard
+              key={index}
+              tournament={tournament}
+              onClick={handleCardClick}
+              isHydrated={isHydrated}
+              user={user}
+            />
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
 function GameCard({ tournament, onClick, isHydrated, user }) {
-  // Determine the game image and label from tournament
   const getGameImage = () => {
     if (tournament.banner_image) return tournament.banner_image;
     return "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=500&h=600&fit=crop";
   };
 
-  // const getGameLabel = () => {
-  //   if (tournament.entry_type === "Free" || tournament.entry_fee === "0.00") {
-  //     return "FREE ENTRY";
-  //   }
-  //   return `${tournament.entry_fee} ENTRY`;
-  // };
-
   const getStartDate = () => {
     if (tournament.start_at) {
-      const date = new Date(tournament.start_at);
-      return date
+      return new Date(tournament.start_at)
         .toLocaleDateString("en-US", {
           day: "2-digit",
           month: "short",
@@ -216,8 +217,8 @@ function GameCard({ tournament, onClick, isHydrated, user }) {
 
   return (
     <div
-      className="px-2 sm:px-3 md:px-4"
-      style={{ width: "270px", height: "320px", flexShrink: 0 }}
+      className="px-2 sm:px-3 md:px-4 flex-shrink-0"
+      style={{ width: "270px", height: "320px" }}
     >
       <div className="group cursor-pointer h-full">
         <div
@@ -244,7 +245,7 @@ function GameCard({ tournament, onClick, isHydrated, user }) {
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/80" />
               <div className="absolute top-0 left-1/4 w-1/2 h-0.5 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-              {/* Dark Overlay */}
+              {/* Dark overlay on hover */}
               <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center rounded-lg" />
 
               {/* CTA Button */}
@@ -253,8 +254,7 @@ function GameCard({ tournament, onClick, isHydrated, user }) {
                 className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               >
                 <span className="px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 rounded-full text-white font-semibold text-sm transition-all duration-300 cursor-pointer">
-                  {/* {isHydrated && user ? "Go To Tournament" : "Sign In"} */}
-                  Go To Details
+                  {isHydrated && user ? "Go To Tournament" : "Sign In"}
                 </span>
               </button>
             </div>

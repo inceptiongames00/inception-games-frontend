@@ -76,7 +76,7 @@ export default function EventDetailPage() {
   });
 
   useEffect(() => {
-    const storedEvents = localStorage.getItem("free-event");
+    const storedEvents = sessionStorage.getItem("free-event");
 
     if (storedEvents) {
       const events = JSON.parse(storedEvents);
@@ -615,15 +615,17 @@ export default function EventDetailPage() {
                 </h3>
 
                 {/* Notice Section */}
-                <div className="mb-8 p-4 rounded-xl bg-blue-500/10 border border-blue-500/30 mt-4">
-                  <p className="text-sm text-blue-300 flex items-center gap-2">
-                    <span className="text-lg">ℹ️</span>
-                    <span>
-                      <span className="font-semibold">Note:</span> You have to
-                      create an account to join the event.
-                    </span>
-                  </p>
-                </div>
+                {!user && (
+                  <div className="mb-8 p-4 rounded-xl bg-blue-500/10 border border-blue-500/30 mt-4">
+                    <p className="text-sm text-blue-300 flex items-center gap-2">
+                      <span className="text-lg">ℹ️</span>
+                      <span>
+                        <span className="font-semibold">Note:</span> You have to
+                        create an account to join the event.
+                      </span>
+                    </p>
+                  </div>
+                )}
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
                   {progressionSteps.map((step, index) => {

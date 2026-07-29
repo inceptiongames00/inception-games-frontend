@@ -972,7 +972,11 @@ export default function EventsSection({
       */
 
       // Fetch Tournaments if "all" or "Tournament" is selected
-      if (activeFilter === "all" || activeFilter === "Tournament") {
+      if (
+        activeFilter === "all" ||
+        activeFilter === "Tournament" ||
+        activeFilter === "Free Event"
+      ) {
         try {
           // Use the new authenticated endpoint with userId
           const userId = user?.id || user?.userId || "SNS-5556"; // Use correct user id from context

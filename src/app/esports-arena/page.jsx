@@ -1,11 +1,12 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useContext, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import TournamentsSection from "./components/TournamentsSection";
 import BrandDealsSection from "./components/BrandDealsSection";
 import UnifiedAuthModal from "@/app/components/AuthModals/UnifiedAuthModal";
+import { AuthContext } from "../context/AuthContext";
 
 const tabs = [
   { id: "tournaments", label: "Tournaments" },
@@ -13,6 +14,7 @@ const tabs = [
 ];
 
 function EsportsArenaContent() {
+  const { user } = useContext(AuthContext) || {};
   const router = useRouter();
   const searchParams = useSearchParams();
   const [loginModalOpen, setLoginModalOpen] = useState(false);
@@ -105,19 +107,22 @@ function EsportsArenaContent() {
           </motion.div>
 
           {/* Notice Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="mb-8 p-4 rounded-xl bg-blue-500/10 border border-blue-500/30"
-          >
-            <p className="text-sm text-blue-300 flex items-center gap-2">
-              <span className="text-lg">ℹ️</span>
-              <span>
-                <span className="font-semibold">Note:</span> You have to create an account to join the event.
-              </span>
-            </p>
-          </motion.div>
+          {!user && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="mb-8 p-4 rounded-xl bg-blue-500/10 border border-blue-500/30"
+            >
+              <p className="text-sm text-blue-300 flex items-center gap-2">
+                <span className="text-lg">ℹ️</span>
+                <span>
+                  <span className="font-semibold">Note:</span> You have to
+                  create an account to join the event.
+                </span>
+              </p>
+            </motion.div>
+          )}
 
           {/* Tab Content */}
           {activeTab === "tournaments" && (

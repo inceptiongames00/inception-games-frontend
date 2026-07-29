@@ -265,7 +265,6 @@ export default function UnifiedAuthModal({
     setSelectedTournamentCategory,
   } = useAuth();
 
-  const [mode, setMode] = useState(initialMode);
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [localError, setLocalError] = useState("");
@@ -287,6 +286,15 @@ export default function UnifiedAuthModal({
     discord: "",
     bio: "",
   });
+  const [mode, setMode] = useState(initialMode);
+
+  // Sync mode when the modal opens with a different initialMode
+  useEffect(() => {
+    if (isOpen) {
+      setMode(initialMode);
+      setStep(1);
+    }
+  }, [isOpen, initialMode]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
