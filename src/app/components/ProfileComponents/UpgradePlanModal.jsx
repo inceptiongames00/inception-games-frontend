@@ -182,7 +182,7 @@ export default function UpgradePlanModal({
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: "spring", duration: 0.4 }}
             onClick={(e) => e.stopPropagation()}
-            className="bg-gradient-to-br from-black via-[#0a0a0f] to-black border border-white/[0.08] rounded-none sm:rounded-3xl w-full sm:max-w-6xl shadow-2xl shadow-black/50 overflow-hidden"
+            className="bg-gradient-to-br from-black via-[#0a0a0f] to-black border border-white/[0.08] rounded-none sm:rounded-3xl w-full sm:max-w-6xl shadow-2xl shadow-black/50 overflow-hidden max-h-screen sm:max-h-[90vh] overflow-y-auto"
           >
             {/* Close button */}
             <button
@@ -193,18 +193,18 @@ export default function UpgradePlanModal({
             </button>
 
             {/* Content */}
-            <div className="p-8 sm:p-12">
+            <div className="p-5 sm:p-8">
               {/* Header */}
               <motion.div
-                className="text-center mb-12"
+                className="text-center mb-6"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
               >
-                <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4">
+                <h2 className="text-2xl sm:text-4xl font-bold text-white mb-2">
                   Level Up Your Experience
                 </h2>
-                <p className="text-lg text-gray-400">
+                <p className="text-sm sm:text-base text-gray-400">
                   Choose the perfect plan for your gaming journey.
                 </p>
               </motion.div>
@@ -231,75 +231,118 @@ export default function UpgradePlanModal({
                 </motion.div>
               )}
 
-              {/* Plans Container with horizontal scroll on mobile */}
-              {/* Desktop: Grid Layout */}
-              <div className="hidden sm:block">
-                <motion.div
-                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.2, staggerChildren: 0.1 }}
-                >
-                  {displayPlans.map((plan, index) => (
-                    <PlanCard 
-                      key={plan.id} 
-                      plan={plan} 
-                      index={index} 
-                      loading={loading} 
-                      loadingPlanId={loadingPlanId} 
-                      handleSubscribe={handleSubscribe} 
-                    />
-                  ))}
-                </motion.div>
+              {/* Desktop: 3-column grid, no swipe */}
+              <div className="hidden sm:grid sm:grid-cols-3 gap-4">
+                {displayPlans.map((plan, index) => (
+                  <PlanCard
+                    key={plan.id}
+                    plan={plan}
+                    index={index}
+                    loading={loading}
+                    loadingPlanId={loadingPlanId}
+                    handleSubscribe={handleSubscribe}
+                  />
+                ))}
               </div>
 
-              {/* Mobile: Swipeable Slider */}
+              {/* Mobile: single-card swipe slider */}
               <div className="sm:hidden">
-                <motion.div
-                  drag="x"
-                  dragElastic={0.2}
-                  dragMomentum={false}
-                  onDragEnd={(e, { offset, velocity }) => {
-                    const swipe = (offset.x / 100) * velocity.x;
-                    if (swipe < -50 && currentSlide < displayPlans.length - 1) {
-                      setCurrentSlide(currentSlide + 1);
-                    }
-                    if (swipe > 50 && currentSlide > 0) {
-                      setCurrentSlide(currentSlide - 1);
-                    }
-                  }}
-                  animate={{ x: -currentSlide * 100 + "%" }}
-                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  className="flex cursor-grab active:cursor-grabbing"
-                >
-                  {displayPlans.map((plan, index) => (
-                    <div key={plan.id} className="w-full flex-shrink-0 px-4">
-                      <PlanCard 
-                        plan={plan} 
-                        index={index} 
-                        loading={loading} 
-                        loadingPlanId={loadingPlanId} 
-                        handleSubscribe={handleSubscribe} 
-                      />
-                    </div>
-                  ))}
-                </motion.div>
+                {/* Overflow-hidden clip so only one card shows at a time */}
+                <div>
+                  <motion.div
+                    drag="x"
+                    dragConstraints={{ left: 0, right: 0 }}
+                    dragElastic={0.15}
+                    onDragEnd={(_, { offset }) => {
+                      if (
+                        offset.x < -60 &&
+                        currentSlide < displayPlans.length - 1
+                      ) {
+                        setCurrentSlide((s) => s + 1);
+                      } else if (offset.x > 60 && currentSlide > 0) {
+                        setCurrentSlide((s) => s - 1);
+                      }
+                    }}
+                    animate={{ x: `-${currentSlide * 100}%` }}
+                    transition={{ type: "spring", stiffness: 300, damping: 35 }}
+                    className="flex cursor-grab active:cursor-grabbing select-none"
+                  >
+                    {displayPlans.map((plan, index) => (
+                      <div key={plan.id} className="w-full flex-shrink-0 px-1">
+                        <PlanCard
+                          plan={plan}
+                          index={index}
+                          loading={loading}
+                          loadingPlanId={loadingPlanId}
+                          handleSubscribe={handleSubscribe}
+                        />
+                      </div>
+                    ))}
+                  </motion.div>
+                </div>
 
-                {/* Slider Indicators */}
-                <div className="flex justify-center gap-2 mt-6">
-                  {displayPlans.map((_, index) => (
-                    <motion.button
-                      key={index}
-                      onClick={() => setCurrentSlide(index)}
-                      className={`h-2 rounded-full transition-all ${
-                        index === currentSlide
-                          ? "bg-purple-600 w-6"
-                          : "bg-white/20 w-2"
-                      }`}
-                      whileHover={{ scale: 1.2 }}
-                      whileTap={{ scale: 0.9 }}
-                    />
-                  ))}
+                {/* Dot indicators + arrow buttons */}
+                <div className="flex items-center justify-center gap-4 mt-5">
+                  {/* Prev arrow */}
+                  <button
+                    onClick={() => setCurrentSlide((s) => Math.max(s - 1, 0))}
+                    disabled={currentSlide === 0}
+                    className="p-2 rounded-full bg-white/[0.06] border border-white/[0.1] text-gray-400 hover:text-white hover:bg-white/[0.12] disabled:opacity-20 disabled:cursor-not-allowed transition"
+                    aria-label="Previous plan"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path
+                        d="M10 12L6 8l4-4"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </button>
+
+                  {/* Dots */}
+                  <div className="flex gap-2">
+                    {displayPlans.map((_, index) => (
+                      <motion.button
+                        key={index}
+                        onClick={() => setCurrentSlide(index)}
+                        animate={{
+                          width: index === currentSlide ? 24 : 8,
+                          backgroundColor:
+                            index === currentSlide
+                              ? "rgb(147 51 234)"
+                              : "rgba(255,255,255,0.2)",
+                        }}
+                        transition={{ duration: 0.2 }}
+                        className="h-2 rounded-full"
+                        whileHover={{ scale: 1.2 }}
+                        whileTap={{ scale: 0.9 }}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Next arrow */}
+                  <button
+                    onClick={() =>
+                      setCurrentSlide((s) =>
+                        Math.min(s + 1, displayPlans.length - 1),
+                      )
+                    }
+                    disabled={currentSlide === displayPlans.length - 1}
+                    className="p-2 rounded-full bg-white/[0.06] border border-white/[0.1] text-gray-400 hover:text-white hover:bg-white/[0.12] disabled:opacity-20 disabled:cursor-not-allowed transition"
+                    aria-label="Next plan"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path
+                        d="M6 4l4 4-4 4"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </button>
                 </div>
               </div>
             </div>
@@ -350,10 +393,10 @@ function PlanCard({ plan, index, loading, loadingPlanId, handleSubscribe }) {
         ))}
       </div>
 
-      <div className="p-6 pt-8">
+      <div className="p-4 pt-7">
         {/* Badge */}
         {plan.badge && (
-          <div className="flex justify-center mb-4 -mt-12">
+          <div className="flex justify-center mb-3 -mt-10">
             <span
               className={`text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider ${plan.badgeColor}`}
             >
@@ -362,34 +405,26 @@ function PlanCard({ plan, index, loading, loadingPlanId, handleSubscribe }) {
           </div>
         )}
         {/* Plan Name */}
-        <h3 className="text-xl font-bold text-white mb-2">
-          {plan.name}
-        </h3>
+        <h3 className="text-lg font-bold text-white mb-1">{plan.name}</h3>
 
         {/* Price */}
-        <div className="flex items-baseline gap-1 mb-6">
+        <div className="flex items-baseline gap-1 mb-4">
           {parseInt(plan.price) === 0 ? (
-            <span className="text-3xl font-bold text-white">
-              FREE
-            </span>
+            <span className="text-2xl font-bold text-white">FREE</span>
           ) : (
             <>
-              <span className="text-3xl font-bold text-white">
+              <span className="text-2xl font-bold text-white">
                 {parseInt(plan.price)}
               </span>
-              <span className="text-sm font-medium text-gray-400">
-                BDT
-              </span>
+              <span className="text-sm font-medium text-gray-400">BDT</span>
             </>
           )}
           {plan.period && parseInt(plan.price) !== 0 && (
-            <span className="text-sm text-gray-500">
-              /{plan.period}
-            </span>
+            <span className="text-sm text-gray-500">/{plan.period}</span>
           )}
         </div>
         {/* Features */}
-        <div className="space-y-3 mb-6 h-70 overflow-y-scroll overscroll-contain custom-scrollbar">
+        <div className="space-y-2 mb-4 h-66 overflow-y-auto overscroll-contain custom-scrollbar">
           {plan.features.map((feature, idx) => {
             const isString = typeof feature === "string";
             const text = isString ? feature : feature.text;
@@ -403,9 +438,7 @@ function PlanCard({ plan, index, loading, loadingPlanId, handleSubscribe }) {
                 <Check
                   size={18}
                   className={`flex-shrink-0 mt-0.5 ${
-                    disabled
-                      ? "text-gray-600"
-                      : "text-emerald-400"
+                    disabled ? "text-gray-600" : "text-emerald-400"
                   }`}
                 />
                 <span
@@ -422,21 +455,18 @@ function PlanCard({ plan, index, loading, loadingPlanId, handleSubscribe }) {
         <motion.button
           onClick={() => handleSubscribe(plan.name, plan.id)}
           disabled={
-            plan.isCurrentPlan ||
-            (loading && loadingPlanId === plan.id)
+            plan.isCurrentPlan || (loading && loadingPlanId === plan.id)
           }
           className={`w-full py-3 cursor-pointer rounded-lg font-bold text-sm uppercase tracking-wider transition-all duration-300 ${plan.buttonStyle} ${loading && loadingPlanId === plan.id ? "opacity-50" : ""}`}
           whileHover={{
             scale:
-              plan.isCurrentPlan ||
-              (loading && loadingPlanId === plan.id)
+              plan.isCurrentPlan || (loading && loadingPlanId === plan.id)
                 ? 1
                 : 1.02,
           }}
           whileTap={{
             scale:
-              plan.isCurrentPlan ||
-              (loading && loadingPlanId === plan.id)
+              plan.isCurrentPlan || (loading && loadingPlanId === plan.id)
                 ? 1
                 : 0.98,
           }}
