@@ -32,7 +32,6 @@ import SharePreview from "@/app/components/SharePreview";
 import PlatformDisplay from "@/app/components/EventComponents/PlatformDisplay";
 import AnimatedInput from "@/app/components/EventComponents/AnimatedInput";
 import { AuthContext } from "@/app/context/AuthContext";
-import { useEventData } from "@/app/hooks/useEventData";
 import { useEventRegistration } from "@/app/hooks/useEventRegistration.js";
 import { useEventSharing } from "@/app/hooks/useEventSharing";
 import { getTokens } from "@/lib/api";
@@ -49,8 +48,22 @@ export default function EventDetailPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user } = useContext(AuthContext) || {};
-  const { event: fetchedEvent } = useEventData(params.eventId);
+  
+  // Get event data from sessionStorage (passed from EventsSection)
   const [event, setEvent] = useState(null);
+  useEffect(() => {
+    if (typeof window !== "undefined" && params.eventId) {
+      const storedData = sessionStorage.getItem(`event_${params.eventId}`);
+      if (storedData) {
+        try {
+          setEvent(JSON.parse(storedData));
+        } catch (e) {
+          // Invalid JSON, silently ignore
+        }
+      }
+    }
+  }, [params.eventId]);
+  
   const [actionSource, setActionSource] = useState("view"); // 'view', 'join', 'not-applicable'
   const [activeTab, setActiveTab] = useState("result");
   const [showSignupForm, setShowSignupForm] = useState(false);
@@ -95,11 +108,6 @@ export default function EventDetailPage() {
     players: [],
   });
 
-  useEffect(() => {
-    if (fetchedEvent) setEvent(fetchedEvent);
-  }, [fetchedEvent]);
-
-  // Get action from URL query parameters
   useEffect(() => {
     const action = searchParams?.get("action") || "view";
     setActionSource(action);
