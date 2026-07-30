@@ -1272,39 +1272,44 @@ export default function EventsSection({
       {/* Header with Filters */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         {/* Filter Tabs */}
-        <div className="overflow-x-auto">
-          <div className="flex items-center gap-1 bg-[#111115] p-1 rounded-xl border border-white/[0.06] min-w-max">
-            {FILTER_TABS.map((tab) => {
-              const IconComponent = tab.icon;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => {
-                    setActiveFilter(tab.id);
-                    // Reset size filter when clicking on "all" or "Brand Deal" tabs
-                    if (tab.id !== "Tournament") {
-                      setSizeFilter(null);
-                      setShowFreeTourn(false);
-                    }
-                  }}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 cursor-pointer ${
-                    activeFilter === tab.id
-                      ? "bg-purple-600 text-white"
-                      : "text-gray-400 hover:text-white hover:bg-white/[0.05]"
-                  }`}
-                >
-                  {IconComponent && <IconComponent size={14} />}
-                  {tab.label}
-                  <span
-                    className={`text-xs ${activeFilter === tab.id ? "text-purple-200" : "text-gray-500"}`}
-                  >
-                    ({tab.count})
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
+      <div className="bg-[#111115] p-1 rounded-xl border border-white/[0.06]">
+  <div
+    className="grid grid-cols-2 sm:flex sm:items-center gap-1 sm:min-w-max"
+  >
+    {FILTER_TABS.map((tab) => {
+      const IconComponent = tab.icon;
+      const isActive = activeFilter === tab.id;
+      return (
+        <button
+          key={tab.id}
+          onClick={() => {
+            setActiveFilter(tab.id);
+            if (tab.id !== "Tournament") {
+              setSizeFilter(null);
+              setShowFreeTourn(false);
+            }
+          }}
+          className={`px-2 sm:px-4 py-2 rounded-lg font-medium transition-all duration-200 cursor-pointer
+            flex items-center justify-center sm:justify-start gap-1.5 sm:gap-2
+            text-xs sm:text-sm leading-tight
+            border sm:border-0
+            ${isActive
+              ? "bg-purple-600 text-white border-purple-600"
+              : "text-gray-400 hover:text-white hover:bg-white/[0.05] border-white/[0.08]"
+            }`}
+        >
+          {IconComponent && <IconComponent size={13} className="shrink-0" />}
+          <span className="truncate">{tab.label}</span>
+          <span
+            className={`text-[10px] sm:text-xs ${isActive ? "text-purple-200" : "text-gray-500"}`}
+          >
+            ({tab.count})
+          </span>
+        </button>
+      );
+    })}
+  </div>
+</div>
 
         {/* Size Filter Button */}
         {/* <div className="flex items-center gap-2">
