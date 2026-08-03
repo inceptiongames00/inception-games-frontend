@@ -40,7 +40,7 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* Mobile Top Bar */}
+      {/* Mobile Top Ba */}
       <div className="md:hidden flex items-center justify-between p-4 bg-white/80 backdrop-blur-md border-b border-black/10 sticky top-0 z-40 shadow-sm">
         <h2 className="text-2xl font-extrabold !text-black">Inception</h2>
         <button
