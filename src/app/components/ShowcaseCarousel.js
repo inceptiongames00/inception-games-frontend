@@ -13,7 +13,7 @@ const showcaseData = {
       {
         id: 1,
         name: "Ifarmer",
-        photo: "/Ecosystem/Partners/ifarmer2.jpeg",
+        photo: "https://res.cloudinary.com/jvpygp4b/image/upload/v1783147170/ifarmer2_utju6u.jpg",
         link: "#",
         caption: {
           normalText: "31,000+ Active Users powering ",
@@ -24,7 +24,7 @@ const showcaseData = {
       {
         id: 2,
         name: "Mime",
-        photo: "/Ecosystem/Partners/mime2.png",
+        photo: "https://res.cloudinary.com/jvpygp4b/image/upload/v1783147172/mime2_hhp4nf.jpg",
         link: "#",
         caption: {
           normalText: "Mime is our official Internet Sponsor — ",
@@ -35,7 +35,7 @@ const showcaseData = {
       {
         id: 3,
         name: "Moar",
-        photo: "/Ecosystem/Partners/MOAR.png",
+        photo: "https://res.cloudinary.com/jvpygp4b/image/upload/v1783147168/MOAR_hkr10h.png",
         link: "#",
         caption: {
           normalText: "Moar fuels the competitive spirit — ",
@@ -52,37 +52,37 @@ const showcaseData = {
       {
         id: 1,
         name: "Z Inception",
-        photo: "/Ecosystem/Games/zinception.jpg",
+        photo: "https://res.cloudinary.com/jvpygp4b/image/upload/v1783147054/zinception_gkfydy.jpg",
         link: "https://drive.google.com/file/d/1a0PfwyBeGXXJAvE5wRGG_7wey0y5JCzX/view",
       },
       {
         id: 2,
         name: "Beyblade",
-        photo: "/Ecosystem/Games/Beyblade.png",
+        photo: "https://res.cloudinary.com/jvpygp4b/image/upload/v1783147059/Beyblade_vwy1ee.png",
         link: "https://gamejolt.com/games/bayblade_demo/274742",
       },
       {
         id: 3,
         name: "Dhaka Racing Sim",
-        photo: "/Ecosystem/Games/DhakaRacingSim.jpg",
+        photo: "https://res.cloudinary.com/jvpygp4b/image/upload/v1783147061/DhakaRacingSim_z1yhzy.jpg",
         link: "https://www.facebook.com/reel/2260993467662799",
       },
       {
         id: 4,
         name: "Exo Discover",
-        photo: "/Ecosystem/Games/discover.png",
+        photo: "https://res.cloudinary.com/jvpygp4b/image/upload/v1783147064/discover_zgyd63.png",
         link: "https://imtiazahmeddipto.itch.io/exo-descover",
       },
       {
         id: 5,
         name: "Arcade Game",
-        photo: "/Ecosystem/Games/ArcadeGame.jpeg",
+        photo: "https://res.cloudinary.com/jvpygp4b/image/upload/v1783147057/ArcadeGame_ou85fx.jpg",
         link: "https://play.google.com/store/apps/details?id=asia.ifarmer.farmers&pcampaignid=web_share",
       },
       {
         id: 6,
         name: "Unknown Surge",
-        photo: "/Ecosystem/Games/unknownsurge.png",
+        photo: "https://res.cloudinary.com/jvpygp4b/image/upload/v1783147067/unknownsurge_xza67r.png",
         link: "https://store.steampowered.com/app/1132450/Unknown_Surge/",
       },
     ],
@@ -91,15 +91,14 @@ const showcaseData = {
     title: "Our Community",
     subtitle: "Join thousands of passionate gamers",
     items: [
-      { id: 1, photo: "/Ecosystem/Community/c1.jpg" },
-      { id: 2, photo: "/Ecosystem/Community/c2.jpg" },
-      { id: 3, photo: "/Ecosystem/Community/c3.jpg" },
-      { id: 4, photo: "/Ecosystem/Community/c4.jpg" },
-      { id: 5, photo: "/Ecosystem/Community/c5.PNG" },
-      { id: 6, photo: "/Ecosystem/Community/c6.jpg" },
-      { id: 7, photo: "/Ecosystem/Community/c7.jpg" },
-      { id: 8, photo: "/Ecosystem/Community/c8.jpg" },
-      { id: 17, photo: "/Ecosystem/Community/c17.jpg" },
+      { id: 1, photo: "https://res.cloudinary.com/jvpygp4b/image/upload/v1783146526/c1_oboa3t.jpg" },
+      { id: 2, photo: "https://res.cloudinary.com/jvpygp4b/image/upload/v1783146523/c2_j8gqgm.jpg" },
+      { id: 3, photo: "https://res.cloudinary.com/jvpygp4b/image/upload/v1783146526/c3_j3yoag.jpg" },
+      { id: 4, photo: "https://res.cloudinary.com/jvpygp4b/image/upload/v1783146528/c4_ztd1sr.jpg" },
+      { id: 6, photo: "https://res.cloudinary.com/jvpygp4b/image/upload/v1783146530/c6_lhwwsj.jpg" },
+      { id: 7, photo: "https://res.cloudinary.com/jvpygp4b/image/upload/v1783146941/c7_knftcn.jpg" },
+      { id: 8, photo: "https://res.cloudinary.com/jvpygp4b/image/upload/v1783146940/c8_xoi6zb.jpg" },
+      { id: 17, photo: "https://res.cloudinary.com/jvpygp4b/image/upload/v1783146525/c17_l2nols.jpg" },
     ],
   },
 };
